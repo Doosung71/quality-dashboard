@@ -39,7 +39,7 @@ ChatGPT는 정리하고 설명한다.
 
 ## 3. 프로젝트 정보
 
-**프로젝트**: quality-director-dashboard  
+**프로젝트**: quality-dashboard  
 **설명**: LS전선 품질부문장을 위한 5개 업무 영역 통합 대시보드 PoC  
 **D-day**: 2026년 9월 품질전략기능회의 (CEO + 임원진 시연)
 
@@ -48,7 +48,7 @@ ChatGPT는 정리하고 설명한다.
 ## 4. 아키텍처
 
 ```
-quality-director-dashboard/
+quality-dashboard/
 ├── app/
 │   ├── layout.tsx                     # 루트 레이아웃
 │   ├── globals.css

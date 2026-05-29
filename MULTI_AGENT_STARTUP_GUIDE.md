@@ -2,7 +2,7 @@
 
 이 문서는 새 세션을 시작할 때 Claude Code, Gemini CLI, Codex CLI를 어떤 순서로 깨우고 어떤 파일을 읽게 할지 정리한 가이드다.
 
-**이 프로젝트**: LS전선 품질부문장 대시보드 (quality-director-dashboard)  
+**이 프로젝트**: LS전선 품질부문장 대시보드 (quality-dashboard)  
 **D-day**: 2026년 9월 품질전략기능회의 (CEO + 임원진 시연)
 
 ## 결론

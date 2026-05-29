@@ -8,7 +8,7 @@
 
 ## 프로젝트 배경
 
-- **프로젝트**: LS전선 품질부문장 대시보드 (quality-director-dashboard)
+- **프로젝트**: LS전선 품질부문장 대시보드 (quality-dashboard)
 - **기술 스택**: Next.js 15 App Router, TypeScript, Tailwind CSS, shadcn/ui
 - **목적**: 2026년 9월 CEO 시연용 PoC. 품질부문장이 시험장·설비 현황을 한눈에 파악하기 위한 내부 대시보드
 - **현재 상태**: 시험장·설비 현황 페이지 1차 구현 완료. 아래 고도화 계획을 수립해 놓은 상태

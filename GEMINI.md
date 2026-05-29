@@ -1,6 +1,6 @@
 # Gemini CLI Mandates for QMS 2.0 PoC
 
-Dennis 부문장님의 **QMS 2.0 AX 마스터플랜**에 따라, 본 프로젝트(`quality-director-dashboard`)의 모든 개발 및 기획 작업은 아래 원칙을 절대적으로 준수한다.
+Dennis 부문장님의 **QMS 2.0 AX 마스터플랜**에 따라, 본 프로젝트(`quality-dashboard`)의 모든 개발 및 기획 작업은 아래 원칙을 절대적으로 준수한다.
 
 ## 1. 핵심 아키텍처 준수 (To-Be Image)
 - **Zero Double Work**: 모든 인터랙션은 시스템 내 완결성을 지향한다. (예: 클레임 상세 패널에서 즉시 보고서 생성 및 단계 이동 버튼 구현)
