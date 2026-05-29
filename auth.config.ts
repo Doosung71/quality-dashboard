@@ -5,6 +5,12 @@ const ADMIN_EMAILS = ["doosung71@gmail.com"]
 export const authConfig = {
   pages: { signIn: "/login" },
   callbacks: {
+    session({ session, token }) {
+      const u = session.user as Record<string, unknown>
+      u.status = token.status ?? null
+      u.restrictedUntil = token.restrictedUntil ?? null
+      return session
+    },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user
       const pathname = nextUrl.pathname
