@@ -26,3 +26,41 @@ export const UserStatus = {
 } as const
 
 export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
+
+
+export const AnalysisStatus = {
+  DRAFT: 'DRAFT',
+  REVIEWED: 'REVIEWED',
+  APPROVED: 'APPROVED'
+} as const
+
+export type AnalysisStatus = (typeof AnalysisStatus)[keyof typeof AnalysisStatus]
+
+
+export const ComplianceStatus = {
+  COMPLY: 'COMPLY',
+  NON_COMPLY: 'NON_COMPLY',
+  TBD: 'TBD'
+} as const
+
+export type ComplianceStatus = (typeof ComplianceStatus)[keyof typeof ComplianceStatus]
+
+
+export const DeviationType = {
+  DEVIATION: 'DEVIATION',
+  CLARIFICATION: 'CLARIFICATION',
+  ASSUMPTION: 'ASSUMPTION'
+} as const
+
+export type DeviationType = (typeof DeviationType)[keyof typeof DeviationType]
+
+
+export const ReviewAction = {
+  SUBMIT_FOR_REVIEW: 'SUBMIT_FOR_REVIEW',
+  REVIEW_APPROVE: 'REVIEW_APPROVE',
+  REVIEW_REJECT: 'REVIEW_REJECT',
+  FINAL_APPROVE: 'FINAL_APPROVE',
+  FINAL_REJECT: 'FINAL_REJECT'
+} as const
+
+export type ReviewAction = (typeof ReviewAction)[keyof typeof ReviewAction]

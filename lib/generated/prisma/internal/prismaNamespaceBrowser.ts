@@ -53,7 +53,14 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Feedback: 'Feedback',
-  FeedbackReply: 'FeedbackReply'
+  FeedbackReply: 'FeedbackReply',
+  Tender: 'Tender',
+  TenderDocument: 'TenderDocument',
+  Analysis: 'Analysis',
+  SpecRequirement: 'SpecRequirement',
+  Standard: 'Standard',
+  ReviewHistory: 'ReviewHistory',
+  Comment: 'Comment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -111,6 +118,110 @@ export const FeedbackReplyScalarFieldEnum = {
 } as const
 
 export type FeedbackReplyScalarFieldEnum = (typeof FeedbackReplyScalarFieldEnum)[keyof typeof FeedbackReplyScalarFieldEnum]
+
+
+export const TenderScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  createdAt: 'createdAt',
+  createdById: 'createdById'
+} as const
+
+export type TenderScalarFieldEnum = (typeof TenderScalarFieldEnum)[keyof typeof TenderScalarFieldEnum]
+
+
+export const TenderDocumentScalarFieldEnum = {
+  id: 'id',
+  tenderId: 'tenderId',
+  filename: 'filename',
+  storagePath: 'storagePath',
+  uploadedAt: 'uploadedAt',
+  isAnalysisSource: 'isAnalysisSource'
+} as const
+
+export type TenderDocumentScalarFieldEnum = (typeof TenderDocumentScalarFieldEnum)[keyof typeof TenderDocumentScalarFieldEnum]
+
+
+export const AnalysisScalarFieldEnum = {
+  id: 'id',
+  tenderId: 'tenderId',
+  documentId: 'documentId',
+  status: 'status',
+  submittedAt: 'submittedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  voltage: 'voltage',
+  bilSil: 'bilSil',
+  shortCircuit: 'shortCircuit',
+  installCond: 'installCond',
+  groundConfig: 'groundConfig',
+  requiredCapacity: 'requiredCapacity',
+  directorMemo: 'directorMemo',
+  draftOpinion: 'draftOpinion'
+} as const
+
+export type AnalysisScalarFieldEnum = (typeof AnalysisScalarFieldEnum)[keyof typeof AnalysisScalarFieldEnum]
+
+
+export const SpecRequirementScalarFieldEnum = {
+  id: 'id',
+  analysisId: 'analysisId',
+  category: 'category',
+  content: 'content',
+  sourcePage: 'sourcePage',
+  sourceText: 'sourceText',
+  comply: 'comply',
+  remark: 'remark',
+  isRisk: 'isRisk',
+  isVE: 'isVE',
+  deviationType: 'deviationType',
+  deviationText: 'deviationText'
+} as const
+
+export type SpecRequirementScalarFieldEnum = (typeof SpecRequirementScalarFieldEnum)[keyof typeof SpecRequirementScalarFieldEnum]
+
+
+export const StandardScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  org: 'org',
+  domain: 'domain',
+  subdomain: 'subdomain',
+  productScope: 'productScope',
+  testType: 'testType',
+  status: 'status',
+  edition: 'edition',
+  pubDate: 'pubDate',
+  parentSeriesId: 'parentSeriesId'
+} as const
+
+export type StandardScalarFieldEnum = (typeof StandardScalarFieldEnum)[keyof typeof StandardScalarFieldEnum]
+
+
+export const ReviewHistoryScalarFieldEnum = {
+  id: 'id',
+  analysisId: 'analysisId',
+  userId: 'userId',
+  action: 'action',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type ReviewHistoryScalarFieldEnum = (typeof ReviewHistoryScalarFieldEnum)[keyof typeof ReviewHistoryScalarFieldEnum]
+
+
+export const CommentScalarFieldEnum = {
+  id: 'id',
+  analysisId: 'analysisId',
+  authorId: 'authorId',
+  content: 'content',
+  createdAt: 'createdAt',
+  parentId: 'parentId'
+} as const
+
+export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
 
 
 export const SortOrder = {

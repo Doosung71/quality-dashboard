@@ -32,3 +32,38 @@ export type Feedback = Prisma.FeedbackModel
  * 
  */
 export type FeedbackReply = Prisma.FeedbackReplyModel
+/**
+ * Model Tender
+ * 
+ */
+export type Tender = Prisma.TenderModel
+/**
+ * Model TenderDocument
+ * 
+ */
+export type TenderDocument = Prisma.TenderDocumentModel
+/**
+ * Model Analysis
+ * 
+ */
+export type Analysis = Prisma.AnalysisModel
+/**
+ * Model SpecRequirement
+ * 
+ */
+export type SpecRequirement = Prisma.SpecRequirementModel
+/**
+ * Model Standard
+ * 
+ */
+export type Standard = Prisma.StandardModel
+/**
+ * Model ReviewHistory
+ * 
+ */
+export type ReviewHistory = Prisma.ReviewHistoryModel
+/**
+ * Model Comment
+ * 
+ */
+export type Comment = Prisma.CommentModel

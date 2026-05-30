@@ -1,0 +1,151 @@
+// TRA 전용 스키마 — Tender Review Assistant 모델
+// User·Feedback·FeedbackReply·Role·UserStatus는 common.prisma 참조
+
+// ─── 입찰 ────────────────────────────────────────────────
+model Tender {
+  id          String   @id @default(cuid())
+  title       String
+  createdAt   DateTime @default(now())
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdById String
+
+  documents TenderDocument[]
+  analyses  Analysis[]
+}
+
+model TenderDocument {
+  id               String   @id @default(cuid())
+  tender           Tender   @relation(fields: [tenderId], references: [id])
+  tenderId         String
+  filename         String
+  storagePath      String
+  uploadedAt       DateTime @default(now())
+  isAnalysisSource Boolean  @default(true)
+
+  analyses Analysis[]
+}
+
+// ─── 분석 결과 ─────────────────────────────────────────────
+// 모든 AI 생성 결과는 status=DRAFT로만 생성 — 자동 확정 없음
+model Analysis {
+  id          String          @id @default(cuid())
+  tender      Tender          @relation(fields: [tenderId], references: [id])
+  tenderId    String
+  document    TenderDocument? @relation(fields: [documentId], references: [id])
+  documentId  String?
+  status      AnalysisStatus  @default(DRAFT)
+  submittedAt DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  // 기검요청서 시스템 특성
+  voltage          String?
+  bilSil           String?
+  shortCircuit     String?
+  installCond      String?
+  groundConfig     String?
+  requiredCapacity String?
+
+  // 부문장 전용
+  directorMemo String?
+  draftOpinion String?
+
+  requirements SpecRequirement[]
+  history      ReviewHistory[]
+  comments     Comment[]
+}
+
+enum AnalysisStatus {
+  DRAFT
+  REVIEWED
+  APPROVED
+}
+
+// ─── 추출 요구사항 ───────────────────────────────────────────
+model SpecRequirement {
+  id         String           @id @default(cuid())
+  analysis   Analysis         @relation(fields: [analysisId], references: [id])
+  analysisId String
+  category   String
+  content    String
+  sourcePage Int?
+  sourceText String?
+  comply         ComplianceStatus?
+  remark         String?
+  isRisk         Boolean          @default(false)
+  isVE           Boolean          @default(false)
+  deviationType  DeviationType?
+  deviationText  String?
+
+  standards Standard[] @relation("RequirementToStandard")
+}
+
+enum ComplianceStatus {
+  COMPLY
+  NON_COMPLY
+  TBD
+}
+
+enum DeviationType {
+  DEVIATION
+  CLARIFICATION
+  ASSUMPTION
+}
+
+// ─── 표준 규격 ────────────────────────────────────────────────
+model Standard {
+  id           String  @id
+  title        String
+  org          String
+  domain       String
+  subdomain    String?
+  productScope String
+  testType     String?
+  status       String  @default("active")
+  edition      String?
+  pubDate      String?
+
+  parentSeriesId String?
+  parentSeries   Standard?  @relation("SeriesToParts", fields: [parentSeriesId], references: [id])
+  parts          Standard[] @relation("SeriesToParts")
+
+  requirements SpecRequirement[] @relation("RequirementToStandard")
+}
+
+// ─── 리뷰 이력 ────────────────────────────────────────────────
+// append-only. 덮어쓰기·삭제 없음.
+model ReviewHistory {
+  id         String         @id @default(cuid())
+  analysis   Analysis       @relation(fields: [analysisId], references: [id])
+  analysisId String
+  user       User           @relation(fields: [userId], references: [id])
+  userId     String
+  action     ReviewAction
+  fromStatus AnalysisStatus
+  toStatus   AnalysisStatus
+  reason     String?
+  createdAt  DateTime       @default(now())
+}
+
+enum ReviewAction {
+  SUBMIT_FOR_REVIEW
+  REVIEW_APPROVE
+  REVIEW_REJECT
+  FINAL_APPROVE
+  FINAL_REJECT
+}
+
+// ─── 코멘트 ──────────────────────────────────────────────────
+model Comment {
+  id         String   @id @default(cuid())
+  analysis   Analysis @relation(fields: [analysisId], references: [id])
+  analysisId String
+  author     User     @relation(fields: [authorId], references: [id])
+  authorId   String
+  content    String
+  createdAt  DateTime @default(now())
+
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentReplies")
+}
