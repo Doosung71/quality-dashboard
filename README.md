@@ -15,15 +15,16 @@ npm run dev
 
 ## 현재 상태
 
-| 영역 | 상태 |
-|------|------|
-| 프로젝트 셋업 + 공통 레이아웃 | ✅ 완료 |
-| ① 시험장·시험 현황 | ✅ 완료 (2026-05-12) |
-| ② 고객 클레임 트래커 | 🔲 6월 예정 |
-| ③ 협력업체 카드 풀 | 🔲 7월 예정 |
-| ④ 품질부문 인사·면담 | 🔲 8월 예정 |
-| ⑤ 경쟁사·고객·기타 정보 | 🔲 8월 예정 |
-| 통합 메인 대시보드 | 🔲 8월 예정 |
+| 영역 | 상태 | 비고 |
+|------|------|------|
+| 프로젝트 셋업 + 공통 레이아웃 | ✅ 완료 | |
+| ① 시험장·시험 현황 | ✅ 완료 (2026-05-12) | 구미/동해 설비 시드 연동 |
+| ② 고객 클레임 트래커 | ✅ 완료 (2026-05-29) | 5단계 칸반 + KPI + 상세 사이드바 |
+| ③ 협력업체 카드 풀 | 🔲 6월 예정 | Sprint 3 대상 |
+| ④ 품질부문 인사·면담 | 🔲 8월 예정 | Sprint 4 대상 |
+| ⑤ 경쟁사·고객·기타 정보 | 🔲 8월 예정 | Sprint 4 대상 |
+| ⑥ 입찰 검토 보조 (TRA 통합) | ✅ 이식 완료 (2026-05-30) | PDF 업로드/AI 분석/RAG 규격 매칭/상세검토 및 댓글 |
+| 통합 메인 대시보드 | 🔲 8월 예정 | Sprint 4 대상 |
 
 ---
 
@@ -36,10 +37,16 @@ app/
     layout.tsx                       대시보드 공통 레이아웃
     page.tsx                         통합 메인
     facilities/page.tsx              ① 시험장·시험 현황 ✅
-    claims/                          ② 클레임 (예정)
+    claims/                          ② 클레임 ✅
     vendors/                         ③ 협력업체 (예정)
     hr/                              ④ 인사 (예정)
     intelligence/                    ⑤ 외부정보 (예정)
+    knowledge/                       지식 검색 탭 ✅
+  dashboard/                         ⑥ 입찰 검토 - 업로드/리스트 ✅
+  tender/                            ⑥ 입찰 검토 - 상세/조치 ✅
+  feedback/                          피드백 게시판 ✅
+  profile/                           사용자 프로필 ✅
+  help/                              도움말 가이드 ✅
 
 components/
   layout/
@@ -47,14 +54,20 @@ components/
     header.tsx
   facilities/
     facilities-view.tsx
+  claims/
+    claims-kanban.tsx
   ui/
     button.tsx
+    card.tsx
+    input.tsx
 
 data/
   facility.json                      구미·동해 시험장·설비 시드 데이터
+  claims.json                        고객 클레임 시드 데이터
 
 types/
   facility.ts                        TypeScript 타입 정의
+  claim.ts                           클레임 타입 정의
 ```
 
 ---
