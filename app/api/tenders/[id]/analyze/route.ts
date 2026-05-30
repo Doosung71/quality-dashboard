@@ -7,6 +7,59 @@ import { searchKnowledge } from "@/lib/knowledge"
 import { readBlobBuffer } from "@/lib/storage"
 import { parseRagThreshold, buildKnowledgeChunksXml } from "@/lib/rag"
 
+// DuckDuckGo Lite HTML 파서를 활용한 실시간 외부 웹 검색 (API Key 불필요)
+async function searchWebForTender(query: string): Promise<string> {
+  try {
+    const res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+      },
+    })
+    if (!res.ok) return ""
+
+    const html = await res.text()
+    const snippetRegex = /<a class="result__snippet"[^>]*>([\s\S]*?)<\/a>/g
+    const titleRegex = /<a class="result__title"[^>]*>([\s\S]*?)<\/a>/g
+
+    const titles: string[] = []
+    const snippets: string[] = []
+    let match: RegExpExecArray | null
+
+    while ((match = titleRegex.exec(html)) !== null && titles.length < 3) {
+      titles.push(match[1].replace(/<[^>]*>/g, "").trim())
+    }
+    while ((match = snippetRegex.exec(html)) !== null && snippets.length < 3) {
+      snippets.push(match[1].replace(/<[^>]*>/g, "").trim())
+    }
+
+    return titles
+      .map((t, i) => `[웹${i + 1}] ${t}: ${snippets[i] ?? ""}`)
+      .filter((s) => s.trim().length > 10)
+      .join("\n")
+  } catch {
+    return ""
+  }
+}
+
+// PDF 텍스트에서 핵심 기술 키워드 추출 (IEC 규격, 전압 레벨 등)
+function extractTenderKeywords(text: string): string {
+  const slice = text.slice(0, 3000)
+  const patterns = [
+    /IEC\s+\d+[\w-]*/gi,
+    /IEEE\s+\d+[\w-]*/gi,
+    /CIGRE\s+[\w-]+/gi,
+    /\d+\s*kV\s*(?:XLPE|cable|submarine|underground)?/gi,
+    /\d+\s*MVA?\b/gi,
+    /HVAC|HVDC|submarine cable|undersea cable/gi,
+  ]
+  const keywords = new Set<string>()
+  for (const pat of patterns) {
+    const matches = slice.match(pat) ?? []
+    matches.slice(0, 3).forEach((m) => keywords.add(m.trim()))
+  }
+  return Array.from(keywords).slice(0, 6).join(" ")
+}
+
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
@@ -50,6 +103,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (truncated) anyTruncated = true
   }
 
+  // 1. 내부 RAG 지식 검색
   const RAG_THRESHOLD = parseRagThreshold(process.env.RAG_THRESHOLD)
   let knowledgeContext: string | undefined
   let ragApplied = false
@@ -62,7 +116,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       .split(/[.\n]+/)
       .filter((s) => keywordPattern.test(s))
       .slice(0, 3)
-      .join('. ')
+      .join(". ")
     const ragQuery = keywordSentences ? `${combinedText.slice(0, 800)}\n\n${keywordSentences}` : combinedText.slice(0, 800)
     const chunks = (await searchKnowledge(ragQuery, { limit: 5 }))
       .filter((c) => c.similarity >= RAG_THRESHOLD)
@@ -76,7 +130,27 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     ragError = "RAG_UNAVAILABLE"
   }
 
-  const extracted = await extractTenderSpec(combinedText, knowledgeContext)
+  // 2. 외부 웹 검색 (DuckDuckGo, API Key 불필요)
+  let webContext: string | undefined
+  try {
+    const keywords = extractTenderKeywords(combinedText)
+    if (keywords) {
+      const webResults = await searchWebForTender(`${keywords} cable specification standard`)
+      if (webResults) webContext = webResults
+    }
+  } catch (e) {
+    console.warn("[analyze] 외부 웹 검색 실패, 웹 컨텍스트 없이 진행:", (e as Error).message)
+  }
+
+  // 3. AI 분석 (Claude → OpenAI → Gemini 순서로 폴백)
+  let extracted
+  try {
+    extracted = await extractTenderSpec(combinedText, knowledgeContext, webContext)
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e)
+    console.error("[analyze] AI 분석 실패:", msg)
+    return NextResponse.json({ error: `AI 분석에 실패했습니다: ${msg}` }, { status: 500 })
+  }
 
   const analysis = await prisma.analysis.create({
     data: {
@@ -107,6 +181,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     truncated: anyTruncated,
     ragApplied,
     ragChunkCount,
+    webContextApplied: !!webContext,
     ...(ragError ? { ragError } : {}),
   })
 }
