@@ -330,8 +330,8 @@ export default function MainDashboard() {
               <Link href="/qcost" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
                 <div className="space-y-1">
                   <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">④ Q-Cost</span>
-                  <h4 className="text-2xl font-bold text-emerald-600 mt-1">{stats.totalQCost}M</h4>
-                  <p className="text-[10px] text-slate-400">실패 {stats.failureCost}M / 예방 {stats.preventionCost}M</p>
+                  <h4 className="text-2xl font-bold text-emerald-600 mt-1">{Number(stats.totalQCost).toFixed(1)}M</h4>
+                  <p className="text-[10px] text-slate-400">실패 {Number(stats.failureCost).toFixed(1)}M / 예방 {Number(stats.preventionCost).toFixed(1)}M</p>
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t mt-4 text-[10px] text-indigo-600 font-bold">
                   <span>품질비용 이동</span>
