@@ -79,14 +79,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         tenderId,
         documentId: newDoc.id,
         status: "DRAFT",
-        voltage: extracted.systemCharacteristics.voltage,
-        bilSil: extracted.systemCharacteristics.bilSil,
-        shortCircuit: extracted.systemCharacteristics.shortCircuit,
-        installCond: extracted.systemCharacteristics.installCond,
-        groundConfig: extracted.systemCharacteristics.groundConfig,
-        requiredCapacity: extracted.systemCharacteristics.requiredCapacity,
+        aiUsed: extracted.aiUsed,
+        voltage: extracted.data.systemCharacteristics.voltage,
+        bilSil: extracted.data.systemCharacteristics.bilSil,
+        shortCircuit: extracted.data.systemCharacteristics.shortCircuit,
+        installCond: extracted.data.systemCharacteristics.installCond,
+        groundConfig: extracted.data.systemCharacteristics.groundConfig,
+        requiredCapacity: extracted.data.systemCharacteristics.requiredCapacity,
         requirements: {
-          create: extracted.requirements.map((r) => ({
+          create: extracted.data.requirements.map((r) => ({
             category: r.category,
             content: r.content,
             sourcePage: r.sourcePage,
