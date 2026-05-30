@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { facilityData } from "@/data/facility.data";
 import { claimsData } from "@/data/claims.data";
@@ -18,13 +18,24 @@ import {
   Gauge,
   Calendar,
   HelpCircle,
-  FileSearch
+  FileSearch,
+  UserCheck,
+  ClipboardList,
+  FileCheck,
+  CheckCircle,
+  Clock,
+  Briefcase,
+  AlertCircle,
+  ChevronRight
 } from "lucide-react";
 
 // 상수는 렌더링 스코프 밖에 두어 불필요한 메모이제이션 의존성 제거
 const TARGET_DATE = new Date("2026-09-15"); // CEO 주관 품질전략기능회의 예정일
 
 export default function MainDashboard() {
+  // 역할 상태: 'executive' (부문장 Dennis), 'team_leader' (초고압품질팀장), 'operator' (박동현 선임연구원)
+  const [userRole, setUserRole] = useState<"executive" | "team_leader" | "operator">("executive");
+  
   // 오늘 날짜 고정 (2026-05-30)
   const todayStr = "2026-05-30";
   
@@ -36,13 +47,89 @@ export default function MainDashboard() {
     return diffDays;
   }, []);
 
-  // 각 데이터 요약 통계 계산
+  // -------------------------------------------------------------
+  // [역할 2: 팀장 관련 상태 및 액션 시뮬레이션]
+  // -------------------------------------------------------------
+  const [leaderPendingTasks, setLeaderPendingTasks] = useState([
+    {
+      id: "REQ-NCR-001",
+      category: "NCR 승인",
+      title: "압출 3호기 알루미늄 피복 두께 편차 부적합보고서",
+      requester: "송민섭 전임연구원",
+      date: "2026-05-29",
+      details: "알루미늄 피복 두께 수치 통계 분석에 따른 Rework 승인 요청 건.",
+      status: "pending"
+    },
+    {
+      id: "REQ-TEST-002",
+      category: "시험성적 검토",
+      title: "154kV 초고압 케이블 PD(부분방전) 전기 측정 성적서",
+      requester: "박동현 선임연구원",
+      date: "2026-05-28",
+      details: "PRPD 패턴 분석 완료에 따른 준공시험 결과 최종 리뷰 요청.",
+      status: "pending"
+    },
+    {
+      id: "REQ-AUDIT-003",
+      category: "협력사 Audit",
+      title: "동아케미칼 XLPE 원재료 공급라인 정밀 Audit 결과 보고",
+      requester: "김우진 책임연구원",
+      date: "2026-05-27",
+      details: "이물 혼입 방지 대책 이행 확인 및 A등급 평가안 결재 요청.",
+      status: "pending"
+    }
+  ]);
+
+  const handleLeaderApprove = (id: string, action: "approve" | "reject") => {
+    setLeaderPendingTasks(prev => 
+      prev.map(t => t.id === id ? { ...t, status: action === "approve" ? "approved" : "rejected" } : t)
+    );
+    alert(`${id} 건이 성공적으로 ${action === "approve" ? "승인(완료)" : "반려(조치 요구)"} 처리되었습니다.`);
+  };
+
+  // -------------------------------------------------------------
+  // [역할 3: 실무자 관련 상태 및 액션 시뮬레이션]
+  // -------------------------------------------------------------
+  const [operatorMyTasks, setOperatorMyTasks] = useState([
+    {
+      id: "OP-TASK-01",
+      title: "초고압 송배전 케이블 부분방전(PD) 전기 측정 및 PRPD 패턴 매칭",
+      category: "검사/분석",
+      status: "작성중", // 작성중, 검토대기, 완료
+      dueDate: "2026-06-02"
+    },
+    {
+      id: "OP-TASK-02",
+      title: "Hipotronics 내전압 시험기 고전압 이상 펄스 원인 보고",
+      category: "보고서 작성",
+      status: "작성중",
+      dueDate: "2026-05-31"
+    },
+    {
+      id: "OP-TASK-03",
+      title: "구미 DC2 설비 교정 오차 조치방안 수립 (NCR-2026-002 배정 건)",
+      category: "NCR 조치",
+      status: "검토대기",
+      dueDate: "2026-05-28"
+    }
+  ]);
+
+  const handleOperatorRequestReview = (id: string) => {
+    setOperatorMyTasks(prev => 
+      prev.map(t => t.id === id ? { ...t, status: "검토대기" } : t)
+    );
+    alert(`${id} 작업이 팀장에게 검토 요청(결재 상신)되었습니다.`);
+  };
+
+  // -------------------------------------------------------------
+  // [공통 데이터 통계 연동]
+  // -------------------------------------------------------------
   const stats = useMemo(() => {
-    // 1. 시험장 & 시험 현황 (testsData와 facilityData 활용)
+    // 1. 시험장
     const totalEquipment = facilityData.equipment.reduce((acc, eq) => acc + eq.quantity, 0);
     const totalHalls = facilityData.testHalls.length;
     const totalYards = facilityData.testYards.length;
-    const totalFacilities = totalHalls + totalYards; // 총 시험시설 수 (실험동 + 야외시험장)
+    const totalFacilities = totalHalls + totalYards;
     const runningTests = testsData.tests.filter(t => t.status === "시험중").length;
 
     // 2. 고객 클레임
@@ -50,18 +137,14 @@ export default function MainDashboard() {
     const unresolvedClaims = claimsData.claims.filter(c => c.status !== "Closed").length;
     const newClaimsThisMonth = claimsData.claims.filter(c => c.receivedAt.startsWith("2026-05")).length;
 
-    // 3. NCR 부적합
+    // 3. NCR
     const totalNCRs = ncrsData.ncrs.length;
     const openNCRs = ncrsData.ncrs.filter(n => n.status !== "Closed").length;
     const overdueNCRs = ncrsData.ncrs.filter(n => n.status !== "Closed" && n.targetDate < todayStr).length;
 
-    // 4. Q-Cost
+    // 4. Q-Cost (5월 기준)
     const mayCost = qcostData.monthlyCosts.find(m => m.month === "2026-05") || {
-      externalFailure: 0,
-      internalFailure: 0,
-      executionLoss: 0,
-      appraisal: 0,
-      prevention: 0
+      externalFailure: 0, internalFailure: 0, executionLoss: 0, appraisal: 0, prevention: 0
     };
     const totalQCost = mayCost.externalFailure + mayCost.internalFailure + mayCost.executionLoss + mayCost.appraisal + mayCost.prevention;
     const failureCost = mayCost.internalFailure + mayCost.externalFailure;
@@ -82,34 +165,19 @@ export default function MainDashboard() {
     const highImpactIntelligence = intelligenceData.items.filter(i => i.impact === "High").length;
 
     return {
-      totalEquipment,
-      totalFacilities,
-      runningTests,
-      totalClaims,
-      unresolvedClaims,
-      newClaimsThisMonth,
-      totalNCRs,
-      openNCRs,
-      overdueNCRs,
-      totalQCost,
-      failureCost,
-      preventionCost,
-      totalVendors,
-      gradeAVendors,
-      warningVendors,
-      totalEmployees,
-      highWorkloadEmployees,
-      totalInterviews,
-      totalIntelligence,
-      highImpactIntelligence
+      totalEquipment, totalFacilities, runningTests,
+      totalClaims, unresolvedClaims, newClaimsThisMonth,
+      totalNCRs, openNCRs, overdueNCRs,
+      totalQCost, failureCost, preventionCost,
+      totalVendors, gradeAVendors, warningVendors,
+      totalEmployees, highWorkloadEmployees, totalInterviews,
+      totalIntelligence, highImpactIntelligence
     };
   }, []);
 
-  // 주요 긴급 Alert 추출
+  // 부문장(Dennis)용 Alert
   const alerts = useMemo(() => {
     const list: { id: string; type: "NCR" | "HR" | "INTEL"; title: string; desc: string; link: string }[] = [];
-    
-    // NCR Overdue 건 추가
     ncrsData.ncrs.filter(n => n.status !== "Closed" && n.targetDate < todayStr).slice(0, 2).forEach(n => {
       list.push({
         id: `alert-ncr-${n.id}`,
@@ -119,8 +187,6 @@ export default function MainDashboard() {
         link: "/ncr"
       });
     });
-
-    // HR 고부하 인원 추가
     hrData.employees.filter(e => e.workload === "High").slice(0, 2).forEach(e => {
       list.push({
         id: `alert-hr-${e.id}`,
@@ -130,8 +196,6 @@ export default function MainDashboard() {
         link: "/hr"
       });
     });
-
-    // 외부정보 High Impact 요인 추가
     intelligenceData.items.filter(i => i.impact === "High").slice(0, 2).forEach(i => {
       list.push({
         id: `alert-intel-${i.id}`,
@@ -141,334 +205,465 @@ export default function MainDashboard() {
         link: "/intelligence"
       });
     });
-
     return list;
   }, []);
 
   return (
     <div className="space-y-8 animate-fade-in pb-12">
-      {/* 최상단 Welcome & 마일스톤 현황 */}
-      <div className="bg-slate-950 text-white rounded-3xl p-6 md:p-8 border border-slate-900 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
-        {/* 장식 배경 */}
-        <div className="absolute right-0 top-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl -z-10" />
-        <div className="absolute right-20 bottom-0 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl -z-10" />
-
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 bg-indigo-500/30 text-indigo-300 border border-indigo-500/20 rounded-md text-[10px] font-extrabold uppercase tracking-widest">
-              QMS 2.0 AX Platform
-            </span>
-            <span className="flex items-center gap-1 text-[10px] text-slate-400 font-medium">
-              <Calendar className="w-3.5 h-3.5" /> 2026-05-30 실시간
-            </span>
-          </div>
-          <h2 className="text-xl md:text-2xl font-black tracking-tight">
-            안녕하세요, 품질부문장 <span className="text-indigo-400">Dennis</span> 님
-          </h2>
-          <p className="text-xs md:text-sm text-slate-400 max-w-xl">
-            전 부서의 오프라인 작업을 박멸하고 시스템 내 업무 100% 완계를 지향합니다. 인공지능과 연동된 최신 품질 동향 및 리스크 리포트를 확인하십시오.
-          </p>
+      {/* 0. 역할 전환 시뮬레이터 (Role Switcher) */}
+      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="flex items-center gap-2">
+          <UserCheck className="w-5 h-5 text-indigo-600" />
+          <span className="text-xs font-black text-slate-800">품질 대시보드 권한 역할 시뮬레이터:</span>
         </div>
-
-        {/* CEO 시연 D-Day 위젯 */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-4.5 flex items-center gap-4 shrink-0 shadow-inner w-full md:w-auto">
-          <div className="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm shrink-0">
-            D-{dDay}
-          </div>
-          <div>
-            <h4 className="text-xs font-extrabold text-slate-300">CEO 주관 품질전략기능회의</h4>
-            <p className="text-[10px] text-slate-400 mt-0.5">남은 시연 일정 목표: 2026-09-15</p>
-            {/* 진척 바 */}
-            <div className="w-full md:w-36 bg-white/10 h-1.5 rounded-full mt-2 overflow-hidden">
-              <div className="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full w-[85%]" />
-            </div>
-            <div className="flex justify-between items-center text-[8px] text-slate-500 mt-1">
-              <span>진척도 85%</span>
-              <span>최종 통합 중</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 5대 품질 영역 KPI 개요 */}
-      <div className="space-y-3">
-        <h3 className="text-xs font-extrabold text-slate-400 tracking-wider uppercase flex items-center gap-1.5">
-          <Gauge className="w-4 h-4 text-indigo-500" /> 품질 5대 핵심 영역 모니터링
-        </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          
-          {/* 1. 시험장 & 시험 현황 */}
-          <Link href="/facilities" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">① 시험 현황</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-500 group-hover:animate-pulse" />
-              </div>
-              <h4 className="text-2xl font-bold text-slate-900 mt-1">{stats.runningTests} / {stats.totalFacilities}</h4>
-              <p className="text-[10px] text-slate-400">진행중 시험 / 총 시험장동 ({stats.totalEquipment}대 설비)</p>
-            </div>
-            <div className="flex justify-between items-center pt-4 border-t border-slate-50 mt-4 text-[10px] text-indigo-600 font-bold group-hover:text-indigo-800">
-              <span>시험장 이동</span>
-              <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Link>
-
-          {/* 2. 고객 클레임 */}
-          <Link href="/claims" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">② 고객 클레임</span>
-                {stats.unresolvedClaims > 0 && <span className="w-2 h-2 rounded-full bg-rose-500" />}
-              </div>
-              <h4 className="text-2xl font-bold text-slate-900 mt-1">{stats.unresolvedClaims}건</h4>
-              <p className="text-[10px] text-slate-400">미해결 클레임 (금월 {stats.newClaimsThisMonth}건)</p>
-            </div>
-            <div className="flex justify-between items-center pt-4 border-t border-slate-50 mt-4 text-[10px] text-indigo-600 font-bold group-hover:text-indigo-800">
-              <span>클레임 이동</span>
-              <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Link>
-
-          {/* 3. NCR 부적합보고 */}
-          <Link href="/ncr" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">③ NCR 부적합</span>
-                {stats.overdueNCRs > 0 && (
-                  <span className="px-1.5 py-0.5 bg-rose-50 text-rose-600 border border-rose-100 rounded text-[8px] font-black animate-pulse">
-                    Overdue
-                  </span>
-                )}
-              </div>
-              <h4 className="text-2xl font-bold text-slate-900 mt-1">{stats.openNCRs}건</h4>
-              <p className="text-[10px] text-slate-400">미조치 NCR (기한초과 {stats.overdueNCRs}건)</p>
-            </div>
-            <div className="flex justify-between items-center pt-4 border-t border-slate-50 mt-4 text-[10px] text-indigo-600 font-bold group-hover:text-indigo-800">
-              <span>NCR 조치판 이동</span>
-              <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Link>
-
-          {/* 4. 품질 비용 (Q-Cost) */}
-          <Link href="/qcost" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">④ Q-Cost</span>
-                <span className="text-[8px] font-bold text-slate-500">5월 누계</span>
-              </div>
-              <h4 className="text-2xl font-bold text-emerald-600 mt-1">{stats.totalQCost}M</h4>
-              <p className="text-[10px] text-slate-400">실패 {stats.failureCost}M / 예방 {stats.preventionCost}M</p>
-            </div>
-            <div className="flex justify-between items-center pt-4 border-t border-slate-50 mt-4 text-[10px] text-indigo-600 font-bold group-hover:text-indigo-800">
-              <span>품질비용 이동</span>
-              <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Link>
-
-          {/* 5. 협력업체 관리 */}
-          <Link href="/vendors" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">⑤ 협력사 관리</span>
-                <span className="text-[8px] font-bold text-amber-600 font-mono">D-Grade {stats.warningVendors}</span>
-              </div>
-              <h4 className="text-2xl font-bold text-slate-900 mt-1">{stats.totalVendors}개사</h4>
-              <p className="text-[10px] text-slate-400">A등급 {stats.gradeAVendors}개사 / 경고 {stats.warningVendors}개사</p>
-            </div>
-            <div className="flex justify-between items-center pt-4 border-t border-slate-50 mt-4 text-[10px] text-indigo-600 font-bold group-hover:text-indigo-800">
-              <span>협력사 카드 풀</span>
-              <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Link>
-
-        </div>
-      </div>
-
-      {/* Split Layout: 좌측 Critical Alerts / 우측 인적 리소스 & 외부동향 피드 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* 좌측: 실시간 긴급 Alert & 행동 지침 보드 */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                <ShieldAlert className="w-5 h-5 text-rose-500" /> 부문장 특별 지시 및 긴급 Alert ({alerts.length}건)
-              </h3>
-              <span className="px-2 py-0.5 bg-rose-50 text-rose-600 border border-rose-100 rounded text-[9px] font-extrabold animate-pulse">
-                즉시 조치 권고
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              {alerts.map(item => (
-                <div key={item.id} className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-all flex justify-between items-start gap-4 text-xs">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2 py-0.5 rounded text-[8px] font-extrabold border ${
-                        item.type === "NCR" ? "bg-rose-50 text-rose-700 border-rose-100" :
-                        item.type === "HR" ? "bg-amber-50 text-amber-700 border-amber-100" :
-                        "bg-purple-50 text-purple-700 border-purple-100"
-                      }`}>
-                        {item.type}
-                      </span>
-                      <h4 className="font-extrabold text-slate-900">{item.title}</h4>
-                    </div>
-                    <p className="text-slate-500 font-medium leading-relaxed">{item.desc}</p>
-                  </div>
-                  
-                  <Link href={item.link} className="px-2.5 py-1.5 bg-white border border-slate-200 text-slate-700 rounded-lg hover:border-slate-800 font-bold tracking-tight shrink-0 transition-all flex items-center gap-0.5">
-                    검토 <ArrowRight className="w-3 h-3" />
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* AI 어시스턴트 & PKM 지식 RAG 허브 바로가기 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
-            {/* 1. 입찰 검토 AI 비서 */}
-            <div className="bg-gradient-to-br from-indigo-950 to-slate-950 text-white p-6 rounded-2xl border border-indigo-900/50 shadow-md relative overflow-hidden flex flex-col justify-between group">
-              <div className="space-y-2">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
-                  <FileSearch className="w-5.5 h-5.5" />
-                </div>
-                <h4 className="text-sm font-black mt-2">입찰 검토 AI 어시스턴트</h4>
-                <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
-                  송배전/해저 케이블 입찰 규격서(ITB) 내 독소 조항과 보증 한계치 위반 리스크를 AI가 자동 판독하고 분석서를 도출합니다.
-                </p>
-              </div>
-              <div className="pt-6">
-                <a 
-                  href="http://localhost:3000/dashboard" 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-center font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all text-white"
-                >
-                  입찰 비서 실행 (3000포트) <ArrowRight className="w-3.5 h-3.5" />
-                </a>
-              </div>
-            </div>
-
-            {/* 2. RAG 지식 검색 */}
-            <div className="bg-gradient-to-br from-teal-950 to-slate-950 text-white p-6 rounded-2xl border border-teal-900/50 shadow-md relative overflow-hidden flex flex-col justify-between group">
-              <div className="space-y-2">
-                <div className="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center">
-                  <Globe className="w-5.5 h-5.5" />
-                </div>
-                <h4 className="text-sm font-black mt-2">IEC / CIGRE 지식 RAG 검색</h4>
-                <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
-                  Obsidian PKM 지식베이스와 Neon pgvector를 연동하여 케이블 PD 측정, 가속수명 시험 합격기준을 자연어로 검색합니다.
-                </p>
-              </div>
-              <div className="pt-6">
-                <Link 
-                  href="/knowledge" 
-                  className="w-full py-2 bg-teal-600 hover:bg-teal-500 text-center font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all text-white"
-                >
-                  자연어 지식 검색 실행 <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
-
-          </div>
+        <div className="flex gap-1 bg-slate-100 p-1 rounded-xl w-full md:w-auto text-xs">
+          <button
+            onClick={() => setUserRole("executive")}
+            className={`flex-1 md:flex-initial px-4 py-2 rounded-lg font-bold transition-all ${userRole === "executive" ? "bg-slate-900 text-white shadow" : "text-slate-500 hover:text-slate-800"}`}
+          >
+            경영진 / 부문장 (Dennis)
+          </button>
+          <button
+            onClick={() => setUserRole("team_leader")}
+            className={`flex-1 md:flex-initial px-4 py-2 rounded-lg font-bold transition-all ${userRole === "team_leader" ? "bg-slate-900 text-white shadow" : "text-slate-500 hover:text-slate-800"}`}
+          >
+            초고압품질팀장
+          </button>
+          <button
+            onClick={() => setUserRole("operator")}
+            className={`flex-1 md:flex-initial px-4 py-2 rounded-lg font-bold transition-all ${userRole === "operator" ? "bg-slate-900 text-white shadow" : "text-slate-500 hover:text-slate-800"}`}
+          >
+            실무 연구원 (박동현)
+          </button>
         </div>
+      </div>
 
-        {/* 우측: 인적 리소스 현황 및 외부 최신 동향 피드 요약 */}
-        <div className="space-y-6">
-          
-          {/* 인사/면담 관리 요약 */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h4 className="text-xs font-extrabold text-slate-800 tracking-wide flex items-center gap-1.5">
-                <Users className="w-4 h-4 text-indigo-500" /> 리소스 & 면담 현황
-              </h4>
-              <Link href="/hr" className="text-[10px] text-slate-400 font-extrabold hover:text-slate-600">
-                전체보기
+      {/* -------------------------------------------------------------
+          [1. 경영진 / 부문장 Dennis 대시보드 뷰]
+          ------------------------------------------------------------- */}
+      {userRole === "executive" && (
+        <div className="space-y-8 animate-fade-in">
+          {/* 최상단 Welcome & 마일스톤 */}
+          <div className="bg-slate-950 text-white rounded-3xl p-6 md:p-8 border border-slate-900 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+            <div className="absolute right-0 top-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl -z-10" />
+            <div className="absolute right-20 bottom-0 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl -z-10" />
+
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 bg-indigo-500/30 text-indigo-300 border border-indigo-500/20 rounded-md text-[10px] font-extrabold uppercase tracking-widest">
+                  QMS 2.0 AX Platform — Executive View
+                </span>
+                <span className="flex items-center gap-1 text-[10px] text-slate-400 font-medium">
+                  <Calendar className="w-3.5 h-3.5" /> 2026-05-30 실시간
+                </span>
+              </div>
+              <h2 className="text-xl md:text-2xl font-black tracking-tight">
+                안녕하세요, 품질부문장 <span className="text-indigo-400">Dennis</span> 님
+              </h2>
+              <p className="text-xs md:text-sm text-slate-400 max-w-xl">
+                전 부서의 오프라인 작업을 박멸하고 시스템 내 업무 100% 완계를 지향합니다. 인공지능과 연동된 전사 품질 지표를 관제하십시오.
+              </p>
+            </div>
+
+            {/* D-Day 위젯 */}
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4.5 flex items-center gap-4 shrink-0 shadow-inner w-full md:w-auto">
+              <div className="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm shrink-0">
+                D-{dDay}
+              </div>
+              <div>
+                <h4 className="text-xs font-extrabold text-slate-300">CEO 주관 품질전략기능회의</h4>
+                <p className="text-[10px] text-slate-400 mt-0.5">남은 시연 일정 목표: 2026-09-15</p>
+                <div className="w-full md:w-36 bg-white/10 h-1.5 rounded-full mt-2 overflow-hidden">
+                  <div className="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full w-[85%]" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 5대 품질 영역 KPI 개요 */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-extrabold text-slate-400 tracking-wider uppercase flex items-center gap-1.5">
+              <Gauge className="w-4 h-4 text-indigo-500" /> 품질 5대 핵심 영역 모니터링
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              <Link href="/facilities" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
+                <div className="space-y-1">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">① 시험 현황</span>
+                  <h4 className="text-2xl font-bold text-slate-900 mt-1">{stats.runningTests} / {stats.totalFacilities}</h4>
+                  <p className="text-[10px] text-slate-400">진행중 시험 / 총 시험장동 ({stats.totalEquipment}대 설비)</p>
+                </div>
+                <div className="flex justify-between items-center pt-4 border-t mt-4 text-[10px] text-indigo-600 font-bold">
+                  <span>시험장 이동</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+
+              <Link href="/claims" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
+                <div className="space-y-1">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">② 고객 클레임</span>
+                  <h4 className="text-2xl font-bold text-slate-900 mt-1">{stats.unresolvedClaims}건</h4>
+                  <p className="text-[10px] text-slate-400">미해결 클레임 (금월 {stats.newClaimsThisMonth}건)</p>
+                </div>
+                <div className="flex justify-between items-center pt-4 border-t mt-4 text-[10px] text-indigo-600 font-bold">
+                  <span>클레임 이동</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+
+              <Link href="/ncr" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">③ NCR 부적합</span>
+                    {stats.overdueNCRs > 0 && <span className="px-1.5 py-0.5 bg-rose-50 text-rose-600 border border-rose-100 rounded text-[8px] font-black animate-pulse">Overdue</span>}
+                  </div>
+                  <h4 className="text-2xl font-bold text-slate-900 mt-1">{stats.openNCRs}건</h4>
+                  <p className="text-[10px] text-slate-400">미조치 NCR (기한초과 {stats.overdueNCRs}건)</p>
+                </div>
+                <div className="flex justify-between items-center pt-4 border-t mt-4 text-[10px] text-indigo-600 font-bold">
+                  <span>NCR 조치판 이동</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+
+              <Link href="/qcost" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
+                <div className="space-y-1">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">④ Q-Cost</span>
+                  <h4 className="text-2xl font-bold text-emerald-600 mt-1">{stats.totalQCost}M</h4>
+                  <p className="text-[10px] text-slate-400">실패 {stats.failureCost}M / 예방 {stats.preventionCost}M</p>
+                </div>
+                <div className="flex justify-between items-center pt-4 border-t mt-4 text-[10px] text-indigo-600 font-bold">
+                  <span>품질비용 이동</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+
+              <Link href="/vendors" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
+                <div className="space-y-1">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">⑤ 협력사 관리</span>
+                  <h4 className="text-2xl font-bold text-slate-900 mt-1">{stats.totalVendors}개사</h4>
+                  <p className="text-[10px] text-slate-400">A등급 {stats.gradeAVendors}개사 / 경고 {stats.warningVendors}개사</p>
+                </div>
+                <div className="flex justify-between items-center pt-4 border-t mt-4 text-[10px] text-indigo-600 font-bold">
+                  <span>협력사 카드 풀</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
               </Link>
             </div>
+          </div>
 
-            <div className="space-y-2.5 text-xs">
-              <div className="flex justify-between items-center text-[11px]">
-                <span className="text-slate-500 font-medium">부문 총원</span>
-                <span className="font-extrabold text-slate-900">{stats.totalEmployees}명</span>
-              </div>
-              <div className="flex justify-between items-center text-[11px]">
-                <span className="text-slate-500 font-medium">업무 과부하 경고</span>
-                <span className="font-extrabold text-rose-600">{stats.highWorkloadEmployees}명</span>
-              </div>
-              <div className="flex justify-between items-center text-[11px] pb-2 border-b border-slate-50">
-                <span className="text-slate-500 font-medium">최근 등록된 면담</span>
-                <span className="font-extrabold text-indigo-600">{stats.totalInterviews}건</span>
-              </div>
-
-              {/* 과부하 직원 2인 노출 */}
-              <div className="space-y-1.5 pt-1">
-                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">긴급 케어 대상자</p>
-                {hrData.employees.filter(e => e.workload === "High").slice(0, 2).map(emp => (
-                  <div key={emp.id} className="p-2 bg-rose-50/50 border border-rose-100/50 rounded-lg flex justify-between items-center text-[10px]">
-                    <div className="space-y-0.5">
-                      <p className="font-bold text-rose-950">{emp.name} {emp.rank}</p>
-                      <p className="text-rose-600 font-semibold">{emp.department}</p>
+          {/* Split Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <ShieldAlert className="w-5 h-5 text-rose-500" /> 부문장 특별 지시 및 긴급 Alert ({alerts.length}건)
+                  </h3>
+                </div>
+                <div className="space-y-3">
+                  {alerts.map(item => (
+                    <div key={item.id} className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-all flex justify-between items-start gap-4 text-xs">
+                      <div className="space-y-1">
+                        <span className={`px-2 py-0.5 rounded text-[8px] font-extrabold border ${item.type === "NCR" ? "bg-rose-50 text-rose-700 border-rose-100" : item.type === "HR" ? "bg-amber-50 text-amber-700 border-amber-100" : "bg-purple-50 text-purple-700 border-purple-100"}`}>{item.type}</span>
+                        <h4 className="font-extrabold text-slate-900 mt-1">{item.title}</h4>
+                        <p className="text-slate-500 font-medium leading-relaxed">{item.desc}</p>
+                      </div>
+                      <Link href={item.link} className="px-2.5 py-1.5 bg-white border border-slate-200 text-slate-700 rounded-lg hover:border-slate-800 font-bold shrink-0 transition-all flex items-center gap-0.5">검토 <ArrowRight className="w-3 h-3" /></Link>
                     </div>
-                    <Link href="/hr" className="text-[9px] bg-rose-600 text-white font-extrabold px-2 py-1 rounded">
-                      면담
-                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* 우측 사이드 */}
+            <div className="space-y-6">
+              <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                <h4 className="text-xs font-extrabold text-slate-800 tracking-wide flex items-center gap-1.5 border-b pb-2"><Users className="w-4 h-4 text-indigo-500" /> 리소스 & 면담 현황</h4>
+                <div className="space-y-2.5 text-xs">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-500">부문 총원</span>
+                    <span className="font-extrabold text-slate-900">{stats.totalEmployees}명</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-500">업무 과부하 경고</span>
+                    <span className="font-extrabold text-rose-600">{stats.highWorkloadEmployees}명</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* -------------------------------------------------------------
+          [2. 초고압품질팀장 대시보드 뷰]
+          ------------------------------------------------------------- */}
+      {userRole === "team_leader" && (
+        <div className="space-y-8 animate-fade-in">
+          {/* 팀장 웰컴 헤더 */}
+          <div className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-3xl p-6 md:p-8 border border-slate-800 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div className="space-y-2">
+              <span className="px-2.5 py-0.5 bg-indigo-500/30 text-indigo-300 border border-indigo-500/20 rounded-md text-[10px] font-extrabold uppercase tracking-widest">
+                Team Leader View — 초고압품질팀
+              </span>
+              <h2 className="text-xl md:text-2xl font-black tracking-tight">
+                초고압품질팀장 대시보드
+              </h2>
+              <p className="text-xs md:text-sm text-slate-400">
+                소속 팀원들이 작성한 규격, 검사 이력, 검토 요청 문서를 승인하고 팀원의 시험장 가동 부하도를 제어합니다.
+              </p>
+            </div>
+
+            {/* 미결재 업무 수 요약 */}
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm shrink-0">
+                {leaderPendingTasks.filter(t => t.status === "pending").length}건
+              </div>
+              <div>
+                <h4 className="text-xs font-extrabold text-slate-300">검토/결재 대기</h4>
+                <p className="text-[9px] text-slate-500 mt-0.5">승인 대기 건 조치 필요</p>
+              </div>
+            </div>
+          </div>
+
+          {/* 3대 핵심 리더 관제 지표 */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center">
+              <div>
+                <p className="font-bold text-slate-400">팀 소속 가동 시험</p>
+                <h3 className="text-xl font-bold mt-1 text-slate-900">3 / 4건</h3>
+                <p className="text-[10px] text-emerald-500 mt-1">▲ Gumi DC실 정상 시험 진행중</p>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center"><Briefcase className="w-5.5 h-5.5" /></div>
+            </div>
+
+            <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center">
+              <div>
+                <p className="font-bold text-slate-400">팀내 미해결 NCR</p>
+                <h3 className="text-xl font-bold mt-1 text-rose-600">2건</h3>
+                <p className="text-[10px] text-slate-400 mt-1">DC2 교정오차 검토 완료 단계</p>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center"><AlertCircle className="w-5.5 h-5.5" /></div>
+            </div>
+
+            <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center">
+              <div>
+                <p className="font-bold text-slate-400">팀원 과부하 인원</p>
+                <h3 className="text-xl font-bold mt-1 text-amber-600">1명 (홍경민 수석)</h3>
+                <p className="text-[10px] text-slate-400 mt-1">하반기 보강인력 배치 조율중</p>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center"><Users className="w-5.5 h-5.5" /></div>
+            </div>
+          </div>
+
+          {/* 메인 영역: 결재함 및 팀 리소스 모니터링 */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            {/* 결재/검토 대기 문서 결재함 */}
+            <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+              <div className="border-b pb-3 flex justify-between items-center">
+                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <ClipboardList className="w-5 h-5 text-indigo-500" /> 팀원 결재/검토 요청 수신함
+                </h3>
+                <span className="text-[10px] font-bold text-slate-400">결재 처리 시 이력이 기록됩니다</span>
+              </div>
+
+              <div className="space-y-4">
+                {leaderPendingTasks.filter(t => t.status === "pending").length === 0 ? (
+                  <div className="text-center py-12 text-slate-400 font-medium">
+                    <CheckCircle className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
+                    모든 팀원 검토요청 결재가 종결되었습니다.
+                  </div>
+                ) : (
+                  leaderPendingTasks
+                    .filter(t => t.status === "pending")
+                    .map(task => (
+                      <div key={task.id} className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-all space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded text-[9px] font-extrabold uppercase">{task.category}</span>
+                            <span className="font-bold text-slate-900">{task.title}</span>
+                          </div>
+                          <span className="text-[9px] font-mono text-slate-400">{task.date}</span>
+                        </div>
+                        
+                        <p className="text-slate-500 font-medium leading-relaxed">{task.details}</p>
+                        
+                        <div className="flex justify-between items-center pt-2 border-t border-slate-100 mt-2">
+                          <span className="text-[10px] text-slate-400">상신자: <strong className="text-slate-700 font-bold">{task.requester}</strong></span>
+                          
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleLeaderApprove(task.id, "reject")}
+                              className="px-2.5 py-1.5 bg-white border border-slate-200 text-rose-600 hover:border-rose-300 font-bold rounded-lg transition-all"
+                            >
+                              반려
+                            </button>
+                            <button
+                              onClick={() => handleLeaderApprove(task.id, "approve")}
+                              className="px-3 py-1.5 bg-slate-950 text-white font-bold rounded-lg hover:bg-slate-800 transition-all"
+                            >
+                              승인/리뷰완료
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                )}
+              </div>
+            </div>
+
+            {/* 우측: 초고압품질팀원 리소스 상태 모니터링 */}
+            <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+              <h4 className="text-xs font-extrabold text-slate-800 tracking-wide flex items-center gap-1.5 border-b pb-2">
+                <Users className="w-4 h-4 text-indigo-500" /> 초고압품질팀원 리소스 풀
+              </h4>
+
+              <div className="space-y-3">
+                {hrData.employees
+                  .filter(e => e.department === "초고압품질팀")
+                  .map(emp => (
+                    <div key={emp.id} className="p-3 rounded-xl border border-slate-50 bg-slate-50/30 flex justify-between items-center text-xs">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-bold text-slate-900">{emp.name}</span>
+                          <span className="text-[9px] text-slate-500 font-medium">{emp.rank}</span>
+                        </div>
+                        <p className="text-[9px] text-slate-400 truncate max-w-[150px]">{emp.role}</p>
+                      </div>
+                      
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border ${
+                        emp.workload === "High" ? "bg-rose-50 text-rose-700 border-rose-100 animate-pulse font-extrabold" :
+                        "bg-slate-50 text-slate-600 border-slate-200"
+                      }`}>
+                        {emp.workload === "High" ? "과부하" : "보통"}
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* -------------------------------------------------------------
+          [3. 실무 연구원 박동현 대시보드 뷰]
+          ------------------------------------------------------------- */}
+      {userRole === "operator" && (
+        <div className="space-y-8 animate-fade-in">
+          {/* 실무자 웰컴 헤더 */}
+          <div className="bg-gradient-to-r from-slate-900 to-indigo-900 text-white rounded-3xl p-6 md:p-8 border border-slate-800 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div className="space-y-2">
+              <span className="px-2.5 py-0.5 bg-indigo-500/30 text-indigo-300 border border-indigo-500/20 rounded-md text-[10px] font-extrabold uppercase tracking-widest">
+                My Active Workbench — 초고압품질팀
+              </span>
+              <h2 className="text-xl md:text-2xl font-black tracking-tight">
+                내 업무 대시보드 <span className="text-indigo-400">(박동현 선임연구원)</span>
+              </h2>
+              <p className="text-xs md:text-sm text-slate-400">
+                전기 부분방전(PD) 측정 및 시험 결과 보고서를 작성하고, 배정된 부적합(NCR) 조치 계획을 관리해 팀장에게 검토 요청을 보냅니다.
+              </p>
+            </div>
+
+            {/* 내 작업 현황 요약 */}
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex gap-4 text-xs">
+              <div className="space-y-0.5">
+                <span className="opacity-75">내 진행 업무</span>
+                <h4 className="text-xl font-bold">{operatorMyTasks.filter(t => t.status === "작성중").length}건 작성중</h4>
+              </div>
+            </div>
+          </div>
+
+          {/* 실무 작업 관리 및 검토 요청 보드 */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            {/* 작성 중인 검사/보고서 및 검토요청 현황 */}
+            <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+              <div className="border-b pb-3 flex justify-between items-center">
+                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <ClipboardList className="w-5 h-5 text-indigo-500" /> 내 품질 업무 및 검토 요청 현황
+                </h3>
+                <span className="text-[10px] text-slate-400">작성 후 팀장에게 검토 요청하십시오</span>
+              </div>
+
+              <div className="space-y-3.5">
+                {operatorMyTasks.map(task => (
+                  <div key={task.id} className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 flex justify-between items-center text-xs gap-4">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded font-bold text-[9px] text-slate-600">{task.category}</span>
+                        <h4 className="font-extrabold text-slate-900">{task.title}</h4>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 text-[10px] text-slate-400">
+                        <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> 기한: {task.dueDate}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 shrink-0">
+                      {/* 상태 뱃지 */}
+                      <span className={`px-2 py-1 rounded-lg font-bold border text-[9px] flex items-center gap-1 ${
+                        task.status === "작성중" ? "bg-amber-50 text-amber-700 border-amber-200" :
+                        task.status === "검토대기" ? "bg-indigo-50 text-indigo-700 border-indigo-200 animate-pulse font-extrabold" :
+                        "bg-emerald-50 text-emerald-700 border-emerald-200"
+                      }`}>
+                        {task.status === "작성중" ? "작성중" : "팀장 검토중"}
+                      </span>
+
+                      {/* 검토요청 버튼 */}
+                      {task.status === "작성중" && (
+                        <button
+                          onClick={() => handleOperatorRequestReview(task.id)}
+                          className="px-2.5 py-1.5 bg-slate-950 text-white font-bold rounded-lg hover:bg-slate-800 transition-all"
+                        >
+                          검토 요청
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
-          </div>
 
-          {/* 외부 동향 최신 피드 2선 */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h4 className="text-xs font-extrabold text-slate-800 tracking-wide flex items-center gap-1.5">
-                <Globe className="w-4 h-4 text-emerald-500" /> 외부 최신 정보 피드
-              </h4>
-              <Link href="/intelligence" className="text-[10px] text-slate-400 font-extrabold hover:text-slate-600">
-                전체보기
-              </Link>
-            </div>
+            {/* 우측: 실무자 퀵 링크 및 지식 검색 브릿지 */}
+            <div className="space-y-6">
+              <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                <h4 className="text-xs font-extrabold text-slate-800 tracking-wide border-b pb-2 flex items-center gap-1.5">
+                  <FileSearch className="w-4 h-4 text-slate-500" /> 실무자 퀵 리소그
+                </h4>
+                
+                <div className="space-y-2 text-xs">
+                  <Link 
+                    href="/knowledge" 
+                    className="p-3 bg-indigo-50/50 border border-indigo-100/50 hover:border-indigo-500 rounded-xl flex justify-between items-center group transition-all"
+                  >
+                    <div>
+                      <p className="font-bold text-slate-900">IEC/KS 규격 RAG 검색</p>
+                      <p className="text-[9px] text-slate-400 mt-0.5">합격 판정기준 신속 조회</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-indigo-400 group-hover:translate-x-1 transition-transform" />
+                  </Link>
 
-            <div className="space-y-3">
-              {intelligenceData.items.slice(0, 2).map(item => (
-                <div key={item.id} className="space-y-1.5 text-xs pb-3 border-b border-slate-50 last:border-b-0 last:pb-0">
-                  <div className="flex items-center gap-2">
-                    <span className="px-1.5 py-0.5 bg-slate-100 text-slate-700 rounded text-[8px] font-bold">
-                      {item.category}
-                    </span>
-                    <span className="text-[8px] font-mono text-slate-400">{item.date}</span>
-                  </div>
-                  <h5 className="font-bold text-slate-900 leading-snug hover:text-indigo-600 transition-colors">
-                    <Link href="/intelligence">{item.title}</Link>
-                  </h5>
-                  <p className="text-[10px] text-slate-500 font-medium line-clamp-2 leading-relaxed">
-                    {item.summary}
-                  </p>
+                  <Link 
+                    href="/facilities" 
+                    className="p-3 bg-slate-50 hover:bg-slate-100 rounded-xl flex justify-between items-center group transition-all"
+                  >
+                    <div>
+                      <p className="font-bold text-slate-900">내 담당 시험 설비</p>
+                      <p className="text-[9px] text-slate-400 mt-0.5">Hipotronics 캘리브레이션</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
 
-        </div>
-
-      </div>
-
-      {/* 시스템 도움말 헬프 데스크 바로가기 */}
-      <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/50 flex justify-between items-center text-xs">
-        <div className="flex items-center gap-2.5">
-          <HelpCircle className="w-5 h-5 text-slate-400 shrink-0" />
-          <div>
-            <h4 className="font-extrabold text-slate-800">QMS 2.0 AX 플랫폼 사용법이 궁금하십니까?</h4>
-            <p className="text-[10px] text-slate-500 font-medium mt-0.5">각 화면의 기능 및 AI 분석 가이드에 접근하려면 사용자 메뉴얼을 읽으십시오.</p>
           </div>
         </div>
-        <Link href="/help" className="px-3 py-1.5 bg-white border border-slate-200 hover:border-slate-800 font-extrabold rounded-lg text-slate-700 shrink-0 transition-all">
-          도움말 보기
-        </Link>
-      </div>
+      )}
     </div>
   );
 }
