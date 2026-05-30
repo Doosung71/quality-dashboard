@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, FlaskConical, TriangleAlert, Building2, Users, Globe, ShieldCheck, X, MessageSquare, CircleUserRound, HelpCircle } from "lucide-react"
+import { LayoutDashboard, FlaskConical, TriangleAlert, Building2, Users, Globe, ShieldCheck, X, MessageSquare, CircleUserRound, HelpCircle, BookOpen } from "lucide-react"
 import type { Role } from "@/lib/generated/prisma/client"
 
 // 역할별 접근 가능한 메뉴
@@ -14,6 +14,7 @@ const ALL_NAV = [
   { href: "/vendors",      label: "협력업체",         icon: Building2,       roles: ["DIRECTOR", "TEAM_LEAD"] },
   { href: "/hr",           label: "인사·면담",        icon: Users,           roles: ["DIRECTOR", "TEAM_LEAD"] },
   { href: "/intelligence", label: "외부 정보",        icon: Globe,           roles: ["DIRECTOR"] },
+  { href: "/knowledge",   label: "지식 검색",         icon: BookOpen,        roles: ["DIRECTOR", "TEAM_LEAD", "PRACTITIONER"] },
 ] as const
 
 interface SidebarProps {

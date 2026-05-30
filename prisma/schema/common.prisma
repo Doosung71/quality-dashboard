@@ -1,9 +1,9 @@
-// Quality Dashboard — Prisma Schema
-// TRA와 동일한 Neon DB 공유 — User 모델만 사용
+// Quality Dashboard — 공통 스키마 (QD·TRA 공유)
+// User, Feedback, FeedbackReply 및 공통 enum 정의
 
 generator client {
   provider = "prisma-client"
-  output   = "../lib/generated/prisma"
+  output   = "../../lib/generated/prisma"
 }
 
 datasource db {

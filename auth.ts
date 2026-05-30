@@ -7,6 +7,10 @@ import type { Role, UserStatus } from "@/lib/generated/prisma/client"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
+  secret: [
+    process.env.AUTH_SECRET!,
+    ...(process.env.AUTH_SECRET_OLD ? [process.env.AUTH_SECRET_OLD] : []),
+  ],
   session: { maxAge: 8 * 60 * 60 },
   providers: [
     Credentials({
