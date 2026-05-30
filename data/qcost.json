@@ -1,0 +1,136 @@
+{
+  "monthlyCosts": [
+    {
+      "month": "2026-01",
+      "externalFailure": 58.5,
+      "internalFailure": 42.1,
+      "executionLoss": 24.8,
+      "appraisal": 31.4,
+      "prevention": 15.2
+    },
+    {
+      "month": "2026-02",
+      "externalFailure": 48.2,
+      "internalFailure": 38.5,
+      "executionLoss": 19.5,
+      "appraisal": 28.6,
+      "prevention": 18.5
+    },
+    {
+      "month": "2026-03",
+      "externalFailure": 72.4,
+      "internalFailure": 55.6,
+      "executionLoss": 32.1,
+      "appraisal": 34.2,
+      "prevention": 14.8
+    },
+    {
+      "month": "2026-04",
+      "externalFailure": 35.8,
+      "internalFailure": 31.2,
+      "executionLoss": 15.4,
+      "appraisal": 29.5,
+      "prevention": 21.0
+    },
+    {
+      "month": "2026-05",
+      "externalFailure": 82.4,
+      "internalFailure": 64.5,
+      "executionLoss": 28.2,
+      "appraisal": 35.8,
+      "prevention": 24.5
+    }
+  ],
+  "details": [
+    {
+      "id": "QC-2026-001",
+      "date": "2026-05-12",
+      "category": "internalFailure",
+      "title": "구미 편심 케이블 절단 스크랩 손실",
+      "cost": 22.4,
+      "source": "구미 2공장",
+      "description": "초고압 압출 편심 불량으로 인해 규격 미달된 불량 케이블 구간(45m)을 절단하여 폐기 처리함으로써 발생한 자재 스크랩 직접 손실 비용."
+    },
+    {
+      "id": "QC-2026-002",
+      "date": "2026-05-14",
+      "category": "externalFailure",
+      "title": "A공업사 공급 케이블 접속 오접합 A/S 보상",
+      "cost": 45.2,
+      "source": "고객서비스팀",
+      "description": "납품 완료된 지중선 케이블 단말 조인트 시공 중 단말 오접합 하자에 관한 엔지니어 현장 파견 긴급 보강 복구 작업비 및 배상 합의금."
+    },
+    {
+      "id": "QC-2026-003",
+      "date": "2026-05-16",
+      "category": "prevention",
+      "title": "초고압 품질 검사원 핵심 기술 사외 위탁 교육",
+      "cost": 8.5,
+      "source": "품질보증부",
+      "description": "사내 시험실 검사원 8명 대상 전기학회 주관 고전압 부분방전(PD) 정밀 계측 및 신뢰성 분석 실무 과정 위탁 교육 비용."
+    },
+    {
+      "id": "QC-2026-004",
+      "date": "2026-05-18",
+      "category": "appraisal",
+      "title": "동해 해저 시험 위탁 수수료",
+      "cost": 15.6,
+      "source": "동해 3공장",
+      "description": "초고압 해저케이블 완제품 기계적 피로 시험 및 해수 침투 신뢰성 가속 검증을 위해 외부 공인 인증 시험기관(KEMA)에 위탁 의뢰한 정밀 검사료."
+    },
+    {
+      "id": "QC-2026-005",
+      "date": "2026-05-20",
+      "category": "executionLoss",
+      "title": "설계 도면 도체 단면적 마스킹 미스 피드백 재작업",
+      "cost": 12.8,
+      "source": "기술팀",
+      "description": "발주 도면과 생산 도면 간 단면적 치수 표기 오류로 인하여 압출 작업 전 소선 연선 공정을 재진행하여 발생한 작업 공수 및 도체 낭비 로스 비용."
+    },
+    {
+      "id": "QC-2026-006",
+      "date": "2026-05-22",
+      "category": "internalFailure",
+      "title": "동해 해저 드럼 조인트 균열 용접 보수",
+      "cost": 18.5,
+      "source": "동해 3공장",
+      "description": "해저 케이블 드럼 구조물 NDT 비파괴 검사에서 발생한 크랙에 관하여 용접 전면 탈피 후 특수 용접 재시공 및 2차 UT 검사 수행에 따른 부대 비용."
+    },
+    {
+      "id": "QC-2026-007",
+      "date": "2026-05-24",
+      "category": "prevention",
+      "title": "협력업체 품질 보증(QA) 공정 진단 기술 지도",
+      "cost": 12.0,
+      "source": "동반성장추진실",
+      "description": "주요 원자재 공급사 3개사 공장을 당사 품질 진단원이 방문하여 압출 콤파운드 관리 및 불량 원인 분석을 무상 기술 지도하는 운영 실비."
+    },
+    {
+      "id": "QC-2026-008",
+      "date": "2026-05-25",
+      "category": "appraisal",
+      "title": "구미 DC2 Hipotronics 정밀 캘리브레이션 위탁비",
+      "cost": 8.2,
+      "source": "구미 1공장",
+      "description": "DC 고전압 시험 설비의 정확도 규격 충족을 위해 국가공인교정기관에 정밀 캘리브레이션 및 교정 성적서 발급을 위탁 수행한 고정 경비."
+    },
+    {
+      "id": "QC-2026-009",
+      "date": "2026-05-27",
+      "category": "executionLoss",
+      "title": "XLPE 절연 콤파운드 입고 지연으로 인한 라인 일시 대기",
+      "cost": 15.4,
+      "source": "생산관리부",
+      "description": "원자재 통관 지연 및 물류 지연으로 인해 압출 성형 2호기 라인이 약 8시간 동안 가동 중지 대기함으로써 발생한 인건비 및 공장 간접비 상각 손실."
+    },
+    {
+      "id": "QC-2026-010",
+      "date": "2026-05-28",
+      "category": "externalFailure",
+      "title": "전도율 미달 동피선 비초고압용 Concession 특채 수용에 따른 단가 인하액",
+      "cost": 37.2,
+      "source": "구매팀",
+      "description": "전도율이 하한선 대비 부족한 동선에 대하여 용도를 중저압 케이블용으로 격하(Concession) 사용하는 대신, 협력사와 단가 인하 및 패널티를 합의 적용하여 발생한 차액 손실."
+    }
+  ]
+}

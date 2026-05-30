@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, FlaskConical, TriangleAlert, Building2, Users, Globe, ShieldCheck, X, MessageSquare, CircleUserRound, HelpCircle, BookOpen, FileText } from "lucide-react"
+import { LayoutDashboard, FlaskConical, TriangleAlert, Building2, Users, Globe, ShieldCheck, X, MessageSquare, CircleUserRound, HelpCircle, BookOpen, FileText, Coins } from "lucide-react"
 import type { Role } from "@/lib/generated/prisma/client"
 
 // 역할별 접근 가능한 메뉴
@@ -12,6 +12,7 @@ const ALL_NAV = [
   { href: "/facilities",   label: "시험장·시험 현황", icon: FlaskConical,    roles: ["DIRECTOR", "TEAM_LEAD", "PRACTITIONER"] },
   { href: "/claims",       label: "고객 클레임",      icon: TriangleAlert,   roles: ["DIRECTOR", "TEAM_LEAD", "PRACTITIONER"] },
   { href: "/ncr",          label: "부적합품보고(NCR)", icon: FileText,        roles: ["DIRECTOR", "TEAM_LEAD", "PRACTITIONER"] },
+  { href: "/qcost",        label: "품질비용(Q-Cost)",  icon: Coins,           roles: ["DIRECTOR", "TEAM_LEAD"] },
   { href: "/vendors",      label: "협력업체",         icon: Building2,       roles: ["DIRECTOR", "TEAM_LEAD"] },
   { href: "/hr",           label: "인사·면담",        icon: Users,           roles: ["DIRECTOR", "TEAM_LEAD"] },
   { href: "/intelligence", label: "외부 정보",        icon: Globe,           roles: ["DIRECTOR"] },
