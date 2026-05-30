@@ -78,11 +78,19 @@ export async function searchKnowledge(
     `
   }
 
-  return (rows as any[]).map((r) => ({
-    content: r.content as string,
-    source_path: r.source_path as string,
-    title: r.title as string | null,
-    similarity: parseFloat(r.similarity),
-    metadata: r.metadata as KnowledgeChunk["metadata"],
+  interface DBRow {
+    content: string
+    source_path: string
+    title: string | null
+    similarity: string | number
+    metadata: KnowledgeChunk["metadata"]
+  }
+
+  return (rows as unknown as DBRow[]).map((r) => ({
+    content: r.content,
+    source_path: r.source_path,
+    title: r.title,
+    similarity: typeof r.similarity === "number" ? r.similarity : parseFloat(r.similarity),
+    metadata: r.metadata,
   }))
 }

@@ -13,13 +13,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "요청 본문이 올바른 JSON이 아닙니다." }, { status: 400 })
   }
 
-  if (typeof (body as any)?.query !== "string" || !(body as any).query.trim()) {
+  const bodyParsed = body as Record<string, unknown> | null | undefined
+  const queryRaw = bodyParsed?.query
+  if (typeof queryRaw !== "string" || !queryRaw.trim()) {
     return NextResponse.json({ error: "query 문자열이 필요합니다." }, { status: 400 })
   }
 
-  const query: string = (body as any).query.trim()
-  const limit: number = typeof (body as any).limit === "number" ? (body as any).limit : 5
-  const filter = (body as any).filter ?? undefined
+  const query: string = queryRaw.trim()
+  const limit: number = typeof bodyParsed?.limit === "number" ? bodyParsed.limit : 5
+  const filter = bodyParsed?.filter ?? undefined
 
   try {
     const chunks = await searchKnowledge(query, { limit, filter })
