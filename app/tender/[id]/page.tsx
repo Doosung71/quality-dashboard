@@ -14,6 +14,24 @@ import ComplyMark from "./ComplyMark"
 import DeviationMark from "./DeviationMark"
 import CommentSection from "./CommentSection"
 import { displayName } from "@/lib/display-name"
+import { Button } from "@/components/ui/button"
+import {
+  ArrowLeft,
+  FileSearch,
+  LayoutDashboard,
+  HelpCircle,
+  MessageSquare,
+  LogOut,
+  CalendarDays,
+  Settings2,
+  FileSpreadsheet,
+  FileCode,
+  AlertTriangle,
+  History,
+  FolderOpen,
+  ClipboardList,
+  Globe
+} from "lucide-react"
 
 const actionLabel: Record<string, string> = {
   SUBMIT_FOR_REVIEW: "검토 요청",
@@ -56,9 +74,9 @@ export default async function TenderPage({
         take: 1,
         include: {
           requirements: {
-              orderBy: { category: "asc" },
-              include: { standards: { select: { id: true } } },
-            },
+            orderBy: { category: "asc" },
+            include: { standards: { select: { id: true } } },
+          },
           history: {
             orderBy: { createdAt: "asc" },
             include: { user: { select: { name: true, nickname: true } } },
@@ -129,95 +147,146 @@ export default async function TenderPage({
   }))
 
   return (
-    <main className="min-h-screen bg-zinc-50">
-      <header className="bg-white border-b px-8 py-3 flex items-center justify-between">
-        <Link href="/dashboard" className="text-sm text-zinc-500 hover:text-zinc-800">← 대시보드</Link>
-        <div className="flex items-center gap-4 text-sm text-zinc-600">
-          <span>
+    <main className="min-h-screen bg-slate-50/50 pb-12">
+      {/* 프리미엄 헤더바 */}
+      <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur sticky top-0 z-50 px-6 py-4 flex items-center justify-between shadow-sm">
+        <div className="flex items-center gap-3">
+          <Link 
+            href="/dashboard" 
+            className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+            title="입찰 대시보드로 돌아가기"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
+          <div className="flex items-center gap-2">
+            <FileSearch className="w-5.5 h-5.5 text-indigo-600" />
+            <h1 className="font-extrabold text-base text-slate-900 tracking-tight">입찰 리스크 상세 검토</h1>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 text-xs font-bold">
+          <Link href="/" className="text-slate-500 hover:text-slate-800 flex items-center gap-1">
+            <LayoutDashboard className="w-4 h-4" /> 전사대시보드
+          </Link>
+          <Link href="/help" className="text-slate-500 hover:text-slate-800 flex items-center gap-1">
+            <HelpCircle className="w-4 h-4" /> 도움말
+          </Link>
+          <Link href="/feedback" className="text-slate-500 hover:text-slate-800 flex items-center gap-1">
+            <MessageSquare className="w-4 h-4" /> 피드백
+          </Link>
+          
+          <div className="h-4 w-px bg-slate-200" />
+
+          <span className="text-slate-600 font-semibold flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
             <Link href="/profile" className="hover:underline">
               {displayName({ name: session.user.name!, nickname: session.user.nickname })}
             </Link>
-            {" · "}{session.user.role === "PRACTITIONER" ? "실무자" : session.user.role === "TEAM_LEAD" ? "팀장" : "부문장"}
+            <span className="text-[10px] text-slate-400 font-extrabold bg-slate-100 px-1.5 py-0.5 rounded border">
+              {session.user.role === "PRACTITIONER" ? "실무자" : session.user.role === "TEAM_LEAD" ? "팀장" : "부문장"}
+            </span>
           </span>
+
           <form action={async () => { "use server"; await signOut({ redirectTo: "/login" }) }}>
-            <button type="submit" className="text-zinc-500 hover:text-zinc-800">로그아웃</button>
+            <Button variant="ghost" size="sm" type="submit" className="text-slate-500 hover:text-rose-600 flex items-center gap-1 font-bold">
+              <LogOut className="w-4 h-4" />
+            </Button>
           </form>
         </div>
       </header>
 
-      <div className="p-8 max-w-3xl mx-auto space-y-6">
-        <div>
-          <div className="flex items-start justify-between gap-4">
-            <div>
+      {/* 본문 레이아웃 컨테이너 */}
+      <div className="p-6 md:p-8 max-w-5xl mx-auto space-y-6 text-xs">
+        
+        {/* 프로젝트 기본 타이틀 & 액션 */}
+        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1.5">
               {canEdit ? (
                 <TitleEdit tenderId={id} title={tender.title} />
               ) : (
-                <h1 className="text-lg font-semibold">{tender.title}</h1>
+                <h1 className="text-base md:text-lg font-black text-slate-900 leading-snug">{tender.title}</h1>
               )}
-              {analysis && (
-                <span className="text-xs px-2 py-0.5 bg-zinc-200 rounded text-zinc-600 mt-1 inline-block">
-                  {displayStatus}
+              
+              <div className="flex items-center gap-2 flex-wrap">
+                {analysis && (
+                  <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded-md text-[9px] font-extrabold text-slate-600 uppercase tracking-wider">
+                    상태: {displayStatus}
+                  </span>
+                )}
+                <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
+                  <CalendarDays className="w-3.5 h-3.5" /> 등록일: {tender.createdAt.toLocaleDateString("ko-KR")}
                 </span>
-              )}
+              </div>
             </div>
+            
+            {/* 파일 내보내기 */}
             {analysis && (
-              <div className="flex gap-2 shrink-0">
+              <div className="flex gap-1.5 shrink-0">
                 <a
                   href={`/api/analysis/${analysis.id}/export?format=xlsx`}
-                  className="text-xs px-3 py-1.5 border rounded text-zinc-600 hover:bg-zinc-50"
+                  className="px-3 py-2 border border-slate-200 hover:border-slate-800 text-slate-700 rounded-xl hover:bg-slate-50 font-bold transition-all flex items-center gap-1"
                 >
-                  Excel
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" /> Excel 다운로드
                 </a>
                 <a
                   href={`/api/analysis/${analysis.id}/export?format=md`}
-                  className="text-xs px-3 py-1.5 border rounded text-zinc-600 hover:bg-zinc-50"
+                  className="px-3 py-2 border border-slate-200 hover:border-slate-800 text-slate-700 rounded-xl hover:bg-slate-50 font-bold transition-all flex items-center gap-1"
                 >
-                  Markdown
+                  <FileCode className="w-3.5 h-3.5 text-indigo-600" /> Markdown 내보내기
                 </a>
               </div>
             )}
           </div>
         </div>
 
+        {/* 잘림 경고 */}
         {truncated === "1" && (
-          <div className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded px-4 py-3">
-            문서가 길어 앞부분(약 30만 자)만 분석됐습니다. 후반부 항목이 누락될 수 있습니다.
+          <div className="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 flex items-center gap-2 animate-pulse">
+            <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
+            문서 분량이 너무 길어 상위 약 30만 자까지만 분석되었습니다. 후반부 항목이 누락될 수 있으니 주의해 주십시오.
           </div>
         )}
 
         {!analysis ? (
-          <p className="text-sm text-zinc-400">분석 결과가 없습니다.</p>
+          <p className="text-slate-400 italic text-center py-12">분석 결과가 없습니다.</p>
         ) : (
           <>
-            {/* 요약 카드 */}
+            {/* 리치 요약 카드 패널 */}
             {reqStats && reqStats.total > 0 && (
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
                 {[
-                  { label: "전체", value: reqStats.total, style: "bg-zinc-100 text-zinc-600" },
-                  { label: "부합", value: reqStats.comply, style: "bg-green-50 text-green-700" },
-                  { label: "불부합", value: reqStats.nonComply, style: reqStats.nonComply > 0 ? "bg-red-50 text-red-600 font-semibold" : "bg-zinc-50 text-zinc-400" },
-                  { label: "검토중", value: reqStats.tbd, style: reqStats.tbd > 0 ? "bg-amber-50 text-amber-700" : "bg-zinc-50 text-zinc-400" },
-                  { label: "미판정", value: reqStats.unmarked, style: reqStats.unmarked > 0 ? "bg-zinc-100 text-zinc-500" : "bg-zinc-50 text-zinc-400" },
-                  { label: "RISK", value: reqStats.risk, style: reqStats.risk > 0 ? "bg-red-100 text-red-600 font-semibold" : "bg-zinc-50 text-zinc-400" },
+                  { label: "전체 항목", value: reqStats.total, style: "bg-slate-100 text-slate-700 border-slate-200" },
+                  { label: "부합 (Comply)", value: reqStats.comply, style: "bg-emerald-50 text-emerald-700 border-emerald-100" },
+                  { label: "불부합", value: reqStats.nonComply, style: reqStats.nonComply > 0 ? "bg-rose-50 text-rose-700 border-rose-100 font-extrabold animate-pulse" : "bg-slate-50 text-slate-400 border-slate-100" },
+                  { label: "검토 요망", value: reqStats.tbd, style: reqStats.tbd > 0 ? "bg-amber-50 text-amber-700 border-amber-100" : "bg-slate-50 text-slate-400 border-slate-100" },
+                  { label: "미판정", value: reqStats.unmarked, style: reqStats.unmarked > 0 ? "bg-slate-50 text-slate-500 border-slate-200" : "bg-slate-50 text-slate-300 border-slate-100" },
+                  { label: "위험 (RISK)", value: reqStats.risk, style: reqStats.risk > 0 ? "bg-rose-100 text-rose-700 border-rose-200 font-extrabold" : "bg-slate-50 text-slate-400 border-slate-100" },
                 ].map(({ label, value, style }) => (
-                  <div key={label} className={`rounded-lg px-3 py-2 text-center ${style}`}>
-                    <p className="text-xs">{label}</p>
-                    <p className="text-lg font-bold leading-tight">{value}</p>
+                  <div key={label} className={`rounded-xl px-3 py-2.5 text-center border shadow-sm ${style}`}>
+                    <p className="text-[10px] tracking-wide font-extrabold uppercase opacity-75">{label}</p>
+                    <p className="text-xl font-black leading-tight mt-1">{value}</p>
                   </div>
                 ))}
               </div>
             )}
 
-            <WorkflowActions
-              analysisId={analysis.id}
-              role={session.user.role}
-              status={analysis.status}
-              isSubmitted={!!analysis.submittedAt}
-            />
+            {/* 승인 프로세스 제어판 */}
+            <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+              <WorkflowActions
+                analysisId={analysis.id}
+                role={session.user.role}
+                status={analysis.status}
+                isSubmitted={!!analysis.submittedAt}
+              />
+            </div>
 
             {/* 시스템 특성 */}
-            <section className="bg-white border rounded-lg p-4">
-              <h2 className="text-sm font-semibold text-zinc-700 mb-3">시스템 특성</h2>
+            <section className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm space-y-4">
+              <h2 className="text-xs font-extrabold text-slate-400 tracking-wider uppercase flex items-center gap-1.5 border-b pb-2">
+                <Settings2 className="w-4 h-4 text-slate-400" />
+                입찰 프로젝트 시스템 특성 명세
+              </h2>
               {canEdit && (
                 <SysCharEdit
                   analysisId={analysis.id}
@@ -231,33 +300,35 @@ export default async function TenderPage({
                   }}
                 />
               )}
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-2 mt-2">
+              <dl className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 pt-2">
                 {(
                   [
-                    { label: "전압", key: "voltage" },
-                    { label: "BIL/SIL", key: "bilSil" },
-                    { label: "단락용량", key: "shortCircuit" },
-                    { label: "포설 조건", key: "installCond" },
-                    { label: "접지 구성", key: "groundConfig" },
-                    { label: "요구 용량", key: "requiredCapacity" },
+                    { label: "정격 전압", key: "voltage" },
+                    { label: "임펄스 (BIL/SIL)", key: "bilSil" },
+                    { label: "정격 단락용량", key: "shortCircuit" },
+                    { label: "케이블 포설 조건", key: "installCond" },
+                    { label: "접지 형태 구성", key: "groundConfig" },
+                    { label: "요구 송전 용량", key: "requiredCapacity" },
                   ] as const
                 ).map(({ label, key }) => (
-                  <div key={key}>
-                    <dt className="text-xs text-zinc-400">{label}</dt>
-                    <dd className="text-sm text-zinc-800">{analysis[key] ?? "—"}</dd>
+                  <div key={key} className="space-y-0.5">
+                    <dt className="text-[10px] text-slate-400 font-bold uppercase">{label}</dt>
+                    <dd className="text-xs font-bold text-slate-800">{analysis[key] ?? "—"}</dd>
                   </div>
                 ))}
               </dl>
             </section>
 
-            {/* 기술 요구사항 */}
-            <section className="bg-white border rounded-lg p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-semibold text-zinc-700">
-                  기술 요구사항 ({analysis.requirements.length}건)
+            {/* 기술 요구사항 검토 및 매칭 */}
+            <section className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                <h2 className="text-xs font-extrabold text-slate-800 tracking-wider uppercase flex items-center gap-1.5">
+                  <ClipboardList className="w-4.5 h-4.5 text-indigo-500" />
+                  분석된 기술 요구사항 명세 ({analysis.requirements.length}건)
                 </h2>
                 {canEdit && <MatchStandardsButton analysisId={analysis.id} />}
               </div>
+              
               {canEdit ? (
                 <RequirementsEdit
                   analysisId={analysis.id}
@@ -276,38 +347,42 @@ export default async function TenderPage({
                   }))}
                 />
               ) : analysis.requirements.length === 0 ? (
-                <p className="text-sm text-zinc-400">추출된 요구사항이 없습니다.</p>
+                <p className="text-xs text-slate-400 italic">추출된 기술 요구사항이 존재하지 않습니다.</p>
               ) : (
-                <ul className="space-y-3">
+                <ul className="space-y-4 pt-1">
                   {analysis.requirements.map((r) => (
-                    <li key={r.id} className="border-b last:border-0 pb-3 last:pb-0">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <span className="text-xs px-1.5 py-0.5 bg-zinc-100 rounded text-zinc-500">{r.category}</span>
-                        {r.isRisk && <span className="text-xs px-1.5 py-0.5 bg-red-100 rounded text-red-600">RISK</span>}
-                        {r.isVE && <span className="text-xs px-1.5 py-0.5 bg-blue-100 rounded text-blue-600">VE</span>}
-                        {r.sourcePage && <span className="text-xs text-zinc-400">p.{r.sourcePage}</span>}
+                    <li key={r.id} className="border-b last:border-0 pb-4 last:pb-0 space-y-2">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[8px] px-1.5 py-0.5 bg-slate-100 border rounded text-slate-500 font-bold uppercase">{r.category}</span>
+                        {r.isRisk && <span className="text-[8px] px-1.5 py-0.5 bg-rose-50 border border-rose-100 rounded text-rose-700 font-extrabold">RISK</span>}
+                        {r.isVE && <span className="text-[8px] px-1.5 py-0.5 bg-blue-50 border border-blue-100 rounded text-blue-700 font-extrabold">VE (대체제안)</span>}
+                        {r.sourcePage && <span className="text-[10px] text-slate-400 font-mono">p.{r.sourcePage}</span>}
                         {r.standards.map((s) => (
-                          <span key={s.id} className="text-xs px-1.5 py-0.5 bg-violet-100 rounded text-violet-700">
-                            {s.id}
+                          <span key={s.id} className="text-[8px] px-1.5 py-0.5 bg-indigo-50 border border-indigo-100 rounded text-indigo-700 font-bold">
+                            정합규격: {s.id}
                           </span>
                         ))}
                       </div>
-                      <p className="text-sm text-zinc-800">{r.content}</p>
+                      
+                      <p className="text-xs font-bold text-slate-800 leading-relaxed">{r.content}</p>
                       {r.sourceText && (
-                        <p className="text-xs text-zinc-400 mt-0.5 italic">{`"${r.sourceText}"`}</p>
+                        <p className="text-[10px] text-slate-400 font-medium bg-slate-50/50 p-2 rounded-lg border italic">{`원문 발췌: "${r.sourceText}"`}</p>
                       )}
-                      <ComplyMark
-                        requirementId={r.id}
-                        initialComply={r.comply as "COMPLY" | "NON_COMPLY" | "TBD" | null}
-                        initialRemark={r.remark}
-                        canEdit={canMarkComply}
-                      />
-                      <DeviationMark
-                        requirementId={r.id}
-                        initialType={r.deviationType as "DEVIATION" | "CLARIFICATION" | "ASSUMPTION" | null}
-                        initialText={r.deviationText}
-                        canEdit={canMarkDeviation}
-                      />
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                        <ComplyMark
+                          requirementId={r.id}
+                          initialComply={r.comply as "COMPLY" | "NON_COMPLY" | "TBD" | null}
+                          initialRemark={r.remark}
+                          canEdit={canMarkComply}
+                        />
+                        <DeviationMark
+                          requirementId={r.id}
+                          initialType={r.deviationType as "DEVIATION" | "CLARIFICATION" | "ASSUMPTION" | null}
+                          initialText={r.deviationText}
+                          canEdit={canMarkDeviation}
+                        />
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -316,31 +391,34 @@ export default async function TenderPage({
 
             {/* 검토 이력 */}
             {analysis.history.length > 0 && (
-              <section className="bg-white border rounded-lg p-4">
-                <h2 className="text-sm font-semibold text-zinc-700 mb-3">검토 이력</h2>
-                <ol className="space-y-3">
+              <section className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm space-y-4">
+                <h2 className="text-xs font-extrabold text-slate-400 tracking-wider uppercase flex items-center gap-1.5 border-b pb-2">
+                  <History className="w-4 h-4 text-slate-400" />
+                  워크플로우 조치 및 검토 이력 타임라인
+                </h2>
+                <ol className="space-y-4 pl-2 ml-1 relative border-l border-slate-100">
                   {analysis.history.map((h) => (
-                    <li key={h.id} className="flex gap-3">
-                      <div className="w-1 rounded bg-zinc-200 self-stretch shrink-0" />
-                      <div>
-                        <p className="text-sm text-zinc-800">
-                          <span className="font-medium">{actionLabel[h.action] ?? h.action}</span>
-                          {" · "}
-                          <span className="text-zinc-500">{displayName(h.user)}</span>
-                        </p>
-                        {h.reason && (
-                          <p className={`text-xs mt-0.5 ${
-                            h.action.includes("REJECT") ? "text-red-600"
-                            : h.action === "SUBMIT_FOR_REVIEW" ? "text-blue-600"
-                            : "text-green-700"
-                          }`}>
-                            {h.action.includes("REJECT") ? "반려 사유" : h.action === "SUBMIT_FOR_REVIEW" ? "제출 메모" : "의견"}: {h.reason}
-                          </p>
-                        )}
-                        <p className="text-xs text-zinc-400 mt-0.5">
-                          {new Date(h.createdAt).toLocaleString("ko-KR")}
-                        </p>
+                    <li key={h.id} className="space-y-1 relative pl-4">
+                      {/* 타임라인 점 */}
+                      <span className="absolute -left-[5.5px] top-1.5 w-2 h-2 rounded-full bg-slate-300 border border-white" />
+                      
+                      <div className="flex items-center justify-between text-[10px] text-slate-400">
+                        <span className="font-mono">{new Date(h.createdAt).toLocaleString("ko-KR")}</span>
+                        <span className="font-bold text-slate-500">작업자: {displayName(h.user)}</span>
                       </div>
+
+                      <p className="text-xs text-slate-800">
+                        <span className="font-extrabold text-slate-950 bg-slate-100 px-1.5 py-0.5 rounded border">{actionLabel[h.action] ?? h.action}</span>
+                      </p>
+                      {h.reason && (
+                        <p className={`p-2.5 rounded-lg border text-xs leading-relaxed font-semibold mt-1.5 ${
+                          h.action.includes("REJECT") ? "bg-rose-50/50 text-rose-800 border-rose-100"
+                          : h.action === "SUBMIT_FOR_REVIEW" ? "bg-indigo-50/30 text-indigo-950 border-indigo-100"
+                          : "bg-emerald-50/30 text-emerald-950 border-emerald-100"
+                        }`}>
+                          💬 {h.action.includes("REJECT") ? "반려 피드백 사유" : h.action === "SUBMIT_FOR_REVIEW" ? "실무자 송신 의견" : "조치 의견"}: {h.reason}
+                        </p>
+                      )}
                     </li>
                   ))}
                 </ol>
@@ -351,34 +429,53 @@ export default async function TenderPage({
 
         {/* 부문장 메모 + 검토의견 초안 */}
         {session.user.role === "DIRECTOR" && analysis && (
-          <DirectorPanel
-            analysisId={analysis.id}
-            initialMemo={analysis.directorMemo ?? null}
-            initialDraft={analysis.draftOpinion ?? null}
-          />
+          <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <DirectorPanel
+              analysisId={analysis.id}
+              initialMemo={analysis.directorMemo ?? null}
+              initialDraft={analysis.draftOpinion ?? null}
+            />
+          </div>
         )}
 
-        {/* 코멘트 */}
+        {/* 코멘트 협업 스레드 */}
         {analysis && (
-          <CommentSection
-            analysisId={analysis.id}
-            initialComments={analysis.comments.map((c) => ({
-              id: c.id,
-              authorName: displayName(c.author),
-              content: c.content,
-              createdAt: c.createdAt.toISOString(),
-              replies: c.replies.map((r) => ({
-                id: r.id,
-                authorName: displayName(r.author),
-                content: r.content,
-                createdAt: r.createdAt.toISOString(),
-              })),
-            }))}
-          />
+          <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <CommentSection
+              analysisId={analysis.id}
+              initialComments={analysis.comments.map((c) => ({
+                id: c.id,
+                authorName: displayName(c.author),
+                content: c.content,
+                createdAt: c.createdAt.toISOString(),
+                replies: c.replies.map((r) => ({
+                  id: r.id,
+                  authorName: displayName(r.author),
+                  content: r.content,
+                  createdAt: r.createdAt.toISOString(),
+                })),
+              }))}
+            />
+          </div>
         )}
 
-        {/* 파일 관리 — 첨부·삭제: 실무자·팀장·부문장 / 재분석: DRAFT+미제출 실무자만 */}
-        {canAddRef && <FilesPanel tenderId={id} documents={docs} canManage={canEdit} canAnalyze={session.user.role === "PRACTITIONER" && !analysis} canDeleteFiles={canAddRef} />}
+        {/* 참고 파일 관리 */}
+        {canAddRef && (
+          <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+            <h2 className="text-xs font-extrabold text-slate-400 tracking-wider uppercase flex items-center gap-1.5 border-b pb-2">
+              <FolderOpen className="w-4 h-4 text-slate-400" />
+              참조 파일 라이브러리 및 재분석
+            </h2>
+            <FilesPanel 
+              tenderId={id} 
+              documents={docs} 
+              canManage={canEdit} 
+              canAnalyze={session.user.role === "PRACTITIONER" && !analysis} 
+              canDeleteFiles={canAddRef} 
+            />
+          </div>
+        )}
+
       </div>
     </main>
   )
