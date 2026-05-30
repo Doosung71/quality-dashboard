@@ -3,20 +3,17 @@
 import { useState, useMemo } from "react";
 import type { HRData, Employee, Interview, WorkloadStatus } from "@/types/hr";
 import { 
-  Users, 
-  UserMinus, 
-  Award, 
-  CalendarDays, 
-  Search, 
-  SlidersHorizontal,
-  Mail, 
-  Phone, 
-  Briefcase, 
-  BookOpen, 
-  MessageSquarePlus, 
-  Plus, 
-  X, 
-  PlusCircle, 
+  Users,
+  UserMinus,
+  Award,
+  CalendarDays,
+  Search,
+  Mail,
+  Phone,
+  Briefcase,
+  Plus,
+  X,
+  PlusCircle,
   MessageSquare,
   ArrowRight
 } from "lucide-react";
@@ -25,12 +22,6 @@ interface HRViewProps {
   data: HRData;
 }
 
-const DEPARTMENT_COLORS: Record<string, string> = {
-  "초고압품질팀": "bg-blue-50 text-blue-700 border-blue-100",
-  "해저품질팀": "bg-indigo-50 text-indigo-700 border-indigo-100",
-  "품질보증팀": "bg-purple-50 text-purple-700 border-purple-100",
-  "시스템품질팀": "bg-teal-50 text-teal-700 border-teal-100",
-};
 
 const WORKLOAD_STYLES: Record<WorkloadStatus, { label: string, style: string, dot: string }> = {
   High: { label: "과부하 (High)", style: "bg-rose-50 text-rose-700 border-rose-200 font-bold animate-pulse", dot: "bg-rose-500" },
@@ -449,7 +440,7 @@ export function HRView({ data }: HRViewProps) {
                       해당 팀원에 대해 등록된 면담 결과가 없습니다.
                     </div>
                   ) : (
-                    selectedInterviews.map((int, idx) => (
+                    selectedInterviews.map((int) => (
                       <div key={int.id} className="relative group space-y-2 text-xs">
                         {/* 타임라인 원점 */}
                         <span className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-slate-300 border border-white group-hover:bg-slate-950 transition-colors" />

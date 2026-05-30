@@ -6,7 +6,6 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import TenderThread, { type HistoryEntry, type CommentEntry } from "./TenderThread"
 import {
-  FileText,
   AlertTriangle,
   FileX,
   Eye,

@@ -17,9 +17,8 @@ import {
   Plus, 
   X, 
   PlusCircle, 
-  Calendar, 
+  Calendar,
   ArrowRight,
-  Filter,
   Layers,
   Zap,
   Bookmark

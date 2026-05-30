@@ -5,13 +5,11 @@ import { useRouter } from "next/navigation"
 import { uploadPresigned } from "@vercel/blob/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { 
-  PlusCircle, 
-  Upload, 
-  FileText, 
-  FileCheck, 
-  Sparkles, 
-  Loader2, 
+import {
+  Upload,
+  FileText,
+  Sparkles,
+  Loader2,
   X,
   Plus
 } from "lucide-react"

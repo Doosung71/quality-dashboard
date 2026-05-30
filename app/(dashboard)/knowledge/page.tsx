@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Sparkles, Globe, Link2, FileText, CheckCircle } from "lucide-react";
+import { Search, Sparkles, Globe, Link2, FileText } from "lucide-react";
 import type { KnowledgeChunk } from "@/lib/knowledge";
 import { SearchCard } from "@/components/knowledge/search-card";
 import { knowledgeRepositoryData } from "@/data/knowledge.data";

@@ -3,21 +3,18 @@
 import { useState, useMemo } from "react";
 import type { NCRsData, NCR, NCRStatus, NCRSeverity, NCRDispositionType } from "@/types/ncr";
 import { 
-  ShieldAlert, 
-  CheckCircle2, 
-  AlertTriangle, 
-  Calendar, 
-  User, 
-  Clock, 
-  MapPin, 
-  TrendingUp, 
+  ShieldAlert,
+  CheckCircle2,
+  Calendar,
+  User,
+  Clock,
+  MapPin,
+  TrendingUp,
   FileText,
   Search,
   SlidersHorizontal,
   X,
-  ChevronRight,
-  ArrowRightCircle,
-  HelpCircle
+  ArrowRightCircle
 } from "lucide-react";
 
 interface NCRViewProps {

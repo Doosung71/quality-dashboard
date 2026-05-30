@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { Equipment } from "@/types/facility";
-import type { Test, TestStatus, TestCategory } from "@/types/test";
-import { computeStatus, CURRENT_YEAR, type ComputedStatus } from "@/lib/facilities-utils";
+import type { Test } from "@/types/test";
+import { computeStatus, CURRENT_YEAR } from "@/lib/facilities-utils";
 import { TypeChip, EquipStatusBadge, TestStatusBadge, TestCategoryChip } from "./badges";
 
 function formatSpec(spec: Record<string, string>): string {
