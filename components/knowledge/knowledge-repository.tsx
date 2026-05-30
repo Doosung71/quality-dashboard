@@ -616,7 +616,7 @@ export function KnowledgeRepository({ data, ragSearchElement }: KnowledgeReposit
                         </button>
                         {selectedAsset.code && (
                           <a
-                            href={`http://localhost:3000/references`}
+                            href={`/references`}
                             target="_blank"
                             rel="noreferrer"
                             className="px-3 py-2 border border-slate-200 text-slate-700 rounded-lg hover:border-slate-800 font-bold flex items-center justify-center transition-all"

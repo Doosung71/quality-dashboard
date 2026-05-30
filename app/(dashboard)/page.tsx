@@ -394,6 +394,53 @@ export default function MainDashboard() {
               </div>
             </div>
           </div>
+
+          {/* AI 어시스턴트 & PKM 지식 RAG 허브 바로가기 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+            
+            {/* 1. 입찰 검토 AI 비서 */}
+            <div className="bg-gradient-to-br from-indigo-950 to-slate-950 text-white p-6 rounded-2xl border border-indigo-900/50 shadow-md relative overflow-hidden flex flex-col justify-between group">
+              <div className="space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+                  <FileSearch className="w-5.5 h-5.5" />
+                </div>
+                <h4 className="text-sm font-black mt-2">입찰 검토 AI 어시스턴트</h4>
+                <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
+                  송배전/해저 케이블 입찰 규격서(ITB) 내 독소 조항과 보증 한계치 위반 리스크를 AI가 자동 판독하고 분석서를 도출합니다.
+                </p>
+              </div>
+              <div className="pt-6">
+                <Link 
+                  href="/dashboard" 
+                  className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-center font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all text-white"
+                >
+                  입찰 비서 실행 (포팅 버전) <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            {/* 2. RAG 지식 검색 */}
+            <div className="bg-gradient-to-br from-teal-950 to-slate-950 text-white p-6 rounded-2xl border border-teal-900/50 shadow-md relative overflow-hidden flex flex-col justify-between group">
+              <div className="space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center">
+                  <Globe className="w-5.5 h-5.5" />
+                </div>
+                <h4 className="text-sm font-black mt-2">IEC / CIGRE 지식 RAG 검색</h4>
+                <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
+                  Obsidian PKM 지식베이스와 Neon pgvector를 연동하여 케이블 PD 측정, 가속수명 시험 합격기준을 자연어로 검색합니다.
+                </p>
+              </div>
+              <div className="pt-6">
+                <Link 
+                  href="/knowledge" 
+                  className="w-full py-2 bg-teal-600 hover:bg-teal-500 text-center font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all text-white"
+                >
+                  자연어 지식 검색 실행 <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+
+          </div>
         </div>
       )}
 
