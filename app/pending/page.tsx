@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { signOut } from "@/auth"
 
 export default function PendingPage() {
   return (
@@ -18,12 +18,19 @@ export default function PendingPage() {
         </div>
 
         <div className="space-y-2">
-          <Link
-            href="/login"
-            className="block w-full bg-slate-950 hover:bg-slate-800 text-white text-sm font-bold py-2.5 px-4 rounded-xl transition-colors"
+          <form
+            action={async () => {
+              "use server"
+              await signOut({ redirectTo: "/login" })
+            }}
           >
-            로그인 페이지로 돌아가기
-          </Link>
+            <button
+              type="submit"
+              className="w-full bg-slate-950 hover:bg-slate-800 text-white text-sm font-bold py-2.5 px-4 rounded-xl transition-colors"
+            >
+              로그인 페이지로 돌아가기
+            </button>
+          </form>
           <p className="text-[11px] text-slate-400">
             관리자 계정으로 로그인하려면 위 버튼을 사용하세요.
           </p>
