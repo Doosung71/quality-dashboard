@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
     const jsonResponse = await handleUploadPresigned({
       body,
       request,
+      webhookPublicKey: "not-used",
       getSignedToken: async (pathname) => {
         const validUntil = Date.now() + 60 * 60 * 1000
         return {
