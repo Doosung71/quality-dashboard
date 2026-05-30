@@ -67,7 +67,7 @@ async function extractTenderSpecClaude(
   const contextSection = buildContextSection(knowledgeContext, webContext)
 
   const response = await client.messages.create({
-    model: "claude-3-5-sonnet-20241022",
+    model: "claude-sonnet-4-6",
     max_tokens: 4096,
     tools: [
       {
@@ -105,6 +105,9 @@ ${pdfText}`,
   return ExtractionResultSchema.parse(toolUse.input)
 }
 
+// OpenAI TPM 한도 대응: 텍스트를 ~20,000 토큰(약 80,000자)으로 제한
+const OPENAI_MAX_CHARS = 80_000
+
 async function extractTenderSpecOpenAI(
   pdfText: string,
   knowledgeContext?: string,
@@ -114,6 +117,7 @@ async function extractTenderSpecOpenAI(
   if (!apiKey) throw new Error("OPENAI_API_KEY 환경변수가 누락되었습니다.")
 
   console.log("[extractTenderSpec] OpenAI GPT-4o 백업 분석 시작...")
+  const truncatedText = pdfText.length > OPENAI_MAX_CHARS ? pdfText.slice(0, OPENAI_MAX_CHARS) : pdfText
   const contextSection = buildContextSection(knowledgeContext, webContext)
 
   const systemPrompt = `당신은 HVAC 해저·지중 케이블 입찰 사양서(Tender Spec) 분석 전문가입니다.
@@ -164,7 +168,7 @@ JSON 스키마:
           content: `${contextSection}아래는 HVAC 해저·지중 케이블 입찰 사양서(Tender Spec) 텍스트다. 기검요청서 항목을 추출하라.
 
 ---
-${pdfText}`,
+${truncatedText}`,
         },
       ],
     }),
