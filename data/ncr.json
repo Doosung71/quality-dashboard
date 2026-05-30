@@ -1,0 +1,138 @@
+{
+  "ncrs": [
+    {
+      "id": "NCR-2026-001",
+      "title": "동해 AC3 라인 CV 케이블 외장 찍힘 불량",
+      "source": "동해 2공장 (AC3)",
+      "severity": "Major",
+      "status": "CorrectiveAction",
+      "disposition": "Rework",
+      "issuedDate": "2026-05-12",
+      "targetDate": "2026-05-25",
+      "assignee": "김민우 책임",
+      "description": "AC3 라인 압출 공정 중 가이드 롤러 간섭으로 인해 절연 외장 쉬스 표면에 2.5mm 깊이의 긁힘 및 찍힘 불량 발생. 불량 부위 탈피 후 재피복 작업 진행 중.",
+      "timeline": [
+        { "date": "2026-05-12", "action": "부적합 보고서(NCR) 발행", "user": "박준호 선임" },
+        { "date": "2026-05-14", "action": "재작업(Rework) 처리방안 확정", "user": "김민우 책임" },
+        { "date": "2026-05-18", "action": "시정조치 요구서(CAPA) 발행 및 가이드 롤러 조정 완료", "user": "김민우 책임" }
+      ]
+    },
+    {
+      "id": "NCR-2026-002",
+      "title": "구미 DC2 Hipotronics 설비 교정값 오차 발생",
+      "source": "구미 1공장 (DC2)",
+      "severity": "Critical",
+      "status": "Verification",
+      "disposition": "Concession",
+      "issuedDate": "2026-05-10",
+      "targetDate": "2026-05-28",
+      "assignee": "이지훈 수석",
+      "description": "DC 고전압 시험 설비의 전압 교정 주기 검사 도중 표준 오차 범위를 1.5% 초과하는 문제 감지. 외주 정밀 교정 실시 후 실측 전압값 대조 및 보정값 입력 유효성 검증 단계.",
+      "timeline": [
+        { "date": "2026-05-10", "action": "설비 이상 부적합 발행", "user": "최영민 선임" },
+        { "date": "2026-05-11", "action": "임시 특채(Concession) 처리 및 외주 긴급 교정 의뢰", "user": "이지훈 수석" },
+        { "date": "2026-05-20", "action": "교정 완료 성적서 접수 및 설비 보정 완료", "user": "이지훈 수석" }
+      ]
+    },
+    {
+      "id": "NCR-2026-003",
+      "title": "동아케미칼 공급 XLPE 절연재 수입검사 이물 혼입",
+      "source": "품질보증부 (수입검사)",
+      "severity": "Critical",
+      "status": "Disposition",
+      "disposition": "Scrap",
+      "issuedDate": "2026-05-26",
+      "targetDate": "2026-06-05",
+      "assignee": "정태수 책임",
+      "description": "원자재 입고 수입검사 중 XLPE 절연 펠렛 내부에서 0.5mm 크기의 흑색 탄화물 이물 혼입 발견. 공급사인 동아케미칼에 부적합 통보 및 해당 롯트(Lot) 전량 격리 및 폐기 대기.",
+      "timeline": [
+        { "date": "2026-05-26", "action": "수입검사 이물 검출 및 NCR 발행", "user": "정태수 책임" },
+        { "date": "2026-05-28", "action": "협력사 부적합 통보 및 전량 폐기(Scrap) 의사 결정", "user": "정태수 책임" }
+      ]
+    },
+    {
+      "id": "NCR-2026-004",
+      "title": "동해 해저케이블 가선용 철제 드럼 용접부 균열",
+      "source": "동해 3공장 (해저)",
+      "severity": "Major",
+      "status": "Issued",
+      "disposition": "TBD",
+      "issuedDate": "2026-05-29",
+      "targetDate": "2026-06-15",
+      "assignee": "강우진 책임",
+      "description": "해저 케이블 권취용 대형 드럼(Drum) 구조물 하단 용접 조인트 부위에서 비파괴 시험(UT) 결과 15mm 길이의 미세 크랙 발생 발견. 용접 재작업 혹은 드럼 전량 교체 여부 검토 중.",
+      "timeline": [
+        { "date": "2026-05-29", "action": "NDT 비파괴 검사 중 크랙 감출 및 NCR 발행", "user": "강우진 책임" }
+      ]
+    },
+    {
+      "id": "NCR-2026-005",
+      "title": "구미 초고압 3호기 케이블 알루미늄 피복 편심 불량",
+      "source": "구미 2공장 (초고압)",
+      "severity": "Major",
+      "status": "Closed",
+      "disposition": "Rework",
+      "issuedDate": "2026-05-02",
+      "targetDate": "2026-05-15",
+      "closedDate": "2026-05-14",
+      "assignee": "박동현 책임",
+      "description": "알루미늄 쉬스 압출 공정 중 압출 다이스 편심으로 인해 피복 두께 편차 기준치 초과 불량 발생. 다이스 센터링 재세팅 후 불량 구간 절단 및 재가공 조치 완료.",
+      "timeline": [
+        { "date": "2026-05-02", "action": "압출 두께 편심 NCR 발행", "user": "박동현 책임" },
+        { "date": "2026-05-04", "action": "설비 정밀 점검 및 교정 완료", "user": "송민섭 선임" },
+        { "date": "2026-05-10", "action": "재작업 및 잔여 구간 두께 실측 검사 합격", "user": "박동현 책임" },
+        { "date": "2026-05-14", "action": "최종 품질 보증 확인 및 승인 종결", "user": "이지훈 수석" }
+      ]
+    },
+    {
+      "id": "NCR-2026-006",
+      "title": "동해 AC-SR2 시험실 온도 조절기 오동작",
+      "source": "동해 1공장 (AC)",
+      "severity": "Minor",
+      "status": "Closed",
+      "disposition": "Rework",
+      "issuedDate": "2026-05-05",
+      "targetDate": "2026-05-18",
+      "closedDate": "2026-05-17",
+      "assignee": "한성민 책임",
+      "description": "시편 환경 에이징 시험기 챔버 내부 온도 센서 및 릴레이 부품 오동작으로 간헐적 온도 급강하 현상 발생. 릴레이 보드 교체 및 캘리브레이션 테스트 완료 후 종결 처리.",
+      "timeline": [
+        { "date": "2026-05-05", "action": "에이징 챔버 이상 노출 및 NCR 발행", "user": "한성민 책임" },
+        { "date": "2026-05-12", "action": "내부 컨트롤러 부품 교체 완료", "user": "정민기 선임" },
+        { "date": "2026-05-17", "action": "48시간 연속 가동 테스트 합격 및 종결", "user": "한성민 책임" }
+      ]
+    },
+    {
+      "id": "NCR-2026-007",
+      "title": "구미 외주가공 동피선 수입검사 전도율 미달",
+      "source": "품질보증부 (수입검사)",
+      "severity": "Major",
+      "status": "CorrectiveAction",
+      "disposition": "Concession",
+      "issuedDate": "2026-05-15",
+      "targetDate": "2026-05-28",
+      "assignee": "정태수 책임",
+      "description": "세양금속에서 납품한 동 피선(Copper Rod) 시편 전기 전도율이 100.2% IACS로 당사 규격 하한치인 100.5% 미만으로 도출됨. 비초고압용 일반 규격 동선으로의 전환 승인(Concession) 및 협력사 시정조치 요구 단계.",
+      "timeline": [
+        { "date": "2026-05-15", "action": "동 전도율 규격 미달 NCR 발행", "user": "정태수 책임" },
+        { "date": "2026-05-18", "action": "일반 중저압용 전환 사용(Concession) 승인", "user": "이지훈 수석" }
+      ]
+    },
+    {
+      "id": "NCR-2026-008",
+      "title": "동해 3공장 광케이블 외경 측정기 센서 불량",
+      "source": "동해 3공장 (해저)",
+      "severity": "Minor",
+      "status": "CorrectiveAction",
+      "disposition": "Rework",
+      "issuedDate": "2026-05-20",
+      "targetDate": "2026-06-03",
+      "assignee": "강우진 책임",
+      "description": "광케이블 외경 측정 레이저 스캔 모듈의 광학 렌즈 표면에 분진 부착으로 인해 외경 편차가 튀는 오측정 현상 발생. 클리닝 공정 추가 가이드 부착 진행 중.",
+      "timeline": [
+        { "date": "2026-05-20", "action": "외경 간헐 오측정 오류 NCR 발행", "user": "윤민수 선임" },
+        { "date": "2026-05-23", "action": "계측 렌즈 클리닝 및 일일 점검 가이드 배포", "user": "강우진 책임" }
+      ]
+    }
+  ]
+}
