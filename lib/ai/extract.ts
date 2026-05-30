@@ -6,26 +6,34 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 const TOOL_NAME = "extract_tender_spec"
 
+export type ExtractResult = {
+  data: ExtractionResult
+  aiUsed: "Claude" | "OpenAI" | "Gemini"
+}
+
 export async function extractTenderSpec(
   pdfText: string,
   knowledgeContext?: string,
   webContext?: string
-): Promise<ExtractionResult> {
+): Promise<ExtractResult> {
   try {
-    console.log("[extractTenderSpec] Claude 3.5 Sonnet 분석 시작...")
-    return await extractTenderSpecClaude(pdfText, knowledgeContext, webContext)
+    console.log("[extractTenderSpec] Claude 분석 시작...")
+    const data = await extractTenderSpecClaude(pdfText, knowledgeContext, webContext)
+    return { data, aiUsed: "Claude" }
   } catch (claudeError: unknown) {
     const claudeMsg = claudeError instanceof Error ? claudeError.message : String(claudeError)
     console.warn(`[extractTenderSpec] Claude 오류 → OpenAI fallback: ${claudeMsg}`)
 
     try {
-      return await extractTenderSpecOpenAI(pdfText, knowledgeContext, webContext)
+      const data = await extractTenderSpecOpenAI(pdfText, knowledgeContext, webContext)
+      return { data, aiUsed: "OpenAI" }
     } catch (openaiError: unknown) {
       const openaiMsg = openaiError instanceof Error ? openaiError.message : String(openaiError)
       console.warn(`[extractTenderSpec] OpenAI 오류 → Gemini fallback: ${openaiMsg}`)
 
       try {
-        return await extractTenderSpecGemini(pdfText, knowledgeContext, webContext)
+        const data = await extractTenderSpecGemini(pdfText, knowledgeContext, webContext)
+        return { data, aiUsed: "Gemini" }
       } catch (geminiError: unknown) {
         const geminiMsg = geminiError instanceof Error ? geminiError.message : String(geminiError)
         console.error(`[extractTenderSpec] 모든 AI 분석 실패. Claude: ${claudeMsg} / OpenAI: ${openaiMsg} / Gemini: ${geminiMsg}`)

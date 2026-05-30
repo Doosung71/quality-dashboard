@@ -217,6 +217,22 @@ export default async function TenderPage({
                 <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
                   <CalendarDays className="w-3.5 h-3.5" /> 등록일: {tender.createdAt.toLocaleDateString("ko-KR")}
                 </span>
+                {/* AI 분석 메타 배지 */}
+                {analysis?.aiUsed && (
+                  <span className="px-2 py-0.5 bg-indigo-50 border border-indigo-100 rounded-md text-[9px] font-extrabold text-indigo-600">
+                    AI: {analysis.aiUsed}
+                  </span>
+                )}
+                {analysis && (
+                  <span className={`px-2 py-0.5 rounded-md text-[9px] font-extrabold border ${(analysis.ragChunkCount ?? 0) > 0 ? "bg-violet-50 border-violet-100 text-violet-600" : "bg-slate-50 border-slate-200 text-slate-400"}`}>
+                    RAG: {(analysis.ragChunkCount ?? 0) > 0 ? `${analysis.ragChunkCount}청크` : "미적용"}
+                  </span>
+                )}
+                {analysis && (
+                  <span className={`px-2 py-0.5 rounded-md text-[9px] font-extrabold border flex items-center gap-0.5 ${analysis.webContextApplied ? "bg-sky-50 border-sky-100 text-sky-600" : "bg-slate-50 border-slate-200 text-slate-400"}`}>
+                    <Globe className="w-2.5 h-2.5" /> 웹: {analysis.webContextApplied ? "포함" : "미포함"}
+                  </span>
+                )}
               </div>
             </div>
             

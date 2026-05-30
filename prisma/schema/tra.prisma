@@ -46,6 +46,11 @@ model Analysis {
   groundConfig     String?
   requiredCapacity String?
 
+  // AI 분석 메타데이터
+  ragChunkCount     Int     @default(0)
+  webContextApplied Boolean @default(false)
+  aiUsed            String?
+
   // 부문장 전용
   directorMemo String?
   draftOpinion String?

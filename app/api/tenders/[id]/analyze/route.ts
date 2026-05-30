@@ -130,16 +130,19 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     ragError = "RAG_UNAVAILABLE"
   }
 
-  // 2. 외부 웹 검색 (DuckDuckGo, API Key 불필요)
+  // 2. 외부 웹 검색 (DuckDuckGo, API Key 불필요) — searchWeb 플래그가 true일 때만 실행
+  const searchWeb: boolean = (body as Record<string, unknown>).searchWeb === true
   let webContext: string | undefined
-  try {
-    const keywords = extractTenderKeywords(combinedText)
-    if (keywords) {
-      const webResults = await searchWebForTender(`${keywords} cable specification standard`)
-      if (webResults) webContext = webResults
+  if (searchWeb) {
+    try {
+      const keywords = extractTenderKeywords(combinedText)
+      if (keywords) {
+        const webResults = await searchWebForTender(`${keywords} cable specification standard`)
+        if (webResults) webContext = webResults
+      }
+    } catch (e) {
+      console.warn("[analyze] 외부 웹 검색 실패, 웹 컨텍스트 없이 진행:", (e as Error).message)
     }
-  } catch (e) {
-    console.warn("[analyze] 외부 웹 검색 실패, 웹 컨텍스트 없이 진행:", (e as Error).message)
   }
 
   // 3. AI 분석 (Claude → OpenAI → Gemini 순서로 폴백)
@@ -152,19 +155,23 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: `AI 분석에 실패했습니다: ${msg}` }, { status: 500 })
   }
 
+  const webContextApplied = !!webContext
   const analysis = await prisma.analysis.create({
     data: {
       tenderId,
       documentId: documents[0].id,
       status: "DRAFT",
-      voltage: extracted.systemCharacteristics.voltage,
-      bilSil: extracted.systemCharacteristics.bilSil,
-      shortCircuit: extracted.systemCharacteristics.shortCircuit,
-      installCond: extracted.systemCharacteristics.installCond,
-      groundConfig: extracted.systemCharacteristics.groundConfig,
-      requiredCapacity: extracted.systemCharacteristics.requiredCapacity,
+      ragChunkCount,
+      webContextApplied,
+      aiUsed: extracted.aiUsed,
+      voltage: extracted.data.systemCharacteristics.voltage,
+      bilSil: extracted.data.systemCharacteristics.bilSil,
+      shortCircuit: extracted.data.systemCharacteristics.shortCircuit,
+      installCond: extracted.data.systemCharacteristics.installCond,
+      groundConfig: extracted.data.systemCharacteristics.groundConfig,
+      requiredCapacity: extracted.data.systemCharacteristics.requiredCapacity,
       requirements: {
-        create: extracted.requirements.map((r) => ({
+        create: extracted.data.requirements.map((r) => ({
           category: r.category,
           content: r.content,
           sourcePage: r.sourcePage,
@@ -181,7 +188,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     truncated: anyTruncated,
     ragApplied,
     ragChunkCount,
-    webContextApplied: !!webContext,
+    webContextApplied,
+    aiUsed: extracted.aiUsed,
     ...(ragError ? { ragError } : {}),
   })
 }

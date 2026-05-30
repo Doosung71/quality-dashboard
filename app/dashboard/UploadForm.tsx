@@ -18,6 +18,7 @@ import {
 
 type FileEntry = { id: string; file: File | null; type: "analyze" | "ref" }
 type Step = "idle" | "uploading" | "analyzing" | "done"
+type AnalyzeMeta = { ragChunkCount: number; webContextApplied: boolean; aiUsed: string }
 
 function makeEntryId() { return crypto.randomUUID() }
 function makeBlobPath(file: File) {
@@ -36,6 +37,9 @@ export default function UploadForm() {
   const [elapsed, setElapsed] = useState(0)
   const [analyzeStart, setAnalyzeStart] = useState(0)
   const [error, setError] = useState<string>()
+  const [searchWeb, setSearchWeb] = useState(false)
+  const [analyzeMeta, setAnalyzeMeta] = useState<AnalyzeMeta | null>(null)
+  const [pendingRedirect, setPendingRedirect] = useState<string | null>(null)
   const fileRefs = useRef<Map<string, HTMLInputElement>>(new Map())
 
   const isPending = step === "uploading" || step === "analyzing"
@@ -147,7 +151,7 @@ export default function UploadForm() {
       const analyzeRes = await fetch(`/api/tenders/${tenderId}/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ documentIds: analyzeDocumentIds }),
+        body: JSON.stringify({ documentIds: analyzeDocumentIds, searchWeb }),
       })
       if (!analyzeRes.ok) {
         const data = analyzeRes.headers.get("content-type")?.includes("application/json")
@@ -156,12 +160,15 @@ export default function UploadForm() {
         setStep("idle"); setProgress(0); return
       }
 
-      const { truncated } = await analyzeRes.json()
+      const { truncated, ragChunkCount, webContextApplied, aiUsed } = await analyzeRes.json()
       setProgress(100); setStep("done")
-      router.push(truncated ? `/tender/${tenderId}?truncated=1` : `/tender/${tenderId}`)
+      setAnalyzeMeta({ ragChunkCount: ragChunkCount ?? 0, webContextApplied: !!webContextApplied, aiUsed: aiUsed ?? "AI" })
+      setPendingRedirect(truncated ? `/tender/${tenderId}?truncated=1` : `/tender/${tenderId}`)
       router.refresh()
-    } catch {
-      setError("네트워크 오류가 발생했습니다. 다시 시도해주세요.")
+    } catch (err: unknown) {
+      console.error("[UploadForm Submit Error]", err)
+      const errMsg = err instanceof Error ? err.message : String(err)
+      setError(`네트워크 오류가 발생했습니다. 다시 시도해주세요. (상세: ${errMsg})`)
       setStep("idle"); setProgress(0)
     }
   }
@@ -259,6 +266,49 @@ export default function UploadForm() {
           <p className="text-[10px] text-slate-400 italic">
             💡 PDF 문서 없이 등록할 경우, 수동으로 요구 조건을 하나씩 기입할 수 있습니다.
           </p>
+        )}
+
+        {/* 웹 검색 옵션 */}
+        {analyzeCount > 0 && (
+          <label className="flex items-center gap-2 cursor-pointer select-none group">
+            <input
+              type="checkbox"
+              checked={searchWeb}
+              disabled={isPending}
+              onChange={(e) => setSearchWeb(e.target.checked)}
+              className="w-3.5 h-3.5 accent-slate-950 cursor-pointer"
+            />
+            <span className="text-[10px] font-bold text-slate-500 group-hover:text-slate-700 transition-colors">
+              실시간 외부 웹 검색 포함 (하이브리드 AI 분석)
+            </span>
+          </label>
+        )}
+
+        {/* 분석 완료 메타 패널 */}
+        {step === "done" && analyzeMeta && (
+          <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-3 space-y-2">
+            <p className="text-xs font-extrabold text-emerald-700">분석 완료</p>
+            <div className="flex flex-wrap gap-1.5">
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold">
+                AI: {analyzeMeta.aiUsed}
+              </span>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${analyzeMeta.ragChunkCount > 0 ? "bg-indigo-100 text-indigo-700" : "bg-slate-100 text-slate-400"}`}>
+                RAG: {analyzeMeta.ragChunkCount > 0 ? `${analyzeMeta.ragChunkCount}청크` : "미적용"}
+              </span>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${analyzeMeta.webContextApplied ? "bg-sky-100 text-sky-700" : "bg-slate-100 text-slate-400"}`}>
+                웹: {analyzeMeta.webContextApplied ? "포함" : "미포함"}
+              </span>
+            </div>
+            {pendingRedirect && (
+              <button
+                type="button"
+                onClick={() => router.push(pendingRedirect)}
+                className="text-[11px] font-extrabold text-emerald-700 underline"
+              >
+                결과 보기 →
+              </button>
+            )}
+          </div>
         )}
 
         {/* 진행률 인디케이터 (Vercel Blob Upload & Claude AI RAG Analysis) */}

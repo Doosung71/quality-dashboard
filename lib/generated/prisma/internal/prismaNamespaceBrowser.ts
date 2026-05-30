@@ -156,6 +156,9 @@ export const AnalysisScalarFieldEnum = {
   installCond: 'installCond',
   groundConfig: 'groundConfig',
   requiredCapacity: 'requiredCapacity',
+  ragChunkCount: 'ragChunkCount',
+  webContextApplied: 'webContextApplied',
+  aiUsed: 'aiUsed',
   directorMemo: 'directorMemo',
   draftOpinion: 'draftOpinion'
 } as const

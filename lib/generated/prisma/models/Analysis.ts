@@ -20,8 +20,18 @@ export type AnalysisModel = runtime.Types.Result.DefaultSelection<Prisma.$Analys
 
 export type AggregateAnalysis = {
   _count: AnalysisCountAggregateOutputType | null
+  _avg: AnalysisAvgAggregateOutputType | null
+  _sum: AnalysisSumAggregateOutputType | null
   _min: AnalysisMinAggregateOutputType | null
   _max: AnalysisMaxAggregateOutputType | null
+}
+
+export type AnalysisAvgAggregateOutputType = {
+  ragChunkCount: number | null
+}
+
+export type AnalysisSumAggregateOutputType = {
+  ragChunkCount: number | null
 }
 
 export type AnalysisMinAggregateOutputType = {
@@ -38,6 +48,9 @@ export type AnalysisMinAggregateOutputType = {
   installCond: string | null
   groundConfig: string | null
   requiredCapacity: string | null
+  ragChunkCount: number | null
+  webContextApplied: boolean | null
+  aiUsed: string | null
   directorMemo: string | null
   draftOpinion: string | null
 }
@@ -56,6 +69,9 @@ export type AnalysisMaxAggregateOutputType = {
   installCond: string | null
   groundConfig: string | null
   requiredCapacity: string | null
+  ragChunkCount: number | null
+  webContextApplied: boolean | null
+  aiUsed: string | null
   directorMemo: string | null
   draftOpinion: string | null
 }
@@ -74,11 +90,22 @@ export type AnalysisCountAggregateOutputType = {
   installCond: number
   groundConfig: number
   requiredCapacity: number
+  ragChunkCount: number
+  webContextApplied: number
+  aiUsed: number
   directorMemo: number
   draftOpinion: number
   _all: number
 }
 
+
+export type AnalysisAvgAggregateInputType = {
+  ragChunkCount?: true
+}
+
+export type AnalysisSumAggregateInputType = {
+  ragChunkCount?: true
+}
 
 export type AnalysisMinAggregateInputType = {
   id?: true
@@ -94,6 +121,9 @@ export type AnalysisMinAggregateInputType = {
   installCond?: true
   groundConfig?: true
   requiredCapacity?: true
+  ragChunkCount?: true
+  webContextApplied?: true
+  aiUsed?: true
   directorMemo?: true
   draftOpinion?: true
 }
@@ -112,6 +142,9 @@ export type AnalysisMaxAggregateInputType = {
   installCond?: true
   groundConfig?: true
   requiredCapacity?: true
+  ragChunkCount?: true
+  webContextApplied?: true
+  aiUsed?: true
   directorMemo?: true
   draftOpinion?: true
 }
@@ -130,6 +163,9 @@ export type AnalysisCountAggregateInputType = {
   installCond?: true
   groundConfig?: true
   requiredCapacity?: true
+  ragChunkCount?: true
+  webContextApplied?: true
+  aiUsed?: true
   directorMemo?: true
   draftOpinion?: true
   _all?: true
@@ -173,6 +209,18 @@ export type AnalysisAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: AnalysisAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: AnalysisSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: AnalysisMinAggregateInputType
@@ -203,6 +251,8 @@ export type AnalysisGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: AnalysisCountAggregateInputType | true
+  _avg?: AnalysisAvgAggregateInputType
+  _sum?: AnalysisSumAggregateInputType
   _min?: AnalysisMinAggregateInputType
   _max?: AnalysisMaxAggregateInputType
 }
@@ -221,9 +271,14 @@ export type AnalysisGroupByOutputType = {
   installCond: string | null
   groundConfig: string | null
   requiredCapacity: string | null
+  ragChunkCount: number
+  webContextApplied: boolean
+  aiUsed: string | null
   directorMemo: string | null
   draftOpinion: string | null
   _count: AnalysisCountAggregateOutputType | null
+  _avg: AnalysisAvgAggregateOutputType | null
+  _sum: AnalysisSumAggregateOutputType | null
   _min: AnalysisMinAggregateOutputType | null
   _max: AnalysisMaxAggregateOutputType | null
 }
@@ -260,6 +315,9 @@ export type AnalysisWhereInput = {
   installCond?: Prisma.StringNullableFilter<"Analysis"> | string | null
   groundConfig?: Prisma.StringNullableFilter<"Analysis"> | string | null
   requiredCapacity?: Prisma.StringNullableFilter<"Analysis"> | string | null
+  ragChunkCount?: Prisma.IntFilter<"Analysis"> | number
+  webContextApplied?: Prisma.BoolFilter<"Analysis"> | boolean
+  aiUsed?: Prisma.StringNullableFilter<"Analysis"> | string | null
   directorMemo?: Prisma.StringNullableFilter<"Analysis"> | string | null
   draftOpinion?: Prisma.StringNullableFilter<"Analysis"> | string | null
   tender?: Prisma.XOR<Prisma.TenderScalarRelationFilter, Prisma.TenderWhereInput>
@@ -283,6 +341,9 @@ export type AnalysisOrderByWithRelationInput = {
   installCond?: Prisma.SortOrderInput | Prisma.SortOrder
   groundConfig?: Prisma.SortOrderInput | Prisma.SortOrder
   requiredCapacity?: Prisma.SortOrderInput | Prisma.SortOrder
+  ragChunkCount?: Prisma.SortOrder
+  webContextApplied?: Prisma.SortOrder
+  aiUsed?: Prisma.SortOrderInput | Prisma.SortOrder
   directorMemo?: Prisma.SortOrderInput | Prisma.SortOrder
   draftOpinion?: Prisma.SortOrderInput | Prisma.SortOrder
   tender?: Prisma.TenderOrderByWithRelationInput
@@ -309,6 +370,9 @@ export type AnalysisWhereUniqueInput = Prisma.AtLeast<{
   installCond?: Prisma.StringNullableFilter<"Analysis"> | string | null
   groundConfig?: Prisma.StringNullableFilter<"Analysis"> | string | null
   requiredCapacity?: Prisma.StringNullableFilter<"Analysis"> | string | null
+  ragChunkCount?: Prisma.IntFilter<"Analysis"> | number
+  webContextApplied?: Prisma.BoolFilter<"Analysis"> | boolean
+  aiUsed?: Prisma.StringNullableFilter<"Analysis"> | string | null
   directorMemo?: Prisma.StringNullableFilter<"Analysis"> | string | null
   draftOpinion?: Prisma.StringNullableFilter<"Analysis"> | string | null
   tender?: Prisma.XOR<Prisma.TenderScalarRelationFilter, Prisma.TenderWhereInput>
@@ -332,11 +396,16 @@ export type AnalysisOrderByWithAggregationInput = {
   installCond?: Prisma.SortOrderInput | Prisma.SortOrder
   groundConfig?: Prisma.SortOrderInput | Prisma.SortOrder
   requiredCapacity?: Prisma.SortOrderInput | Prisma.SortOrder
+  ragChunkCount?: Prisma.SortOrder
+  webContextApplied?: Prisma.SortOrder
+  aiUsed?: Prisma.SortOrderInput | Prisma.SortOrder
   directorMemo?: Prisma.SortOrderInput | Prisma.SortOrder
   draftOpinion?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.AnalysisCountOrderByAggregateInput
+  _avg?: Prisma.AnalysisAvgOrderByAggregateInput
   _max?: Prisma.AnalysisMaxOrderByAggregateInput
   _min?: Prisma.AnalysisMinOrderByAggregateInput
+  _sum?: Prisma.AnalysisSumOrderByAggregateInput
 }
 
 export type AnalysisScalarWhereWithAggregatesInput = {
@@ -356,6 +425,9 @@ export type AnalysisScalarWhereWithAggregatesInput = {
   installCond?: Prisma.StringNullableWithAggregatesFilter<"Analysis"> | string | null
   groundConfig?: Prisma.StringNullableWithAggregatesFilter<"Analysis"> | string | null
   requiredCapacity?: Prisma.StringNullableWithAggregatesFilter<"Analysis"> | string | null
+  ragChunkCount?: Prisma.IntWithAggregatesFilter<"Analysis"> | number
+  webContextApplied?: Prisma.BoolWithAggregatesFilter<"Analysis"> | boolean
+  aiUsed?: Prisma.StringNullableWithAggregatesFilter<"Analysis"> | string | null
   directorMemo?: Prisma.StringNullableWithAggregatesFilter<"Analysis"> | string | null
   draftOpinion?: Prisma.StringNullableWithAggregatesFilter<"Analysis"> | string | null
 }
@@ -372,6 +444,9 @@ export type AnalysisCreateInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
   tender: Prisma.TenderCreateNestedOneWithoutAnalysesInput
@@ -395,6 +470,9 @@ export type AnalysisUncheckedCreateInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
   requirements?: Prisma.SpecRequirementUncheckedCreateNestedManyWithoutAnalysisInput
@@ -414,6 +492,9 @@ export type AnalysisUpdateInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tender?: Prisma.TenderUpdateOneRequiredWithoutAnalysesNestedInput
@@ -437,6 +518,9 @@ export type AnalysisUncheckedUpdateInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.SpecRequirementUncheckedUpdateManyWithoutAnalysisNestedInput
@@ -458,6 +542,9 @@ export type AnalysisCreateManyInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
 }
@@ -474,6 +561,9 @@ export type AnalysisUpdateManyMutationInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -492,6 +582,9 @@ export type AnalysisUncheckedUpdateManyInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -520,8 +613,15 @@ export type AnalysisCountOrderByAggregateInput = {
   installCond?: Prisma.SortOrder
   groundConfig?: Prisma.SortOrder
   requiredCapacity?: Prisma.SortOrder
+  ragChunkCount?: Prisma.SortOrder
+  webContextApplied?: Prisma.SortOrder
+  aiUsed?: Prisma.SortOrder
   directorMemo?: Prisma.SortOrder
   draftOpinion?: Prisma.SortOrder
+}
+
+export type AnalysisAvgOrderByAggregateInput = {
+  ragChunkCount?: Prisma.SortOrder
 }
 
 export type AnalysisMaxOrderByAggregateInput = {
@@ -538,6 +638,9 @@ export type AnalysisMaxOrderByAggregateInput = {
   installCond?: Prisma.SortOrder
   groundConfig?: Prisma.SortOrder
   requiredCapacity?: Prisma.SortOrder
+  ragChunkCount?: Prisma.SortOrder
+  webContextApplied?: Prisma.SortOrder
+  aiUsed?: Prisma.SortOrder
   directorMemo?: Prisma.SortOrder
   draftOpinion?: Prisma.SortOrder
 }
@@ -556,8 +659,15 @@ export type AnalysisMinOrderByAggregateInput = {
   installCond?: Prisma.SortOrder
   groundConfig?: Prisma.SortOrder
   requiredCapacity?: Prisma.SortOrder
+  ragChunkCount?: Prisma.SortOrder
+  webContextApplied?: Prisma.SortOrder
+  aiUsed?: Prisma.SortOrder
   directorMemo?: Prisma.SortOrder
   draftOpinion?: Prisma.SortOrder
+}
+
+export type AnalysisSumOrderByAggregateInput = {
+  ragChunkCount?: Prisma.SortOrder
 }
 
 export type AnalysisScalarRelationFilter = {
@@ -653,6 +763,14 @@ export type EnumAnalysisStatusFieldUpdateOperationsInput = {
   set?: $Enums.AnalysisStatus
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type AnalysisCreateNestedOneWithoutRequirementsInput = {
   create?: Prisma.XOR<Prisma.AnalysisCreateWithoutRequirementsInput, Prisma.AnalysisUncheckedCreateWithoutRequirementsInput>
   connectOrCreate?: Prisma.AnalysisCreateOrConnectWithoutRequirementsInput
@@ -707,6 +825,9 @@ export type AnalysisCreateWithoutTenderInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
   document?: Prisma.TenderDocumentCreateNestedOneWithoutAnalysesInput
@@ -728,6 +849,9 @@ export type AnalysisUncheckedCreateWithoutTenderInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
   requirements?: Prisma.SpecRequirementUncheckedCreateNestedManyWithoutAnalysisInput
@@ -778,6 +902,9 @@ export type AnalysisScalarWhereInput = {
   installCond?: Prisma.StringNullableFilter<"Analysis"> | string | null
   groundConfig?: Prisma.StringNullableFilter<"Analysis"> | string | null
   requiredCapacity?: Prisma.StringNullableFilter<"Analysis"> | string | null
+  ragChunkCount?: Prisma.IntFilter<"Analysis"> | number
+  webContextApplied?: Prisma.BoolFilter<"Analysis"> | boolean
+  aiUsed?: Prisma.StringNullableFilter<"Analysis"> | string | null
   directorMemo?: Prisma.StringNullableFilter<"Analysis"> | string | null
   draftOpinion?: Prisma.StringNullableFilter<"Analysis"> | string | null
 }
@@ -794,6 +921,9 @@ export type AnalysisCreateWithoutDocumentInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
   tender: Prisma.TenderCreateNestedOneWithoutAnalysesInput
@@ -815,6 +945,9 @@ export type AnalysisUncheckedCreateWithoutDocumentInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
   requirements?: Prisma.SpecRequirementUncheckedCreateNestedManyWithoutAnalysisInput
@@ -860,6 +993,9 @@ export type AnalysisCreateWithoutRequirementsInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
   tender: Prisma.TenderCreateNestedOneWithoutAnalysesInput
@@ -882,6 +1018,9 @@ export type AnalysisUncheckedCreateWithoutRequirementsInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
   history?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutAnalysisInput
@@ -916,6 +1055,9 @@ export type AnalysisUpdateWithoutRequirementsInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tender?: Prisma.TenderUpdateOneRequiredWithoutAnalysesNestedInput
@@ -938,6 +1080,9 @@ export type AnalysisUncheckedUpdateWithoutRequirementsInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   history?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutAnalysisNestedInput
@@ -956,6 +1101,9 @@ export type AnalysisCreateWithoutHistoryInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
   tender: Prisma.TenderCreateNestedOneWithoutAnalysesInput
@@ -978,6 +1126,9 @@ export type AnalysisUncheckedCreateWithoutHistoryInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
   requirements?: Prisma.SpecRequirementUncheckedCreateNestedManyWithoutAnalysisInput
@@ -1012,6 +1163,9 @@ export type AnalysisUpdateWithoutHistoryInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tender?: Prisma.TenderUpdateOneRequiredWithoutAnalysesNestedInput
@@ -1034,6 +1188,9 @@ export type AnalysisUncheckedUpdateWithoutHistoryInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.SpecRequirementUncheckedUpdateManyWithoutAnalysisNestedInput
@@ -1052,6 +1209,9 @@ export type AnalysisCreateWithoutCommentsInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
   tender: Prisma.TenderCreateNestedOneWithoutAnalysesInput
@@ -1074,6 +1234,9 @@ export type AnalysisUncheckedCreateWithoutCommentsInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
   requirements?: Prisma.SpecRequirementUncheckedCreateNestedManyWithoutAnalysisInput
@@ -1108,6 +1271,9 @@ export type AnalysisUpdateWithoutCommentsInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tender?: Prisma.TenderUpdateOneRequiredWithoutAnalysesNestedInput
@@ -1130,6 +1296,9 @@ export type AnalysisUncheckedUpdateWithoutCommentsInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.SpecRequirementUncheckedUpdateManyWithoutAnalysisNestedInput
@@ -1149,6 +1318,9 @@ export type AnalysisCreateManyTenderInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
 }
@@ -1165,6 +1337,9 @@ export type AnalysisUpdateWithoutTenderInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   document?: Prisma.TenderDocumentUpdateOneWithoutAnalysesNestedInput
@@ -1186,6 +1361,9 @@ export type AnalysisUncheckedUpdateWithoutTenderInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.SpecRequirementUncheckedUpdateManyWithoutAnalysisNestedInput
@@ -1206,6 +1384,9 @@ export type AnalysisUncheckedUpdateManyWithoutTenderInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -1223,6 +1404,9 @@ export type AnalysisCreateManyDocumentInput = {
   installCond?: string | null
   groundConfig?: string | null
   requiredCapacity?: string | null
+  ragChunkCount?: number
+  webContextApplied?: boolean
+  aiUsed?: string | null
   directorMemo?: string | null
   draftOpinion?: string | null
 }
@@ -1239,6 +1423,9 @@ export type AnalysisUpdateWithoutDocumentInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tender?: Prisma.TenderUpdateOneRequiredWithoutAnalysesNestedInput
@@ -1260,6 +1447,9 @@ export type AnalysisUncheckedUpdateWithoutDocumentInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.SpecRequirementUncheckedUpdateManyWithoutAnalysisNestedInput
@@ -1280,6 +1470,9 @@ export type AnalysisUncheckedUpdateManyWithoutDocumentInput = {
   installCond?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groundConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredCapacity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragChunkCount?: Prisma.IntFieldUpdateOperationsInput | number
+  webContextApplied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directorMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   draftOpinion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -1347,6 +1540,9 @@ export type AnalysisSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   installCond?: boolean
   groundConfig?: boolean
   requiredCapacity?: boolean
+  ragChunkCount?: boolean
+  webContextApplied?: boolean
+  aiUsed?: boolean
   directorMemo?: boolean
   draftOpinion?: boolean
   tender?: boolean | Prisma.TenderDefaultArgs<ExtArgs>
@@ -1371,6 +1567,9 @@ export type AnalysisSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   installCond?: boolean
   groundConfig?: boolean
   requiredCapacity?: boolean
+  ragChunkCount?: boolean
+  webContextApplied?: boolean
+  aiUsed?: boolean
   directorMemo?: boolean
   draftOpinion?: boolean
   tender?: boolean | Prisma.TenderDefaultArgs<ExtArgs>
@@ -1391,6 +1590,9 @@ export type AnalysisSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   installCond?: boolean
   groundConfig?: boolean
   requiredCapacity?: boolean
+  ragChunkCount?: boolean
+  webContextApplied?: boolean
+  aiUsed?: boolean
   directorMemo?: boolean
   draftOpinion?: boolean
   tender?: boolean | Prisma.TenderDefaultArgs<ExtArgs>
@@ -1411,11 +1613,14 @@ export type AnalysisSelectScalar = {
   installCond?: boolean
   groundConfig?: boolean
   requiredCapacity?: boolean
+  ragChunkCount?: boolean
+  webContextApplied?: boolean
+  aiUsed?: boolean
   directorMemo?: boolean
   draftOpinion?: boolean
 }
 
-export type AnalysisOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenderId" | "documentId" | "status" | "submittedAt" | "createdAt" | "updatedAt" | "voltage" | "bilSil" | "shortCircuit" | "installCond" | "groundConfig" | "requiredCapacity" | "directorMemo" | "draftOpinion", ExtArgs["result"]["analysis"]>
+export type AnalysisOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenderId" | "documentId" | "status" | "submittedAt" | "createdAt" | "updatedAt" | "voltage" | "bilSil" | "shortCircuit" | "installCond" | "groundConfig" | "requiredCapacity" | "ragChunkCount" | "webContextApplied" | "aiUsed" | "directorMemo" | "draftOpinion", ExtArgs["result"]["analysis"]>
 export type AnalysisInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tender?: boolean | Prisma.TenderDefaultArgs<ExtArgs>
   document?: boolean | Prisma.Analysis$documentArgs<ExtArgs>
@@ -1456,6 +1661,9 @@ export type $AnalysisPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     installCond: string | null
     groundConfig: string | null
     requiredCapacity: string | null
+    ragChunkCount: number
+    webContextApplied: boolean
+    aiUsed: string | null
     directorMemo: string | null
     draftOpinion: string | null
   }, ExtArgs["result"]["analysis"]>
@@ -1899,6 +2107,9 @@ export interface AnalysisFieldRefs {
   readonly installCond: Prisma.FieldRef<"Analysis", 'String'>
   readonly groundConfig: Prisma.FieldRef<"Analysis", 'String'>
   readonly requiredCapacity: Prisma.FieldRef<"Analysis", 'String'>
+  readonly ragChunkCount: Prisma.FieldRef<"Analysis", 'Int'>
+  readonly webContextApplied: Prisma.FieldRef<"Analysis", 'Boolean'>
+  readonly aiUsed: Prisma.FieldRef<"Analysis", 'String'>
   readonly directorMemo: Prisma.FieldRef<"Analysis", 'String'>
   readonly draftOpinion: Prisma.FieldRef<"Analysis", 'String'>
 }
