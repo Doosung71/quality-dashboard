@@ -3,6 +3,16 @@ import { handleUploadPresigned, type HandleUploadPresignedBody } from "@vercel/b
 import { NextRequest, NextResponse } from "next/server"
 import { requireActiveSession } from "@/lib/session-guard"
 
+const MAX_UPLOAD_BYTES = 500 * 1024 * 1024
+const TOKEN_TTL_MS = 60 * 60 * 1000
+const PDF_CONTENT_TYPES = ["application/pdf"]
+
+function assertTenderPdfPath(pathname: string) {
+  if (!pathname.startsWith("tender-documents/") || !pathname.endsWith(".pdf")) {
+    throw new Error("허용되지 않은 업로드 경로입니다.")
+  }
+}
+
 export async function POST(request: NextRequest) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
@@ -15,18 +25,19 @@ export async function POST(request: NextRequest) {
       request,
       webhookPublicKey: "not-used",
       getSignedToken: async (pathname) => {
-        const validUntil = Date.now() + 60 * 60 * 1000
+        assertTenderPdfPath(pathname)
+        const validUntil = Date.now() + TOKEN_TTL_MS
         return {
           token: await issueSignedToken({
             pathname,
             operations: ["put"],
-            allowedContentTypes: ["application/pdf"],
-            maximumSizeInBytes: 500 * 1024 * 1024,
+            allowedContentTypes: PDF_CONTENT_TYPES,
+            maximumSizeInBytes: MAX_UPLOAD_BYTES,
             validUntil,
           }),
           urlOptions: {
-            allowedContentTypes: ["application/pdf"],
-            maximumSizeInBytes: 500 * 1024 * 1024,
+            allowedContentTypes: PDF_CONTENT_TYPES,
+            maximumSizeInBytes: MAX_UPLOAD_BYTES,
             validUntil,
           },
         }

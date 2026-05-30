@@ -7,14 +7,24 @@ import { searchKnowledge } from "@/lib/knowledge"
 import { readBlobBuffer } from "@/lib/storage"
 import { parseRagThreshold, buildKnowledgeChunksXml } from "@/lib/rag"
 
+const DDG_TIMEOUT_MS = 5000
+
 // DuckDuckGo Lite HTML 파서를 활용한 실시간 외부 웹 검색 (API Key 불필요)
 async function searchWebForTender(query: string): Promise<string> {
   try {
-    const res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-      },
-    })
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), DDG_TIMEOUT_MS)
+    let res: Response
+    try {
+      res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        },
+        signal: controller.signal,
+      })
+    } finally {
+      clearTimeout(timer)
+    }
     if (!res.ok) return ""
 
     const html = await res.text()
