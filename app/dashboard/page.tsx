@@ -120,10 +120,10 @@ export default async function DashboardPage() {
           <Link href="/" className="text-slate-500 hover:text-slate-800 flex items-center gap-1">
             <LayoutDashboard className="w-4 h-4" /> 전사대시보드
           </Link>
-          <Link href="/help" className="text-slate-500 hover:text-slate-800 flex items-center gap-1">
+          <Link href="/help" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-slate-800 flex items-center gap-1">
             <HelpCircle className="w-4 h-4" /> 도움말
           </Link>
-          <Link href="/feedback" className="text-slate-500 hover:text-slate-800 flex items-center gap-1">
+          <Link href="/feedback" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-slate-800 flex items-center gap-1">
             <MessageSquare className="w-4 h-4" /> 피드백
           </Link>
           
