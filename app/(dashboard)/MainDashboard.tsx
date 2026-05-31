@@ -570,6 +570,13 @@ export function MainDashboard({ role, userName, userId }: Props) {
                   <FileSearch className="w-4 h-4 text-slate-500" /> 실무자 퀵 링크
                 </h4>
                 <div className="space-y-2 text-xs">
+                  <Link href="/dashboard" className="p-3 bg-indigo-950 text-white rounded-xl flex justify-between items-center group transition-all hover:bg-indigo-800">
+                    <div>
+                      <p className="font-bold">입찰 검토 AI</p>
+                      <p className="text-[9px] text-indigo-300 mt-0.5">시방서 업로드 → 독소조항 자동 분석</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-indigo-400 group-hover:translate-x-1 transition-transform" />
+                  </Link>
                   <Link href="/knowledge" className="p-3 bg-indigo-50/50 border border-indigo-100/50 hover:border-indigo-500 rounded-xl flex justify-between items-center group transition-all">
                     <div>
                       <p className="font-bold text-slate-900">IEC/KS 규격 RAG 검색</p>
