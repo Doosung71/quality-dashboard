@@ -11,7 +11,8 @@ import {
   Sparkles,
   Loader2,
   X,
-  Plus
+  Plus,
+  RotateCcw
 } from "lucide-react"
 
 type FileEntry = { id: string; file: File | null; type: "analyze" | "ref" }
@@ -343,23 +344,43 @@ export default function UploadForm() {
 
         {error && <p className="text-xs text-rose-600 font-bold">{error}</p>}
 
-        <Button 
-          type="submit" 
-          disabled={isPending} 
-          className="w-full bg-slate-950 hover:bg-slate-800 text-white font-extrabold rounded-xl py-2.5 shadow-sm transition-all"
-        >
-          {isPending ? (
+        {step === "done" ? (
+          <Button
+            type="button"
+            onClick={() => {
+              setStep("idle")
+              setProgress(0)
+              setAnalyzeMeta(null)
+              setPendingRedirect(null)
+              setError(undefined)
+              setEntries([{ id: makeEntryId(), file: null, type: "analyze" }])
+            }}
+            className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold rounded-xl py-2.5 shadow-sm transition-all border border-slate-200"
+          >
             <span className="flex items-center justify-center gap-1.5">
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              {submitLabel}
+              <RotateCcw className="w-3.5 h-3.5" />
+              새 입찰 분석 시작
             </span>
-          ) : (
-            <span className="flex items-center justify-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
-              {submitLabel}
-            </span>
-          )}
-        </Button>
+          </Button>
+        ) : (
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="w-full bg-slate-950 hover:bg-slate-800 text-white font-extrabold rounded-xl py-2.5 shadow-sm transition-all"
+          >
+            {isPending ? (
+              <span className="flex items-center justify-center gap-1.5">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                {submitLabel}
+              </span>
+            ) : (
+              <span className="flex items-center justify-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                {submitLabel}
+              </span>
+            )}
+          </Button>
+        )}
       </form>
     </section>
   )
