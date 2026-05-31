@@ -47,7 +47,7 @@ export function MainDashboard({ role, userName, userId }: Props) {
     () => roleToView(role)
   );
 
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
 
   const dDay = useMemo(() => {
     const today = new Date(todayStr);

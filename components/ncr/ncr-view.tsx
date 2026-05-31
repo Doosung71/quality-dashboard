@@ -36,7 +36,7 @@ export function NCRView({ data }: NCRViewProps) {
   const [selectedSeverities, setSelectedSeverities] = useState<NCRSeverity[]>([]);
   const [selectedDispositions, setSelectedDispositions] = useState<NCRDispositionType[]>([]);
 
-  const TODAY = new Date().toISOString().slice(0, 10);
+  const TODAY = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
 
   // 기한 경과(Overdue) 여부 체크
   const isOverdue = (ncr: NCR) => {

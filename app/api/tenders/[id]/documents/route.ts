@@ -7,11 +7,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (session instanceof NextResponse) return session
   const { id: tenderId } = await params
 
+  // 역할에 관계없이 본인이 생성한 tender에만 문서 추가 가능
   const tender = await prisma.tender.findFirst({
-    where: {
-      id: tenderId,
-      ...(session.user.role === "PRACTITIONER" ? { createdById: session.user.id } : {}),
-    },
+    where: { id: tenderId, createdById: session.user.id },
   })
   if (!tender) return NextResponse.json({ error: "입찰을 찾을 수 없습니다." }, { status: 404 })
 
