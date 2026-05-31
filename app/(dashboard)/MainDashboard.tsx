@@ -47,7 +47,7 @@ export function MainDashboard({ role, userName, userId }: Props) {
     () => roleToView(role)
   );
 
-  const todayStr = "2026-05-30";
+  const todayStr = new Date().toISOString().slice(0, 10);
 
   const dDay = useMemo(() => {
     const today = new Date(todayStr);

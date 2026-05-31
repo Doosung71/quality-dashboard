@@ -11,11 +11,12 @@ export async function DELETE(
   if (session instanceof NextResponse) return session
   const { id: tenderId, docId } = await params
 
+  // 역할에 관계없이 본인이 생성한 tender의 문서만 삭제 가능
   const doc = await prisma.tenderDocument.findFirst({
     where: {
       id: docId,
       tenderId,
-      ...(session.user.role === "PRACTITIONER" ? { tender: { createdById: session.user.id } } : {}),
+      tender: { createdById: session.user.id },
     },
   })
   if (!doc) return NextResponse.json({ error: "파일을 찾을 수 없습니다." }, { status: 404 })
