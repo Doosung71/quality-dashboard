@@ -23,6 +23,7 @@ export default function FilesPanel({ tenderId, documents, canManage, canAnalyze,
   const [attaching, setAttaching] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [elapsed, setElapsed] = useState(0)
+  const [searchWeb, setSearchWeb] = useState(false)
 
   async function handleFirstAnalyze(files: FileList) {
     if (files.length === 0) return
@@ -81,7 +82,7 @@ export default function FilesPanel({ tenderId, documents, canManage, canAnalyze,
       const res = await fetch(`/api/tenders/${tenderId}/reanalyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ blobUrl: blob.url, filename: file.name }),
+        body: JSON.stringify({ blobUrl: blob.url, filename: file.name, searchWeb }),
       })
       if (!res.ok) {
         const d = await res.json().catch(() => ({}))
@@ -192,7 +193,7 @@ export default function FilesPanel({ tenderId, documents, canManage, canAnalyze,
           </div>
         )}
         {canManage && (
-          <div>
+          <div className="space-y-1.5">
             <input
               ref={reanalyzeRef}
               type="file"
@@ -200,12 +201,22 @@ export default function FilesPanel({ tenderId, documents, canManage, canAnalyze,
               className="hidden"
               onChange={(e) => { const f = e.target.files?.[0]; if (f) handleReanalyze(f); e.target.value = "" }}
             />
+            <label className="flex items-center gap-1.5 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={searchWeb}
+                disabled={reanalyzing}
+                onChange={(e) => setSearchWeb(e.target.checked)}
+                className="w-3 h-3 accent-slate-950 cursor-pointer"
+              />
+              <span className="text-[10px] font-bold text-zinc-500">실시간 외부 웹 검색 포함 (하이브리드 AI 재분석)</span>
+            </label>
             <Button size="sm" variant="outline" disabled={reanalyzing}
               onClick={() => reanalyzeRef.current?.click()}>
               {reanalyzing ? `재분석 중… ${elapsed}초` : "PDF 교체 후 재분석"}
             </Button>
             {reanalyzing && (
-              <p className="text-xs text-zinc-400 mt-1">기존 분석 결과가 교체됩니다.</p>
+              <p className="text-xs text-zinc-400">기존 분석 결과가 교체됩니다.</p>
             )}
           </div>
         )}
