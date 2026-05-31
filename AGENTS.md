@@ -2,13 +2,13 @@
 
 ## 1. 목적
 
-이 문서는 이 프로젝트에서 Claude Code CLI, Codex CLI, Gemini CLI, ChatGPT를 어떻게 사용할지 정하는 작업 규칙이다.
+이 문서는 이 프로젝트에서 Claude Code CLI, Codex CLI, Antigravity CLI, ChatGPT를 어떻게 사용할지 정하는 작업 규칙이다.
 
 이 프로젝트의 기본 운영 방식은 다음과 같다.
 
 - Claude Code CLI를 중심으로 개발을 진행한다.
 - Codex CLI는 코드 리뷰와 검증에 사용한다.
-- Gemini CLI는 기술 조사와 대안 비교가 필요할 때 사용한다.
+- Antigravity CLI는 기술 조사와 대안 비교가 필요할 때 사용한다.
 - ChatGPT는 전략 정리, 학습, 프롬프트 작성, 문서화를 돕는다.
 
 처음부터 여러 Agent가 동시에 코드를 수정하지 않는다.
@@ -23,14 +23,14 @@
 
 기본적으로 파일 수정 권한은 Claude Code CLI에게만 있다.
 
-Codex CLI와 Gemini CLI는 사용자가 명확히 허락하지 않는 한 파일을 수정하지 않는다.
+Codex CLI와 Antigravity CLI는 사용자가 명확히 허락하지 않는 한 파일을 수정하지 않는다.
 
 기본 역할은 다음과 같다.
 
 ```text
 Claude는 구현한다.
 Codex는 리뷰한다.
-Gemini는 조사한다.
+Antigravity는 조사한다.
 ChatGPT는 정리하고 설명한다.
 사용자가 최종 결정한다.
 ```
@@ -78,7 +78,7 @@ quality-dashboard/
 ├── lib/
 │   └── utils.ts
 ├── docs/
-│   ├── research/                      # Gemini 조사 결과 저장
+│   ├── research/                      # Antigravity 조사 결과 저장
 │   └── reviews/                       # Codex 리뷰 결과 저장
 └── PRD.md                             # 제품 요구사항 (마일스톤 포함)
 ```
@@ -89,7 +89,7 @@ quality-dashboard/
 
 ```
 PRD.md에서 해당 영역 요구사항 확인
-→ 불확실성 있으면 Gemini에게 조사 요청
+→ 불확실성 있으면 Antigravity에게 조사 요청
 → types/ 에 TypeScript 타입 정의
 → data/ 에 JSON + .data.ts 파일 작성
 → components/ 에 클라이언트 컴포넌트 구현
@@ -141,12 +141,12 @@ npm run lint     # ESLint 검사
 
 ---
 
-## 9. Gemini·Codex 협업 방법 (수동 운영)
+## 9. Antigravity·Codex 협업 방법 (수동 운영)
 
 모든 협업은 대화창에서 명시적 요청으로 시작한다. 자동 실행 훅은 사용하지 않는다.  
-**파일 수정 주체는 Claude Code 하나로 제한** — Gemini와 Codex는 코드를 직접 작성하거나 파일을 수정하지 않는다.
+**파일 수정 주체는 Claude Code 하나로 제한** — Antigravity와 Codex는 코드를 직접 작성하거나 파일을 수정하지 않는다.
 
-### Gemini 리서치 요청
+### Antigravity 리서치 요청
 설계 전 조사가 필요할 때 아래 형식으로 대화창에 직접 요청.  
 결과는 `docs/research/` 에 저장 후 참조.
 
