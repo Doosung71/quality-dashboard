@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import ComplyMark from "./ComplyMark"
 import DeviationMark from "./DeviationMark"
-import { Sparkles, Loader2 } from "lucide-react"
+import { Sparkles, Loader2, ChevronDown, ChevronUp } from "lucide-react"
 
 type ComplianceStatus = "COMPLY" | "NON_COMPLY" | "TBD"
 type DeviationType = "DEVIATION" | "CLARIFICATION" | "ASSUMPTION"
@@ -42,8 +42,13 @@ export default function RequirementsEdit({ analysisId, requirements: initial }: 
   const [searchWebAdd, setSearchWebAdd] = useState(false)
   const [searchWebEdit, setSearchWebEdit] = useState(false)
   const [suggesting, setSuggesting] = useState(false)
+  const [expandedAdd, setExpandedAdd] = useState(false)
+  const [expandedEdit, setExpandedEdit] = useState(false)
 
-  async function suggestContent(category: string, hint: string, searchWeb: boolean, onResult: (c: string) => void) {
+  async function suggestContent(
+    category: string, hint: string, searchWeb: boolean,
+    onResult: (c: string) => void, onExpand: () => void
+  ) {
     if (!category.trim()) { alert("분류를 먼저 입력하세요."); return }
     setSuggesting(true)
     try {
@@ -55,6 +60,7 @@ export default function RequirementsEdit({ analysisId, requirements: initial }: 
       if (!res.ok) { const d = await res.json().catch(() => ({})); alert((d as {error?:string}).error ?? "AI 제안 실패"); return }
       const { content } = await res.json() as { content: string }
       onResult(content)
+      onExpand()
     } catch { alert("네트워크 오류가 발생했습니다.") }
     finally { setSuggesting(false) }
   }
@@ -125,7 +131,13 @@ export default function RequirementsEdit({ analysisId, requirements: initial }: 
               </div>
               <div>
                 <div className="flex items-center justify-between mb-0.5">
-                  <label className="text-xs text-zinc-500">내용</label>
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs text-zinc-500">내용</label>
+                    <button type="button" onClick={() => setExpandedEdit((v) => !v)}
+                      className="flex items-center gap-0.5 text-[10px] text-zinc-400 hover:text-zinc-700 transition-colors">
+                      {expandedEdit ? <><ChevronUp className="w-3 h-3" />접기</> : <><ChevronDown className="w-3 h-3" />펼치기</>}
+                    </button>
+                  </div>
                   <div className="flex items-center gap-2">
                     <label className="flex items-center gap-1 cursor-pointer select-none">
                       <input type="checkbox" checked={searchWebEdit} disabled={suggesting}
@@ -134,14 +146,16 @@ export default function RequirementsEdit({ analysisId, requirements: initial }: 
                       <span className="text-[10px] text-zinc-400 font-medium">웹 검색 포함</span>
                     </label>
                     <button type="button" disabled={suggesting}
-                      onClick={() => suggestContent(editValues.category, editValues.content, searchWebEdit, (c) => setEditValues((v) => ({ ...v, content: c })))}
+                      onClick={() => suggestContent(editValues.category, editValues.content, searchWebEdit, (c) => setEditValues((v) => ({ ...v, content: c })), () => setExpandedEdit(true))}
                       className="flex items-center gap-1 text-[10px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 disabled:opacity-40 transition-all">
                       {suggesting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
                       AI 제안
                     </button>
                   </div>
                 </div>
-                <textarea className="w-full border rounded px-2 py-1 text-sm mt-0.5 resize-none" rows={2}
+                <textarea
+                  className="w-full border rounded px-2 py-1 text-sm mt-0.5 resize-none transition-all duration-200"
+                  rows={expandedEdit ? 10 : 3}
                   value={editValues.content}
                   onChange={(e) => setEditValues((v) => ({ ...v, content: e.target.value }))} />
               </div>
@@ -210,7 +224,13 @@ export default function RequirementsEdit({ analysisId, requirements: initial }: 
           </div>
           <div>
             <div className="flex items-center justify-between mb-0.5">
-              <label className="text-xs text-zinc-500">내용</label>
+              <div className="flex items-center gap-2">
+                <label className="text-xs text-zinc-500">내용</label>
+                <button type="button" onClick={() => setExpandedAdd((v) => !v)}
+                  className="flex items-center gap-0.5 text-[10px] text-zinc-400 hover:text-zinc-700 transition-colors">
+                  {expandedAdd ? <><ChevronUp className="w-3 h-3" />접기</> : <><ChevronDown className="w-3 h-3" />펼치기</>}
+                </button>
+              </div>
               <div className="flex items-center gap-2">
                 <label className="flex items-center gap-1 cursor-pointer select-none">
                   <input type="checkbox" checked={searchWebAdd} disabled={suggesting}
@@ -219,15 +239,18 @@ export default function RequirementsEdit({ analysisId, requirements: initial }: 
                   <span className="text-[10px] text-zinc-400 font-medium">웹 검색 포함</span>
                 </label>
                 <button type="button" disabled={suggesting}
-                  onClick={() => suggestContent(newReq.category, newReq.content, searchWebAdd, (c) => setNewReq((v) => ({ ...v, content: c })))}
+                  onClick={() => suggestContent(newReq.category, newReq.content, searchWebAdd, (c) => setNewReq((v) => ({ ...v, content: c })), () => setExpandedAdd(true))}
                   className="flex items-center gap-1 text-[10px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 disabled:opacity-40 transition-all">
                   {suggesting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
                   AI 제안
                 </button>
               </div>
             </div>
-            <textarea className="w-full border rounded px-2 py-1 text-sm mt-0.5 resize-none" rows={2}
-              value={newReq.content} onChange={(e) => setNewReq((v) => ({ ...v, content: e.target.value }))} />
+            <textarea
+              className="w-full border rounded px-2 py-1 text-sm mt-0.5 resize-none transition-all duration-200"
+              rows={expandedAdd ? 10 : 3}
+              value={newReq.content}
+              onChange={(e) => setNewReq((v) => ({ ...v, content: e.target.value }))} />
           </div>
           <div className="flex gap-4 text-sm">
             <label className="flex items-center gap-1.5 cursor-pointer">
