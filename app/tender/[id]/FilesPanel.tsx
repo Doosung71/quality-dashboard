@@ -68,21 +68,26 @@ export default function FilesPanel({ tenderId, documents, canManage, canAnalyze,
     }
   }
 
-  async function handleReanalyze(file: File) {
+  async function handleReanalyze(fileList: FileList) {
+    if (fileList.length === 0) return
     setReanalyzing(true)
     setElapsed(0)
     const start = Date.now()
     const timer = setInterval(() => setElapsed(Math.floor((Date.now() - start) / 1000)), 1000)
 
     try {
-      const blob = await uploadPresigned(makeBlobPath(file), file, {
-        access: "private",
-        handleUploadUrl: "/api/blob-upload",
-      })
+      const files: { blobUrl: string; filename: string }[] = []
+      for (const file of Array.from(fileList)) {
+        const blob = await uploadPresigned(makeBlobPath(file), file, {
+          access: "private",
+          handleUploadUrl: "/api/blob-upload",
+        })
+        files.push({ blobUrl: blob.url, filename: file.name })
+      }
       const res = await fetch(`/api/tenders/${tenderId}/reanalyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ blobUrl: blob.url, filename: file.name, searchWeb }),
+        body: JSON.stringify({ files, searchWeb }),
       })
       if (!res.ok) {
         const d = await res.json().catch(() => ({}))
@@ -198,8 +203,9 @@ export default function FilesPanel({ tenderId, documents, canManage, canAnalyze,
               ref={reanalyzeRef}
               type="file"
               accept="application/pdf"
+              multiple
               className="hidden"
-              onChange={(e) => { const f = e.target.files?.[0]; if (f) handleReanalyze(f); e.target.value = "" }}
+              onChange={(e) => { if (e.target.files?.length) handleReanalyze(e.target.files); e.target.value = "" }}
             />
             <label className="flex items-center gap-1.5 cursor-pointer select-none">
               <input
@@ -213,10 +219,10 @@ export default function FilesPanel({ tenderId, documents, canManage, canAnalyze,
             </label>
             <Button size="sm" variant="outline" disabled={reanalyzing}
               onClick={() => reanalyzeRef.current?.click()}>
-              {reanalyzing ? `재분석 중… ${elapsed}초` : "PDF 교체 후 재분석"}
+              {reanalyzing ? `분석 중… ${elapsed}초` : "새 버전 분석 추가"}
             </Button>
             {reanalyzing && (
-              <p className="text-xs text-zinc-400">기존 분석 결과가 교체됩니다.</p>
+              <p className="text-xs text-zinc-400">PDF를 분석해 새 버전으로 누적 저장합니다.</p>
             )}
           </div>
         )}

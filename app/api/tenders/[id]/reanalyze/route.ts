@@ -62,41 +62,41 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "요청 형식이 올바르지 않습니다." }, { status: 400 })
   }
 
-  const { blobUrl, filename, searchWeb } = body as Record<string, unknown>
-  if (typeof blobUrl !== "string" || !blobUrl.startsWith("https://")) {
-    return NextResponse.json({ error: "올바른 blobUrl이 필요합니다." }, { status: 400 })
+  // files: [{blobUrl, filename}] 배열 또는 단일 {blobUrl, filename} 허용
+  const b = body as Record<string, unknown>
+  const searchWeb = b.searchWeb
+  const rawFiles = b.files ?? (b.blobUrl ? [{ blobUrl: b.blobUrl, filename: b.filename }] : null)
+  if (!Array.isArray(rawFiles) || rawFiles.length === 0) {
+    return NextResponse.json({ error: "files 배열이 필요합니다." }, { status: 400 })
   }
-  if (typeof filename !== "string" || !filename) {
-    return NextResponse.json({ error: "filename이 필요합니다." }, { status: 400 })
+  const files = rawFiles as { blobUrl: string; filename: string }[]
+  for (const f of files) {
+    if (typeof f.blobUrl !== "string" || !f.blobUrl.startsWith("https://"))
+      return NextResponse.json({ error: "올바른 blobUrl이 필요합니다." }, { status: 400 })
+    if (typeof f.filename !== "string" || !f.filename)
+      return NextResponse.json({ error: "filename이 필요합니다." }, { status: 400 })
   }
 
   const tender = await prisma.tender.findFirst({
     where: { id: tenderId, createdById: session.user.id },
-    include: {
-      analyses: {
-        where: { status: "DRAFT", submittedAt: null },
-        include: {
-          requirements: { select: { id: true } },
-          document: { select: { id: true, storagePath: true } },
-        },
-        orderBy: { createdAt: "desc" },
-        take: 1,
-      },
-    },
   })
   if (!tender) return NextResponse.json({ error: "입찰을 찾을 수 없습니다." }, { status: 404 })
 
-  let pdfText: string
-  let truncated: boolean
-  try {
-    const buffer = await readBlobBuffer(blobUrl as string)
-    if (!buffer) throw new Error("blob fetch failed")
-    const result = await extractTextFromPdf(buffer)
-    pdfText = result.text
-    truncated = result.truncated
-  } catch {
-    await deleteBlob(blobUrl as string)
-    return NextResponse.json({ error: "분석 중 오류가 발생했습니다." }, { status: 500 })
+  // 여러 PDF 텍스트 합산
+  let pdfText = ""
+  let truncated = false
+  for (const f of files) {
+    try {
+      const buffer = await readBlobBuffer(f.blobUrl)
+      if (!buffer) throw new Error("blob fetch failed")
+      const result = await extractTextFromPdf(buffer)
+      if (pdfText) pdfText += "\n\n---\n\n"
+      pdfText += result.text
+      if (result.truncated) truncated = true
+    } catch {
+      await deleteBlob(f.blobUrl)
+      return NextResponse.json({ error: "분석 중 오류가 발생했습니다." }, { status: 500 })
+    }
   }
 
   // RAG 지식 검색
@@ -125,29 +125,20 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   try {
     extracted = await extractTenderSpec(pdfText, knowledgeContext, webContext)
   } catch {
-    await deleteBlob(blobUrl as string)
     return NextResponse.json({ error: "분석 중 오류가 발생했습니다." }, { status: 500 })
   }
 
-  const oldAnalysis = tender.analyses[0]
-  const oldDocInfo = oldAnalysis?.document ?? null
-
+  // 기존 분석은 삭제하지 않고 새 분석을 누적 추가
   const result = await prisma.$transaction(async (tx) => {
-    const newDoc = await tx.tenderDocument.create({
-      data: { tenderId, filename, storagePath: blobUrl },
-    })
-
-    if (oldAnalysis) {
-      await tx.comment.deleteMany({ where: { analysisId: oldAnalysis.id } })
-      await tx.reviewHistory.deleteMany({ where: { analysisId: oldAnalysis.id } })
-      await tx.specRequirement.deleteMany({ where: { analysisId: oldAnalysis.id } })
-      await tx.analysis.delete({ where: { id: oldAnalysis.id } })
-    }
+    // 파일들을 TenderDocument로 등록, 첫 번째를 분석 대표 문서로 사용
+    const newDocs = await Promise.all(
+      files.map((f) => tx.tenderDocument.create({ data: { tenderId, filename: f.filename, storagePath: f.blobUrl } }))
+    )
 
     return tx.analysis.create({
       data: {
         tenderId,
-        documentId: newDoc.id,
+        documentId: newDocs[0].id,
         status: "DRAFT",
         aiUsed: extracted.aiUsed,
         ragChunkCount,
@@ -171,13 +162,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       },
     })
   })
-
-  if (oldDocInfo) {
-    const stillUsed = await prisma.tenderDocument.findFirst({
-      where: { id: oldDocInfo.id, analyses: { some: {} } },
-    })
-    if (!stillUsed) await deleteBlob(oldDocInfo.storagePath)
-  }
 
   return NextResponse.json({ analysisId: result.id, truncated, ragChunkCount, webContextApplied, aiUsed: extracted.aiUsed })
 }

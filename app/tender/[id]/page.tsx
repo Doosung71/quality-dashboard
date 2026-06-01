@@ -13,6 +13,7 @@ import DirectorPanel from "./DirectorPanel"
 import ComplyMark from "./ComplyMark"
 import DeviationMark from "./DeviationMark"
 import CommentSection from "./CommentSection"
+import AnalysisHistory from "./AnalysisHistory"
 import { displayName } from "@/lib/display-name"
 import { Button } from "@/components/ui/button"
 import {
@@ -71,8 +72,8 @@ export default async function TenderPage({
       },
       analyses: {
         orderBy: { createdAt: "desc" },
-        take: 1,
         include: {
+          document: { select: { filename: true } },
           requirements: {
             orderBy: { category: "asc" },
             include: { standards: { select: { id: true } } },
@@ -473,6 +474,31 @@ export default async function TenderPage({
               }))}
             />
           </div>
+        )}
+
+        {/* 분석 이력 (2번째 분석부터 표시) */}
+        {tender.analyses.length > 1 && (
+          <AnalysisHistory
+            analyses={tender.analyses.map((a) => ({
+              id: a.id,
+              createdAt: a.createdAt.toISOString(),
+              aiUsed: a.aiUsed,
+              ragChunkCount: a.ragChunkCount ?? 0,
+              webContextApplied: a.webContextApplied ?? false,
+              requirementCount: a.requirements.length,
+              documentName: a.document?.filename ?? null,
+              requirements: a.requirements.map((r) => ({
+                id: r.id,
+                category: r.category,
+                content: r.content,
+                sourcePage: r.sourcePage,
+                isRisk: r.isRisk,
+                isVE: r.isVE,
+                comply: r.comply,
+              })),
+            }))}
+            canDelete={session.user.role === "PRACTITIONER"}
+          />
         )}
 
         {/* 참고 파일 관리 */}
