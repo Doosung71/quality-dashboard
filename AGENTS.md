@@ -39,8 +39,8 @@ ChatGPT는 정리하고 설명한다.
 
 ## 3. 프로젝트 정보
 
-**프로젝트**: quality-dashboard  
-**설명**: LS전선 품질부문장을 위한 5개 업무 영역 통합 대시보드 PoC  
+**프로젝트**: quality-dashboard
+**설명**: LS전선 품질부문장을 위한 통합 품질 대시보드 + 입찰 심의 시스템 PoC
 **D-day**: 2026년 9월 품질전략기능회의 (CEO + 임원진 시연)
 
 ---
@@ -50,53 +50,124 @@ ChatGPT는 정리하고 설명한다.
 ```
 quality-dashboard/
 ├── app/
-│   ├── layout.tsx                     # 루트 레이아웃
+│   ├── layout.tsx                         # 루트 레이아웃
 │   ├── globals.css
-│   └── (dashboard)/                   # 대시보드 라우트 그룹
-│       ├── layout.tsx                 # 사이드바 + 헤더 공통 레이아웃
-│       ├── page.tsx                   # 메인 통합 대시보드 (예정)
-│       ├── facilities/                # ① 시험장·시험 현황 ✅ 완료
-│       ├── claims/                    # ② 고객 클레임 트래커 (6월)
-│       ├── vendors/                   # ③ 협력업체 카드 풀 (7월)
-│       ├── hr/                        # ④ 인사·면담 (8월)
-│       └── intelligence/              # ⑤ 경쟁사·고객 정보 (8월)
+│   ├── (dashboard)/                       # 대시보드 라우트 그룹
+│   │   ├── layout.tsx                     # 사이드바 + 헤더 공통 레이아웃
+│   │   ├── page.tsx                       # 통합 메인 대시보드
+│   │   ├── MainDashboard.tsx
+│   │   ├── facilities/page.tsx            # ① 시험장·시험 현황 ✅
+│   │   ├── claims/page.tsx                # ② 고객 클레임 트래커 ✅
+│   │   ├── vendors/page.tsx               # ③ 협력업체 카드 풀 ✅
+│   │   ├── hr/page.tsx                    # ④ 인사·면담 ✅
+│   │   ├── intelligence/page.tsx          # ⑤ 경쟁사·고객 정보 ✅
+│   │   ├── ncr/page.tsx                   # ⑥ 부적합(NCR) 관리 ✅
+│   │   ├── qcost/page.tsx                 # ⑦ 품질비용 ✅
+│   │   └── knowledge/page.tsx             # ⑧ 지식 저장소 ✅
+│   ├── dashboard/                         # 입찰 심의 목록 (TRA)
+│   │   ├── page.tsx
+│   │   ├── TenderCard.tsx
+│   │   ├── TenderList.tsx
+│   │   ├── TenderThread.tsx
+│   │   └── UploadForm.tsx
+│   ├── tender/[id]/                       # 입찰 심의 상세 (TRA)
+│   │   ├── page.tsx
+│   │   ├── FilesPanel.tsx                 # 파일·재분석
+│   │   ├── RequirementsEdit.tsx           # 요구사항 편집
+│   │   ├── WorkflowActions.tsx            # 검토·승인 워크플로우
+│   │   ├── AnalysisHistory.tsx
+│   │   ├── CommentSection.tsx
+│   │   ├── DirectorPanel.tsx
+│   │   ├── ComplyMark.tsx / DeviationMark.tsx
+│   │   ├── MatchStandardsButton.tsx
+│   │   └── SysCharEdit.tsx / TitleEdit.tsx
+│   ├── api/
+│   │   ├── tenders/                       # 입찰 CRUD
+│   │   │   └── [id]/analyze|reanalyze|documents/
+│   │   ├── analysis/[id]/                 # 분석 결과 관리
+│   │   │   ├── requirements/suggest/      # AI 요구사항 제안
+│   │   │   ├── match-standards/           # 규격 매핑
+│   │   │   ├── submit|review-approve|review-reject|final-approve|final-reject/
+│   │   │   ├── draft-opinion|director-memo|export/
+│   │   │   └── comments/
+│   │   ├── requirements/[id]/comply|deviation/
+│   │   ├── auth/[...nextauth]|register/
+│   │   ├── admin/users/[id]/
+│   │   ├── blob-upload/                   # Vercel Blob 파일 업로드
+│   │   ├── feedback/[id]/reply/
+│   │   └── knowledge/search/              # RAG 검색
+│   ├── admin/users/                       # 사용자 관리
+│   ├── feedback/ / help/ / profile/
+│   └── login/ / register/ / pending/ / banned/
 ├── components/
-│   ├── layout/                        # 사이드바, 헤더
-│   │   ├── sidebar.tsx
-│   │   └── header.tsx
-│   ├── facilities/                    # 시험장 뷰 컴포넌트
-│   │   └── facilities-view.tsx
-│   └── ui/                            # shadcn/ui 공통 컴포넌트
-├── data/                              # 로컬 JSON + TypeScript 데이터 레이어
-│   ├── facility.json                  # 시드 데이터 (구미·동해 ✅)
-│   ├── facility.data.ts
-│   ├── tests.json
-│   └── tests.data.ts
-├── types/                             # TypeScript 타입 정의
-│   ├── facility.ts                    # Site, TestHall, TestYard, Equipment
-│   └── test.ts                        # Test, TestStatus, TestLog
+│   ├── layout/                            # 공통 레이아웃
+│   │   ├── sidebar.tsx / header.tsx
+│   │   ├── dashboard-shell.tsx
+│   │   └── role-gate.tsx
+│   ├── facilities/ claims/ vendors/       # 대시보드 영역 컴포넌트
+│   ├── hr/ intelligence/ ncr/ qcost/
+│   ├── knowledge/
+│   ├── onboarding/OnboardingModal.tsx
+│   └── ui/                               # shadcn/ui 공통 컴포넌트
 ├── lib/
-│   └── utils.ts
+│   ├── prisma.ts                          # Prisma 클라이언트 싱글턴
+│   ├── ai/extract.ts                      # AI 텍스트 추출 (Claude/Gemini)
+│   ├── rag.ts                             # RAG 파이프라인
+│   ├── knowledge.ts                       # 지식 저장소 유틸
+│   ├── pdf.ts                             # PDF 파싱
+│   ├── storage.ts                         # Vercel Blob 래퍼
+│   ├── session-guard.ts                   # API 세션 검사
+│   ├── admin.ts / schemas.ts
+│   ├── facilities-utils.ts
+│   ├── standard-keywords.ts
+│   ├── display-name.ts / utils.ts
+│   └── generated/prisma/                  # Prisma 생성 클라이언트
+├── types/                                 # TypeScript 타입 정의
+│   ├── facility.ts / test.ts / claim.ts
+│   ├── vendor.ts / hr.ts / intelligence.ts
+│   ├── ncr.ts / qcost.ts / knowledge.ts
+│   └── next-auth.d.ts
+├── data/                                  # 로컬 JSON 시드 데이터
+│   ├── facility.json / tests.json
+│   ├── claims.json / vendors.json
+│   ├── hr.json / intelligence.json
+│   ├── ncr.json / qcost.json / knowledge.json
+│   └── *.data.ts                          # 각 영역별 데이터 접근 함수
+├── prisma/
+│   └── schema/
+│       ├── common.prisma                  # User, Feedback, enum (QD·TRA 공유)
+│       └── tra.prisma                     # Tender, Analysis, SpecRequirement, Standard, ReviewHistory, Comment
 ├── docs/
-│   ├── research/                      # Antigravity 조사 결과 저장
-│   └── reviews/                       # Codex 리뷰 결과 저장
-└── PRD.md                             # 제품 요구사항 (마일스톤 포함)
+│   ├── research/                          # Antigravity 조사 결과
+│   └── reviews/                           # Codex 리뷰 결과
+├── auth.ts / auth.config.ts               # NextAuth v5 설정
+├── middleware.ts                           # Edge 미들웨어
+└── PRD.md                                 # 제품 요구사항 (마일스톤 포함)
 ```
 
 ---
 
 ## 5. 핵심 워크플로우
 
+**대시보드 영역 추가 시**
 ```
 PRD.md에서 해당 영역 요구사항 확인
-→ 불확실성 있으면 Antigravity에게 조사 요청
 → types/ 에 TypeScript 타입 정의
-→ data/ 에 JSON + .data.ts 파일 작성
+→ data/ 에 JSON 시드 + .data.ts 파일 작성
 → components/ 에 클라이언트 컴포넌트 구현
 → app/(dashboard)/ 에 서버 컴포넌트 페이지 연결
 → npm run build 로 타입 오류 확인
 → Codex에게 구현 리뷰 요청
-→ Critical/High 수정 후 docs/reviews/ 저장
+```
+
+**TRA(입찰 심의) 기능 변경 시**
+```
+prisma/schema/tra.prisma 확인 (모델 변경 필요 시 마이그레이션)
+→ lib/ai/extract.ts — AI 추출 프롬프트 수정
+→ app/api/ 라우트 수정
+→ app/tender/[id]/ 컴포넌트 수정
+→ npm run build → npx prisma generate 순서 확인
+→ Vercel 배포 후 검증
 ```
 
 ---
@@ -104,9 +175,11 @@ PRD.md에서 해당 영역 요구사항 확인
 ## 6. 개발 명령어
 
 ```bash
-npm run dev      # 개발 서버 시작 (http://localhost:3000)
-npm run build    # 프로덕션 빌드 (타입 오류 최종 확인)
-npm run lint     # ESLint 검사
+npm run dev          # 개발 서버 시작 (http://localhost:3000)
+npm run build        # 프로덕션 빌드 (타입 오류 최종 확인)
+npm run lint         # ESLint 검사
+npx prisma generate  # Prisma 클라이언트 재생성
+npx prisma db push   # 스키마를 DB에 반영 (개발용)
 ```
 
 ---
@@ -121,15 +194,23 @@ npm run lint     # ESLint 검사
    - raw `eq.status` 직접 사용 금지
    - 도입연도 기준 자동 분류: 20년↑ = 노후, 10년↑ = 정상, 미만 = 신규
 
-3. **간트 차트 연도**: `GANTT_START` / `GANTT_END` 상수로 관리 (현재 2026년 고정)
+3. **간트 차트 연도**: `GANTT_START` / `GANTT_END` 상수로 관리
 
 4. **데이터 레이어 분리**: 컴포넌트는 데이터 출처를 모름
-   - 데이터 접근 함수는 `lib/data.ts`에 집중 (V1.5 Notion API 전환 대비)
-   - 리스트 컴포넌트는 `page` / `limit` 파라미터를 처음부터 수용
+   - 대시보드 영역 데이터 접근 함수는 `data/*.data.ts`에 집중
+   - TRA 데이터 접근은 API 라우트 (`app/api/`) 경유 — 컴포넌트에서 직접 Prisma 호출 금지
 
-5. **필터 상태**: URL 쿼리 파라미터로 관리 (딥링크 + 서버사이드 전환 용이)
+5. **Prisma 싱글턴**: `lib/prisma.ts`에서 import, 직접 new PrismaClient 금지
 
-6. **UI 언어**: 한국어 전용, 간결하고 정보 밀도 높게 유지
+6. **AI 추출 모델 순서**: `lib/ai/extract.ts` — Claude 우선, Gemini fallback
+   - 모델 ID 변경 시 항상 환경 변수 확인
+
+7. **필터 상태**: URL 쿼리 파라미터로 관리 (딥링크 + 서버사이드 전환 용이)
+
+8. **UI 언어**: 한국어 전용, 간결하고 정보 밀도 높게 유지
+
+9. **분석 상태 흐름**: DRAFT → REVIEWED → APPROVED (역방향 없음)
+   - 자동 확정 없음 — 모든 상태 전환은 명시적 액션
 
 ---
 
@@ -137,17 +218,18 @@ npm run lint     # ESLint 검사
 
 - 비밀키, `.env`, API key, token 절대 노출 또는 임의 수정 금지
 - 새 패키지 설치, 대규모 리팩토링, 파일 삭제는 사용자 승인 후 진행
-- MVP는 로그인·권한 없음 (내부 시연용) — 외부 배포 전 반드시 인증 추가
+- 역할 기반 접근 제어: `lib/session-guard.ts` + `components/layout/role-gate.tsx` 사용
+- Vercel Blob URL은 외부 공개 — 민감 파일 업로드 금지
 
 ---
 
 ## 9. Antigravity·Codex 협업 방법 (수동 운영)
 
-모든 협업은 대화창에서 명시적 요청으로 시작한다. 자동 실행 훅은 사용하지 않는다.  
+모든 협업은 대화창에서 명시적 요청으로 시작한다. 자동 실행 훅은 사용하지 않는다.
 **파일 수정 주체는 Claude Code 하나로 제한** — Antigravity와 Codex는 코드를 직접 작성하거나 파일을 수정하지 않는다.
 
 ### Antigravity 리서치 요청
-설계 전 조사가 필요할 때 아래 형식으로 대화창에 직접 요청.  
+설계 전 조사가 필요할 때 아래 형식으로 대화창에 직접 요청.
 결과는 `docs/research/` 에 저장 후 참조.
 
 ```text
@@ -160,8 +242,8 @@ npm run lint     # ESLint 검사
 ```
 
 ### Codex 리뷰 요청
-구현 완료 후 아래 형식으로 대화창에 직접 요청.  
-결과는 `docs/reviews/` 에 저장.  
+구현 완료 후 아래 형식으로 대화창에 직접 요청.
+결과는 `docs/reviews/` 에 저장.
 🔴 Critical 항목 발생 시 즉시 수정 후 재진행.
 
 ```text
@@ -178,7 +260,7 @@ npm run lint     # ESLint 검사
 
 **보관함 경로**: `C:\Obsidian\Dennis-Knowledge-Vault\`
 
-코드 설계·데이터 시드 작성 전, 아래 vault 문서를 먼저 읽어 도메인 맥락을 확보한다.  
+코드 설계·데이터 시드 작성 전, 아래 vault 문서를 먼저 읽어 도메인 맥락을 확보한다.
 Claude Code는 구현 중 모르는 도메인 사항이 생기면 vault를 조회하고 Dennis에게 확인을 구한다.
 
 ### 대시보드 영역별 참조 vault 문서
