@@ -1,11 +1,46 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import ComplyMark from "./ComplyMark"
 import DeviationMark from "./DeviationMark"
 import { Sparkles, Loader2, ChevronDown, ChevronUp } from "lucide-react"
+
+// 펼친 상태에서 내용 길이에 맞게 높이 자동 조절되는 textarea
+function AutoTextarea({ value, onChange, expanded, className }: {
+  value: string; onChange: (v: string) => void; expanded: boolean; className?: string
+}) {
+  const ref = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (expanded) {
+      el.style.height = "auto"
+      el.style.height = el.scrollHeight + "px"
+    } else {
+      el.style.height = ""
+    }
+  }, [value, expanded])
+
+  return (
+    <textarea
+      ref={ref}
+      value={value}
+      onChange={(e) => {
+        onChange(e.target.value)
+        if (expanded) {
+          e.target.style.height = "auto"
+          e.target.style.height = e.target.scrollHeight + "px"
+        }
+      }}
+      rows={expanded ? undefined : 3}
+      className={`w-full border rounded px-2 py-1 text-sm mt-0.5 transition-all duration-200 ${expanded ? "resize-none overflow-hidden" : "resize-none"} ${className ?? ""}`}
+      style={expanded ? { minHeight: "7rem" } : undefined}
+    />
+  )
+}
 
 type ComplianceStatus = "COMPLY" | "NON_COMPLY" | "TBD"
 type DeviationType = "DEVIATION" | "CLARIFICATION" | "ASSUMPTION"
@@ -153,11 +188,10 @@ export default function RequirementsEdit({ analysisId, requirements: initial }: 
                     </button>
                   </div>
                 </div>
-                <textarea
-                  className="w-full border rounded px-2 py-1 text-sm mt-0.5 resize-none transition-all duration-200"
-                  rows={expandedEdit ? 10 : 3}
+                <AutoTextarea
                   value={editValues.content}
-                  onChange={(e) => setEditValues((v) => ({ ...v, content: e.target.value }))} />
+                  onChange={(c) => setEditValues((v) => ({ ...v, content: c }))}
+                  expanded={expandedEdit} />
               </div>
               <div className="flex gap-4 text-sm">
                 <label className="flex items-center gap-1.5 cursor-pointer">
@@ -246,11 +280,10 @@ export default function RequirementsEdit({ analysisId, requirements: initial }: 
                 </button>
               </div>
             </div>
-            <textarea
-              className="w-full border rounded px-2 py-1 text-sm mt-0.5 resize-none transition-all duration-200"
-              rows={expandedAdd ? 10 : 3}
+            <AutoTextarea
               value={newReq.content}
-              onChange={(e) => setNewReq((v) => ({ ...v, content: e.target.value }))} />
+              onChange={(c) => setNewReq((v) => ({ ...v, content: c }))}
+              expanded={expandedAdd} />
           </div>
           <div className="flex gap-4 text-sm">
             <label className="flex items-center gap-1.5 cursor-pointer">
