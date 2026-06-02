@@ -25,6 +25,7 @@ const STATUS_COLOR: Record<string, string> = {
 export function AdminUsersClient({ users: initial }: { users: User[] }) {
   const [users, setUsers] = useState(initial)
   const [loading, setLoading] = useState<string | null>(null)
+  const [tempPasswords, setTempPasswords] = useState<Record<string, string>>({})
 
   async function update(id: string, body: object) {
     setLoading(id)
@@ -36,6 +37,15 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
     const res = await fetch("/api/admin/users")
     const data = await res.json()
     setUsers(data)
+    setLoading(null)
+  }
+
+  async function resetPassword(id: string) {
+    if (!confirm("비밀번호를 초기화하시겠습니까?")) return
+    setLoading(id)
+    const res = await fetch(`/api/admin/users/${id}/reset-password`, { method: "POST" })
+    const data = await res.json()
+    setTempPasswords(prev => ({ ...prev, [id]: data.tempPassword }))
     setLoading(null)
   }
 
@@ -71,24 +81,44 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
                 {new Date(u.createdAt).toLocaleDateString("ko-KR")}
               </td>
               <td className="px-4 py-3">
-                <div className="flex gap-1">
-                  {u.status === "PENDING" && (
-                    <button onClick={() => update(u.id, { status: "ACTIVE" })} disabled={loading === u.id}
-                      className="px-2 py-1 text-xs bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50">
-                      승인
+                <div className="flex flex-col gap-1">
+                  <div className="flex gap-1">
+                    {u.status === "PENDING" && (
+                      <button onClick={() => update(u.id, { status: "ACTIVE" })} disabled={loading === u.id}
+                        className="px-2 py-1 text-xs bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50">
+                        승인
+                      </button>
+                    )}
+                    {u.status === "ACTIVE" && (
+                      <button onClick={() => update(u.id, { status: "BANNED" })} disabled={loading === u.id}
+                        className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50">
+                        강퇴
+                      </button>
+                    )}
+                    {u.status === "BANNED" && (
+                      <button onClick={() => update(u.id, { status: "ACTIVE" })} disabled={loading === u.id}
+                        className="px-2 py-1 text-xs bg-slate-600 text-white rounded hover:bg-slate-700 disabled:opacity-50">
+                        복구
+                      </button>
+                    )}
+                    <button onClick={() => resetPassword(u.id)} disabled={loading === u.id}
+                      className="px-2 py-1 text-xs bg-amber-500 text-white rounded hover:bg-amber-600 disabled:opacity-50">
+                      PW초기화
                     </button>
-                  )}
-                  {u.status === "ACTIVE" && (
-                    <button onClick={() => update(u.id, { status: "BANNED" })} disabled={loading === u.id}
-                      className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50">
-                      강퇴
-                    </button>
-                  )}
-                  {u.status === "BANNED" && (
-                    <button onClick={() => update(u.id, { status: "ACTIVE" })} disabled={loading === u.id}
-                      className="px-2 py-1 text-xs bg-slate-600 text-white rounded hover:bg-slate-700 disabled:opacity-50">
-                      복구
-                    </button>
+                  </div>
+                  {tempPasswords[u.id] && (
+                    <div className="flex items-center gap-1 bg-amber-50 border border-amber-200 rounded px-2 py-1">
+                      <span className="text-xs font-mono font-bold text-amber-800">{tempPasswords[u.id]}</span>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(tempPasswords[u.id])
+                          setTempPasswords(prev => ({ ...prev, [u.id]: prev[u.id] + " ✓" }))
+                        }}
+                        className="text-xs text-amber-600 hover:text-amber-800 ml-1"
+                      >
+                        복사
+                      </button>
+                    </div>
                   )}
                 </div>
               </td>

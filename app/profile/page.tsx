@@ -4,6 +4,7 @@ import { requireActivePageSession } from "@/lib/session-guard"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import NicknameForm from "./NicknameForm"
+import PasswordChangeForm from "./PasswordChangeForm"
 
 const ROLE_LABEL: Record<string, string> = {
   PRACTITIONER: "실무자",
@@ -47,6 +48,15 @@ export default async function ProfilePage() {
           </CardHeader>
           <CardContent>
             <NicknameForm currentNickname={user.nickname} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">비밀번호 변경</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <PasswordChangeForm />
           </CardContent>
         </Card>
       </div>
