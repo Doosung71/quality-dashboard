@@ -9,8 +9,23 @@ type Props = {
   phone: string | null
 }
 
+function formatPhone(value: string): string {
+  const d = value.replace(/\D/g, "")
+  if (d.startsWith("02")) {
+    if (d.length <= 2) return d
+    if (d.length <= 5) return `${d.slice(0, 2)}-${d.slice(2)}`
+    if (d.length <= 9) return `${d.slice(0, 2)}-${d.slice(2, 5)}-${d.slice(5)}`
+    return `${d.slice(0, 2)}-${d.slice(2, 6)}-${d.slice(6, 10)}`
+  }
+  if (d.length <= 3) return d
+  if (d.length <= 6) return `${d.slice(0, 3)}-${d.slice(3)}`
+  if (d.length <= 10) return `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6)}`
+  return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7, 11)}`
+}
+
 export default function ProfileInfoForm({ name, department, employeeId, phone }: Props) {
-  const [form, setForm] = useState({ name, department: department ?? "", employeeId: employeeId ?? "", phone: phone ?? "" })
+  const fmtPhone = formatPhone(phone ?? "")
+  const [form, setForm] = useState({ name, department: department ?? "", employeeId: employeeId ?? "", phone: fmtPhone })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
@@ -18,7 +33,7 @@ export default function ProfileInfoForm({ name, department, employeeId, phone }:
     form.name !== name ||
     form.department !== (department ?? "") ||
     form.employeeId !== (employeeId ?? "") ||
-    form.phone !== (phone ?? "")
+    form.phone !== fmtPhone
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -50,7 +65,10 @@ export default function ProfileInfoForm({ name, department, employeeId, phone }:
           <input
             type="text"
             value={form[key as keyof typeof form]}
-            onChange={e => setForm(prev => ({ ...prev, [key]: e.target.value }))}
+            onChange={e => {
+              const val = key === "phone" ? formatPhone(e.target.value) : e.target.value
+              setForm(prev => ({ ...prev, [key]: val }))
+            }}
             required={required}
             placeholder={required ? "필수 항목" : "미입력"}
             className="flex-1 border border-zinc-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400/30"
