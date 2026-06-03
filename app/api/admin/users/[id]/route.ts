@@ -11,10 +11,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const { id } = await params
   const body = await req.json()
 
-  // 자기 자신의 이메일·역할·상태 변경 차단 — 실수로 관리자 계정을 잠그는 것을 방지
-  if (id === session.user.id && (body.email !== undefined || body.role !== undefined || body.status !== undefined)) {
+  // 자기 자신의 역할·상태 변경 차단 — 실수로 관리자 계정을 잠그는 것을 방지
+  // (이름·부서·연락처·사번 등 기본 정보 편집은 허용)
+  if (id === session.user.id && (body.role !== undefined || body.status !== undefined)) {
     return NextResponse.json(
-      { error: "자기 자신의 이메일·역할·상태는 변경할 수 없습니다. 다른 관리자 계정을 이용하거나 DB 직접 수정이 필요합니다." },
+      { error: "자기 계정의 역할·상태는 변경할 수 없습니다. DB 직접 수정이 필요합니다." },
       { status: 403 }
     )
   }

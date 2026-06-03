@@ -61,11 +61,16 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
 
   async function patch(id: string, body: object) {
     setLoading(id)
-    await fetch(`/api/admin/users/${id}`, {
+    setErrors(prev => { const n = { ...prev }; delete n[id]; return n })
+    const res = await fetch(`/api/admin/users/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      setErrors(prev => ({ ...prev, [id]: data.error ?? "변경 중 오류가 발생했습니다." }))
+    }
     await refresh()
     setLoading(null)
   }
@@ -101,8 +106,18 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
   async function saveRole(id: string) {
     const role = roleEdit[id]
     if (!role) return
-    await patch(id, { role })
+    setErrors(prev => { const n = { ...prev }; delete n[id]; return n })
+    const res = await fetch(`/api/admin/users/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role }),
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      setErrors(prev => ({ ...prev, [id]: data.error ?? "역할 변경 중 오류가 발생했습니다." }))
+    }
     setRoleEdit(prev => { const n = { ...prev }; delete n[id]; return n })
+    await refresh()
   }
 
   async function suspend(id: string) {
