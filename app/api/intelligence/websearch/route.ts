@@ -1,7 +1,68 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireActiveSession } from "@/lib/session-guard"
 
-const DDG_TIMEOUT_MS = 8000
+const NAVER_CLIENT_ID     = process.env.NAVER_CLIENT_ID     ?? ""
+const NAVER_CLIENT_SECRET = process.env.NAVER_CLIENT_SECRET ?? ""
+const TIMEOUT_MS          = 8000
+
+async function naverSearch(query: string): Promise<{ title: string; snippet: string; url: string }[]> {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)
+
+  let newsItems: { title: string; snippet: string; url: string }[] = []
+  let webItems:  { title: string; snippet: string; url: string }[] = []
+
+  try {
+    // 뉴스 검색 (최신 동향 파악)
+    const [newsRes, webRes] = await Promise.all([
+      fetch(
+        `https://openapi.naver.com/v1/search/news.json?query=${encodeURIComponent(query)}&display=5&sort=date`,
+        {
+          headers: {
+            "X-Naver-Client-Id":     NAVER_CLIENT_ID,
+            "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
+          },
+          signal: controller.signal,
+        }
+      ),
+      fetch(
+        `https://openapi.naver.com/v1/search/webkr.json?query=${encodeURIComponent(query)}&display=5`,
+        {
+          headers: {
+            "X-Naver-Client-Id":     NAVER_CLIENT_ID,
+            "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
+          },
+          signal: controller.signal,
+        }
+      ),
+    ])
+
+    const stripHtml = (s: string) => s.replace(/<[^>]*>/g, "").replace(/&quot;/g, '"').replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim()
+
+    if (newsRes.ok) {
+      const data = await newsRes.json() as { items: { title: string; description: string; link: string; pubDate: string }[] }
+      newsItems = (data.items ?? []).map(item => ({
+        title:   `[뉴스] ${stripHtml(item.title)}`,
+        snippet: `${stripHtml(item.description)} (${item.pubDate.slice(0, 16)})`,
+        url:     item.link,
+      }))
+    }
+
+    if (webRes.ok) {
+      const data = await webRes.json() as { items: { title: string; description: string; link: string }[] }
+      webItems = (data.items ?? []).map(item => ({
+        title:   stripHtml(item.title),
+        snippet: stripHtml(item.description),
+        url:     item.link,
+      }))
+    }
+  } finally {
+    clearTimeout(timer)
+  }
+
+  // 뉴스 우선, 웹 결과로 채움 (최대 8건)
+  return [...newsItems, ...webItems].slice(0, 8)
+}
 
 export async function POST(req: NextRequest) {
   const session = await requireActiveSession()
@@ -10,6 +71,13 @@ export async function POST(req: NextRequest) {
   const { role } = session.user
   if (!["DIRECTOR", "ADMIN", "TEAM_LEAD"].includes(role as string)) {
     return NextResponse.json({ error: "접근 권한이 없습니다." }, { status: 403 })
+  }
+
+  if (!NAVER_CLIENT_ID || !NAVER_CLIENT_SECRET) {
+    return NextResponse.json(
+      { error: "웹 검색 API가 설정되지 않았습니다. 관리자에게 문의하세요. (NAVER_CLIENT_ID / NAVER_CLIENT_SECRET 환경변수 필요)" },
+      { status: 503 }
+    )
   }
 
   let body: unknown
@@ -23,59 +91,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), DDG_TIMEOUT_MS)
-    let res: Response
-    try {
-      res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query.trim())}`, {
-        headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" },
-        signal: controller.signal,
-      })
-    } finally {
-      clearTimeout(timer)
-    }
-
-    if (!res.ok) return NextResponse.json({ error: "외부 검색 서비스에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요." }, { status: 502 })
-    const html = await res.text()
-
-    const titleRegex = /<a[^>]+class="result__a"[^>]+href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/g
-    const snippetRegex = /<a[^>]+class="result__snippet"[^>]*>([\s\S]*?)<\/a>/g
-    const urlDisplayRegex = /<span[^>]+class="result__url[^"]*"[^>]*>([\s\S]*?)<\/span>/g
-
-    const parsed: { href: string; title: string }[] = []
-    const snippets: string[] = []
-    const displayUrls: string[] = []
-    let m: RegExpExecArray | null
-
-    while ((m = titleRegex.exec(html)) !== null && parsed.length < 8) {
-      const title = m[2].replace(/<[^>]*>/g, "").trim()
-      if (title) parsed.push({ href: m[1], title })
-    }
-    while ((m = snippetRegex.exec(html)) !== null && snippets.length < 8) {
-      const snip = m[1].replace(/<[^>]*>/g, "").trim()
-      if (snip) snippets.push(snip)
-    }
-    while ((m = urlDisplayRegex.exec(html)) !== null && displayUrls.length < 8) {
-      const u = m[1].replace(/<[^>]*>/g, "").trim()
-      if (u) displayUrls.push(u)
-    }
-
-    const results = parsed.slice(0, 8).map(({ href, title }, i) => {
-      // DDG redirect href에서 실제 URL 추출
-      let url = ""
-      if (href.includes("uddg=")) {
-        try {
-          const qs = href.includes("?") ? href.split("?")[1] : href
-          const uddg = new URLSearchParams(qs).get("uddg")
-          if (uddg) url = decodeURIComponent(uddg)
-        } catch { /* ignore */ }
-      }
-      if (!url && displayUrls[i]) {
-        url = displayUrls[i].startsWith("http") ? displayUrls[i] : `https://${displayUrls[i]}`
-      }
-      return { title, snippet: snippets[i] ?? "", url }
-    })
-
+    const results = await naverSearch(query.trim())
     return NextResponse.json({ results })
   } catch (err) {
     const isTimeout = err instanceof Error && err.name === "AbortError"
