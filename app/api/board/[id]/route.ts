@@ -48,12 +48,13 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "권한 없음" }, { status: 403 })
   }
 
-  const { title, content, pinned, category } = await req.json()
+  const { title, content, pinned, category, attachments } = await req.json()
   const data: Record<string, unknown> = {}
 
-  // 제목·내용: 작성자 또는 임원·관리자
+  // 제목·내용·첨부파일: 작성자 또는 임원·관리자
   if (title !== undefined) data.title = String(title).trim()
   if (content !== undefined) data.content = String(content).trim()
+  if (attachments !== undefined) data.attachments = Array.isArray(attachments) ? attachments : []
 
   // 핀·카테고리: 임원·관리자만
   if (isPrivileged) {
