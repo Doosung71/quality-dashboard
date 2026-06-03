@@ -53,7 +53,7 @@ export function MainDashboard({ role, userName, userId }: Props) {
     const today = new Date(todayStr);
     const diffTime = TARGET_DATE.getTime() - today.getTime();
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  }, []);
+  }, [todayStr]);
 
   const [leaderPendingTasks, setLeaderPendingTasks] = useState([
     {
@@ -165,7 +165,7 @@ export function MainDashboard({ role, userName, userId }: Props) {
       totalEmployees, highWorkloadEmployees, totalInterviews,
       totalIntelligence, highImpactIntelligence
     };
-  }, []);
+  }, [todayStr]);
 
   const alerts = useMemo(() => {
     const list: { id: string; type: "NCR" | "HR" | "INTEL"; title: string; desc: string; link: string }[] = [];
@@ -179,7 +179,7 @@ export function MainDashboard({ role, userName, userId }: Props) {
       list.push({ id: `alert-intel-${i.id}`, type: "INTEL", title: `[외부 위협 요인] ${i.category}`, desc: i.title, link: "/intelligence" });
     });
     return list;
-  }, []);
+  }, [todayStr]);
 
   const displayName = userName || "사용자";
 

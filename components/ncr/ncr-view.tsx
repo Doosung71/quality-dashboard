@@ -29,6 +29,14 @@ const STATUS_COLUMNS: { status: NCRStatus; label: string; color: string }[] = [
   { status: "Closed", label: "종결 완료", color: "border-t-emerald-500 bg-emerald-50/10" },
 ];
 
+function getToday() {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+}
+
+function isOverdue(ncr: NCR): boolean {
+  return ncr.status !== "Closed" && ncr.targetDate < getToday();
+}
+
 export function NCRView({ data }: NCRViewProps) {
   const [ncrs, setNcrs] = useState<NCR[]>(data.ncrs);
   const [selectedNCR, setSelectedNCR] = useState<NCR | null>(null);
@@ -36,12 +44,7 @@ export function NCRView({ data }: NCRViewProps) {
   const [selectedSeverities, setSelectedSeverities] = useState<NCRSeverity[]>([]);
   const [selectedDispositions, setSelectedDispositions] = useState<NCRDispositionType[]>([]);
 
-  const TODAY = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
-
-  // 기한 경과(Overdue) 여부 체크
-  const isOverdue = (ncr: NCR) => {
-    return ncr.status !== "Closed" && ncr.targetDate < TODAY;
-  };
+  const TODAY = getToday();
 
   // 상세 필터 초기화
   const handleResetFilters = () => {

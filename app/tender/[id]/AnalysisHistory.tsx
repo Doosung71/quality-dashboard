@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ChevronDown, ChevronUp, Trash2, Globe } from "lucide-react"
-import { Button } from "@/components/ui/button"
 
 type Req = {
   id: string
