@@ -205,21 +205,21 @@ export default async function DashboardPage() {
           </section>
         )}
 
-        {/* 2단 그리드 형태로 업로드 폼(실무자)과 리스트 배치 */}
+        {/* 2단 그리드 형태로 히어로 카드(좌) + 리스트(우) 배치 */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
-          {/* 좌측: 케이블 히어로 카드 + 실무자용 업로드 폼 */}
-          {session.user.role === "PRACTITIONER" && (
-            <div className="lg:col-span-1 space-y-4">
-              <CableHeroCard />
+          {/* 좌측: 케이블 히어로 카드 (전 역할) + 실무자 업로드 폼 */}
+          <div className="lg:col-span-1 space-y-4">
+            <CableHeroCard />
+            {session.user.role === "PRACTITIONER" && (
               <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
                 <UploadForm />
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* 우측/전체: 입찰 목록 */}
-          <div className={session.user.role === "PRACTITIONER" ? "lg:col-span-2 space-y-6" : "lg:col-span-3 space-y-6"}>
+          {/* 우측: 입찰 목록 (항상 2/3) */}
+          <div className="lg:col-span-2 space-y-6">
             <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
               <TenderList tenders={tenders.map((t) => {
                 const analysis = t.analyses[0]
