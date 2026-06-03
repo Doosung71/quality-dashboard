@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireActiveSession } from "@/lib/session-guard"
+import { checkRateLimit } from "@/lib/rate-limit"
 
 const NAVER_CLIENT_ID     = process.env.NAVER_CLIENT_ID     ?? ""
 const NAVER_CLIENT_SECRET = process.env.NAVER_CLIENT_SECRET ?? ""
@@ -67,6 +68,8 @@ async function naverSearch(query: string): Promise<{ title: string; snippet: str
 export async function POST(req: NextRequest) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
+  const rl = await checkRateLimit(req)
+  if (rl) return rl
 
   const { role } = session.user
   if (!["DIRECTOR", "ADMIN", "TEAM_LEAD"].includes(role as string)) {

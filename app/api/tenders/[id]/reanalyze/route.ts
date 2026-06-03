@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireActiveSession } from "@/lib/session-guard"
+import { checkRateLimit } from "@/lib/rate-limit"
 import { prisma } from "@/lib/prisma"
 import { deleteBlob, readBlobBuffer } from "@/lib/storage"
 import { extractTextFromPdf } from "@/lib/pdf"
@@ -23,6 +24,8 @@ function extractTenderKeywords(text: string): string {
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
+  const rl = await checkRateLimit(req)
+  if (rl) return rl
   if (session.user.role !== "PRACTITIONER") {
     return NextResponse.json({ error: "실무자만 재분석할 수 있습니다." }, { status: 403 })
   }

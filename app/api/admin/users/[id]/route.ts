@@ -11,25 +11,36 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const { id } = await params
   const body = await req.json()
 
-  // 자기 자신의 역할·상태 변경 차단 — 실수로 관리자 계정을 잠그는 것을 방지
+  // 자기 자신의 역할·상태·이메일 변경 차단 — 실수로 관리자 계정을 잠그는 것을 방지
   // (이름·부서·연락처·사번 등 기본 정보 편집은 허용)
-  if (id === session.user.id && (body.role !== undefined || body.status !== undefined)) {
+  if (id === session.user.id && (body.role !== undefined || body.status !== undefined || body.email !== undefined)) {
     return NextResponse.json(
-      { error: "자기 계정의 역할·상태는 변경할 수 없습니다. DB 직접 수정이 필요합니다." },
+      { error: "자기 자신의 역할·상태·이메일은 변경할 수 없습니다." },
       { status: 403 }
     )
   }
 
+  const VALID_ROLES = ["PRACTITIONER", "TEAM_LEAD", "DIRECTOR", "ADMIN"]
+  const VALID_STATUSES = ["ACTIVE", "PENDING", "BANNED", "RESTRICTED"]
+
   const data: Record<string, unknown> = {}
   // 기본 정보 편집 (관리자 전용)
   if (body.name !== undefined) data.name = String(body.name).trim()
-  if (body.email !== undefined) data.email = String(body.email).trim()
+  if (body.email !== undefined) {
+    const trimmed = String(body.email).trim()
+    if (!trimmed.includes("@")) return NextResponse.json({ error: "유효하지 않은 이메일 형식입니다." }, { status: 400 })
+    data.email = trimmed
+  }
   if (body.department !== undefined) data.department = body.department || null
   if (body.employeeId !== undefined) data.employeeId = body.employeeId || null
   if (body.phone !== undefined) data.phone = body.phone || null
-  if (body.role) data.role = body.role
+  if (body.role !== undefined) {
+    if (!VALID_ROLES.includes(body.role)) return NextResponse.json({ error: "유효하지 않은 역할입니다." }, { status: 400 })
+    data.role = body.role
+  }
   // status=RESTRICTED 일 때 restrictedUntil을 함께 처리
-  if (body.status) {
+  if (body.status !== undefined) {
+    if (!VALID_STATUSES.includes(body.status)) return NextResponse.json({ error: "유효하지 않은 상태값입니다." }, { status: 400 })
     data.status = body.status
     if (body.status === "RESTRICTED" && body.restrictedUntil) {
       data.restrictedUntil = new Date(body.restrictedUntil)
@@ -50,9 +61,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   if (!isAdmin(session.user.email, session.user.role)) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const { id } = await params
-  const target = await prisma.user.findUnique({ where: { id }, select: { email: true } })
+  const target = await prisma.user.findUnique({ where: { id }, select: { email: true, role: true } })
   if (!target) return NextResponse.json({ error: "사용자를 찾을 수 없습니다." }, { status: 404 })
-  if (isAdmin(target.email)) return NextResponse.json({ error: "관리자 계정은 삭제할 수 없습니다." }, { status: 403 })
+  if (isAdmin(target.email, target.role)) return NextResponse.json({ error: "관리자 계정은 삭제할 수 없습니다." }, { status: 403 })
 
   // QD·TRA가 같은 DB를 공유하므로 연관 데이터를 순서대로 삭제
   await prisma.$transaction(async (tx) => {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireActiveSession } from "@/lib/session-guard"
+import { checkRateLimit } from "@/lib/rate-limit"
 import { prisma } from "@/lib/prisma"
 import { searchKnowledge } from "@/lib/knowledge"
 import { parseRagThreshold, buildKnowledgeChunksXml } from "@/lib/rag"
@@ -13,6 +14,8 @@ async function searchWebForRequirement(query: string): Promise<string> {
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
+  const rl = await checkRateLimit(req)
+  if (rl) return rl
 
   const { id: analysisId } = await params
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireActiveSession } from "@/lib/session-guard"
+import { checkRateLimit } from "@/lib/rate-limit"
 import { prisma } from "@/lib/prisma"
 import { extractTextFromPdf } from "@/lib/pdf"
 import { extractTenderSpec } from "@/lib/ai/extract"
@@ -34,6 +35,8 @@ function extractTenderKeywords(text: string): string {
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
+  const rl = await checkRateLimit(req)
+  if (rl) return rl
 
   const { id: tenderId } = await params
 

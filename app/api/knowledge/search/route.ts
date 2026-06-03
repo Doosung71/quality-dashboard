@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { requireActiveSession } from "@/lib/session-guard"
 import { searchKnowledge, type KnowledgeChunk } from "@/lib/knowledge"
 import { naverSearchResults } from "@/lib/naver-search"
+import { checkRateLimit } from "@/lib/rate-limit"
 
 export type WebSearchResult = import("@/lib/naver-search").NaverSearchResult
 
@@ -101,6 +102,8 @@ ${webResults.length === 0 ? "외부 웹 검색에 관련 결과가 없습니다.
 export async function POST(req: NextRequest) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
+  const rl = await checkRateLimit(req)
+  if (rl) return rl
 
   let body: unknown
   try {

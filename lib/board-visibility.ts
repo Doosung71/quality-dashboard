@@ -11,7 +11,7 @@ export const VISIBILITY_CONFIG: Record<Visibility, {
 
 export function canView(visibility: string, role: string): boolean {
   const cfg = VISIBILITY_CONFIG[visibility as Visibility]
-  return cfg ? cfg.allowedRoles.includes(role) : true
+  return cfg ? cfg.allowedRoles.includes(role) : false
 }
 
 export function isAdmin(role: string): boolean {
