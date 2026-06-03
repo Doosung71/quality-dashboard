@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
       clearTimeout(timer)
     }
 
-    if (!res.ok) return NextResponse.json({ results: [] })
+    if (!res.ok) return NextResponse.json({ error: "외부 검색 서비스에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요." }, { status: 502 })
     const html = await res.text()
 
     const titleRegex = /<a[^>]+class="result__a"[^>]+href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/g
@@ -78,7 +78,11 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ results })
   } catch (err) {
+    const isTimeout = err instanceof Error && err.name === "AbortError"
     console.error("[intelligence/websearch]", err)
-    return NextResponse.json({ results: [], error: "검색 중 오류가 발생했습니다." })
+    return NextResponse.json(
+      { error: isTimeout ? "검색 요청 시간이 초과됐습니다. 다시 시도해 주세요." : "검색 중 오류가 발생했습니다." },
+      { status: 502 }
+    )
   }
 }

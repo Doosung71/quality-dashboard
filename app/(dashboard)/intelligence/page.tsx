@@ -1,8 +1,15 @@
+import { redirect } from "next/navigation"
 import { Suspense } from "react";
 import { intelligenceData } from "@/data/intelligence.data";
 import { IntelligenceView } from "@/components/intelligence/intelligence-view";
+import { requireActivePageSession } from "@/lib/session-guard";
 
-export default function IntelligencePage() {
+const ALLOWED_ROLES = ["DIRECTOR", "ADMIN", "TEAM_LEAD"]
+
+export default async function IntelligencePage() {
+  const session = await requireActivePageSession()
+  if (!ALLOWED_ROLES.includes(session.user.role as string)) redirect("/")
+
   return (
     <div className="flex flex-col gap-6">
       <div>

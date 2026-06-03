@@ -243,6 +243,7 @@ export function IntelligenceView({ data }: IntelligenceViewProps) {
         >
           <Globe className="w-3.5 h-3.5" />
           외부 웹 검색
+          <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 leading-none">β</span>
         </button>
       </div>
 
