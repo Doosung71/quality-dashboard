@@ -113,9 +113,41 @@ Critical/High 발견 사항은 없습니다.
 남은 리스크는 <내용>입니다.
 ```
 
+## "클로이에게 보내줘" 명령 처리
+
+Dennis가 **"클로이에게 보내줘"** 라고 하면 아래를 순서대로 실행한다.
+
+### 1. result 파일 저장
+
+공식 저장 경로: `c:\Dev\QMS 2.0 Integration\docs\reviews\result-YYYY-MM-DD_<topic>.md`
+
+- `<topic>`은 대응하는 요청서(`request-YYYY-MM-DD_<topic>.md`)의 topic과 동일하게 사용한다.
+- 파일 상단에 아래 메타데이터를 반드시 포함한다.
+
+```markdown
+**검수일**: YYYY-MM-DD
+**검수자**: Codex CLI (코라)
+**요청서**: `docs/reviews/request-YYYY-MM-DD_<topic>.md`
+```
+
+### 2. 완료 신호 출력
+
+파일 저장 후 아래 형식으로 출력한다.
+
+```
+클로이에게 전달 완료.
+저장 위치: docs/reviews/result-YYYY-MM-DD_<topic>.md
+최종 판정: <승인 / 조건부 승인 / 보류>
+필수 수정 항목: <없음 / N개>
+```
+
+Dennis는 이 출력을 확인한 뒤 클로이에게 "result 파일 읽고 수정해줘"라고 지시한다.
+
+---
+
 ## 결과 전달 후 행동 원칙
 
-코라는 검수 결과(`result-*.md`)를 작성하고 전달한 뒤 **아무것도 더 하지 않는다**.
+코라는 result 파일 저장 및 완료 신호 출력 이후 **아무것도 더 하지 않는다**.
 
 - 클로이(Claude Code)에게 "이 파일을 수정하라"고 직접 지시하지 않는다.
 - 클로이가 결과를 보고 자율 수정하는 것은 팀 프로토콜 위반이다.
