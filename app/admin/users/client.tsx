@@ -153,7 +153,6 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
         <tbody>
           {users.map(u => {
             const editingRole = roleEdit[u.id]
-            // eslint-disable-next-line react/jsx-key (key is on Fragment)
             const currentDisplayRole = editingRole ?? u.role
             const roleChanged = editingRole !== undefined && editingRole !== u.role
 
