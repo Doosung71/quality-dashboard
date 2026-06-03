@@ -13,7 +13,7 @@ export default async function AdminUsersPage() {
     select: {
       id: true, name: true, email: true, role: true,
       status: true, department: true, employeeId: true,
-      createdAt: true, restrictedUntil: true,
+      phone: true, createdAt: true, restrictedUntil: true,
     },
   })
 

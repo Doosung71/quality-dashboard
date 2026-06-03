@@ -6,7 +6,22 @@ type User = {
   id: string; name: string; email: string
   role: string; status: string
   department: string | null; employeeId: string | null
+  phone: string | null
   createdAt: Date; restrictedUntil: Date | null
+}
+
+function formatPhone(value: string): string {
+  const d = value.replace(/\D/g, "")
+  if (d.startsWith("02")) {
+    if (d.length <= 2) return d
+    if (d.length <= 5) return `${d.slice(0, 2)}-${d.slice(2)}`
+    if (d.length <= 9) return `${d.slice(0, 2)}-${d.slice(2, 5)}-${d.slice(5)}`
+    return `${d.slice(0, 2)}-${d.slice(2, 6)}-${d.slice(6, 10)}`
+  }
+  if (d.length <= 3) return d
+  if (d.length <= 6) return `${d.slice(0, 3)}-${d.slice(3)}`
+  if (d.length <= 10) return `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6)}`
+  return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7, 11)}`
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -86,7 +101,7 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
     setEditOpen(prev => ({ ...prev, [u.id]: true }))
     setInfoForm(prev => ({
       ...prev,
-      [u.id]: { name: u.name, email: u.email, department: u.department ?? "", employeeId: u.employeeId ?? "", phone: "" },
+      [u.id]: { name: u.name, email: u.email, department: u.department ?? "", employeeId: u.employeeId ?? "", phone: formatPhone(u.phone ?? "") },
     }))
   }
 
@@ -333,11 +348,12 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
                         <span className="w-14 text-xs text-slate-500 shrink-0">{label}</span>
                         <input
                           type="text"
+                          placeholder={key === "phone" ? "010-0000-0000" : undefined}
                           value={infoForm[u.id][key as keyof typeof infoForm[string]]}
-                          onChange={e => setInfoForm(prev => ({
-                            ...prev,
-                            [u.id]: { ...prev[u.id], [key]: e.target.value },
-                          }))}
+                          onChange={e => {
+                            const val = key === "phone" ? formatPhone(e.target.value) : e.target.value
+                            setInfoForm(prev => ({ ...prev, [u.id]: { ...prev[u.id], [key]: val } }))
+                          }}
                           className="flex-1 border border-indigo-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-400"
                         />
                       </div>
