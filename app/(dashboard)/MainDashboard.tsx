@@ -190,21 +190,83 @@ export function MainDashboard({ role, userName, userId }: Props) {
 
       {/* 역할 전환 — DIRECTOR만 노출 */}
       {role === "DIRECTOR" && (
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2">
-            <UserCheck className="w-5 h-5 text-indigo-600" />
-            <span className="text-xs font-black text-slate-800">역할별 뷰 미리보기 (관리자 전용):</span>
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          {/* 헤더 + 역할 선택 버튼 */}
+          <div className="px-5 py-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+            <div className="flex items-center gap-2">
+              <UserCheck className="w-4 h-4 text-indigo-600" />
+              <span className="text-xs font-black text-slate-700">역할별 뷰 미리보기 (관리자 전용)</span>
+            </div>
+            <div className="flex gap-1.5 text-xs">
+              {(["executive", "team_leader", "operator"] as const).map((v) => {
+                const isSelected = userRole === v
+                return (
+                  <button
+                    key={v}
+                    onClick={() => setUserRole(v)}
+                    className={`px-4 py-1.5 rounded-lg font-bold transition-all border ${
+                      isSelected
+                        ? "bg-white text-indigo-700 border-indigo-400 shadow-sm ring-1 ring-indigo-300"
+                        : "bg-slate-50 text-slate-500 border-slate-200 hover:border-slate-400 hover:text-slate-700"
+                    }`}
+                  >
+                    {v === "executive" ? "임원 / 부문장" : v === "team_leader" ? "팀장" : "실무자"}
+                  </button>
+                )
+              })}
+            </div>
           </div>
-          <div className="flex gap-1 bg-slate-100 p-1 rounded-xl w-full md:w-auto text-xs">
-            {(["executive", "team_leader", "operator"] as const).map((v) => (
-              <button
-                key={v}
-                onClick={() => setUserRole(v)}
-                className={`flex-1 md:flex-initial px-4 py-2 rounded-lg font-bold transition-all ${userRole === v ? "bg-slate-900 text-white shadow" : "text-slate-500 hover:text-slate-800"}`}
-              >
-                {v === "executive" ? "임원 / 부문장" : v === "team_leader" ? "팀장" : "실무자"}
-              </button>
-            ))}
+
+          {/* 권한 맵 */}
+          <div className="border-t border-slate-100 bg-slate-50/60 px-5 py-3">
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-2.5">섹션별 접근 권한</p>
+            <div className="flex flex-wrap gap-1.5">
+              {[
+                { label: "대시보드",    director: "full", team_leader: "full",     operator: "full"     },
+                { label: "시험장",      director: "full", team_leader: "readonly", operator: "readonly" },
+                { label: "클레임",      director: "full", team_leader: "full",     operator: "readonly" },
+                { label: "NCR",         director: "full", team_leader: "full",     operator: "full"     },
+                { label: "Q-Cost",      director: "full", team_leader: "full",     operator: "readonly" },
+                { label: "협력업체",    director: "full", team_leader: "full",     operator: "readonly" },
+                { label: "인사·면담",  director: "full", team_leader: "full",     operator: "readonly" },
+                { label: "외부정보",    director: "full", team_leader: "readonly", operator: "none"     },
+                { label: "지식검색",    director: "full", team_leader: "full",     operator: "full"     },
+                { label: "입찰검토AI",  director: "full", team_leader: "full",     operator: "full"     },
+              ].map(({ label, ...perms }) => {
+                const level = perms[userRole as keyof typeof perms] as "full" | "readonly" | "none"
+                return (
+                  <span
+                    key={label}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all ${
+                      level === "full"
+                        ? "bg-indigo-50 text-indigo-700 border-indigo-200"
+                        : level === "readonly"
+                        ? "bg-slate-100 text-slate-400 border-slate-200"
+                        : "bg-slate-50 text-slate-300 border-slate-100 line-through"
+                    }`}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full ${
+                      level === "full" ? "bg-indigo-500" : level === "readonly" ? "bg-slate-300" : "bg-slate-200"
+                    }`} />
+                    {label}
+                    {level === "readonly" && <span className="text-[9px] font-bold ml-0.5">조회</span>}
+                    {level === "none"     && <span className="text-[9px] font-bold ml-0.5">없음</span>}
+                  </span>
+                )
+              })}
+            </div>
+            {/* 범례 */}
+            <div className="flex items-center gap-4 mt-3 pt-2 border-t border-slate-100">
+              <span className="flex items-center gap-1 text-[10px] text-slate-500">
+                <span className="w-2 h-2 rounded-full bg-indigo-500 inline-block" /> 전체 권한
+              </span>
+              <span className="flex items-center gap-1 text-[10px] text-slate-400">
+                <span className="w-2 h-2 rounded-full bg-slate-300 inline-block" /> 조회 전용
+              </span>
+              <span className="flex items-center gap-1 text-[10px] text-slate-300">
+                <span className="w-2 h-2 rounded-full bg-slate-200 inline-block" /> 접근 불가
+              </span>
+            </div>
           </div>
         </div>
       )}
