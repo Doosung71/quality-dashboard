@@ -170,213 +170,271 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
     setLoading(null)
   }
 
+  // 역할 셀 — 모바일 카드와 데스크톱 테이블에서 공용
+  function RoleCell({ u }: { u: User }) {
+    const editingRole = roleEdit[u.id]
+    const currentDisplayRole = editingRole ?? u.role
+    const roleChanged = editingRole !== undefined && editingRole !== u.role
+    if (u.status === "PENDING") {
+      return (
+        <select
+          value={pendingRole[u.id] ?? "PRACTITIONER"}
+          onChange={e => setPendingRole(prev => ({ ...prev, [u.id]: e.target.value }))}
+          disabled={loading === u.id}
+          className="border border-amber-300 rounded px-2 py-1 text-xs bg-amber-50 text-amber-800">
+          {Object.entries(ROLE_LABEL).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+        </select>
+      )
+    }
+    if (u.status !== "BANNED") {
+      return (
+        <div className="flex items-center gap-1">
+          <select
+            value={currentDisplayRole}
+            onChange={e => setRoleEdit(prev => ({ ...prev, [u.id]: e.target.value }))}
+            disabled={loading === u.id}
+            className={`border rounded px-2 py-1 text-xs ${roleChanged ? "border-indigo-400 bg-indigo-50 text-indigo-800" : "border-slate-200"}`}>
+            {Object.entries(ROLE_LABEL).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+          </select>
+          {roleChanged && (
+            <button onClick={() => saveRole(u.id)} disabled={loading === u.id}
+              className="px-2 py-1 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50 whitespace-nowrap">
+              저장
+            </button>
+          )}
+        </div>
+      )
+    }
+    return <span className="text-xs text-slate-400">{ROLE_LABEL[u.role]}</span>
+  }
+
+  // 액션 버튼 그룹 — 모바일 카드와 데스크톱 테이블에서 공용
+  function ActionButtons({ u }: { u: User }) {
+    return (
+      <div className="flex flex-col gap-1.5">
+        <div className="flex flex-wrap gap-1">
+          {u.status === "PENDING" && (
+            <button onClick={() => approve(u.id)} disabled={loading === u.id}
+              className="px-2 py-1 text-xs bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50">
+              승인 ({ROLE_LABEL[pendingRole[u.id] ?? "PRACTITIONER"]})
+            </button>
+          )}
+          {u.status === "ACTIVE" && (
+            <div className="flex items-center gap-1">
+              <select
+                value={suspendDays[u.id] ?? "1"}
+                onChange={e => setSuspendDays(prev => ({ ...prev, [u.id]: e.target.value }))}
+                disabled={loading === u.id}
+                className="border border-orange-300 rounded px-1.5 py-1 text-xs text-orange-700 bg-orange-50">
+                {SUSPEND_OPTIONS.map(o => (
+                  <option key={o.days} value={String(o.days)}>{o.label}</option>
+                ))}
+              </select>
+              <button onClick={() => suspend(u.id)} disabled={loading === u.id}
+                className="px-2 py-1 text-xs bg-orange-500 text-white rounded hover:bg-orange-600 disabled:opacity-50">
+                정지
+              </button>
+            </div>
+          )}
+          {u.status === "RESTRICTED" && (
+            <button onClick={() => patch(u.id, { status: "ACTIVE" })} disabled={loading === u.id}
+              className="px-2 py-1 text-xs bg-slate-600 text-white rounded hover:bg-slate-700 disabled:opacity-50">
+              정지해제
+            </button>
+          )}
+          {(u.status === "ACTIVE" || u.status === "RESTRICTED") && (
+            <button onClick={() => ban(u.id)} disabled={loading === u.id}
+              className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50">
+              강퇴
+            </button>
+          )}
+          {u.status !== "BANNED" && (
+            <button onClick={() => resetPassword(u.id)} disabled={loading === u.id}
+              className="px-2 py-1 text-xs bg-amber-500 text-white rounded hover:bg-amber-600 disabled:opacity-50">
+              PW초기화
+            </button>
+          )}
+          <button onClick={() => deleteUser(u.id, u.name)} disabled={loading === u.id}
+            className="px-2 py-1 text-xs bg-slate-200 text-slate-600 rounded hover:bg-slate-300 disabled:opacity-50">
+            삭제
+          </button>
+        </div>
+        {u.status !== "BANNED" && !editOpen[u.id] && (
+          <button onClick={() => openEdit(u)} className="text-xs text-indigo-600 hover:underline mt-0.5 text-left">
+            정보 편집
+          </button>
+        )}
+        {errors[u.id] && (
+          <p className="text-xs text-red-600 mt-1">{errors[u.id]}</p>
+        )}
+        {tempPasswords[u.id] && (
+          <div className="flex items-center gap-1 bg-amber-50 border border-amber-200 rounded px-2 py-1">
+            <span className="text-xs font-mono font-bold text-amber-800">{tempPasswords[u.id]}</span>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(tempPasswords[u.id])
+                setTempPasswords(prev => ({ ...prev, [u.id]: prev[u.id] + " ✓" }))
+              }}
+              className="text-xs text-amber-600 hover:text-amber-800 ml-1">
+              복사
+            </button>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // 정보 편집 폼 — 모바일 카드와 데스크톱 테이블에서 공용
+  function InfoEditForm({ u }: { u: User }) {
+    if (!editOpen[u.id] || !infoForm[u.id]) return null
+    return (
+      <div className="mt-3 bg-indigo-50/50 border border-indigo-100 rounded-lg px-4 py-3">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {[
+            { label: "이름", key: "name" },
+            { label: "이메일", key: "email" },
+            { label: "부서", key: "department" },
+            { label: "사번", key: "employeeId" },
+            { label: "연락처", key: "phone" },
+          ].map(({ label, key }) => (
+            <div key={key} className="flex items-center gap-2">
+              <span className="w-14 text-xs text-slate-500 shrink-0">{label}</span>
+              <input
+                type="text"
+                placeholder={key === "phone" ? "010-0000-0000" : undefined}
+                value={infoForm[u.id][key as keyof typeof infoForm[string]]}
+                onChange={e => {
+                  const val = key === "phone" ? formatPhone(e.target.value) : e.target.value
+                  setInfoForm(prev => ({ ...prev, [u.id]: { ...prev[u.id], [key]: val } }))
+                }}
+                className="flex-1 border border-indigo-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-400"
+              />
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-2 mt-3">
+          <button onClick={() => saveInfo(u.id)} disabled={loading === u.id}
+            className="px-3 py-1.5 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50">
+            저장
+          </button>
+          <button onClick={() => setEditOpen(prev => ({ ...prev, [u.id]: false }))}
+            className="px-3 py-1.5 text-xs bg-white border border-slate-200 text-slate-600 rounded hover:bg-slate-50">
+            취소
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-      <table className="w-full text-sm">
-        <thead className="bg-slate-50 border-b border-slate-200">
-          <tr>
-            {["이름", "이메일", "부서", "상태", "역할", "가입일", "액션"].map(h => (
-              <th key={h} className="text-left px-4 py-3 text-xs font-medium text-slate-500">{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {users.map(u => {
-            const editingRole = roleEdit[u.id]
-            const currentDisplayRole = editingRole ?? u.role
-            const roleChanged = editingRole !== undefined && editingRole !== u.role
 
-            return (
+      {/* 모바일: 카드 목록 (sm 미만) */}
+      <div className="sm:hidden divide-y divide-slate-100">
+        {users.map(u => (
+          <div key={u.id} className="p-4 space-y-2.5">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-medium text-sm">{u.name}</span>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOR[u.status]}`}>
+                  {STATUS_LABEL[u.status]}
+                </span>
+                {u.status === "RESTRICTED" && u.restrictedUntil && (
+                  <span className="text-[10px] text-orange-600">{restrictedUntilLabel(u.restrictedUntil)}</span>
+                )}
+              </div>
+            </div>
+            <p className="text-xs text-slate-500 break-all">{u.email}</p>
+            <div className="flex items-center gap-3 text-xs text-slate-500">
+              {u.department && <span>{u.department}</span>}
+              <span className="text-slate-300">|</span>
+              <span className="text-slate-400">{new Date(u.createdAt).toLocaleDateString("ko-KR")} 가입</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-400 shrink-0">역할</span>
+              <RoleCell u={u} />
+            </div>
+            <ActionButtons u={u} />
+            <InfoEditForm u={u} />
+          </div>
+        ))}
+      </div>
+
+      {/* 데스크톱: 테이블 (sm 이상) */}
+      <div className="hidden sm:block overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-slate-50 border-b border-slate-200">
+            <tr>
+              {["이름", "이메일", "부서", "상태", "역할", "가입일", "액션"].map(h => (
+                <th key={h} className="text-left px-4 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {users.map(u => (
               <React.Fragment key={u.id}>
-              <tr className="border-b border-slate-100 last:border-0 hover:bg-slate-50 align-top">
-                <td className="px-4 py-3 font-medium">{u.name}</td>
-                <td className="px-4 py-3 text-slate-500 text-xs">{u.email}</td>
-                <td className="px-4 py-3 text-slate-500">{u.department ?? "-"}</td>
-
-                {/* 상태 */}
-                <td className="px-4 py-3">
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOR[u.status]}`}>
-                    {STATUS_LABEL[u.status]}
-                  </span>
-                  {u.status === "RESTRICTED" && u.restrictedUntil && (
-                    <p className="text-[10px] text-orange-600 mt-0.5">{restrictedUntilLabel(u.restrictedUntil)}</p>
-                  )}
-                </td>
-
-                {/* 역할 — PENDING은 승인 전 선택용, 나머지는 변경+저장 */}
-                <td className="px-4 py-3">
-                  {u.status === "PENDING" ? (
-                    <select
-                      value={pendingRole[u.id] ?? "PRACTITIONER"}
-                      onChange={e => setPendingRole(prev => ({ ...prev, [u.id]: e.target.value }))}
-                      disabled={loading === u.id}
-                      className="border border-amber-300 rounded px-2 py-1 text-xs bg-amber-50 text-amber-800">
-                      {Object.entries(ROLE_LABEL).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-                    </select>
-                  ) : u.status !== "BANNED" ? (
-                    <div className="flex items-center gap-1">
-                      <select
-                        value={currentDisplayRole}
-                        onChange={e => setRoleEdit(prev => ({ ...prev, [u.id]: e.target.value }))}
-                        disabled={loading === u.id}
-                        className={`border rounded px-2 py-1 text-xs ${roleChanged ? "border-indigo-400 bg-indigo-50 text-indigo-800" : "border-slate-200"}`}>
-                        {Object.entries(ROLE_LABEL).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-                      </select>
-                      {roleChanged && (
-                        <button onClick={() => saveRole(u.id)} disabled={loading === u.id}
-                          className="px-2 py-1 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50 whitespace-nowrap">
+                <tr className="border-b border-slate-100 last:border-0 hover:bg-slate-50 align-top">
+                  <td className="px-4 py-3 font-medium whitespace-nowrap">{u.name}</td>
+                  <td className="px-4 py-3 text-slate-500 text-xs">{u.email}</td>
+                  <td className="px-4 py-3 text-slate-500 whitespace-nowrap">{u.department ?? "-"}</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${STATUS_COLOR[u.status]}`}>
+                      {STATUS_LABEL[u.status]}
+                    </span>
+                    {u.status === "RESTRICTED" && u.restrictedUntil && (
+                      <p className="text-[10px] text-orange-600 mt-0.5">{restrictedUntilLabel(u.restrictedUntil)}</p>
+                    )}
+                  </td>
+                  <td className="px-4 py-3"><RoleCell u={u} /></td>
+                  <td className="px-4 py-3 text-slate-400 text-xs whitespace-nowrap">
+                    {new Date(u.createdAt).toLocaleDateString("ko-KR")}
+                  </td>
+                  <td className="px-4 py-3"><ActionButtons u={u} /></td>
+                </tr>
+                {editOpen[u.id] && infoForm[u.id] && (
+                  <tr className="bg-indigo-50/50 border-b border-indigo-100">
+                    <td colSpan={7} className="px-6 py-4">
+                      <div className="grid grid-cols-2 gap-3 max-w-xl">
+                        {[
+                          { label: "이름", key: "name" },
+                          { label: "이메일", key: "email" },
+                          { label: "부서", key: "department" },
+                          { label: "사번", key: "employeeId" },
+                          { label: "연락처", key: "phone" },
+                        ].map(({ label, key }) => (
+                          <div key={key} className="flex items-center gap-2">
+                            <span className="w-14 text-xs text-slate-500 shrink-0">{label}</span>
+                            <input
+                              type="text"
+                              placeholder={key === "phone" ? "010-0000-0000" : undefined}
+                              value={infoForm[u.id][key as keyof typeof infoForm[string]]}
+                              onChange={e => {
+                                const val = key === "phone" ? formatPhone(e.target.value) : e.target.value
+                                setInfoForm(prev => ({ ...prev, [u.id]: { ...prev[u.id], [key]: val } }))
+                              }}
+                              className="flex-1 border border-indigo-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-400"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex gap-2 mt-3">
+                        <button onClick={() => saveInfo(u.id)} disabled={loading === u.id}
+                          className="px-3 py-1.5 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50">
                           저장
                         </button>
-                      )}
-                    </div>
-                  ) : (
-                    <span className="text-xs text-slate-400">{ROLE_LABEL[u.role]}</span>
-                  )}
-                </td>
-
-                {/* 가입일 */}
-                <td className="px-4 py-3 text-slate-400 text-xs">
-                  {new Date(u.createdAt).toLocaleDateString("ko-KR")}
-                </td>
-
-                {/* 액션 */}
-                <td className="px-4 py-3">
-                  <div className="flex flex-col gap-1.5">
-                    <div className="flex flex-wrap gap-1">
-
-                      {/* PENDING → 역할 선택 후 승인 */}
-                      {u.status === "PENDING" && (
-                        <button onClick={() => approve(u.id)} disabled={loading === u.id}
-                          className="px-2 py-1 text-xs bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50">
-                          승인 ({ROLE_LABEL[pendingRole[u.id] ?? "PRACTITIONER"]})
-                        </button>
-                      )}
-
-                      {/* ACTIVE → 사용정지 */}
-                      {u.status === "ACTIVE" && (
-                        <div className="flex items-center gap-1">
-                          <select
-                            value={suspendDays[u.id] ?? "1"}
-                            onChange={e => setSuspendDays(prev => ({ ...prev, [u.id]: e.target.value }))}
-                            disabled={loading === u.id}
-                            className="border border-orange-300 rounded px-1.5 py-1 text-xs text-orange-700 bg-orange-50">
-                            {SUSPEND_OPTIONS.map(o => (
-                              <option key={o.days} value={String(o.days)}>{o.label}</option>
-                            ))}
-                          </select>
-                          <button onClick={() => suspend(u.id)} disabled={loading === u.id}
-                            className="px-2 py-1 text-xs bg-orange-500 text-white rounded hover:bg-orange-600 disabled:opacity-50">
-                            정지
-                          </button>
-                        </div>
-                      )}
-
-                      {/* RESTRICTED → 정지해제 */}
-                      {u.status === "RESTRICTED" && (
-                        <button onClick={() => patch(u.id, { status: "ACTIVE" })} disabled={loading === u.id}
-                          className="px-2 py-1 text-xs bg-slate-600 text-white rounded hover:bg-slate-700 disabled:opacity-50">
-                          정지해제
-                        </button>
-                      )}
-
-                      {/* ACTIVE / RESTRICTED → 강퇴 */}
-                      {(u.status === "ACTIVE" || u.status === "RESTRICTED") && (
-                        <button onClick={() => ban(u.id)} disabled={loading === u.id}
-                          className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50">
-                          강퇴
-                        </button>
-                      )}
-
-                      {/* PW 초기화 (BANNED 제외) */}
-                      {u.status !== "BANNED" && (
-                        <button onClick={() => resetPassword(u.id)} disabled={loading === u.id}
-                          className="px-2 py-1 text-xs bg-amber-500 text-white rounded hover:bg-amber-600 disabled:opacity-50">
-                          PW초기화
-                        </button>
-                      )}
-
-                      {/* 계정 삭제 */}
-                      <button onClick={() => deleteUser(u.id, u.name)} disabled={loading === u.id}
-                        className="px-2 py-1 text-xs bg-slate-200 text-slate-600 rounded hover:bg-slate-300 disabled:opacity-50">
-                        삭제
-                      </button>
-                    </div>
-
-                    {/* 정보 편집 버튼 */}
-                    {u.status !== "BANNED" && !editOpen[u.id] && (
-                      <button onClick={() => openEdit(u)} className="text-xs text-indigo-600 hover:underline mt-0.5">
-                        정보 편집
-                      </button>
-                    )}
-
-                    {/* 삭제 오류 표시 */}
-                    {errors[u.id] && (
-                      <p className="text-xs text-red-600 mt-1">{errors[u.id]}</p>
-                    )}
-
-                    {/* 임시 비밀번호 표시 */}
-                    {tempPasswords[u.id] && (
-                      <div className="flex items-center gap-1 bg-amber-50 border border-amber-200 rounded px-2 py-1">
-                        <span className="text-xs font-mono font-bold text-amber-800">{tempPasswords[u.id]}</span>
-                        <button
-                          onClick={() => {
-                            navigator.clipboard.writeText(tempPasswords[u.id])
-                            setTempPasswords(prev => ({ ...prev, [u.id]: prev[u.id] + " ✓" }))
-                          }}
-                          className="text-xs text-amber-600 hover:text-amber-800 ml-1">
-                          복사
+                        <button onClick={() => setEditOpen(prev => ({ ...prev, [u.id]: false }))}
+                          className="px-3 py-1.5 text-xs bg-white border border-slate-200 text-slate-600 rounded hover:bg-slate-50">
+                          취소
                         </button>
                       </div>
-                    )}
-                  </div>
-                </td>
-              </tr>
-
-            {/* 인라인 정보 편집 폼 */}
-            {editOpen[u.id] && infoForm[u.id] && (
-              <tr className="bg-indigo-50/50 border-b border-indigo-100">
-                <td colSpan={7} className="px-6 py-4">
-                  <div className="grid grid-cols-2 gap-3 max-w-xl">
-                    {[
-                      { label: "이름", key: "name" },
-                      { label: "이메일", key: "email" },
-                      { label: "부서", key: "department" },
-                      { label: "사번", key: "employeeId" },
-                      { label: "연락처", key: "phone" },
-                    ].map(({ label, key }) => (
-                      <div key={key} className="flex items-center gap-2">
-                        <span className="w-14 text-xs text-slate-500 shrink-0">{label}</span>
-                        <input
-                          type="text"
-                          placeholder={key === "phone" ? "010-0000-0000" : undefined}
-                          value={infoForm[u.id][key as keyof typeof infoForm[string]]}
-                          onChange={e => {
-                            const val = key === "phone" ? formatPhone(e.target.value) : e.target.value
-                            setInfoForm(prev => ({ ...prev, [u.id]: { ...prev[u.id], [key]: val } }))
-                          }}
-                          className="flex-1 border border-indigo-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-400"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex gap-2 mt-3">
-                    <button onClick={() => saveInfo(u.id)} disabled={loading === u.id}
-                      className="px-3 py-1.5 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50">
-                      저장
-                    </button>
-                    <button onClick={() => setEditOpen(prev => ({ ...prev, [u.id]: false }))}
-                      className="px-3 py-1.5 text-xs bg-white border border-slate-200 text-slate-600 rounded hover:bg-slate-50">
-                      취소
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            )}
-          </React.Fragment>
-        )
-      })}
-        </tbody>
-      </table>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
