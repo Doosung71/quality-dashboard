@@ -31,6 +31,7 @@ export type BoardPostMinAggregateOutputType = {
   title: string | null
   content: string | null
   authorId: string | null
+  displayMode: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -42,6 +43,7 @@ export type BoardPostMaxAggregateOutputType = {
   title: string | null
   content: string | null
   authorId: string | null
+  displayMode: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -53,6 +55,7 @@ export type BoardPostCountAggregateOutputType = {
   title: number
   content: number
   authorId: number
+  displayMode: number
   attachments: number
   createdAt: number
   updatedAt: number
@@ -67,6 +70,7 @@ export type BoardPostMinAggregateInputType = {
   title?: true
   content?: true
   authorId?: true
+  displayMode?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -78,6 +82,7 @@ export type BoardPostMaxAggregateInputType = {
   title?: true
   content?: true
   authorId?: true
+  displayMode?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -89,6 +94,7 @@ export type BoardPostCountAggregateInputType = {
   title?: true
   content?: true
   authorId?: true
+  displayMode?: true
   attachments?: true
   createdAt?: true
   updatedAt?: true
@@ -174,6 +180,7 @@ export type BoardPostGroupByOutputType = {
   title: string
   content: string
   authorId: string
+  displayMode: string
   attachments: runtime.JsonValue
   createdAt: Date
   updatedAt: Date
@@ -207,6 +214,7 @@ export type BoardPostWhereInput = {
   title?: Prisma.StringFilter<"BoardPost"> | string
   content?: Prisma.StringFilter<"BoardPost"> | string
   authorId?: Prisma.StringFilter<"BoardPost"> | string
+  displayMode?: Prisma.StringFilter<"BoardPost"> | string
   attachments?: Prisma.JsonFilter<"BoardPost">
   createdAt?: Prisma.DateTimeFilter<"BoardPost"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BoardPost"> | Date | string
@@ -221,6 +229,7 @@ export type BoardPostOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  displayMode?: Prisma.SortOrder
   attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -238,6 +247,7 @@ export type BoardPostWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"BoardPost"> | string
   content?: Prisma.StringFilter<"BoardPost"> | string
   authorId?: Prisma.StringFilter<"BoardPost"> | string
+  displayMode?: Prisma.StringFilter<"BoardPost"> | string
   attachments?: Prisma.JsonFilter<"BoardPost">
   createdAt?: Prisma.DateTimeFilter<"BoardPost"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BoardPost"> | Date | string
@@ -252,6 +262,7 @@ export type BoardPostOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  displayMode?: Prisma.SortOrder
   attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -270,6 +281,7 @@ export type BoardPostScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"BoardPost"> | string
   content?: Prisma.StringWithAggregatesFilter<"BoardPost"> | string
   authorId?: Prisma.StringWithAggregatesFilter<"BoardPost"> | string
+  displayMode?: Prisma.StringWithAggregatesFilter<"BoardPost"> | string
   attachments?: Prisma.JsonWithAggregatesFilter<"BoardPost">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BoardPost"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BoardPost"> | Date | string
@@ -281,6 +293,7 @@ export type BoardPostCreateInput = {
   pinned?: boolean
   title: string
   content: string
+  displayMode?: string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -295,6 +308,7 @@ export type BoardPostUncheckedCreateInput = {
   title: string
   content: string
   authorId: string
+  displayMode?: string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -307,6 +321,7 @@ export type BoardPostUpdateInput = {
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -321,6 +336,7 @@ export type BoardPostUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -334,6 +350,7 @@ export type BoardPostCreateManyInput = {
   title: string
   content: string
   authorId: string
+  displayMode?: string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -345,6 +362,7 @@ export type BoardPostUpdateManyMutationInput = {
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -357,6 +375,7 @@ export type BoardPostUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -379,6 +398,7 @@ export type BoardPostCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  displayMode?: Prisma.SortOrder
   attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -391,6 +411,7 @@ export type BoardPostMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  displayMode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -402,6 +423,7 @@ export type BoardPostMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  displayMode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -481,6 +503,7 @@ export type BoardPostCreateWithoutAuthorInput = {
   pinned?: boolean
   title: string
   content: string
+  displayMode?: string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -493,6 +516,7 @@ export type BoardPostUncheckedCreateWithoutAuthorInput = {
   pinned?: boolean
   title: string
   content: string
+  displayMode?: string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -535,6 +559,7 @@ export type BoardPostScalarWhereInput = {
   title?: Prisma.StringFilter<"BoardPost"> | string
   content?: Prisma.StringFilter<"BoardPost"> | string
   authorId?: Prisma.StringFilter<"BoardPost"> | string
+  displayMode?: Prisma.StringFilter<"BoardPost"> | string
   attachments?: Prisma.JsonFilter<"BoardPost">
   createdAt?: Prisma.DateTimeFilter<"BoardPost"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BoardPost"> | Date | string
@@ -546,6 +571,7 @@ export type BoardPostCreateWithoutCommentsInput = {
   pinned?: boolean
   title: string
   content: string
+  displayMode?: string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -559,6 +585,7 @@ export type BoardPostUncheckedCreateWithoutCommentsInput = {
   title: string
   content: string
   authorId: string
+  displayMode?: string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -586,6 +613,7 @@ export type BoardPostUpdateWithoutCommentsInput = {
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -599,6 +627,7 @@ export type BoardPostUncheckedUpdateWithoutCommentsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -610,6 +639,7 @@ export type BoardPostCreateManyAuthorInput = {
   pinned?: boolean
   title: string
   content: string
+  displayMode?: string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -621,6 +651,7 @@ export type BoardPostUpdateWithoutAuthorInput = {
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -633,6 +664,7 @@ export type BoardPostUncheckedUpdateWithoutAuthorInput = {
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -645,6 +677,7 @@ export type BoardPostUncheckedUpdateManyWithoutAuthorInput = {
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -688,6 +721,7 @@ export type BoardPostSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   title?: boolean
   content?: boolean
   authorId?: boolean
+  displayMode?: boolean
   attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -703,6 +737,7 @@ export type BoardPostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   title?: boolean
   content?: boolean
   authorId?: boolean
+  displayMode?: boolean
   attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -716,6 +751,7 @@ export type BoardPostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   title?: boolean
   content?: boolean
   authorId?: boolean
+  displayMode?: boolean
   attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -729,12 +765,13 @@ export type BoardPostSelectScalar = {
   title?: boolean
   content?: boolean
   authorId?: boolean
+  displayMode?: boolean
   attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BoardPostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "category" | "pinned" | "title" | "content" | "authorId" | "attachments" | "createdAt" | "updatedAt", ExtArgs["result"]["boardPost"]>
+export type BoardPostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "category" | "pinned" | "title" | "content" | "authorId" | "displayMode" | "attachments" | "createdAt" | "updatedAt", ExtArgs["result"]["boardPost"]>
 export type BoardPostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   comments?: boolean | Prisma.BoardPost$commentsArgs<ExtArgs>
@@ -760,6 +797,7 @@ export type $BoardPostPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     title: string
     content: string
     authorId: string
+    displayMode: string
     attachments: runtime.JsonValue
     createdAt: Date
     updatedAt: Date
@@ -1194,6 +1232,7 @@ export interface BoardPostFieldRefs {
   readonly title: Prisma.FieldRef<"BoardPost", 'String'>
   readonly content: Prisma.FieldRef<"BoardPost", 'String'>
   readonly authorId: Prisma.FieldRef<"BoardPost", 'String'>
+  readonly displayMode: Prisma.FieldRef<"BoardPost", 'String'>
   readonly attachments: Prisma.FieldRef<"BoardPost", 'Json'>
   readonly createdAt: Prisma.FieldRef<"BoardPost", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"BoardPost", 'DateTime'>

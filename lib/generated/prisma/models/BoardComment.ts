@@ -29,6 +29,7 @@ export type BoardCommentMinAggregateOutputType = {
   postId: string | null
   authorId: string | null
   content: string | null
+  displayMode: string | null
   parentId: string | null
   createdAt: Date | null
 }
@@ -38,6 +39,7 @@ export type BoardCommentMaxAggregateOutputType = {
   postId: string | null
   authorId: string | null
   content: string | null
+  displayMode: string | null
   parentId: string | null
   createdAt: Date | null
 }
@@ -47,6 +49,7 @@ export type BoardCommentCountAggregateOutputType = {
   postId: number
   authorId: number
   content: number
+  displayMode: number
   parentId: number
   createdAt: number
   _all: number
@@ -58,6 +61,7 @@ export type BoardCommentMinAggregateInputType = {
   postId?: true
   authorId?: true
   content?: true
+  displayMode?: true
   parentId?: true
   createdAt?: true
 }
@@ -67,6 +71,7 @@ export type BoardCommentMaxAggregateInputType = {
   postId?: true
   authorId?: true
   content?: true
+  displayMode?: true
   parentId?: true
   createdAt?: true
 }
@@ -76,6 +81,7 @@ export type BoardCommentCountAggregateInputType = {
   postId?: true
   authorId?: true
   content?: true
+  displayMode?: true
   parentId?: true
   createdAt?: true
   _all?: true
@@ -158,6 +164,7 @@ export type BoardCommentGroupByOutputType = {
   postId: string
   authorId: string
   content: string
+  displayMode: string
   parentId: string | null
   createdAt: Date
   _count: BoardCommentCountAggregateOutputType | null
@@ -188,6 +195,7 @@ export type BoardCommentWhereInput = {
   postId?: Prisma.StringFilter<"BoardComment"> | string
   authorId?: Prisma.StringFilter<"BoardComment"> | string
   content?: Prisma.StringFilter<"BoardComment"> | string
+  displayMode?: Prisma.StringFilter<"BoardComment"> | string
   parentId?: Prisma.StringNullableFilter<"BoardComment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BoardComment"> | Date | string
   post?: Prisma.XOR<Prisma.BoardPostScalarRelationFilter, Prisma.BoardPostWhereInput>
@@ -201,6 +209,7 @@ export type BoardCommentOrderByWithRelationInput = {
   postId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  displayMode?: Prisma.SortOrder
   parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   post?: Prisma.BoardPostOrderByWithRelationInput
@@ -217,6 +226,7 @@ export type BoardCommentWhereUniqueInput = Prisma.AtLeast<{
   postId?: Prisma.StringFilter<"BoardComment"> | string
   authorId?: Prisma.StringFilter<"BoardComment"> | string
   content?: Prisma.StringFilter<"BoardComment"> | string
+  displayMode?: Prisma.StringFilter<"BoardComment"> | string
   parentId?: Prisma.StringNullableFilter<"BoardComment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BoardComment"> | Date | string
   post?: Prisma.XOR<Prisma.BoardPostScalarRelationFilter, Prisma.BoardPostWhereInput>
@@ -230,6 +240,7 @@ export type BoardCommentOrderByWithAggregationInput = {
   postId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  displayMode?: Prisma.SortOrder
   parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.BoardCommentCountOrderByAggregateInput
@@ -245,6 +256,7 @@ export type BoardCommentScalarWhereWithAggregatesInput = {
   postId?: Prisma.StringWithAggregatesFilter<"BoardComment"> | string
   authorId?: Prisma.StringWithAggregatesFilter<"BoardComment"> | string
   content?: Prisma.StringWithAggregatesFilter<"BoardComment"> | string
+  displayMode?: Prisma.StringWithAggregatesFilter<"BoardComment"> | string
   parentId?: Prisma.StringNullableWithAggregatesFilter<"BoardComment"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BoardComment"> | Date | string
 }
@@ -252,6 +264,7 @@ export type BoardCommentScalarWhereWithAggregatesInput = {
 export type BoardCommentCreateInput = {
   id?: string
   content: string
+  displayMode?: string
   createdAt?: Date | string
   post: Prisma.BoardPostCreateNestedOneWithoutCommentsInput
   author: Prisma.UserCreateNestedOneWithoutBoardCommentsInput
@@ -264,6 +277,7 @@ export type BoardCommentUncheckedCreateInput = {
   postId: string
   authorId: string
   content: string
+  displayMode?: string
   parentId?: string | null
   createdAt?: Date | string
   replies?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutParentInput
@@ -272,6 +286,7 @@ export type BoardCommentUncheckedCreateInput = {
 export type BoardCommentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   post?: Prisma.BoardPostUpdateOneRequiredWithoutCommentsNestedInput
   author?: Prisma.UserUpdateOneRequiredWithoutBoardCommentsNestedInput
@@ -284,6 +299,7 @@ export type BoardCommentUncheckedUpdateInput = {
   postId?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replies?: Prisma.BoardCommentUncheckedUpdateManyWithoutParentNestedInput
@@ -294,6 +310,7 @@ export type BoardCommentCreateManyInput = {
   postId: string
   authorId: string
   content: string
+  displayMode?: string
   parentId?: string | null
   createdAt?: Date | string
 }
@@ -301,6 +318,7 @@ export type BoardCommentCreateManyInput = {
 export type BoardCommentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -309,6 +327,7 @@ export type BoardCommentUncheckedUpdateManyInput = {
   postId?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -333,6 +352,7 @@ export type BoardCommentCountOrderByAggregateInput = {
   postId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  displayMode?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -342,6 +362,7 @@ export type BoardCommentMaxOrderByAggregateInput = {
   postId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  displayMode?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -351,6 +372,7 @@ export type BoardCommentMinOrderByAggregateInput = {
   postId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  displayMode?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -500,6 +522,7 @@ export type BoardCommentUncheckedUpdateManyWithoutParentNestedInput = {
 export type BoardCommentCreateWithoutAuthorInput = {
   id?: string
   content: string
+  displayMode?: string
   createdAt?: Date | string
   post: Prisma.BoardPostCreateNestedOneWithoutCommentsInput
   parent?: Prisma.BoardCommentCreateNestedOneWithoutRepliesInput
@@ -510,6 +533,7 @@ export type BoardCommentUncheckedCreateWithoutAuthorInput = {
   id?: string
   postId: string
   content: string
+  displayMode?: string
   parentId?: string | null
   createdAt?: Date | string
   replies?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutParentInput
@@ -549,6 +573,7 @@ export type BoardCommentScalarWhereInput = {
   postId?: Prisma.StringFilter<"BoardComment"> | string
   authorId?: Prisma.StringFilter<"BoardComment"> | string
   content?: Prisma.StringFilter<"BoardComment"> | string
+  displayMode?: Prisma.StringFilter<"BoardComment"> | string
   parentId?: Prisma.StringNullableFilter<"BoardComment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BoardComment"> | Date | string
 }
@@ -556,6 +581,7 @@ export type BoardCommentScalarWhereInput = {
 export type BoardCommentCreateWithoutPostInput = {
   id?: string
   content: string
+  displayMode?: string
   createdAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutBoardCommentsInput
   parent?: Prisma.BoardCommentCreateNestedOneWithoutRepliesInput
@@ -566,6 +592,7 @@ export type BoardCommentUncheckedCreateWithoutPostInput = {
   id?: string
   authorId: string
   content: string
+  displayMode?: string
   parentId?: string | null
   createdAt?: Date | string
   replies?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutParentInput
@@ -600,6 +627,7 @@ export type BoardCommentUpdateManyWithWhereWithoutPostInput = {
 export type BoardCommentCreateWithoutRepliesInput = {
   id?: string
   content: string
+  displayMode?: string
   createdAt?: Date | string
   post: Prisma.BoardPostCreateNestedOneWithoutCommentsInput
   author: Prisma.UserCreateNestedOneWithoutBoardCommentsInput
@@ -611,6 +639,7 @@ export type BoardCommentUncheckedCreateWithoutRepliesInput = {
   postId: string
   authorId: string
   content: string
+  displayMode?: string
   parentId?: string | null
   createdAt?: Date | string
 }
@@ -623,6 +652,7 @@ export type BoardCommentCreateOrConnectWithoutRepliesInput = {
 export type BoardCommentCreateWithoutParentInput = {
   id?: string
   content: string
+  displayMode?: string
   createdAt?: Date | string
   post: Prisma.BoardPostCreateNestedOneWithoutCommentsInput
   author: Prisma.UserCreateNestedOneWithoutBoardCommentsInput
@@ -634,6 +664,7 @@ export type BoardCommentUncheckedCreateWithoutParentInput = {
   postId: string
   authorId: string
   content: string
+  displayMode?: string
   createdAt?: Date | string
   replies?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutParentInput
 }
@@ -662,6 +693,7 @@ export type BoardCommentUpdateToOneWithWhereWithoutRepliesInput = {
 export type BoardCommentUpdateWithoutRepliesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   post?: Prisma.BoardPostUpdateOneRequiredWithoutCommentsNestedInput
   author?: Prisma.UserUpdateOneRequiredWithoutBoardCommentsNestedInput
@@ -673,6 +705,7 @@ export type BoardCommentUncheckedUpdateWithoutRepliesInput = {
   postId?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -697,6 +730,7 @@ export type BoardCommentCreateManyAuthorInput = {
   id?: string
   postId: string
   content: string
+  displayMode?: string
   parentId?: string | null
   createdAt?: Date | string
 }
@@ -704,6 +738,7 @@ export type BoardCommentCreateManyAuthorInput = {
 export type BoardCommentUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   post?: Prisma.BoardPostUpdateOneRequiredWithoutCommentsNestedInput
   parent?: Prisma.BoardCommentUpdateOneWithoutRepliesNestedInput
@@ -714,6 +749,7 @@ export type BoardCommentUncheckedUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   postId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replies?: Prisma.BoardCommentUncheckedUpdateManyWithoutParentNestedInput
@@ -723,6 +759,7 @@ export type BoardCommentUncheckedUpdateManyWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   postId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -731,6 +768,7 @@ export type BoardCommentCreateManyPostInput = {
   id?: string
   authorId: string
   content: string
+  displayMode?: string
   parentId?: string | null
   createdAt?: Date | string
 }
@@ -738,6 +776,7 @@ export type BoardCommentCreateManyPostInput = {
 export type BoardCommentUpdateWithoutPostInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutBoardCommentsNestedInput
   parent?: Prisma.BoardCommentUpdateOneWithoutRepliesNestedInput
@@ -748,6 +787,7 @@ export type BoardCommentUncheckedUpdateWithoutPostInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replies?: Prisma.BoardCommentUncheckedUpdateManyWithoutParentNestedInput
@@ -757,6 +797,7 @@ export type BoardCommentUncheckedUpdateManyWithoutPostInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -766,12 +807,14 @@ export type BoardCommentCreateManyParentInput = {
   postId: string
   authorId: string
   content: string
+  displayMode?: string
   createdAt?: Date | string
 }
 
 export type BoardCommentUpdateWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   post?: Prisma.BoardPostUpdateOneRequiredWithoutCommentsNestedInput
   author?: Prisma.UserUpdateOneRequiredWithoutBoardCommentsNestedInput
@@ -783,6 +826,7 @@ export type BoardCommentUncheckedUpdateWithoutParentInput = {
   postId?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replies?: Prisma.BoardCommentUncheckedUpdateManyWithoutParentNestedInput
 }
@@ -792,6 +836,7 @@ export type BoardCommentUncheckedUpdateManyWithoutParentInput = {
   postId?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  displayMode?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -831,6 +876,7 @@ export type BoardCommentSelect<ExtArgs extends runtime.Types.Extensions.Internal
   postId?: boolean
   authorId?: boolean
   content?: boolean
+  displayMode?: boolean
   parentId?: boolean
   createdAt?: boolean
   post?: boolean | Prisma.BoardPostDefaultArgs<ExtArgs>
@@ -845,6 +891,7 @@ export type BoardCommentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   postId?: boolean
   authorId?: boolean
   content?: boolean
+  displayMode?: boolean
   parentId?: boolean
   createdAt?: boolean
   post?: boolean | Prisma.BoardPostDefaultArgs<ExtArgs>
@@ -857,6 +904,7 @@ export type BoardCommentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   postId?: boolean
   authorId?: boolean
   content?: boolean
+  displayMode?: boolean
   parentId?: boolean
   createdAt?: boolean
   post?: boolean | Prisma.BoardPostDefaultArgs<ExtArgs>
@@ -869,11 +917,12 @@ export type BoardCommentSelectScalar = {
   postId?: boolean
   authorId?: boolean
   content?: boolean
+  displayMode?: boolean
   parentId?: boolean
   createdAt?: boolean
 }
 
-export type BoardCommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "postId" | "authorId" | "content" | "parentId" | "createdAt", ExtArgs["result"]["boardComment"]>
+export type BoardCommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "postId" | "authorId" | "content" | "displayMode" | "parentId" | "createdAt", ExtArgs["result"]["boardComment"]>
 export type BoardCommentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   post?: boolean | Prisma.BoardPostDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -905,6 +954,7 @@ export type $BoardCommentPayload<ExtArgs extends runtime.Types.Extensions.Intern
     postId: string
     authorId: string
     content: string
+    displayMode: string
     parentId: string | null
     createdAt: Date
   }, ExtArgs["result"]["boardComment"]>
@@ -1338,6 +1388,7 @@ export interface BoardCommentFieldRefs {
   readonly postId: Prisma.FieldRef<"BoardComment", 'String'>
   readonly authorId: Prisma.FieldRef<"BoardComment", 'String'>
   readonly content: Prisma.FieldRef<"BoardComment", 'String'>
+  readonly displayMode: Prisma.FieldRef<"BoardComment", 'String'>
   readonly parentId: Prisma.FieldRef<"BoardComment", 'String'>
   readonly createdAt: Prisma.FieldRef<"BoardComment", 'DateTime'>
 }

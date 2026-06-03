@@ -8,7 +8,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (session instanceof NextResponse) return session
 
   const { id: postId } = await params
-  const { content, parentId } = await req.json()
+  const { content, parentId, displayMode } = await req.json()
   if (!content?.trim()) {
     return NextResponse.json({ error: "내용을 입력하세요." }, { status: 400 })
   }
@@ -19,6 +19,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       authorId: session.user.id,
       content: content.trim(),
       parentId: parentId ?? null,
+      displayMode: ["REAL", "NICKNAME", "ANONYMOUS"].includes(displayMode) ? displayMode : "REAL",
     },
     include: {
       author: { select: { id: true, name: true, nickname: true, department: true } },

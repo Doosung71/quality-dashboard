@@ -129,6 +129,7 @@ export const BoardPostScalarFieldEnum = {
   title: 'title',
   content: 'content',
   authorId: 'authorId',
+  displayMode: 'displayMode',
   attachments: 'attachments',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -142,6 +143,7 @@ export const BoardCommentScalarFieldEnum = {
   postId: 'postId',
   authorId: 'authorId',
   content: 'content',
+  displayMode: 'displayMode',
   parentId: 'parentId',
   createdAt: 'createdAt'
 } as const

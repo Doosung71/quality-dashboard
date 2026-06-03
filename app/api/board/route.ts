@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
 
-  const { title, content, category, pinned, attachments } = await req.json()
+  const { title, content, category, pinned, attachments, displayMode } = await req.json()
   if (!title?.trim() || !content?.trim()) {
     return NextResponse.json({ error: "제목과 내용을 입력하세요." }, { status: 400 })
   }
@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
       pinned: !!(pinned && isPrivileged),
       authorId: session.user.id,
       attachments: Array.isArray(attachments) ? attachments : [],
+      displayMode: ["REAL", "NICKNAME", "ANONYMOUS"].includes(displayMode) ? displayMode : "REAL",
     },
     include: {
       author: { select: { id: true, name: true, nickname: true, department: true } },

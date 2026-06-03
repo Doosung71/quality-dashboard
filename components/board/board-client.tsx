@@ -17,9 +17,12 @@ type Attachment = { url: string; name: string; size: number; contentType: string
 
 type Author = { id: string; name: string; nickname: string | null; department: string | null }
 
+type DisplayMode = "REAL" | "NICKNAME" | "ANONYMOUS"
+
 type Comment = {
   id: string; content: string; createdAt: string
   author: Author; parentId: string | null
+  displayMode: DisplayMode
   replies: Comment[]
 }
 
@@ -27,9 +30,16 @@ type Post = {
   id: string; title: string; content: string
   category: "NOTICE" | "GENERAL"; pinned: boolean
   createdAt: string; author: Author
+  displayMode: DisplayMode
   attachments: Attachment[]
   _count?: { comments: number }
   comments?: Comment[]
+}
+
+function resolveDisplayName(author: Author, mode: DisplayMode) {
+  if (mode === "ANONYMOUS") return "익명"
+  if (mode === "NICKNAME") return author.nickname ?? author.name
+  return author.name
 }
 
 function isImage(ct: string) { return ct.startsWith("image/") }
@@ -102,7 +112,10 @@ function AttachmentList({ attachments, preview = false }: { attachments: Attachm
 
 // ─── 유틸 ──────────────────────────────────────────────────
 
-function authorLabel(a: Author) { return a.nickname ?? a.name }
+// 하위 호환 (displayMode 없는 경우 닉네임 우선)
+function authorLabel(a: Author, mode?: DisplayMode) {
+  return resolveDisplayName(a, mode ?? "REAL")
+}
 
 function timeAgo(iso: string) {
   const diff = (Date.now() - new Date(iso).getTime()) / 1000
@@ -110,6 +123,38 @@ function timeAgo(iso: string) {
   if (diff < 3600) return `${Math.floor(diff / 60)}분 전`
   if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`
   return new Date(iso).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })
+}
+
+// ─── 작성자 표시 옵션 선택기 ───────────────────────────────
+
+function DisplayModeSelector({ value, onChange, compact = false }: {
+  value: DisplayMode; onChange: (m: DisplayMode) => void; compact?: boolean
+}) {
+  const options: { v: DisplayMode; label: string }[] = [
+    { v: "REAL",      label: "실명"   },
+    { v: "NICKNAME",  label: "닉네임" },
+    { v: "ANONYMOUS", label: "익명"   },
+  ]
+  return (
+    <div className={cn("flex items-center gap-2", compact ? "flex-row" : "")}>
+      {!compact && <span className="text-[10px] text-slate-500 font-semibold shrink-0">작성자 표시</span>}
+      <div className="flex gap-1">
+        {options.map(o => (
+          <button key={o.v} type="button" onClick={() => onChange(o.v)}
+            className={cn(
+              "px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all",
+              value === o.v
+                ? o.v === "ANONYMOUS"
+                  ? "bg-slate-700 border-slate-700 text-white"
+                  : "bg-indigo-600 border-indigo-600 text-white"
+                : "bg-white border-slate-200 text-slate-500 hover:border-slate-400"
+            )}>
+            {o.v === "ANONYMOUS" ? "🕵️ " + o.label : o.v === "NICKNAME" ? "🏷️ " + o.label : "👤 " + o.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
 }
 
 // ─── 댓글 단일 컴포넌트 ────────────────────────────────────
@@ -149,7 +194,7 @@ function CommentItem({
     return (
       <div className="flex items-center gap-3 mt-1">
         {!isReply && (
-          <button onClick={() => onReply(id, authorLabel(comment.author))}
+          <button onClick={() => onReply(id, authorLabel(comment.author, comment.displayMode))}
             className="text-[10px] text-slate-400 hover:text-indigo-600 flex items-center gap-1 transition-colors">
             <CornerDownRight className="w-3 h-3" /> 답글
           </button>
@@ -175,12 +220,12 @@ function CommentItem({
       {/* 댓글 본체 */}
       <div className="group flex gap-3">
         <div className="w-7 h-7 rounded-full bg-slate-700 text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
-          {authorLabel(comment.author).slice(0, 1)}
+          {authorLabel(comment.author, comment.displayMode).slice(0, 1)}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs font-bold text-slate-900">{authorLabel(comment.author)}</span>
-            {comment.author.department && <span className="text-[10px] text-slate-400">{comment.author.department}</span>}
+            <span className="text-xs font-bold text-slate-900">{authorLabel(comment.author, comment.displayMode)}</span>
+            {comment.displayMode !== "ANONYMOUS" && comment.author.department && <span className="text-[10px] text-slate-400">{comment.author.department}</span>}
             <span className="text-[10px] text-slate-400">{timeAgo(comment.createdAt)}</span>
           </div>
 
@@ -218,12 +263,12 @@ function CommentItem({
           {comment.replies.map(reply => (
             <div key={reply.id} className="group flex gap-2.5">
               <div className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 text-[9px] font-bold flex items-center justify-center shrink-0 mt-0.5">
-                {authorLabel(reply.author).slice(0, 1)}
+                {authorLabel(reply.author, reply.displayMode).slice(0, 1)}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs font-bold text-slate-900">{authorLabel(reply.author)}</span>
-                  {reply.author.department && <span className="text-[10px] text-slate-400">{reply.author.department}</span>}
+                  <span className="text-xs font-bold text-slate-900">{authorLabel(reply.author, reply.displayMode)}</span>
+                  {reply.displayMode !== "ANONYMOUS" && reply.author.department && <span className="text-[10px] text-slate-400">{reply.author.department}</span>}
                   <span className="text-[10px] text-slate-400">{timeAgo(reply.createdAt)}</span>
                 </div>
 
@@ -276,6 +321,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [detail, setDetail] = useState<Post | null>(null)
   const [loadingDetail, setLoadingDetail] = useState(false)
+  const [listTab, setListTab] = useState<"ALL" | "NOTICE" | "GENERAL">("ALL")
 
   // 새 글 작성 폼
   const [showNewPost, setShowNewPost] = useState(false)
@@ -283,6 +329,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
   const [newContent, setNewContent] = useState("")
   const [newCategory, setNewCategory] = useState<"GENERAL" | "NOTICE">("GENERAL")
   const [newPinned, setNewPinned] = useState(false)
+  const [newDisplayMode, setNewDisplayMode] = useState<DisplayMode>("REAL")
   const [submitting, setSubmitting] = useState(false)
 
   // 파일 첨부 (새 글)
@@ -300,6 +347,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
 
   // 댓글 입력
   const [commentText, setCommentText] = useState("")
+  const [commentDisplayMode, setCommentDisplayMode] = useState<DisplayMode>("REAL")
   const [replyTo, setReplyTo] = useState<{ parentId: string; authorName: string } | null>(null)
   const [commentSubmitting, setCommentSubmitting] = useState(false)
   const commentInputRef = useRef<HTMLTextAreaElement>(null)
@@ -334,11 +382,11 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     const res = await fetch("/api/board", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: newTitle, content: newContent, category: newCategory, pinned: newPinned, attachments: pendingFiles }),
+      body: JSON.stringify({ title: newTitle, content: newContent, category: newCategory, pinned: newPinned, attachments: pendingFiles, displayMode: newDisplayMode }),
     })
     if (res.ok) {
       const created = await res.json() as Post
-      setNewTitle(""); setNewContent(""); setNewCategory("GENERAL"); setNewPinned(false); setPendingFiles([])
+      setNewTitle(""); setNewContent(""); setNewCategory("GENERAL"); setNewPinned(false); setPendingFiles([]); setNewDisplayMode("REAL")
       setShowNewPost(false)
       await loadPosts()
       setSelectedId(created.id)
@@ -410,7 +458,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     await fetch(`/api/board/${selectedId}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: commentText, parentId: replyTo?.parentId ?? null }),
+      body: JSON.stringify({ content: commentText, parentId: replyTo?.parentId ?? null, displayMode: commentDisplayMode }),
     })
     setCommentText(""); setReplyTo(null)
     loadDetail(selectedId)
@@ -450,9 +498,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
             onClick={() => setShowNewPost(v => !v)}
             className={cn(
               "flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-all",
-              showNewPost
-                ? "bg-slate-100 text-slate-600"
-                : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm"
+              showNewPost ? "bg-slate-100 text-slate-600" : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm"
             )}
           >
             {showNewPost ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
@@ -460,45 +506,75 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
           </button>
         </div>
 
+        {/* 탭: 전체 / 공지 / 일반 */}
+        <div className="flex border-b border-slate-100 shrink-0">
+          {(["ALL", "NOTICE", "GENERAL"] as const).map(tab => (
+            <button key={tab} onClick={() => setListTab(tab)}
+              className={cn(
+                "flex-1 py-2 text-xs font-semibold transition-all",
+                listTab === tab
+                  ? tab === "NOTICE"
+                    ? "text-amber-700 border-b-2 border-amber-500 bg-amber-50/50"
+                    : "text-indigo-700 border-b-2 border-indigo-500"
+                  : "text-slate-400 hover:text-slate-700"
+              )}>
+              {tab === "ALL" ? "전체" : tab === "NOTICE" ? "📢 공지" : "💬 일반"}
+            </button>
+          ))}
+        </div>
+
         {/* 글 목록 */}
-        <div className="flex-1 overflow-y-auto divide-y divide-slate-50">
-          {posts.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-              <MessageSquare className="w-8 h-8 mb-2 opacity-30" />
-              <p className="text-xs">아직 게시글이 없습니다.</p>
-            </div>
-          ) : posts.map(post => {
-            const isActive = post.id === selectedId
-            return (
-              <button
-                key={post.id}
-                onClick={() => setSelectedId(post.id)}
-                className={cn(
-                  "w-full text-left px-4 py-3 transition-all",
-                  isActive ? "bg-indigo-50 border-l-2 border-indigo-500" : "hover:bg-slate-50 border-l-2 border-transparent"
-                )}
-              >
-                <div className="flex items-center gap-1.5 mb-1">
-                  {post.category === "NOTICE" && (
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-100 text-rose-600">공지</span>
-                  )}
-                  {post.pinned && <Pin className="w-3 h-3 text-amber-500 shrink-0" />}
-                  <span className="text-xs font-semibold text-slate-800 line-clamp-1 flex-1">{post.title}</span>
-                </div>
-                <div className="flex items-center justify-between text-[10px] text-slate-400">
-                  <span>{authorLabel(post.author)}</span>
-                  <div className="flex items-center gap-2">
-                    {(post._count?.comments ?? 0) > 0 && (
-                      <span className="flex items-center gap-0.5">
-                        <MessageSquare className="w-3 h-3" />{post._count?.comments}
-                      </span>
-                    )}
-                    <span>{timeAgo(post.createdAt)}</span>
-                  </div>
-                </div>
-              </button>
+        <div className="flex-1 overflow-y-auto">
+          {(() => {
+            const filtered = posts.filter(p =>
+              listTab === "ALL" ? true : p.category === listTab
             )
-          })}
+            if (filtered.length === 0) return (
+              <div className="flex flex-col items-center justify-center py-16 text-slate-400">
+                <MessageSquare className="w-8 h-8 mb-2 opacity-30" />
+                <p className="text-xs">{listTab === "NOTICE" ? "등록된 공지가 없습니다." : "아직 게시글이 없습니다."}</p>
+              </div>
+            )
+            return filtered.map(post => {
+              const isActive = post.id === selectedId
+              const isNotice = post.category === "NOTICE"
+              return (
+                <button
+                  key={post.id}
+                  onClick={() => setSelectedId(post.id)}
+                  className={cn(
+                    "w-full text-left px-4 py-3 transition-all border-b border-slate-50",
+                    isActive
+                      ? isNotice ? "bg-amber-50 border-l-2 border-amber-500" : "bg-indigo-50 border-l-2 border-indigo-500"
+                      : isNotice
+                        ? "bg-amber-50/30 hover:bg-amber-50 border-l-2 border-amber-200"
+                        : "hover:bg-slate-50 border-l-2 border-transparent"
+                  )}
+                >
+                  {/* 공지 전용 상단 배너 라인 */}
+                  <div className="flex items-center gap-1.5 mb-1">
+                    {isNotice && <Megaphone className="w-3 h-3 text-amber-500 shrink-0" />}
+                    {post.pinned && <Pin className="w-3 h-3 text-amber-500 shrink-0" />}
+                    <span className={cn(
+                      "text-xs line-clamp-1 flex-1",
+                      isNotice ? "font-bold text-amber-900" : "font-semibold text-slate-800"
+                    )}>{post.title}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[10px] text-slate-400">
+                    <span>{authorLabel(post.author, post.displayMode as DisplayMode)}</span>
+                    <div className="flex items-center gap-2">
+                      {(post._count?.comments ?? 0) > 0 && (
+                        <span className="flex items-center gap-0.5">
+                          <MessageSquare className="w-3 h-3" />{post._count?.comments}
+                        </span>
+                      )}
+                      <span>{timeAgo(post.createdAt)}</span>
+                    </div>
+                  </div>
+                </button>
+              )
+            })
+          })()}
         </div>
       </div>
 
@@ -525,9 +601,9 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                   <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 cursor-pointer">
                     <input type="checkbox" checked={newCategory === "NOTICE"}
                       onChange={e => setNewCategory(e.target.checked ? "NOTICE" : "GENERAL")}
-                      className="rounded border-slate-300 text-rose-500 focus:ring-rose-400"
+                      className="rounded border-slate-300 text-amber-500 focus:ring-amber-400"
                     />
-                    <Megaphone className="w-3.5 h-3.5 text-rose-500" /> 공지
+                    <Megaphone className="w-3.5 h-3.5 text-amber-500" /> 공지
                   </label>
                 )}
                 {isPrivileged && (
@@ -540,6 +616,9 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                   </label>
                 )}
               </div>
+
+              {/* 작성자 표시 옵션 */}
+              <DisplayModeSelector value={newDisplayMode} onChange={setNewDisplayMode} />
               <textarea
                 placeholder="내용을 입력하세요..."
                 value={newContent}
@@ -599,22 +678,28 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
           </div>
         ) : detail && (
           <div className="flex-1 overflow-y-auto">
+            {/* 공지 전용 앰버 배너 */}
+            {detail.category === "NOTICE" && (
+              <div className="bg-linear-to-r from-amber-400 to-orange-300 px-6 py-3 flex items-center gap-2.5">
+                <Megaphone className="w-5 h-5 text-white shrink-0" />
+                <div>
+                  <span className="text-xs font-black text-white/80 uppercase tracking-widest">공지사항</span>
+                  <p className="text-sm font-bold text-white leading-tight mt-0.5">{detail.title}</p>
+                </div>
+                {detail.pinned && <Pin className="w-4 h-4 text-white/70 ml-auto shrink-0" />}
+              </div>
+            )}
+
             {/* 게시글 본문 */}
-            <div className="bg-white border-b border-slate-100 px-6 py-6">
+            <div className={cn("border-b border-slate-100 px-6 py-6", detail.category === "NOTICE" ? "bg-amber-50/30" : "bg-white")}>
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div className="space-y-1.5 flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {detail.category === "NOTICE" && (
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-600 flex items-center gap-1">
-                        <Megaphone className="w-3 h-3" /> 공지
-                      </span>
-                    )}
-                    {detail.pinned && <Pin className="w-3.5 h-3.5 text-amber-500" />}
+                  {detail.category !== "NOTICE" && (
                     <h2 className="text-lg font-bold text-slate-900 leading-tight">{detail.title}</h2>
-                  </div>
+                  )}
                   <div className="flex items-center gap-3 text-xs text-slate-400">
-                    <span className="font-medium text-slate-600">{authorLabel(detail.author)}</span>
-                    {detail.author.department && <span>{detail.author.department}</span>}
+                    <span className="font-medium text-slate-600">{authorLabel(detail.author, detail.displayMode as DisplayMode)}</span>
+                    {detail.displayMode !== "ANONYMOUS" && detail.author.department && <span>{detail.author.department}</span>}
                     <span>{new Date(detail.createdAt).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}</span>
                     <span className="flex items-center gap-1"><MessageSquare className="w-3 h-3" />{commentCount}개</span>
                   </div>
@@ -750,6 +835,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
 
               {/* 댓글 입력 */}
               <form onSubmit={handleCommentSubmit} className="space-y-2 pt-2 border-t border-slate-100">
+                <DisplayModeSelector value={commentDisplayMode} onChange={setCommentDisplayMode} compact />
                 {replyTo && (
                   <div className="flex items-center gap-2 bg-indigo-50 px-3 py-1.5 rounded-lg text-xs text-indigo-700">
                     <CornerDownRight className="w-3.5 h-3.5" />
