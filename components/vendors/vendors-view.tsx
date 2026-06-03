@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { KnowledgeSuggest } from "@/components/ui/knowledge-suggest";
 import Image from "next/image";
 import type { Vendor, VendorsData, VendorCategory, VendorGrade, VendorStatus, QualityIssueItem } from "@/types/vendor";
 import {
@@ -294,6 +295,12 @@ function VendorDrawer({ vendor, onClose }: { vendor: Vendor; onClose: () => void
                   </div>
                 </>
               )}
+
+              {/* 관련 지식 자동 추천 */}
+              <KnowledgeSuggest
+                query={`${vendor.name} ${vendor.mainItem} 협력업체 품질`}
+                label="관련 지식 자동 추천"
+              />
             </div>
           )}
 

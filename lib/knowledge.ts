@@ -7,6 +7,7 @@ import { neon } from "@neondatabase/serverless"
 
 export interface KnowledgeChunk {
   content: string
+  source_type: string
   source_path: string
   title: string | null
   similarity: number
@@ -93,6 +94,7 @@ export async function searchKnowledge(
 
   interface DBRow {
     content: string
+    source_type: string
     source_path: string
     title: string | null
     similarity: string | number
@@ -102,6 +104,7 @@ export async function searchKnowledge(
 
   return (rows as unknown as DBRow[]).map((r) => ({
     content: r.content,
+    source_type: r.source_type,
     source_path: r.source_path,
     title: r.title,
     similarity: typeof r.similarity === "number" ? r.similarity : parseFloat(r.similarity),

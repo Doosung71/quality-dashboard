@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import type { Claim, ClaimStatus } from "@/types/claim";
 import { ClaimStatusBadge, ClaimPriorityBadge } from "./claim-badges";
+import { KnowledgeSuggest } from "@/components/ui/knowledge-suggest";
 
 const STAGES: { status: ClaimStatus; label: string }[] = [
   { status: "Received",      label: "접수" },
@@ -188,6 +189,12 @@ export function ClaimDetail({ claim, onClose, onMoveStage }: ClaimDetailProps) {
               {claim.description}
             </p>
           </div>
+
+          {/* 관련 지식 자동 추천 */}
+          <KnowledgeSuggest
+            query={`${claim.title} ${claim.description}`}
+            label="관련 지식 자동 추천"
+          />
 
           {/* Timeline */}
           <div>
