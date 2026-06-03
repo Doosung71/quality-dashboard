@@ -1,5 +1,8 @@
+"use client"
+
 import { cn } from "@/lib/utils"
 import type { KnowledgeChunk } from "@/lib/knowledge"
+import { MarkdownContent } from "@/components/ui/markdown-content"
 
 interface SearchCardProps {
   chunk: KnowledgeChunk
@@ -23,7 +26,10 @@ export function SearchCard({ chunk }: SearchCardProps) {
         </span>
       </div>
       <p className="text-xs text-slate-400 truncate">{filename}</p>
-      <p className="text-sm text-slate-600 line-clamp-3 leading-relaxed">{chunk.content}</p>
+      <div className="max-h-24 overflow-hidden relative">
+        <MarkdownContent content={chunk.content} className="text-xs" />
+        <div className="absolute bottom-0 left-0 right-0 h-6 bg-linear-to-t from-white to-transparent pointer-events-none" />
+      </div>
     </div>
   )
 }

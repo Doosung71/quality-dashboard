@@ -6,6 +6,7 @@ import type { KnowledgeChunk } from "@/lib/knowledge";
 import { SearchCard } from "@/components/knowledge/search-card";
 import { knowledgeRepositoryData } from "@/data/knowledge.data";
 import { KnowledgeRepository } from "@/components/knowledge/knowledge-repository";
+import { MarkdownContent } from "@/components/ui/markdown-content";
 
 export default function KnowledgePage() {
   const [query, setQuery] = useState("");
@@ -120,9 +121,10 @@ export default function KnowledgePage() {
             </span>
           </div>
 
-          <div className="leading-relaxed text-slate-700 font-medium whitespace-pre-wrap font-sans text-[11px] prose max-w-none">
-            {synthesizedReport}
-          </div>
+          <MarkdownContent
+            content={synthesizedReport}
+            className="text-[11px]"
+          />
         </div>
       )}
 
