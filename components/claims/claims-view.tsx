@@ -14,7 +14,7 @@ const STAGE_LABELS: Record<ClaimStatus, string> = {
   Received: "접수", Investigating: "조사", Action: "대책", Verification: "검증", Closed: "종결",
 };
 
-export function ClaimsView({ data }: { data: ClaimsData }) {
+export function ClaimsView({ data, canEdit = true }: { data: ClaimsData; canEdit?: boolean }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -128,7 +128,7 @@ export function ClaimsView({ data }: { data: ClaimsData }) {
       <ClaimDetail
         claim={selectedClaim}
         onClose={() => setSelectedClaimId(null)}
-        onMoveStage={handleMoveStage}
+        onMoveStage={canEdit ? handleMoveStage : undefined}
       />
     </div>
   );

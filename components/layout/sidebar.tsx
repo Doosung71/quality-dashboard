@@ -7,17 +7,18 @@ import { LayoutDashboard, FlaskConical, TriangleAlert, Building2, Users, Globe, 
 import type { Role } from "@/lib/generated/prisma/client"
 
 // 역할별 접근 가능한 메뉴
+// readonlyFor: 이 역할은 해당 메뉴를 조회만 가능 (편집 불가)
 const ALL_NAV = [
-  { href: "/",             label: "대시보드",       icon: LayoutDashboard, roles: ["DIRECTOR", "TEAM_LEAD", "PRACTITIONER"] },
-  { href: "/facilities",   label: "시험장·시험 현황", icon: FlaskConical,    roles: ["DIRECTOR", "TEAM_LEAD", "PRACTITIONER"] },
-  { href: "/claims",       label: "고객 클레임",      icon: TriangleAlert,   roles: ["DIRECTOR", "TEAM_LEAD", "PRACTITIONER"] },
-  { href: "/ncr",          label: "부적합품보고(NCR)", icon: FileText,        roles: ["DIRECTOR", "TEAM_LEAD", "PRACTITIONER"] },
-  { href: "/qcost",        label: "품질비용(Q-Cost)",  icon: Coins,           roles: ["DIRECTOR", "TEAM_LEAD"] },
-  { href: "/vendors",      label: "협력업체",         icon: Building2,       roles: ["DIRECTOR", "TEAM_LEAD"] },
-  { href: "/hr",           label: "인사·면담",        icon: Users,           roles: ["DIRECTOR", "TEAM_LEAD"] },
-  { href: "/intelligence", label: "외부 정보",        icon: Globe,           roles: ["DIRECTOR"] },
-  { href: "/knowledge",   label: "지식 검색",         icon: BookOpen,        roles: ["DIRECTOR", "TEAM_LEAD", "PRACTITIONER"] },
-  { href: "/dashboard",  label: "입찰 검토 AI",      icon: FileSearch,      roles: ["DIRECTOR", "TEAM_LEAD", "PRACTITIONER"] },
+  { href: "/",             label: "대시보드",         icon: LayoutDashboard, roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+  { href: "/facilities",   label: "시험장·시험 현황",   icon: FlaskConical,    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["TEAM_LEAD", "PRACTITIONER"] },
+  { href: "/claims",       label: "고객 클레임",        icon: TriangleAlert,   roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
+  { href: "/ncr",          label: "부적합품보고(NCR)",   icon: FileText,        roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+  { href: "/qcost",        label: "품질비용(Q-Cost)",    icon: Coins,           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
+  { href: "/vendors",      label: "협력업체",           icon: Building2,       roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
+  { href: "/hr",           label: "인사·면담",          icon: Users,           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
+  { href: "/intelligence", label: "외부 정보",          icon: Globe,           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD"],                 readonlyFor: ["TEAM_LEAD"] },
+  { href: "/knowledge",    label: "지식 검색",           icon: BookOpen,        roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+  { href: "/dashboard",    label: "입찰 검토 AI",        icon: FileSearch,      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
 ] as const
 
 interface SidebarProps {
@@ -28,7 +29,12 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
   const pathname = usePathname()
-  const navItems = ALL_NAV.filter(item => (item.roles as readonly string[]).includes(role))
+  const navItems = ALL_NAV
+    .filter(item => (item.roles as readonly string[]).includes(role))
+    .map(item => ({
+      ...item,
+      isReadonly: (item.readonlyFor as readonly string[]).includes(role),
+    }))
 
   return (
     <aside className={cn(
@@ -46,7 +52,7 @@ export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
         </button>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        {navItems.map(({ href, label, icon: Icon }) => {
+        {navItems.map(({ href, label, icon: Icon, isReadonly }) => {
           const active = href === "/" ? pathname === "/" : pathname.startsWith(href)
           return (
             <Link key={href} href={href} onClick={onClose}
@@ -55,7 +61,10 @@ export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
                 active ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
               )}>
               <Icon className="w-4 h-4 shrink-0" />
-              {label}
+              <span className="flex-1">{label}</span>
+              {isReadonly && (
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 leading-tight">조회</span>
+              )}
             </Link>
           )
         })}
@@ -76,7 +85,7 @@ export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
           <HelpCircle className="w-4 h-4 shrink-0" />
           사용 가이드
         </Link>
-        {role === "DIRECTOR" && (
+        {(role === "DIRECTOR" || (role as string) === "ADMIN") && (
           <Link href="/admin/users" onClick={onClose}
             className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
             <ShieldCheck className="w-4 h-4 shrink-0" />

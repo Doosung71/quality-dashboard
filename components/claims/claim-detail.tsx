@@ -45,7 +45,7 @@ function generateReport(claim: Claim): string {
 interface ClaimDetailProps {
   claim: Claim | null;
   onClose: () => void;
-  onMoveStage: (id: string, newStatus: ClaimStatus) => void;
+  onMoveStage?: (id: string, newStatus: ClaimStatus) => void;
 }
 
 export function ClaimDetail({ claim, onClose, onMoveStage }: ClaimDetailProps) {
@@ -170,7 +170,7 @@ export function ClaimDetail({ claim, onClose, onMoveStage }: ClaimDetailProps) {
                 <button
                   key={stage.status}
                   disabled={stage.status === claim.status}
-                  onClick={() => { onMoveStage(claim.id, stage.status); setIsMoving(false); }}
+                  onClick={() => { onMoveStage?.(claim.id, stage.status); setIsMoving(false); }}
                   className={cn(
                     "py-2 text-xs font-medium rounded-lg border transition-all",
                     stage.status === claim.status
@@ -202,12 +202,14 @@ export function ClaimDetail({ claim, onClose, onMoveStage }: ClaimDetailProps) {
             >
               {copied ? "복사 완료 ✓" : "보고서 복사"}
             </button>
-            <button
-              onClick={() => setIsMoving(true)}
-              className="flex-1 bg-blue-600 text-white text-sm font-medium py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
-            >
-              단계 이동 →
-            </button>
+            {onMoveStage && (
+              <button
+                onClick={() => setIsMoving(true)}
+                className="flex-1 bg-blue-600 text-white text-sm font-medium py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+              >
+                단계 이동 →
+              </button>
+            )}
           </div>
         )}
       </div>

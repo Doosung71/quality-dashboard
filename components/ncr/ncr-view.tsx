@@ -19,6 +19,7 @@ import {
 
 interface NCRViewProps {
   data: NCRsData;
+  canEdit?: boolean;
 }
 
 const STATUS_COLUMNS: { status: NCRStatus; label: string; color: string }[] = [
@@ -37,7 +38,7 @@ function isOverdue(ncr: NCR): boolean {
   return ncr.status !== "Closed" && ncr.targetDate < getToday();
 }
 
-export function NCRView({ data }: NCRViewProps) {
+export function NCRView({ data, canEdit = true }: NCRViewProps) {
   const [ncrs, setNcrs] = useState<NCR[]>(data.ncrs);
   const [selectedNCR, setSelectedNCR] = useState<NCR | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -475,13 +476,17 @@ export function NCRView({ data }: NCRViewProps) {
             {/* 하단 단계 진행 액션 버튼 (Zero Double Work) */}
             <div className="p-6 border-t border-slate-100 bg-slate-50 flex items-center gap-2 justify-end">
               {selectedNCR.status !== "Closed" ? (
-                <button
-                  onClick={() => handleMoveToNextStep(selectedNCR)}
-                  className="bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition-all flex items-center gap-1.5"
-                >
-                  <ArrowRightCircle className="w-4 h-4" />
-                  {selectedNCR.status === "Verification" ? "최종 종결 승인하기" : "조치 단계 승인 및 이동"}
-                </button>
+                canEdit ? (
+                  <button
+                    onClick={() => handleMoveToNextStep(selectedNCR)}
+                    className="bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition-all flex items-center gap-1.5"
+                  >
+                    <ArrowRightCircle className="w-4 h-4" />
+                    {selectedNCR.status === "Verification" ? "최종 종결 승인하기" : "조치 단계 승인 및 이동"}
+                  </button>
+                ) : (
+                  <span className="text-xs text-slate-400 px-3 py-2 bg-slate-100 rounded-lg">조회 전용 — 단계 이동 권한 없음</span>
+                )
               ) : (
                 <div className="text-emerald-700 font-bold text-xs flex items-center gap-1">
                   <CheckCircle2 className="w-4 h-4" /> 부적합 조치 프로세스 종결 완료
