@@ -113,7 +113,7 @@ export default async function DashboardPage() {
           </Link>
           <div className="flex items-center gap-2">
             <FileSearch className="w-5.5 h-5.5 text-indigo-600" />
-            <h1 className="font-extrabold text-base text-slate-900 tracking-tight">입찰 검토 보조 시스템</h1>
+            <h1 className="font-extrabold text-base text-slate-900 tracking-tight">AI 입찰검토 시스템</h1>
           </div>
         </div>
 
@@ -159,59 +159,11 @@ export default async function DashboardPage() {
       </header>
 
       {/* 메인 레이아웃 본문 */}
-      <div className="max-w-5xl mx-auto p-6 md:p-8 space-y-8">
-        
-        {/* 결재 대기 패널 (팀장 / 부문장 맞춤형) */}
-        {session.user.role === "DIRECTOR" && (
-          <section className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-            <h2 className="text-xs font-extrabold text-slate-400 tracking-wider uppercase flex items-center gap-1.5">
-              <CheckCircle2 className="w-4.5 h-4.5 text-emerald-500" /> 최종 승인 대기 목록 ({pendingFinalReviews.length}건)
-            </h2>
-            {pendingFinalReviews.length === 0 ? (
-              <p className="text-xs text-slate-400 italic">최종 결재 대기 중인 항목이 없습니다.</p>
-            ) : (
-              <ul className="space-y-2 text-xs">
-                {pendingFinalReviews.map((a) => (
-                  <li key={a.id} className="bg-emerald-50/50 border border-emerald-100 rounded-xl px-4 py-3 flex items-center justify-between shadow-inner">
-                    <p className="font-bold text-slate-900">{a.tender.title}</p>
-                    <Link href={`/tender/${a.tender.id}`}>
-                      <Button size="sm" className="bg-slate-950 hover:bg-slate-800 text-white font-bold rounded-lg shadow-sm">최종 결재</Button>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        )}
-
-        {session.user.role === "TEAM_LEAD" && (
-          <section className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-            <h2 className="text-xs font-extrabold text-slate-400 tracking-wider uppercase flex items-center gap-1.5">
-              <Clock className="w-4.5 h-4.5 text-amber-500" /> 부서 검토 대기 목록 ({pendingReviews.length}건)
-            </h2>
-            {pendingReviews.length === 0 ? (
-              <p className="text-xs text-slate-400 italic">검토 상신 대기 중인 항목이 없습니다.</p>
-            ) : (
-              <ul className="space-y-2 text-xs">
-                {pendingReviews.map((a) => (
-                  <li key={a.id} className="bg-amber-50/50 border border-amber-100 rounded-xl px-4 py-3 flex items-center justify-between shadow-inner">
-                    <p className="font-bold text-slate-900">{a.tender.title}</p>
-                    <Link href={`/tender/${a.tender.id}`}>
-                      <Button size="sm" className="bg-slate-950 hover:bg-slate-800 text-white font-bold rounded-lg shadow-sm">1차 검토</Button>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        )}
-
-        {/* 2단 그리드 형태로 히어로 카드(좌) + 리스트(우) 배치 */}
+      <div className="max-w-5xl mx-auto p-6 md:p-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
-          {/* 좌측: 이미지 + 케이블 히어로 카드 (전 역할) + 실무자 업로드 폼 */}
+          {/* 좌측: 대표 이미지 + 케이블 히어로 카드 + 실무자 업로드 폼 */}
           <div className="lg:col-span-1 space-y-4">
-            {/* 입찰검토시스템 대표 이미지 */}
             <div className="relative w-full overflow-hidden rounded-2xl shadow-md" style={{ aspectRatio: "16/9" }}>
               <Image
                 src="/tender-picture.png"
@@ -229,8 +181,51 @@ export default async function DashboardPage() {
             )}
           </div>
 
-          {/* 우측: 입찰 목록 (항상 2/3) */}
+          {/* 우측: 결재 대기 패널 + 입찰 목록 */}
           <div className="lg:col-span-2 space-y-6">
+            {/* 결재 대기 패널 (팀장 / 부문장) */}
+            {session.user.role === "DIRECTOR" && (
+              <section className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                <h2 className="text-xs font-extrabold text-slate-400 tracking-wider uppercase flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4.5 h-4.5 text-emerald-500" /> 최종 승인 대기 목록 ({pendingFinalReviews.length}건)
+                </h2>
+                {pendingFinalReviews.length === 0 ? (
+                  <p className="text-xs text-slate-400 italic">최종 결재 대기 중인 항목이 없습니다.</p>
+                ) : (
+                  <ul className="space-y-2 text-xs">
+                    {pendingFinalReviews.map((a) => (
+                      <li key={a.id} className="bg-emerald-50/50 border border-emerald-100 rounded-xl px-4 py-3 flex items-center justify-between shadow-inner">
+                        <p className="font-bold text-slate-900">{a.tender.title}</p>
+                        <Link href={`/tender/${a.tender.id}`}>
+                          <Button size="sm" className="bg-slate-950 hover:bg-slate-800 text-white font-bold rounded-lg shadow-sm">최종 결재</Button>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            )}
+            {session.user.role === "TEAM_LEAD" && (
+              <section className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                <h2 className="text-xs font-extrabold text-slate-400 tracking-wider uppercase flex items-center gap-1.5">
+                  <Clock className="w-4.5 h-4.5 text-amber-500" /> 부서 검토 대기 목록 ({pendingReviews.length}건)
+                </h2>
+                {pendingReviews.length === 0 ? (
+                  <p className="text-xs text-slate-400 italic">검토 상신 대기 중인 항목이 없습니다.</p>
+                ) : (
+                  <ul className="space-y-2 text-xs">
+                    {pendingReviews.map((a) => (
+                      <li key={a.id} className="bg-amber-50/50 border border-amber-100 rounded-xl px-4 py-3 flex items-center justify-between shadow-inner">
+                        <p className="font-bold text-slate-900">{a.tender.title}</p>
+                        <Link href={`/tender/${a.tender.id}`}>
+                          <Button size="sm" className="bg-slate-950 hover:bg-slate-800 text-white font-bold rounded-lg shadow-sm">1차 검토</Button>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            )}
             <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
               <TenderList tenders={tenders.map((t) => {
                 const analysis = t.analyses[0]
@@ -284,10 +279,9 @@ export default async function DashboardPage() {
                 } satisfies TenderRow
               })} />
             </div>
-          </div>
+          </div>{/* /우측 */}
 
-        </div>
-
+        </div>{/* /grid */}
       </div>
     </main>
   )
