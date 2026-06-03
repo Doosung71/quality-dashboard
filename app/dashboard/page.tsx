@@ -8,6 +8,7 @@ import { displayName } from "@/lib/display-name"
 import UploadForm from "./UploadForm"
 import TenderList from "./TenderList"
 import { type TenderRow } from "./TenderList"
+import Image from "next/image"
 import {
   FileSearch,
   LayoutDashboard,
@@ -208,8 +209,18 @@ export default async function DashboardPage() {
         {/* 2단 그리드 형태로 히어로 카드(좌) + 리스트(우) 배치 */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
-          {/* 좌측: 케이블 히어로 카드 (전 역할) + 실무자 업로드 폼 */}
+          {/* 좌측: 이미지 + 케이블 히어로 카드 (전 역할) + 실무자 업로드 폼 */}
           <div className="lg:col-span-1 space-y-4">
+            {/* 입찰검토시스템 대표 이미지 */}
+            <div className="relative w-full overflow-hidden rounded-2xl shadow-md" style={{ aspectRatio: "16/9" }}>
+              <Image
+                src="/tender-picture.png"
+                alt="입찰검토시스템 — HVDC·HVAC 지중/해저 케이블 프로젝트"
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
             <CableHeroCard />
             {session.user.role === "PRACTITIONER" && (
               <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
