@@ -11,9 +11,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const { id } = await params
   const body = await req.json()
 
-  // status=RESTRICTED 일 때 restrictedUntil을 함께 처리
   const data: Record<string, unknown> = {}
+  // 기본 정보 편집 (관리자 전용)
+  if (body.name !== undefined) data.name = String(body.name).trim()
+  if (body.email !== undefined) data.email = String(body.email).trim()
+  if (body.department !== undefined) data.department = body.department || null
+  if (body.employeeId !== undefined) data.employeeId = body.employeeId || null
+  if (body.phone !== undefined) data.phone = body.phone || null
   if (body.role) data.role = body.role
+  // status=RESTRICTED 일 때 restrictedUntil을 함께 처리
   if (body.status) {
     data.status = body.status
     if (body.status === "RESTRICTED" && body.restrictedUntil) {

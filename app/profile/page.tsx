@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import NicknameForm from "./NicknameForm"
 import PasswordChangeForm from "./PasswordChangeForm"
+import ProfileInfoForm from "./ProfileInfoForm"
 
 const ROLE_LABEL: Record<string, string> = {
   PRACTITIONER: "실무자",
@@ -32,13 +33,18 @@ export default async function ProfilePage() {
           <CardHeader>
             <CardTitle className="text-base">기본 정보</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <InfoRow label="이름" value={user.name} />
+          <CardContent className="space-y-3">
+            {/* 이메일·역할은 읽기 전용 */}
             <InfoRow label="이메일" value={user.email} />
             <InfoRow label="역할" value={ROLE_LABEL[user.role] ?? user.role} />
-            <InfoRow label="부서" value={user.department ?? "—"} />
-            <InfoRow label="사번" value={user.employeeId ?? "—"} />
-            <InfoRow label="연락처" value={user.phone ?? "—"} />
+            <div className="border-t pt-3">
+              <ProfileInfoForm
+                name={user.name}
+                department={user.department}
+                employeeId={user.employeeId}
+                phone={user.phone}
+              />
+            </div>
           </CardContent>
         </Card>
 

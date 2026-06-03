@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 
 type User = {
   id: string; name: string; email: string
@@ -43,6 +43,11 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
   const [tempPasswords, setTempPasswords] = useState<Record<string, string>>({})
   const [suspendDays, setSuspendDays] = useState<Record<string, string>>({})
   const [errors, setErrors] = useState<Record<string, string>>({})
+  // 정보 편집 열림 상태 (userId → boolean)
+  const [editOpen, setEditOpen] = useState<Record<string, boolean>>({})
+  // 편집 폼 값 (userId → {name, email, department, employeeId, phone})
+  type InfoForm = { name: string; email: string; department: string; employeeId: string; phone: string }
+  const [infoForm, setInfoForm] = useState<Record<string, InfoForm>>({})
   // PENDING 승인 시 선택할 역할 (userId → role)
   const [pendingRole, setPendingRole] = useState<Record<string, string>>({})
   // ACTIVE 사용자 역할 변경 임시값 (userId → role), 저장 버튼 클릭 시 반영
@@ -72,6 +77,27 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
   }
 
   // ACTIVE 사용자 역할 저장
+  function openEdit(u: User) {
+    setEditOpen(prev => ({ ...prev, [u.id]: true }))
+    setInfoForm(prev => ({
+      ...prev,
+      [u.id]: { name: u.name, email: u.email, department: u.department ?? "", employeeId: u.employeeId ?? "", phone: "" },
+    }))
+  }
+
+  async function saveInfo(id: string) {
+    const form = infoForm[id]
+    if (!form || !form.name.trim()) return
+    await patch(id, {
+      name: form.name,
+      email: form.email,
+      department: form.department,
+      employeeId: form.employeeId,
+      phone: form.phone,
+    })
+    setEditOpen(prev => ({ ...prev, [id]: false }))
+  }
+
   async function saveRole(id: string) {
     const role = roleEdit[id]
     if (!role) return
@@ -127,11 +153,13 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
         <tbody>
           {users.map(u => {
             const editingRole = roleEdit[u.id]
+            // eslint-disable-next-line react/jsx-key (key is on Fragment)
             const currentDisplayRole = editingRole ?? u.role
             const roleChanged = editingRole !== undefined && editingRole !== u.role
 
             return (
-              <tr key={u.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 align-top">
+              <React.Fragment key={u.id}>
+              <tr className="border-b border-slate-100 last:border-0 hover:bg-slate-50 align-top">
                 <td className="px-4 py-3 font-medium">{u.name}</td>
                 <td className="px-4 py-3 text-slate-500 text-xs">{u.email}</td>
                 <td className="px-4 py-3 text-slate-500">{u.department ?? "-"}</td>
@@ -245,6 +273,13 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
                       </button>
                     </div>
 
+                    {/* 정보 편집 버튼 */}
+                    {u.status !== "BANNED" && !editOpen[u.id] && (
+                      <button onClick={() => openEdit(u)} className="text-xs text-indigo-600 hover:underline mt-0.5">
+                        정보 편집
+                      </button>
+                    )}
+
                     {/* 삭제 오류 표시 */}
                     {errors[u.id] && (
                       <p className="text-xs text-red-600 mt-1">{errors[u.id]}</p>
@@ -267,8 +302,49 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
                   </div>
                 </td>
               </tr>
-            )
-          })}
+
+            {/* 인라인 정보 편집 폼 */}
+            {editOpen[u.id] && infoForm[u.id] && (
+              <tr className="bg-indigo-50/50 border-b border-indigo-100">
+                <td colSpan={7} className="px-6 py-4">
+                  <div className="grid grid-cols-2 gap-3 max-w-xl">
+                    {[
+                      { label: "이름", key: "name" },
+                      { label: "이메일", key: "email" },
+                      { label: "부서", key: "department" },
+                      { label: "사번", key: "employeeId" },
+                      { label: "연락처", key: "phone" },
+                    ].map(({ label, key }) => (
+                      <div key={key} className="flex items-center gap-2">
+                        <span className="w-14 text-xs text-slate-500 shrink-0">{label}</span>
+                        <input
+                          type="text"
+                          value={infoForm[u.id][key as keyof typeof infoForm[string]]}
+                          onChange={e => setInfoForm(prev => ({
+                            ...prev,
+                            [u.id]: { ...prev[u.id], [key]: e.target.value },
+                          }))}
+                          className="flex-1 border border-indigo-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-400"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex gap-2 mt-3">
+                    <button onClick={() => saveInfo(u.id)} disabled={loading === u.id}
+                      className="px-3 py-1.5 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50">
+                      저장
+                    </button>
+                    <button onClick={() => setEditOpen(prev => ({ ...prev, [u.id]: false }))}
+                      className="px-3 py-1.5 text-xs bg-white border border-slate-200 text-slate-600 rounded hover:bg-slate-50">
+                      취소
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            )}
+          </React.Fragment>
+        )
+      })}
         </tbody>
       </table>
     </div>
