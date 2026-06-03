@@ -234,7 +234,7 @@ export function ClaimDetail({ claim, onClose, onMoveStage }: ClaimDetailProps) {
         </div>
 
         {/* Footer / Actions */}
-        <div className="p-6 border-t border-slate-100/80 bg-slate-50/50">
+        <div className="px-4 py-4 sm:px-6 border-t border-slate-100/80 bg-slate-50/50">
           {isMoving ? (
             <div className="space-y-3">
               <p className="text-xs font-medium text-slate-500">이동할 단계를 선택하세요</p>
@@ -245,7 +245,7 @@ export function ClaimDetail({ claim, onClose, onMoveStage }: ClaimDetailProps) {
                     disabled={stage.status === claim.status}
                     onClick={() => { onMoveStage?.(claim.id, stage.status); setIsMoving(false); }}
                     className={cn(
-                      "py-2 text-xs font-medium rounded-lg border transition-all",
+                      "py-2 px-0.5 text-xs font-medium rounded-lg border transition-all text-center",
                       stage.status === claim.status
                         ? "bg-blue-50 border-blue-300 text-blue-600 cursor-default"
                         : "bg-white border-slate-200 text-slate-600 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 hover:shadow-sm hover:shadow-blue-100"

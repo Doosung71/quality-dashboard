@@ -9,10 +9,13 @@ export default async function BoardPage() {
   if (!session) redirect("/login")
 
   return (
-    <BoardClient
-      currentUserId={session.user.id}
-      currentUserRole={session.user.role as Role}
-      currentUserName={session.user.nickname ?? session.user.name ?? ""}
-    />
+    // shell의 p-4 lg:p-6 패딩을 무효화하여 게시판이 전체 높이를 사용하도록 함
+    <div className="-m-4 lg:-m-6">
+      <BoardClient
+        currentUserId={session.user.id}
+        currentUserRole={session.user.role as Role}
+        currentUserName={session.user.nickname ?? session.user.name ?? ""}
+      />
+    </div>
   )
 }

@@ -509,11 +509,14 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
 
   const commentCount = detail?.comments?.reduce((acc, c) => acc + 1 + (c.replies?.length ?? 0), 0) ?? 0
 
-  return (
-    <div className="flex gap-0 h-[calc(100vh-56px)] overflow-hidden">
+  // 모바일: 목록↔상세(또는 새 글) 패널 전환
+  const showRight = !!selectedId || showNewPost
 
-      {/* ── 좌측: 게시글 목록 ── */}
-      <div className="w-72 shrink-0 bg-white border-r border-slate-100 flex flex-col">
+  return (
+    <div className="flex h-[calc(100vh-56px)] overflow-hidden">
+
+      {/* ── 좌측: 게시글 목록 (모바일: 상세/새글 시 숨김) ── */}
+      <div className={`${showRight ? "hidden lg:flex" : "flex"} w-full lg:w-72 shrink-0 bg-white border-r border-slate-100 flex-col`}>
         {/* 헤더 */}
         <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
           <h2 className="text-sm font-bold text-slate-800">품질부문 게시판</h2>
@@ -604,8 +607,18 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
         </div>
       </div>
 
-      {/* ── 우측: 상세 / 새 글 작성 ── */}
-      <div className="flex-1 flex flex-col bg-slate-50 overflow-hidden">
+      {/* ── 우측: 상세 / 새 글 작성 (모바일: showRight 시에만 표시) ── */}
+      <div className={`${showRight ? "flex" : "hidden lg:flex"} flex-1 flex-col bg-slate-50 overflow-hidden`}>
+
+        {/* 모바일 전용 뒤로가기 */}
+        <div className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border-b border-slate-100 shrink-0">
+          <button
+            onClick={() => { setSelectedId(null); setShowNewPost(false); setEditingPost(false) }}
+            className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors">
+            <ChevronRight className="w-4 h-4 rotate-180" /> 목록으로
+          </button>
+          {showNewPost && <span className="text-xs text-slate-400">새 게시글 작성</span>}
+        </div>
 
         {/* 새 글 작성 폼 */}
         {showNewPost && (

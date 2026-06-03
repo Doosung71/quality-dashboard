@@ -241,7 +241,7 @@ function VendorDrawer({ vendor, onClose }: { vendor: Vendor; onClose: () => void
                   {/* 인원 현황 */}
                   <div className="space-y-2">
                     <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1"><Users className="w-3.5 h-3.5" /> 인원 현황</h4>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                       {[
                         { label: "사무직", value: `${d.employees.office}명` },
                         { label: "현장직", value: `${d.employees.factory}명` },
@@ -278,7 +278,7 @@ function VendorDrawer({ vendor, onClose }: { vendor: Vendor; onClose: () => void
                       </div>
                       <div className="border-t border-slate-200" />
                       {/* 임원진 */}
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                         {[
                           { role: "CFO", name: d.cfo },
                           { role: "이사", name: d.director },

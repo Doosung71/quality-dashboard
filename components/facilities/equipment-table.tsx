@@ -48,8 +48,84 @@ export function EquipmentTable({ equipment, tests }: { equipment: Equipment[]; t
 
   return (
     <div>
+      {/* 모바일 카드 뷰 (md 미만) */}
+      <div className="block md:hidden space-y-2 p-3">
+        {equipment.map((eq) => {
+          const eqTests = getEquipmentTests(tests, eq.id);
+          const status = computeStatus(eq);
+          const isAging = status === "aging";
+          return (
+            <div
+              key={eq.id}
+              className={cn(
+                "rounded-xl border p-4 space-y-3 transition-all",
+                isAging
+                  ? "border-l-2 bg-linear-to-r from-rose-500/5 via-rose-50/20 to-transparent animate-neon-alert"
+                  : "border-slate-100 bg-white"
+              )}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="space-y-1.5">
+                  <p className="text-sm font-semibold text-slate-800">{eq.name}</p>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <TypeChip type={eq.type} />
+                    <EquipStatusBadge status={status} />
+                  </div>
+                  <p className="text-[10px] text-slate-400 font-mono">{formatSpec(eq.spec)}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  {status === "planned" ? (
+                    <span className="text-slate-300 text-sm">—</span>
+                  ) : (
+                    <>
+                      <p className={cn("text-sm font-bold", {
+                        "text-blue-600":    status === "new",
+                        "text-emerald-600": status === "normal",
+                        "text-red-600":     status === "aging",
+                      })}>
+                        {CURRENT_YEAR - eq.yearIntroduced}년
+                      </p>
+                      <p className="text-[10px] text-slate-400">{eq.yearIntroduced}년 도입</p>
+                    </>
+                  )}
+                </div>
+              </div>
+              {eqTests.length > 0 && (
+                <div className="space-y-1.5 pt-2 border-t border-slate-100">
+                  {eqTests.map((t) => (
+                    <div key={t.id} className="flex items-center gap-1.5 flex-wrap">
+                      <TestStatusBadge status={t.status} />
+                      <TestCategoryChip category={t.testCategory} />
+                      <div
+                        className="w-10 h-1.5 rounded-full bg-slate-100 overflow-hidden shrink-0"
+                        role="img"
+                        aria-label={`진행률 ${t.progress}%`}
+                      >
+                        <div
+                          className={cn("h-full rounded-full", {
+                            "bg-blue-400":    t.status === "시험중",
+                            "bg-emerald-400": t.status === "완료",
+                            "bg-red-400":     t.status === "지연",
+                            "bg-slate-300":   t.status === "준비중",
+                          })}
+                          style={{ width: `${t.progress}%` }}
+                        />
+                      </div>
+                      <span className="text-[10px] text-slate-500 truncate max-w-[140px]" title={t.projectName}>
+                        {t.projectName}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* 데스크톱 테이블 뷰 (md 이상) */}
       {/* 컬럼 가시성 토글 */}
-      <div className="flex justify-end px-4 pt-3 pb-1 relative">
+      <div className="hidden md:flex justify-end px-4 pt-3 pb-1 relative">
         <button
           onClick={() => setShowColMenu((v) => !v)}
           className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-700 border border-slate-200 rounded-md px-2.5 py-1.5 bg-white hover:bg-slate-50 transition-colors"
@@ -88,7 +164,7 @@ export function EquipmentTable({ equipment, tests }: { equipment: Equipment[]; t
         )}
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-sm min-w-[900px]">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200">
