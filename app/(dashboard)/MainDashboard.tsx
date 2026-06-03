@@ -222,16 +222,16 @@ export function MainDashboard({ role, userName, userId }: Props) {
             <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-2.5">섹션별 접근 권한</p>
             <div className="flex flex-wrap gap-1.5">
               {[
-                { label: "대시보드",      director: "full", team_leader: "full",     operator: "full"     },
-                { label: "Q-Cost",        director: "full", team_leader: "full",     operator: "readonly" },
-                { label: "클레임",        director: "full", team_leader: "full",     operator: "readonly" },
-                { label: "NCR",           director: "full", team_leader: "full",     operator: "full"     },
-                { label: "공급망관리",    director: "full", team_leader: "full",     operator: "readonly" },
-                { label: "QKM",           director: "full", team_leader: "full",     operator: "full"     },
-                { label: "시험장",        director: "full", team_leader: "readonly", operator: "readonly" },
-                { label: "입찰검토",      director: "full", team_leader: "full",     operator: "full"     },
-                { label: "외부정보",      director: "full", team_leader: "readonly", operator: "none"     },
-                { label: "인사·면담",    director: "full", team_leader: "full",     operator: "readonly" },
+                { label: "대시보드",   director: "full", team_leader: "full", operator: "full"     },
+                { label: "Q-Cost",     director: "full", team_leader: "full", operator: "readonly" },
+                { label: "클레임",     director: "full", team_leader: "full", operator: "full"     },
+                { label: "NCR",        director: "full", team_leader: "full", operator: "full"     },
+                { label: "공급망관리", director: "full", team_leader: "full", operator: "full"     },
+                { label: "QKM",        director: "full", team_leader: "full", operator: "full"     },
+                { label: "시험장",     director: "full", team_leader: "full", operator: "full"     },
+                { label: "입찰검토",   director: "full", team_leader: "full", operator: "full"     },
+                { label: "외부정보",   director: "full", team_leader: "full", operator: "full"     },
+                { label: "인사·면담", director: "full", team_leader: "full", operator: "none"     },
               ].map(({ label, ...perms }) => {
                 const level = perms[userRole as keyof typeof perms] as "full" | "readonly" | "none"
                 return (
@@ -458,7 +458,7 @@ export function MainDashboard({ role, userName, userId }: Props) {
           <div className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-3xl p-6 md:p-8 border border-slate-800 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="space-y-2">
               <span className="px-2.5 py-0.5 bg-indigo-500/30 text-indigo-300 border border-indigo-500/20 rounded-md text-[10px] font-extrabold uppercase tracking-widest">
-                Team Leader View — 초고압품질팀
+                Team Leader View — 지중가공QA팀
               </span>
               <h2 className="text-xl md:text-2xl font-black tracking-tight">
                 안녕하세요, <span className="text-indigo-400">{displayName}</span> 팀장님
@@ -545,10 +545,10 @@ export function MainDashboard({ role, userName, userId }: Props) {
 
             <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
               <h4 className="text-xs font-extrabold text-slate-800 tracking-wide flex items-center gap-1.5 border-b pb-2">
-                <Users className="w-4 h-4 text-indigo-500" /> 초고압품질팀원 리소스 풀
+                <Users className="w-4 h-4 text-indigo-500" /> 지중가공QA팀원 리소스 풀
               </h4>
               <div className="space-y-3">
-                {hrData.employees.filter(e => e.department === "초고압품질팀").map(emp => (
+                {hrData.employees.filter(e => e.department === "지중가공QA팀").map(emp => (
                   <div key={emp.id} className="p-3 rounded-xl border border-slate-50 bg-slate-50/30 flex justify-between items-center text-xs">
                     <div className="space-y-0.5">
                       <div className="flex items-center gap-1.5">
@@ -574,7 +574,7 @@ export function MainDashboard({ role, userName, userId }: Props) {
           <div className="bg-gradient-to-r from-slate-900 to-indigo-900 text-white rounded-3xl p-6 md:p-8 border border-slate-800 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="space-y-2">
               <span className="px-2.5 py-0.5 bg-indigo-500/30 text-indigo-300 border border-indigo-500/20 rounded-md text-[10px] font-extrabold uppercase tracking-widest">
-                My Active Workbench — 초고압품질팀
+                My Active Workbench — 지중가공QA팀
               </span>
               <h2 className="text-xl md:text-2xl font-black tracking-tight">
                 안녕하세요, <span className="text-indigo-400">{displayName}</span> 님
