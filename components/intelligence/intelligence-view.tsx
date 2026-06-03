@@ -7,21 +7,23 @@ import type {
   IntelligenceCategory, 
   ImpactLevel 
 } from "@/types/intelligence";
-import { 
-  Globe, 
-  Search, 
-  TrendingUp, 
-  Users, 
-  AlertTriangle, 
-  Lightbulb, 
-  Plus, 
-  X, 
-  PlusCircle, 
+import {
+  Globe,
+  Search,
+  TrendingUp,
+  Users,
+  AlertTriangle,
+  Lightbulb,
+  Plus,
+  X,
+  PlusCircle,
   Calendar,
   ArrowRight,
   Layers,
   Zap,
-  Bookmark
+  Bookmark,
+  Loader2,
+  ExternalLink,
 } from "lucide-react";
 
 interface IntelligenceViewProps {
@@ -59,6 +61,14 @@ export function IntelligenceView({ data }: IntelligenceViewProps) {
   const [newImpact, setNewImpact] = useState<ImpactLevel>("Medium");
   const [newKeywords, setNewKeywords] = useState("");
   const [newActionItem, setNewActionItem] = useState("");
+
+  // 탭: feed | websearch
+  const [activeTab, setActiveTab] = useState<"feed" | "websearch">("feed");
+  // 웹 검색
+  const [webQuery, setWebQuery] = useState("");
+  const [webResults, setWebResults] = useState<{ title: string; snippet: string; url: string }[]>([]);
+  const [webSearching, setWebSearching] = useState(false);
+  const [webSearchError, setWebSearchError] = useState("");
 
   // 선택된 동향 상세 정보
   const selectedItem = useMemo(() => {
@@ -142,6 +152,28 @@ export function IntelligenceView({ data }: IntelligenceViewProps) {
     setShowAddForm(false);
   };
 
+  const handleWebSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!webQuery.trim() || webSearching) return;
+    setWebSearching(true);
+    setWebSearchError("");
+    setWebResults([]);
+    try {
+      const res = await fetch("/api/intelligence/websearch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: webQuery }),
+      });
+      const data = await res.json();
+      if (res.ok) setWebResults(data.results ?? []);
+      else setWebSearchError(data.error ?? "검색 중 오류가 발생했습니다.");
+    } catch {
+      setWebSearchError("네트워크 오류가 발생했습니다.");
+    } finally {
+      setWebSearching(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* 1. 외부정보 요약 KPI */}
@@ -197,7 +229,25 @@ export function IntelligenceView({ data }: IntelligenceViewProps) {
         </div>
       </div>
 
-      {/* 2. Split View (좌측: 외부 동향 목록 / 우측: 상세 내용 및 대응 조치사항) */}
+      {/* 탭 전환 */}
+      <div className="flex gap-1 p-1 bg-slate-100 rounded-xl w-fit">
+        <button
+          onClick={() => setActiveTab("feed")}
+          className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${activeTab === "feed" ? "bg-white shadow text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+        >
+          수집 동향
+        </button>
+        <button
+          onClick={() => setActiveTab("websearch")}
+          className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${activeTab === "websearch" ? "bg-white shadow text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+        >
+          <Globe className="w-3.5 h-3.5" />
+          외부 웹 검색
+        </button>
+      </div>
+
+      {/* 2. 수집 동향 */}
+      {activeTab === "feed" && (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         
         {/* 좌측 열: 동향 필터 및 카드 리스트 */}
@@ -494,6 +544,73 @@ export function IntelligenceView({ data }: IntelligenceViewProps) {
           )}
         </div>
       </div>
+      )}
+
+      {/* 외부 웹 검색 패널 */}
+      {activeTab === "websearch" && (
+        <div className="space-y-5">
+          <form onSubmit={handleWebSearch} className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                value={webQuery}
+                onChange={(e) => setWebQuery(e.target.value)}
+                placeholder="검색어 입력 (예: HVDC 해저 케이블 IEC 규격 최신 동향)"
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-950 text-sm"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={webSearching}
+              className="px-5 py-2.5 bg-slate-950 text-white text-sm font-bold rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all"
+            >
+              {webSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+              {webSearching ? "검색 중..." : "검색"}
+            </button>
+          </form>
+
+          {webSearchError && (
+            <div className="text-rose-600 text-sm font-medium">{webSearchError}</div>
+          )}
+
+          {!webSearching && webResults.length === 0 && !webSearchError && !webQuery && (
+            <div className="flex flex-col items-center justify-center py-20 text-slate-400">
+              <Globe className="w-10 h-10 mb-3 opacity-30" />
+              <p className="text-sm font-medium">검색어를 입력하고 외부 웹에서 최신 정보를 검색하세요.</p>
+              <p className="text-xs mt-1.5 text-slate-300">예: HVDC 525kV 해저케이블 IEC 규격 · Prysmian 경쟁사 동향</p>
+            </div>
+          )}
+
+          {!webSearching && webResults.length === 0 && !webSearchError && !!webQuery && (
+            <div className="text-center py-12 text-slate-400 text-sm">검색 결과가 없습니다.</div>
+          )}
+
+          <div className="space-y-3">
+            {webResults.map((r, i) => (
+              <div key={i} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200 transition-all">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="space-y-1.5 flex-1 min-w-0">
+                    <h4 className="text-sm font-bold text-slate-900 leading-snug">{r.title}</h4>
+                    {r.snippet && <p className="text-xs text-slate-500 leading-relaxed">{r.snippet}</p>}
+                    {r.url && <p className="text-[10px] text-indigo-500 truncate font-mono mt-1">{r.url}</p>}
+                  </div>
+                  {r.url && (
+                    <a
+                      href={r.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="shrink-0 p-2 rounded-lg border border-slate-200 text-slate-400 hover:text-slate-900 hover:border-slate-400 transition-all"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
