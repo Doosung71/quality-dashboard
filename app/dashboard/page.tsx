@@ -160,7 +160,7 @@ export default async function DashboardPage() {
 
       {/* 메인 레이아웃 본문 */}
       <div className="max-w-5xl mx-auto p-6 md:p-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
 
           {/* 좌측: 대표 이미지 + 케이블 히어로 카드 + 실무자 업로드 폼 */}
           <div className="lg:col-span-1 space-y-4">
@@ -182,7 +182,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* 우측: 결재 대기 패널 + 입찰 목록 */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 flex flex-col gap-4">
             {/* 결재 대기 패널 (팀장 / 부문장) */}
             {session.user.role === "DIRECTOR" && (
               <section className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
@@ -226,7 +226,7 @@ export default async function DashboardPage() {
                 )}
               </section>
             )}
-            <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+            <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex-1">
               <TenderList tenders={tenders.map((t) => {
                 const analysis = t.analyses[0]
                 const lastAction = analysis?.history.at(-1)?.action
