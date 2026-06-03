@@ -14,9 +14,10 @@ export function RoleGate({ role, allow, children, fallback = null }: RoleGatePro
 
 export function RoleBadge({ role }: { role: Role }) {
   const map: Record<Role, { label: string; className: string }> = {
-    PRACTITIONER: { label: "실무자", className: "bg-slate-100 text-slate-600" },
-    TEAM_LEAD:    { label: "팀장",   className: "bg-blue-100 text-blue-700" },
-    DIRECTOR:     { label: "임원",   className: "bg-purple-100 text-purple-700" },
+    PRACTITIONER: { label: "실무자",  className: "bg-slate-100 text-slate-600" },
+    TEAM_LEAD:    { label: "팀장",    className: "bg-blue-100 text-blue-700" },
+    DIRECTOR:     { label: "임원",    className: "bg-purple-100 text-purple-700" },
+    ADMIN:        { label: "관리자",  className: "bg-indigo-100 text-indigo-700" },
   }
   const { label, className } = map[role]
   return (
