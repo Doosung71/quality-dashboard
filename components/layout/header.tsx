@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
+import Link from "next/link"
 import { Menu, LogOut } from "lucide-react"
 import { RoleBadge } from "@/components/layout/role-gate"
 import { displayName } from "@/lib/display-name"
@@ -33,7 +34,7 @@ export function Header({ onMenuOpen, session }: { onMenuOpen: () => void; sessio
       <h1 className="text-sm font-semibold text-slate-800 flex-1">{title}</h1>
       <div className="flex items-center gap-3">
         <RoleBadge role={role} />
-        <span className="text-sm text-slate-600 hidden sm:block">{name}</span>
+        <Link href="/profile" className="text-sm text-slate-600 hidden sm:block hover:text-slate-900 hover:underline transition-colors">{name}</Link>
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
           className="p-1.5 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
