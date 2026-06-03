@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireActiveSession } from "@/lib/session-guard"
 import { prisma } from "@/lib/prisma"
+import { canView, isAdmin, isPrivileged } from "@/lib/board-visibility"
 
-// GET /api/board/[id] — 게시글 상세 + 댓글
+const VALID_VISIBILITY = ["ALL", "TEAM_LEAD_UP", "DIRECTOR_UP"]
+
+// GET /api/board/[id] — 게시글 상세 + 댓글 (visibility 필터)
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
 
   const { id } = await params
+  const role = session.user.role as string
+
   const post = await prisma.boardPost.findUnique({
     where: { id },
     include: {
@@ -28,10 +33,26 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
     },
   })
   if (!post) return NextResponse.json({ error: "게시글을 찾을 수 없습니다." }, { status: 404 })
-  return NextResponse.json(post)
+
+  // 게시글 visibility 확인
+  if (!canView(post.visibility, role)) {
+    return NextResponse.json({ error: "접근 권한이 없습니다." }, { status: 403 })
+  }
+
+  // 댓글·대댓글 visibility 필터링
+  const filteredComments = post.comments
+    .filter(c => canView(c.visibility, role))
+    .map(c => ({
+      ...c,
+      replies: c.replies.filter(r => canView(r.visibility, role)),
+    }))
+
+  return NextResponse.json({ ...post, comments: filteredComments })
 }
 
-// PATCH /api/board/[id] — 게시글 수정 (제목·내용: 작성자 또는 임원·관리자 / 핀·카테고리: 임원·관리자만)
+// PATCH /api/board/[id] — 게시글 수정
+// - 제목·내용·첨부·visibility: 작성자 또는 ADMIN
+// - 공지·핀·카테고리: 임원(DIRECTOR)·ADMIN
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
@@ -41,24 +62,34 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (!post) return NextResponse.json({ error: "없음" }, { status: 404 })
 
   const role = session.user.role as string
-  const isPrivileged = role === "ADMIN" || role === "DIRECTOR"
+  const admin = isAdmin(role)
+  const privileged = isPrivileged(role)
   const isAuthor = post.authorId === session.user.id
 
-  if (!isAuthor && !isPrivileged) {
+  if (!isAuthor && !privileged) {
     return NextResponse.json({ error: "권한 없음" }, { status: 403 })
   }
 
-  const { title, content, pinned, category, attachments } = await req.json()
+  const { title, content, pinned, category, attachments, visibility } = await req.json()
   const data: Record<string, unknown> = {}
 
-  // 제목·내용·첨부파일: 작성자 또는 임원·관리자
-  if (title !== undefined) data.title = String(title).trim()
-  if (content !== undefined) data.content = String(content).trim()
-  if (attachments !== undefined) data.attachments = Array.isArray(attachments) ? attachments : []
+  // 작성자·ADMIN: 제목·내용·첨부·visibility
+  if (isAuthor || admin) {
+    if (title !== undefined)       data.title = String(title).trim()
+    if (content !== undefined)     data.content = String(content).trim()
+    if (attachments !== undefined) data.attachments = Array.isArray(attachments) ? attachments : []
+    if (visibility !== undefined && VALID_VISIBILITY.includes(visibility)) data.visibility = visibility
+  } else if (privileged) {
+    // DIRECTOR만 (작성자 아닐 때): visibility 편집 허용
+    if (visibility !== undefined && VALID_VISIBILITY.includes(visibility)) data.visibility = visibility
+    if (title !== undefined)       data.title = String(title).trim()
+    if (content !== undefined)     data.content = String(content).trim()
+    if (attachments !== undefined) data.attachments = Array.isArray(attachments) ? attachments : []
+  }
 
-  // 핀·카테고리: 임원·관리자만
-  if (isPrivileged) {
-    if (pinned !== undefined) data.pinned = pinned
+  // 임원·ADMIN: 공지·핀·카테고리
+  if (privileged) {
+    if (pinned !== undefined)   data.pinned = pinned
     if (category !== undefined) data.category = category
   }
 
@@ -71,7 +102,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   return NextResponse.json(updated)
 }
 
-// DELETE /api/board/[id] — 게시글 삭제 (작성자·관리자·임원)
+// DELETE /api/board/[id] — 작성자·임원·ADMIN
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
@@ -81,8 +112,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
   if (!post) return NextResponse.json({ error: "없음" }, { status: 404 })
 
   const role = session.user.role as string
-  const isPrivileged = role === "ADMIN" || role === "DIRECTOR"
-  if (post.authorId !== session.user.id && !isPrivileged) {
+  if (post.authorId !== session.user.id && !isPrivileged(role)) {
     return NextResponse.json({ error: "권한 없음" }, { status: 403 })
   }
 

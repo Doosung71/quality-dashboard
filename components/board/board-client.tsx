@@ -10,6 +10,8 @@ import {
 import { cn } from "@/lib/utils"
 import type { Role } from "@/lib/generated/prisma/client"
 import { EmojiPicker } from "./emoji-picker"
+import { VisibilitySelector, VisibilityBadge } from "./visibility-selector"
+import type { Visibility } from "@/lib/board-visibility"
 
 // ─── 타입 ──────────────────────────────────────────────────
 
@@ -23,6 +25,7 @@ type Comment = {
   id: string; content: string; createdAt: string
   author: Author; parentId: string | null
   displayMode: DisplayMode
+  visibility: Visibility
   replies: Comment[]
 }
 
@@ -31,6 +34,7 @@ type Post = {
   category: "NOTICE" | "GENERAL"; pinned: boolean
   createdAt: string; author: Author
   displayMode: DisplayMode
+  visibility: Visibility
   attachments: Attachment[]
   _count?: { comments: number }
   comments?: Comment[]
@@ -173,9 +177,10 @@ function CommentItem({
   // 댓글 인라인 편집 상태
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editText, setEditText] = useState("")
+  const [editVis, setEditVis] = useState<Visibility>("ALL")
 
-  function startEdit(id: string, content: string) {
-    setEditingId(id); setEditText(content)
+  function startEdit(id: string, content: string, vis: Visibility) {
+    setEditingId(id); setEditText(content); setEditVis(vis)
   }
   function cancelEdit() { setEditingId(null); setEditText("") }
 
@@ -184,7 +189,7 @@ function CommentItem({
     await fetch(`/api/board/${postId}/comments/${commentId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: editText }),
+      body: JSON.stringify({ content: editText, visibility: editVis }),
     })
     cancelEdit(); onEdited()
   }
@@ -201,7 +206,7 @@ function CommentItem({
         )}
         {canAct(authorId) && (
           <>
-            <button onClick={() => startEdit(id, content)}
+            <button onClick={() => startEdit(id, content, (comment.visibility ?? "ALL") as Visibility)}
               className="text-[10px] text-slate-400 hover:text-indigo-500 flex items-center gap-1 transition-colors opacity-0 group-hover:opacity-100">
               <Pencil className="w-3 h-3" /> 수정
             </button>
@@ -239,6 +244,7 @@ function CommentItem({
                 rows={3}
                 className="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
               />
+              <VisibilitySelector value={editVis} onChange={setEditVis} compact />
               <div className="flex gap-2">
                 <button onClick={() => submitEdit(comment.id)}
                   className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
@@ -251,7 +257,10 @@ function CommentItem({
               </div>
             </div>
           ) : (
-            <p className="text-sm text-slate-700 mt-0.5 leading-relaxed whitespace-pre-wrap">{comment.content}</p>
+            <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+              <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{comment.content}</p>
+              <VisibilityBadge visibility={comment.visibility} />
+            </div>
           )}
           {renderActions(comment.id, comment.author.id, comment.content)}
         </div>
@@ -330,6 +339,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
   const [newCategory, setNewCategory] = useState<"GENERAL" | "NOTICE">("GENERAL")
   const [newPinned, setNewPinned] = useState(false)
   const [newDisplayMode, setNewDisplayMode] = useState<DisplayMode>("REAL")
+  const [newVisibility, setNewVisibility] = useState<Visibility>("ALL")
   const [submitting, setSubmitting] = useState(false)
 
   // 파일 첨부 (새 글)
@@ -342,12 +352,14 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
   const [editTitle, setEditTitle] = useState("")
   const [editContent, setEditContent] = useState("")
   const [editAttachments, setEditAttachments] = useState<Attachment[]>([])
+  const [editVisibility, setEditVisibility] = useState<Visibility>("ALL")
   const [postSaving, setPostSaving] = useState(false)
   const editFileRef = useRef<HTMLInputElement>(null)
 
   // 댓글 입력
   const [commentText, setCommentText] = useState("")
   const [commentDisplayMode, setCommentDisplayMode] = useState<DisplayMode>("REAL")
+  const [commentVisibility, setCommentVisibility] = useState<Visibility>("ALL")
   const [replyTo, setReplyTo] = useState<{ parentId: string; authorName: string } | null>(null)
   const [commentSubmitting, setCommentSubmitting] = useState(false)
   const commentInputRef = useRef<HTMLTextAreaElement>(null)
@@ -382,11 +394,11 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     const res = await fetch("/api/board", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: newTitle, content: newContent, category: newCategory, pinned: newPinned, attachments: pendingFiles, displayMode: newDisplayMode }),
+      body: JSON.stringify({ title: newTitle, content: newContent, category: newCategory, pinned: newPinned, attachments: pendingFiles, displayMode: newDisplayMode, visibility: newVisibility }),
     })
     if (res.ok) {
       const created = await res.json() as Post
-      setNewTitle(""); setNewContent(""); setNewCategory("GENERAL"); setNewPinned(false); setPendingFiles([]); setNewDisplayMode("REAL")
+      setNewTitle(""); setNewContent(""); setNewCategory("GENERAL"); setNewPinned(false); setPendingFiles([]); setNewDisplayMode("REAL"); setNewVisibility("ALL")
       setShowNewPost(false)
       await loadPosts()
       setSelectedId(created.id)
@@ -412,6 +424,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     setEditTitle(post.title)
     setEditContent(post.content)
     setEditAttachments(post.attachments ?? [])
+    setEditVisibility(post.visibility ?? "ALL")
     setEditingPost(true)
   }
   function cancelEditPost() { setEditingPost(false) }
@@ -423,7 +436,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     await fetch(`/api/board/${selectedId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: editTitle.trim(), content: editContent.trim(), attachments: editAttachments }),
+      body: JSON.stringify({ title: editTitle.trim(), content: editContent.trim(), attachments: editAttachments, visibility: editVisibility }),
     })
     setEditingPost(false)
     loadDetail(selectedId)
@@ -468,7 +481,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     await fetch(`/api/board/${selectedId}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: commentText, parentId: replyTo?.parentId ?? null, displayMode: commentDisplayMode }),
+      body: JSON.stringify({ content: commentText, parentId: replyTo?.parentId ?? null, displayMode: commentDisplayMode, visibility: commentVisibility }),
     })
     setCommentText(""); setReplyTo(null)
     loadDetail(selectedId)
@@ -571,7 +584,10 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                     )}>{post.title}</span>
                   </div>
                   <div className="flex items-center justify-between text-[10px] text-slate-400">
-                    <span>{authorLabel(post.author, post.displayMode as DisplayMode)}</span>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span>{authorLabel(post.author, post.displayMode as DisplayMode)}</span>
+                      <VisibilityBadge visibility={post.visibility} />
+                    </div>
                     <div className="flex items-center gap-2">
                       {(post._count?.comments ?? 0) > 0 && (
                         <span className="flex items-center gap-0.5">
@@ -627,8 +643,11 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                 )}
               </div>
 
-              {/* 작성자 표시 옵션 */}
-              <DisplayModeSelector value={newDisplayMode} onChange={setNewDisplayMode} />
+              {/* 작성자 표시 + 공개 범위 */}
+              <div className="flex flex-wrap gap-4">
+                <DisplayModeSelector value={newDisplayMode} onChange={setNewDisplayMode} />
+                <VisibilitySelector value={newVisibility} onChange={setNewVisibility} compact />
+              </div>
               <textarea
                 placeholder="내용을 입력하세요..."
                 value={newContent}
@@ -707,9 +726,10 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                   {detail.category !== "NOTICE" && (
                     <h2 className="text-lg font-bold text-slate-900 leading-tight">{detail.title}</h2>
                   )}
-                  <div className="flex items-center gap-3 text-xs text-slate-400">
+                  <div className="flex items-center gap-3 text-xs text-slate-400 flex-wrap">
                     <span className="font-medium text-slate-600">{authorLabel(detail.author, detail.displayMode as DisplayMode)}</span>
                     {detail.displayMode !== "ANONYMOUS" && detail.author.department && <span>{detail.author.department}</span>}
+                    <VisibilityBadge visibility={detail.visibility} />
                     <span>{new Date(detail.createdAt).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}</span>
                     <span className="flex items-center gap-1"><MessageSquare className="w-3 h-3" />{commentCount}개</span>
                   </div>
@@ -782,6 +802,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                     className="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
                     placeholder="내용"
                   />
+                  <VisibilitySelector value={editVisibility} onChange={setEditVisibility} compact />
                   {/* 편집 시 첨부 파일 관리 */}
                   {editAttachments.length > 0 && (
                     <div className="border border-slate-200 rounded-xl p-3 space-y-2">
@@ -860,7 +881,10 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
 
               {/* 댓글 입력 */}
               <form onSubmit={handleCommentSubmit} className="space-y-2 pt-2 border-t border-slate-100">
-                <DisplayModeSelector value={commentDisplayMode} onChange={setCommentDisplayMode} compact />
+                <div className="flex items-center gap-4 flex-wrap">
+                  <DisplayModeSelector value={commentDisplayMode} onChange={setCommentDisplayMode} compact />
+                  <VisibilitySelector value={commentVisibility} onChange={setCommentVisibility} compact />
+                </div>
                 {replyTo && (
                   <div className="flex items-center gap-2 bg-indigo-50 px-3 py-1.5 rounded-lg text-xs text-indigo-700">
                     <CornerDownRight className="w-3.5 h-3.5" />

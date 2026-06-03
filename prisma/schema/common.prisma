@@ -87,6 +87,7 @@ model BoardPost {
   author      User          @relation(fields: [authorId], references: [id])
   authorId    String
   displayMode String        @default("REAL") // REAL | NICKNAME | ANONYMOUS
+  visibility  String        @default("ALL")  // ALL | TEAM_LEAD_UP | DIRECTOR_UP
   attachments Json          @default("[]")   // [{url,name,size,contentType}]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -101,6 +102,7 @@ model BoardComment {
   authorId    String
   content     String
   displayMode String        @default("REAL") // REAL | NICKNAME | ANONYMOUS
+  visibility  String        @default("ALL")  // ALL | TEAM_LEAD_UP | DIRECTOR_UP
   parentId    String?
   parent      BoardComment? @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
   replies     BoardComment[] @relation("Replies")
