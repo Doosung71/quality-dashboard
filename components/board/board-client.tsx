@@ -516,7 +516,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     <div className="flex h-[calc(100vh-56px)] overflow-hidden">
 
       {/* ── 좌측: 게시글 목록 (모바일: 상세/새글 시 숨김) ── */}
-      <div className={`${showRight ? "hidden lg:flex" : "flex"} w-full lg:w-72 shrink-0 bg-white border-r border-slate-100 flex-col`}>
+      <div className={`flex w-full lg:w-72 shrink-0 bg-white border-r border-slate-100 flex-col${showRight ? " max-lg:hidden" : ""}`}>
         {/* 헤더 */}
         <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
           <h2 className="text-sm font-bold text-slate-800">품질부문 게시판</h2>
@@ -608,7 +608,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
       </div>
 
       {/* ── 우측: 상세 / 새 글 작성 (모바일: showRight 시에만 표시) ── */}
-      <div className={`${showRight ? "flex" : "hidden lg:flex"} flex-1 flex-col bg-slate-50 overflow-hidden`}>
+      <div className={`flex flex-1 flex-col bg-slate-50 overflow-hidden${!showRight ? " max-lg:hidden" : ""}`}>
 
         {/* 모바일 전용 뒤로가기 */}
         <div className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border-b border-slate-100 shrink-0">
