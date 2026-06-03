@@ -6,49 +6,10 @@ import { extractTenderSpec } from "@/lib/ai/extract"
 import { searchKnowledge } from "@/lib/knowledge"
 import { readBlobBuffer } from "@/lib/storage"
 import { parseRagThreshold, buildKnowledgeChunksXml } from "@/lib/rag"
+import { naverSearchText } from "@/lib/naver-search"
 
-const DDG_TIMEOUT_MS = 5000
-
-// DuckDuckGo Lite HTML 파서를 활용한 실시간 외부 웹 검색 (API Key 불필요)
 async function searchWebForTender(query: string): Promise<string> {
-  try {
-    const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), DDG_TIMEOUT_MS)
-    let res: Response
-    try {
-      res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
-        headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        },
-        signal: controller.signal,
-      })
-    } finally {
-      clearTimeout(timer)
-    }
-    if (!res.ok) return ""
-
-    const html = await res.text()
-    const snippetRegex = /<a class="result__snippet"[^>]*>([\s\S]*?)<\/a>/g
-    const titleRegex = /<a class="result__title"[^>]*>([\s\S]*?)<\/a>/g
-
-    const titles: string[] = []
-    const snippets: string[] = []
-    let match: RegExpExecArray | null
-
-    while ((match = titleRegex.exec(html)) !== null && titles.length < 3) {
-      titles.push(match[1].replace(/<[^>]*>/g, "").trim())
-    }
-    while ((match = snippetRegex.exec(html)) !== null && snippets.length < 3) {
-      snippets.push(match[1].replace(/<[^>]*>/g, "").trim())
-    }
-
-    return titles
-      .map((t, i) => `[웹${i + 1}] ${t}: ${snippets[i] ?? ""}`)
-      .filter((s) => s.trim().length > 10)
-      .join("\n")
-  } catch {
-    return ""
-  }
+  return naverSearchText(query, 5)
 }
 
 // PDF 텍스트에서 핵심 기술 키워드 추출 (IEC 규격, 전압 레벨 등)

@@ -1,73 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireActiveSession } from "@/lib/session-guard"
 import { searchKnowledge, type KnowledgeChunk } from "@/lib/knowledge"
+import { naverSearchResults } from "@/lib/naver-search"
 
-export interface WebSearchResult {
-  title: string
-  snippet: string
-  url: string
-}
-
-const DDG_TIMEOUT_MS = 5000
-
-// DuckDuckGo Lite HTML 파서를 활용한 실시간 외부 웹 검색 헬퍼 (API Key 없이 구동)
-async function searchWebDuckDuckGo(query: string): Promise<WebSearchResult[]> {
-  try {
-    const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), DDG_TIMEOUT_MS)
-    let res: Response
-    try {
-      res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
-        headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-        },
-        signal: controller.signal,
-      })
-    } finally {
-      clearTimeout(timer)
-    }
-    if (!res.ok) throw new Error("DuckDuckGo HTML fetch failed")
-    
-    const html = await res.text()
-    const results: WebSearchResult[] = []
-    
-    // HTML 정규식 파싱 기법
-    const titleRegex = /<a class="result__title"[^>]*>([\s\S]*?)<\/a>/g
-    const snippetRegex = /<a class="result__snippet"[^>]*>([\s\S]*?)<\/a>/g
-    const urlRegex = /<span class="result__url"[^>]*>([\s\S]*?)<\/span>/g
-    
-    const titles: string[] = []
-    const snippets: string[] = []
-    const urls: string[] = []
-    
-    let match: RegExpExecArray | null
-    
-    while ((match = titleRegex.exec(html)) !== null && titles.length < 5) {
-      titles.push(match[1].replace(/<[^>]*>/g, "").trim())
-    }
-    while ((match = snippetRegex.exec(html)) !== null && snippets.length < 5) {
-      snippets.push(match[1].replace(/<[^>]*>/g, "").trim())
-    }
-    while ((match = urlRegex.exec(html)) !== null && urls.length < 5) {
-      urls.push(match[1].replace(/<[^>]*>/g, "").trim())
-    }
-    
-    for (let i = 0; i < titles.length; i++) {
-      if (titles[i] && snippets[i]) {
-        results.push({
-          title: titles[i],
-          snippet: snippets[i],
-          url: urls[i] ? `https://${urls[i]}` : "https://duckduckgo.com"
-        })
-      }
-    }
-    
-    return results;
-  } catch (err) {
-    console.error("[DDG Web Search Error]", err)
-    return [] // 실패 시 빈배열 폴백
-  }
-}
+export type WebSearchResult = import("@/lib/naver-search").NaverSearchResult
 
 // 사내 지식 RAG 결과와 실시간 웹 검색 결과를 통합 분석하여 리포트를 생성하는 요약기 (Claude 3.5 Sonnet 활용 / OpenAI GPT-4o Fallback 지원)
 async function generateSynthesizedReport(
@@ -198,7 +134,7 @@ export async function POST(req: NextRequest) {
     // 2. 외부 웹 검색 동시 수행 (searchWeb 플래그가 활성화된 경우)
     let webResults: WebSearchResult[] = []
     if (searchWeb) {
-      webResults = await searchWebDuckDuckGo(query)
+      webResults = await naverSearchResults(query, 5)
     }
 
     // 3. 내부 RAG + 외부 Web 결과 통합 AI 분석 리포트 생성
