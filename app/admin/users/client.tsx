@@ -42,6 +42,7 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
   const [loading, setLoading] = useState<string | null>(null)
   const [tempPasswords, setTempPasswords] = useState<Record<string, string>>({})
   const [suspendDays, setSuspendDays] = useState<Record<string, string>>({})
+  const [errors, setErrors] = useState<Record<string, string>>({})
   // PENDING 승인 시 선택할 역할 (userId → role)
   const [pendingRole, setPendingRole] = useState<Record<string, string>>({})
   // ACTIVE 사용자 역할 변경 임시값 (userId → role), 저장 버튼 클릭 시 반영
@@ -92,9 +93,14 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
   }
 
   async function deleteUser(id: string, name: string) {
-    if (!confirm(`"${name}" 계정을 완전히 삭제합니다.\n삭제 후 동일 이메일로 재가입이 가능합니다.\n계속하시겠습니까?`)) return
+    if (!confirm(`"${name}" 계정과 관련 데이터(입찰 분석 이력 포함)를 완전히 삭제합니다.\n삭제 후 동일 이메일로 재가입이 가능합니다.\n계속하시겠습니까?`)) return
     setLoading(id)
-    await fetch(`/api/admin/users/${id}`, { method: "DELETE" })
+    setErrors(prev => { const n = { ...prev }; delete n[id]; return n })
+    const res = await fetch(`/api/admin/users/${id}`, { method: "DELETE" })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      setErrors(prev => ({ ...prev, [id]: data.error ?? "삭제 중 오류가 발생했습니다." }))
+    }
     await refresh()
     setLoading(null)
   }
@@ -238,6 +244,11 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
                         삭제
                       </button>
                     </div>
+
+                    {/* 삭제 오류 표시 */}
+                    {errors[u.id] && (
+                      <p className="text-xs text-red-600 mt-1">{errors[u.id]}</p>
+                    )}
 
                     {/* 임시 비밀번호 표시 */}
                     {tempPasswords[u.id] && (

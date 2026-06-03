@@ -35,11 +35,47 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   if (!isAdmin(session.user.email)) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const { id } = await params
-  // 관리자 계정 삭제 방지
   const target = await prisma.user.findUnique({ where: { id }, select: { email: true } })
   if (!target) return NextResponse.json({ error: "사용자를 찾을 수 없습니다." }, { status: 404 })
   if (isAdmin(target.email)) return NextResponse.json({ error: "관리자 계정은 삭제할 수 없습니다." }, { status: 403 })
 
-  await prisma.user.delete({ where: { id } })
+  // QD·TRA가 같은 DB를 공유하므로 연관 데이터를 순서대로 삭제
+  await prisma.$transaction(async (tx) => {
+    // 1. 사용자가 작성한 댓글·피드백 삭제
+    await tx.feedbackReply.deleteMany({ where: { authorId: id } })
+    await tx.feedback.deleteMany({ where: { authorId: id } })
+    await tx.comment.deleteMany({ where: { authorId: id } })
+
+    // 2. 사용자가 참여한 리뷰 이력 삭제
+    await tx.reviewHistory.deleteMany({ where: { userId: id } })
+
+    // 3. 사용자가 생성한 입찰 건 및 하위 데이터 삭제
+    const tenders = await tx.tender.findMany({
+      where: { createdById: id },
+      select: { id: true },
+    })
+    const tenderIds = tenders.map((t) => t.id)
+
+    if (tenderIds.length > 0) {
+      const analyses = await tx.analysis.findMany({
+        where: { tenderId: { in: tenderIds } },
+        select: { id: true },
+      })
+      const analysisIds = analyses.map((a) => a.id)
+
+      if (analysisIds.length > 0) {
+        await tx.comment.deleteMany({ where: { analysisId: { in: analysisIds } } })
+        await tx.reviewHistory.deleteMany({ where: { analysisId: { in: analysisIds } } })
+        await tx.specRequirement.deleteMany({ where: { analysisId: { in: analysisIds } } })
+        await tx.analysis.deleteMany({ where: { id: { in: analysisIds } } })
+      }
+      await tx.tenderDocument.deleteMany({ where: { tenderId: { in: tenderIds } } })
+      await tx.tender.deleteMany({ where: { id: { in: tenderIds } } })
+    }
+
+    // 4. 사용자 삭제
+    await tx.user.delete({ where: { id } })
+  })
+
   return NextResponse.json({ ok: true })
 }
