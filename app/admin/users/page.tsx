@@ -12,7 +12,8 @@ export default async function AdminUsersPage() {
     orderBy: { createdAt: "desc" },
     select: {
       id: true, name: true, email: true, role: true,
-      status: true, department: true, employeeId: true, createdAt: true,
+      status: true, department: true, employeeId: true,
+      createdAt: true, restrictedUntil: true,
     },
   })
 

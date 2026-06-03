@@ -49,15 +49,24 @@ export async function requireActivePageSession() {
   const session = await auth()
   if (!session) redirect("/login")
 
-  const user = await prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: { role: true, status: true, restrictedUntil: true, nickname: true },
   })
   if (!user) redirect("/login")
 
+  // 사용정지 기간 만료 시 DB 자동 ACTIVE 전환
+  if (restrictionExpired(user.status, user.restrictedUntil)) {
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { status: "ACTIVE", restrictedUntil: null },
+    })
+    user = { ...user, status: "ACTIVE", restrictedUntil: null }
+  }
+
   applyFreshUser(session, user)
 
-  if (isAdmin(session.user.email) || user.status === "ACTIVE" || restrictionExpired(user.status, user.restrictedUntil)) {
+  if (isAdmin(session.user.email) || user.status === "ACTIVE") {
     return session
   }
 
