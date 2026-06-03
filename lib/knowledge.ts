@@ -59,12 +59,15 @@ export async function searchKnowledge(
   const tags = filter?.tags?.length ? filter.tags : null
   let rows: unknown[]
 
+  // source_type 기본 필터: tra_approved(승인 입찰 문서)는 명시 요청 없이 일반 지식 검색에 혼입되지 않도록 제외
+  // TRA lib/knowledge.ts와 동일한 격리 정책 적용
   if (tags) {
     rows = await sql`
       SELECT content, source_path, title, metadata,
              1 - (embedding <=> ${embStr}::vector) AS similarity
       FROM knowledge_chunks
-      WHERE metadata->'tags' @> ${JSON.stringify(tags)}::jsonb
+      WHERE source_type IN ('obsidian', 'standards')
+        AND metadata->'tags' @> ${JSON.stringify(tags)}::jsonb
       ORDER BY embedding <=> ${embStr}::vector
       LIMIT ${safeLimit}
     `
@@ -73,6 +76,7 @@ export async function searchKnowledge(
       SELECT content, source_path, title, metadata,
              1 - (embedding <=> ${embStr}::vector) AS similarity
       FROM knowledge_chunks
+      WHERE source_type IN ('obsidian', 'standards')
       ORDER BY embedding <=> ${embStr}::vector
       LIMIT ${safeLimit}
     `
