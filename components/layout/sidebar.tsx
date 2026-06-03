@@ -37,33 +37,39 @@ const ALL_NAV: NavItem[] = [
     href: "/qcost", label: "품질비용(Q-Cost)", icon: Coins,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
     children: [
-      { href: "/claims", label: "고객 클레임",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
+      // 클레임·NCR: 팀원도 본인 건 작성 — 조회 배지 제거
+      { href: "/claims", label: "고객 클레임",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
       { href: "/ncr",    label: "부적합품보고(NCR)", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
     ],
   },
   {
+    // 공급망: 팀원도 본인 협력사 관리
     href: "/vendors", label: "공급망관리", icon: Building2,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
+    // 지식저장소: 전 역할 쓰기
     href: "/knowledge", label: "지식저장소(QKM)", icon: BookOpen,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
+    // 시험장: 팀장·팀원도 본인 담당 설비 등록·관리
     href: "/facilities", label: "시험장·시험 현황", icon: FlaskConical,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["TEAM_LEAD", "PRACTITIONER"],
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
     href: "/dashboard", label: "입찰검토시스템", icon: FileSearch,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
+    // 외부정보: 전 역할 쓰기 (팀원도 포함)
     href: "/intelligence", label: "외부 정보", icon: Globe,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD"], readonlyFor: ["TEAM_LEAD"],
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
+    // 인사·면담: 부문장=전체, 팀장=자기팀, 팀원=메뉴 없음
     href: "/hr", label: "인사·면담", icon: Users,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD"], readonlyFor: [],
   },
 ]
 

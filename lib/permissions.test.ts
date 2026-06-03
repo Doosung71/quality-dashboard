@@ -13,20 +13,25 @@ describe('canWrite', () => {
     expect(canWrite('ADMIN', '/claims')).toBe(true)
   })
 
-  it('TEAM_LEAD는 허용 섹션만 쓰기 가능', () => {
+  it('TEAM_LEAD는 허용 섹션에 쓰기 가능', () => {
     expect(canWrite('TEAM_LEAD', '/knowledge')).toBe(true)
     expect(canWrite('TEAM_LEAD', '/hr')).toBe(true)
-    expect(canWrite('TEAM_LEAD', '/intelligence')).toBe(false)
-    expect(canWrite('TEAM_LEAD', '/facilities')).toBe(false)
+    expect(canWrite('TEAM_LEAD', '/intelligence')).toBe(true)   // 변경: 외부정보 전체 쓰기
+    expect(canWrite('TEAM_LEAD', '/facilities')).toBe(true)     // 변경: 시험장 본인 담당
+    expect(canWrite('TEAM_LEAD', '/claims')).toBe(true)
+    expect(canWrite('TEAM_LEAD', '/vendors')).toBe(true)
   })
 
-  it('PRACTITIONER는 NCR·지식·대시보드만 쓰기 가능', () => {
+  it('PRACTITIONER는 클레임·공급망·시험장·지식·외부정보·입찰 쓰기 가능, HR·품질비용은 불가', () => {
     expect(canWrite('PRACTITIONER', '/ncr')).toBe(true)
+    expect(canWrite('PRACTITIONER', '/claims')).toBe(true)      // 변경: 본인 클레임
+    expect(canWrite('PRACTITIONER', '/vendors')).toBe(true)     // 변경: 본인 협력사
+    expect(canWrite('PRACTITIONER', '/facilities')).toBe(true)  // 변경: 본인 시험장
     expect(canWrite('PRACTITIONER', '/knowledge')).toBe(true)
+    expect(canWrite('PRACTITIONER', '/intelligence')).toBe(true)// 변경: 외부정보 전체 쓰기
     expect(canWrite('PRACTITIONER', '/dashboard')).toBe(true)
-    expect(canWrite('PRACTITIONER', '/claims')).toBe(false)
-    expect(canWrite('PRACTITIONER', '/hr')).toBe(false)
-    expect(canWrite('PRACTITIONER', '/qcost')).toBe(false)
+    expect(canWrite('PRACTITIONER', '/hr')).toBe(false)         // 메뉴 없음
+    expect(canWrite('PRACTITIONER', '/qcost')).toBe(false)      // 재무 조회만
   })
 
   it('알 수 없는 역할은 false', () => {

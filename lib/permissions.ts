@@ -4,23 +4,30 @@
  */
 
 const WRITE_PERMISSIONS: Record<string, string[]> = {
-  DIRECTOR: ["*"],   // 모든 섹션 전체 권한
-  ADMIN:    ["*"],   // 관리자 = 임원 동일
+  DIRECTOR: ["*"],
+  ADMIN:    ["*"],
   TEAM_LEAD: [
-    "/", "/claims", "/ncr", "/qcost", "/vendors", "/hr",
-    "/knowledge", "/dashboard",
-    // "/facilities" → 조회만 (시험 현황은 임원 도메인)
-    // "/intelligence" → 조회만 (외부정보는 임원 도메인)
+    "/",
+    "/claims",    // 본인 팀 클레임
+    "/ncr",       // 본인 팀 NCR
+    "/qcost",
+    "/vendors",   // 본인 담당 협력사
+    "/facilities",// 본인 담당 시험장·설비
+    "/hr",        // 자기 팀원 인사·면담
+    "/knowledge", // 전체 쓰기
+    "/intelligence",// 전체 쓰기
+    "/dashboard", // 본인 입찰 건
   ],
   PRACTITIONER: [
-    "/ncr",           // 부적합보고서 — 실무자 주도
-    "/knowledge",     // 지식 검색
-    "/dashboard",     // 입찰 검토 AI — 본인 분석 건
-    // "/claims" → 조회만 (클레임 처리는 팀장 도메인)
-    // "/facilities" → 조회만
-    // "/qcost" → 조회만
-    // "/vendors" → 조회만
-    // "/hr" → 조회만
+    "/ncr",       // 본인 NCR
+    "/claims",    // 본인 클레임
+    "/vendors",   // 본인 담당 협력사
+    "/facilities",// 본인 담당 시험장·설비
+    "/knowledge", // 전체 쓰기
+    "/intelligence",// 전체 쓰기
+    "/dashboard", // 본인 입찰 건
+    // "/qcost"  → 재무비용 대시보드는 조회만
+    // "/hr"     → 메뉴 없음
   ],
 }
 
