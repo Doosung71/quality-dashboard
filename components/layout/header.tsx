@@ -58,12 +58,12 @@ export function Header({ onMenuOpen, session }: { onMenuOpen: () => void; sessio
 
       {/* 우측 액션 영역 */}
       <div className="flex items-center gap-0.5 shrink-0">
-        {/* 역할 배지 — sm 이상만 표시 */}
-        <span className="hidden sm:block mr-1">
+        {/* 역할 배지 */}
+        <span className="mr-1 shrink-0">
           <RoleBadge role={role} />
         </span>
 
-        <div className="hidden sm:block w-px h-5 bg-slate-200 mx-1" />
+        <div className="w-px h-5 bg-slate-200 mx-1 shrink-0" />
 
         <NavBtn href="/profile"     icon={CircleUserRound} label={name}        active={pathname === "/profile"} />
         <NavBtn href="/help"        icon={HelpCircle}      label="가이드"       active={pathname === "/help"} />
