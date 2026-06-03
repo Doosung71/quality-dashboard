@@ -38,7 +38,7 @@ export async function requireActiveSession() {
 
   applyFreshUser(session, user)
 
-  if (!isAdmin(session.user.email) && user.status !== "ACTIVE" && !restrictionExpired(user.status, user.restrictedUntil)) {
+  if (!isAdmin(session.user.email, user.role) && user.status !== "ACTIVE" && !restrictionExpired(user.status, user.restrictedUntil)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
@@ -66,7 +66,7 @@ export async function requireActivePageSession() {
 
   applyFreshUser(session, user)
 
-  if (isAdmin(session.user.email) || user.status === "ACTIVE") {
+  if (isAdmin(session.user.email, user.role) || user.status === "ACTIVE") {
     return session
   }
 

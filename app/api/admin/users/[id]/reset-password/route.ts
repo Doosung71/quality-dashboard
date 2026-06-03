@@ -17,7 +17,7 @@ function generateTempPassword(): string {
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
-  if (!isAdmin(session.user.email)) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  if (!isAdmin(session.user.email, session.user.role)) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const { id } = await params
   const tempPassword = generateTempPassword()

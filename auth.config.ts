@@ -14,11 +14,12 @@ export const authConfig = {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user
       const pathname = nextUrl.pathname
-      const user = auth?.user as { status?: string; restrictedUntil?: string | null; email?: string | null } | undefined
+      const user = auth?.user as { status?: string; restrictedUntil?: string | null; email?: string | null; role?: string | null } | undefined
       const status = user?.status
       const restrictedUntil = user?.restrictedUntil ?? null
       const email = user?.email
-      const isAdminUser = !!email && ADMIN_EMAILS.includes(email)
+      const role = user?.role
+      const isAdminUser = (!!email && ADMIN_EMAILS.includes(email)) || role === "ADMIN"
       const restrictionExpired = status === "RESTRICTED" && !!restrictedUntil && new Date(restrictedUntil) < new Date()
       const isEffectivelyActive = status === "ACTIVE" || restrictionExpired
 

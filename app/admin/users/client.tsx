@@ -13,7 +13,7 @@ const STATUS_LABEL: Record<string, string> = {
   PENDING: "대기", ACTIVE: "활성", RESTRICTED: "정지", BANNED: "강퇴(영구)"
 }
 const ROLE_LABEL: Record<string, string> = {
-  PRACTITIONER: "실무자", TEAM_LEAD: "팀장", DIRECTOR: "임원"
+  PRACTITIONER: "실무자", TEAM_LEAD: "팀장", DIRECTOR: "임원", ADMIN: "관리자"
 }
 const STATUS_COLOR: Record<string, string> = {
   PENDING: "bg-amber-100 text-amber-700",

@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma"
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
-  if (!isAdmin(session.user.email)) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  if (!isAdmin(session.user.email, session.user.role)) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const { id } = await params
   const body = await req.json()
@@ -32,7 +32,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
-  if (!isAdmin(session.user.email)) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  if (!isAdmin(session.user.email, session.user.role)) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const { id } = await params
   const target = await prisma.user.findUnique({ where: { id }, select: { email: true } })

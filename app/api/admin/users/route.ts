@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma"
 export async function GET() {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
-  if (!isAdmin(session.user.email)) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  if (!isAdmin(session.user.email, session.user.role)) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const users = await prisma.user.findMany({
     orderBy: { createdAt: "desc" },
