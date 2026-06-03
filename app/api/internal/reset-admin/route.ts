@@ -11,7 +11,8 @@ export async function GET(req: NextRequest) {
   }
 
   const hash = await bcrypt.hash("admin1234!", 12)
-  await prisma.user.update({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (prisma.user.update as any)({
     where: { email: "doosung71@gmail.com" },
     data: { passwordHash: hash, role: "ADMIN", name: "관리자", department: "품질부문" },
   })
