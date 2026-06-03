@@ -314,14 +314,14 @@ export function MainDashboard({ role, userName, userId }: Props) {
               <Gauge className="w-4 h-4 text-indigo-500" /> 품질 5대 핵심 영역 모니터링
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-              <Link href="/facilities" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
+              <Link href="/qcost" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
                 <div className="space-y-1">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">① 시험 현황</span>
-                  <h4 className="text-2xl font-bold text-slate-900 mt-1">{stats.runningTests} / {stats.totalFacilities}</h4>
-                  <p className="text-[10px] text-slate-400">진행중 시험 / 총 시험장동 ({stats.totalEquipment}대 설비)</p>
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">① Q-Cost</span>
+                  <h4 className="text-2xl font-bold text-emerald-600 mt-1">{Number(stats.totalQCost).toFixed(1)}M</h4>
+                  <p className="text-[10px] text-slate-400">실패 {Number(stats.failureCost).toFixed(1)}M / 예방 {Number(stats.preventionCost).toFixed(1)}M</p>
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t mt-4 text-[10px] text-indigo-600 font-bold">
-                  <span>시험장 이동</span><ArrowRight className="w-3.5 h-3.5" />
+                  <span>품질비용 이동</span><ArrowRight className="w-3.5 h-3.5" />
                 </div>
               </Link>
 
@@ -350,25 +350,25 @@ export function MainDashboard({ role, userName, userId }: Props) {
                 </div>
               </Link>
 
-              <Link href="/qcost" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
-                <div className="space-y-1">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">④ Q-Cost</span>
-                  <h4 className="text-2xl font-bold text-emerald-600 mt-1">{Number(stats.totalQCost).toFixed(1)}M</h4>
-                  <p className="text-[10px] text-slate-400">실패 {Number(stats.failureCost).toFixed(1)}M / 예방 {Number(stats.preventionCost).toFixed(1)}M</p>
-                </div>
-                <div className="flex justify-between items-center pt-4 border-t mt-4 text-[10px] text-indigo-600 font-bold">
-                  <span>품질비용 이동</span><ArrowRight className="w-3.5 h-3.5" />
-                </div>
-              </Link>
-
               <Link href="/vendors" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
                 <div className="space-y-1">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">⑤ 협력사 관리</span>
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">④ 공급망관리</span>
                   <h4 className="text-2xl font-bold text-slate-900 mt-1">{stats.totalVendors}개사</h4>
                   <p className="text-[10px] text-slate-400">A등급 {stats.gradeAVendors}개사 / 경고 {stats.warningVendors}개사</p>
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t mt-4 text-[10px] text-indigo-600 font-bold">
-                  <span>협력사 카드 풀</span><ArrowRight className="w-3.5 h-3.5" />
+                  <span>공급망 이동</span><ArrowRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+
+              <Link href="/facilities" className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col justify-between group">
+                <div className="space-y-1">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">⑤ 시험장·시험 현황</span>
+                  <h4 className="text-2xl font-bold text-slate-900 mt-1">{stats.runningTests} / {stats.totalFacilities}</h4>
+                  <p className="text-[10px] text-slate-400">진행중 시험 / 총 시험장동 ({stats.totalEquipment}대 설비)</p>
+                </div>
+                <div className="flex justify-between items-center pt-4 border-t mt-4 text-[10px] text-indigo-600 font-bold">
+                  <span>시험장 이동</span><ArrowRight className="w-3.5 h-3.5" />
                 </div>
               </Link>
             </div>
