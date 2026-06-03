@@ -31,26 +31,43 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
   return NextResponse.json(post)
 }
 
-// PATCH /api/board/[id] — 핀 토글 (임원·관리자)
+// PATCH /api/board/[id] — 게시글 수정 (제목·내용: 작성자 또는 임원·관리자 / 핀·카테고리: 임원·관리자만)
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
 
+  const { id } = await params
+  const post = await prisma.boardPost.findUnique({ where: { id }, select: { authorId: true } })
+  if (!post) return NextResponse.json({ error: "없음" }, { status: 404 })
+
   const role = session.user.role as string
-  if (role !== "ADMIN" && role !== "DIRECTOR") {
+  const isPrivileged = role === "ADMIN" || role === "DIRECTOR"
+  const isAuthor = post.authorId === session.user.id
+
+  if (!isAuthor && !isPrivileged) {
     return NextResponse.json({ error: "권한 없음" }, { status: 403 })
   }
 
-  const { id } = await params
-  const { pinned, category } = await req.json()
-  const post = await prisma.boardPost.update({
-    where: { id },
-    data: {
-      ...(pinned !== undefined && { pinned }),
-      ...(category !== undefined && { category }),
-    },
-  })
-  return NextResponse.json(post)
+  const { title, content, pinned, category } = await req.json()
+  const data: Record<string, unknown> = {}
+
+  // 제목·내용: 작성자 또는 임원·관리자
+  if (title !== undefined) data.title = String(title).trim()
+  if (content !== undefined) data.content = String(content).trim()
+
+  // 핀·카테고리: 임원·관리자만
+  if (isPrivileged) {
+    if (pinned !== undefined) data.pinned = pinned
+    if (category !== undefined) data.category = category
+  }
+
+  if (Object.keys(data).length === 0) {
+    return NextResponse.json({ error: "변경할 항목 없음" }, { status: 400 })
+  }
+
+  data.updatedAt = new Date()
+  const updated = await prisma.boardPost.update({ where: { id }, data })
+  return NextResponse.json(updated)
 }
 
 // DELETE /api/board/[id] — 게시글 삭제 (작성자·관리자·임원)

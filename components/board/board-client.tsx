@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import {
   Pin, PinOff, Plus, X, Trash2, MessageSquare,
-  ChevronRight, Megaphone, Send, CornerDownRight,
+  ChevronRight, Megaphone, Send, CornerDownRight, Pencil, Check,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { Role } from "@/lib/generated/prisma/client"
@@ -42,15 +42,63 @@ function timeAgo(iso: string) {
 
 function CommentItem({
   comment, postId, currentUserId, isPrivileged,
-  onDelete, onReply,
+  onDelete, onReply, onEdited,
 }: {
   comment: Comment; postId: string; currentUserId: string; isPrivileged: boolean
   onDelete: (commentId: string) => void
   onReply: (parentId: string, parentAuthor: string) => void
+  onEdited: () => void
 }) {
-  const canDelete = comment.author.id === currentUserId || isPrivileged
+  const canAct = (authorId: string) => authorId === currentUserId || isPrivileged
+
+  // 댓글 인라인 편집 상태
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editText, setEditText] = useState("")
+
+  function startEdit(id: string, content: string) {
+    setEditingId(id); setEditText(content)
+  }
+  function cancelEdit() { setEditingId(null); setEditText("") }
+
+  async function submitEdit(commentId: string) {
+    if (!editText.trim()) return
+    await fetch(`/api/board/${postId}/comments/${commentId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: editText }),
+    })
+    cancelEdit(); onEdited()
+  }
+
+  function renderActions(id: string, authorId: string, content: string, isReply = false) {
+    if (editingId === id) return null
+    return (
+      <div className="flex items-center gap-3 mt-1">
+        {!isReply && (
+          <button onClick={() => onReply(id, authorLabel(comment.author))}
+            className="text-[10px] text-slate-400 hover:text-indigo-600 flex items-center gap-1 transition-colors">
+            <CornerDownRight className="w-3 h-3" /> 답글
+          </button>
+        )}
+        {canAct(authorId) && (
+          <>
+            <button onClick={() => startEdit(id, content)}
+              className="text-[10px] text-slate-400 hover:text-indigo-500 flex items-center gap-1 transition-colors opacity-0 group-hover:opacity-100">
+              <Pencil className="w-3 h-3" /> 수정
+            </button>
+            <button onClick={() => onDelete(id)}
+              className="text-[10px] text-slate-400 hover:text-rose-500 flex items-center gap-1 transition-colors opacity-0 group-hover:opacity-100">
+              <Trash2 className="w-3 h-3" /> 삭제
+            </button>
+          </>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-2">
+      {/* 댓글 본체 */}
       <div className="group flex gap-3">
         <div className="w-7 h-7 rounded-full bg-slate-700 text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
           {authorLabel(comment.author).slice(0, 1)}
@@ -58,28 +106,35 @@ function CommentItem({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs font-bold text-slate-900">{authorLabel(comment.author)}</span>
-            {comment.author.department && (
-              <span className="text-[10px] text-slate-400">{comment.author.department}</span>
-            )}
+            {comment.author.department && <span className="text-[10px] text-slate-400">{comment.author.department}</span>}
             <span className="text-[10px] text-slate-400">{timeAgo(comment.createdAt)}</span>
           </div>
-          <p className="text-sm text-slate-700 mt-0.5 leading-relaxed whitespace-pre-wrap">{comment.content}</p>
-          <div className="flex items-center gap-3 mt-1">
-            <button
-              onClick={() => onReply(comment.id, authorLabel(comment.author))}
-              className="text-[10px] text-slate-400 hover:text-indigo-600 flex items-center gap-1 transition-colors"
-            >
-              <CornerDownRight className="w-3 h-3" /> 답글
-            </button>
-            {canDelete && (
-              <button
-                onClick={() => onDelete(comment.id)}
-                className="text-[10px] text-slate-400 hover:text-rose-500 flex items-center gap-1 transition-colors opacity-0 group-hover:opacity-100"
-              >
-                <Trash2 className="w-3 h-3" /> 삭제
-              </button>
-            )}
-          </div>
+
+          {editingId === comment.id ? (
+            <div className="mt-1 space-y-1.5">
+              <textarea
+                autoFocus
+                value={editText}
+                onChange={e => setEditText(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitEdit(comment.id) } if (e.key === "Escape") cancelEdit() }}
+                rows={3}
+                className="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+              />
+              <div className="flex gap-2">
+                <button onClick={() => submitEdit(comment.id)}
+                  className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                  <Check className="w-3 h-3" /> 저장
+                </button>
+                <button onClick={cancelEdit}
+                  className="text-xs text-slate-400 hover:text-slate-600 px-2.5 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
+                  취소
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-slate-700 mt-0.5 leading-relaxed whitespace-pre-wrap">{comment.content}</p>
+          )}
+          {renderActions(comment.id, comment.author.id, comment.content)}
         </div>
       </div>
 
@@ -94,20 +149,35 @@ function CommentItem({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xs font-bold text-slate-900">{authorLabel(reply.author)}</span>
-                  {reply.author.department && (
-                    <span className="text-[10px] text-slate-400">{reply.author.department}</span>
-                  )}
+                  {reply.author.department && <span className="text-[10px] text-slate-400">{reply.author.department}</span>}
                   <span className="text-[10px] text-slate-400">{timeAgo(reply.createdAt)}</span>
                 </div>
-                <p className="text-sm text-slate-700 mt-0.5 leading-relaxed whitespace-pre-wrap">{reply.content}</p>
-                {(reply.author.id === currentUserId || isPrivileged) && (
-                  <button
-                    onClick={() => onDelete(reply.id)}
-                    className="text-[10px] text-slate-400 hover:text-rose-500 flex items-center gap-1 mt-1 transition-colors opacity-0 group-hover:opacity-100"
-                  >
-                    <Trash2 className="w-3 h-3" /> 삭제
-                  </button>
+
+                {editingId === reply.id ? (
+                  <div className="mt-1 space-y-1.5">
+                    <textarea
+                      autoFocus
+                      value={editText}
+                      onChange={e => setEditText(e.target.value)}
+                      onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitEdit(reply.id) } if (e.key === "Escape") cancelEdit() }}
+                      rows={2}
+                      className="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+                    />
+                    <div className="flex gap-2">
+                      <button onClick={() => submitEdit(reply.id)}
+                        className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                        <Check className="w-3 h-3" /> 저장
+                      </button>
+                      <button onClick={cancelEdit}
+                        className="text-xs text-slate-400 hover:text-slate-600 px-2.5 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
+                        취소
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-slate-700 mt-0.5 leading-relaxed whitespace-pre-wrap">{reply.content}</p>
                 )}
+                {renderActions(reply.id, reply.author.id, reply.content, true)}
               </div>
             </div>
           ))}
@@ -141,6 +211,12 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
   const [newPinned, setNewPinned] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
+  // 게시글 인라인 편집 상태
+  const [editingPost, setEditingPost] = useState(false)
+  const [editTitle, setEditTitle] = useState("")
+  const [editContent, setEditContent] = useState("")
+  const [postSaving, setPostSaving] = useState(false)
+
   // 댓글 입력
   const [commentText, setCommentText] = useState("")
   const [replyTo, setReplyTo] = useState<{ parentId: string; authorName: string } | null>(null)
@@ -165,6 +241,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
   useEffect(() => {
     if (selectedId) loadDetail(selectedId)
     else setDetail(null)
+    setEditingPost(false)
   }, [selectedId, loadDetail])
 
   // 새 글 제출
@@ -185,6 +262,27 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
       setSelectedId(created.id)
     }
     setSubmitting(false)
+  }
+
+  // 게시글 편집 시작
+  function startEditPost(post: Post) {
+    setEditTitle(post.title); setEditContent(post.content); setEditingPost(true)
+  }
+  function cancelEditPost() { setEditingPost(false) }
+
+  // 게시글 수정 저장
+  async function handleSavePost() {
+    if (!selectedId || !editTitle.trim() || !editContent.trim()) return
+    setPostSaving(true)
+    await fetch(`/api/board/${selectedId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: editTitle.trim(), content: editContent.trim() }),
+    })
+    setEditingPost(false)
+    loadDetail(selectedId)
+    loadPosts()
+    setPostSaving(false)
   }
 
   // 게시글 삭제
@@ -389,11 +487,11 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
 
                 {/* 액션 버튼 */}
                 <div className="flex items-center gap-1.5 shrink-0">
-                  {isPrivileged && (
+                  {isPrivileged && !editingPost && (
                     <button
                       onClick={() => handleTogglePin(detail.id, detail.pinned)}
                       className={cn(
-                        "p-1.5 rounded-lg transition-colors text-xs",
+                        "p-1.5 rounded-lg transition-colors",
                         detail.pinned ? "text-amber-500 bg-amber-50 hover:bg-amber-100" : "text-slate-400 hover:text-amber-500 hover:bg-amber-50"
                       )}
                       title={detail.pinned ? "고정 해제" : "상단 고정"}
@@ -401,7 +499,16 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                       {detail.pinned ? <PinOff className="w-4 h-4" /> : <Pin className="w-4 h-4" />}
                     </button>
                   )}
-                  {(detail.author.id === currentUserId || isPrivileged) && (
+                  {(detail.author.id === currentUserId || isPrivileged) && !editingPost && (
+                    <button
+                      onClick={() => startEditPost(detail)}
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition-colors"
+                      title="게시글 수정"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                  )}
+                  {(detail.author.id === currentUserId || isPrivileged) && !editingPost && (
                     <button
                       onClick={() => handleDeletePost(detail.id)}
                       className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-colors"
@@ -413,10 +520,39 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                 </div>
               </div>
 
-              {/* 본문 내용 */}
-              <div className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap bg-slate-50/50 rounded-xl px-4 py-4 border border-slate-100">
-                {detail.content}
-              </div>
+              {/* 본문 — 일반 뷰 또는 인라인 편집 */}
+              {editingPost ? (
+                <div className="space-y-3 mt-2">
+                  <input
+                    autoFocus
+                    value={editTitle}
+                    onChange={e => setEditTitle(e.target.value)}
+                    className="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                    placeholder="제목"
+                  />
+                  <textarea
+                    value={editContent}
+                    onChange={e => setEditContent(e.target.value)}
+                    rows={6}
+                    className="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+                    placeholder="내용"
+                  />
+                  <div className="flex gap-2">
+                    <button onClick={handleSavePost} disabled={postSaving}
+                      className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-all">
+                      <Check className="w-4 h-4" /> {postSaving ? "저장 중..." : "저장"}
+                    </button>
+                    <button onClick={cancelEditPost}
+                      className="text-sm text-slate-500 hover:text-slate-800 px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
+                      취소
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap bg-slate-50/50 rounded-xl px-4 py-4 border border-slate-100 mt-2">
+                  {detail.content}
+                </div>
+              )}
             </div>
 
             {/* 댓글 섹션 */}
@@ -441,6 +577,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                       setReplyTo({ parentId, authorName })
                       setCommentText(`@${authorName} `)
                     }}
+                    onEdited={() => loadDetail(detail.id)}
                   />
                 ))}
               </div>
