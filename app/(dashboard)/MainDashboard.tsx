@@ -222,16 +222,16 @@ export function MainDashboard({ role, userName, userId }: Props) {
             <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-2.5">섹션별 접근 권한</p>
             <div className="flex flex-wrap gap-1.5">
               {[
-                { label: "대시보드",    director: "full", team_leader: "full",     operator: "full"     },
-                { label: "시험장",      director: "full", team_leader: "readonly", operator: "readonly" },
-                { label: "클레임",      director: "full", team_leader: "full",     operator: "readonly" },
-                { label: "NCR",         director: "full", team_leader: "full",     operator: "full"     },
-                { label: "Q-Cost",      director: "full", team_leader: "full",     operator: "readonly" },
-                { label: "협력업체",    director: "full", team_leader: "full",     operator: "readonly" },
-                { label: "인사·면담",  director: "full", team_leader: "full",     operator: "readonly" },
-                { label: "외부정보",    director: "full", team_leader: "readonly", operator: "none"     },
-                { label: "지식검색",    director: "full", team_leader: "full",     operator: "full"     },
-                { label: "입찰검토AI",  director: "full", team_leader: "full",     operator: "full"     },
+                { label: "대시보드",      director: "full", team_leader: "full",     operator: "full"     },
+                { label: "Q-Cost",        director: "full", team_leader: "full",     operator: "readonly" },
+                { label: "클레임",        director: "full", team_leader: "full",     operator: "readonly" },
+                { label: "NCR",           director: "full", team_leader: "full",     operator: "full"     },
+                { label: "공급망관리",    director: "full", team_leader: "full",     operator: "readonly" },
+                { label: "QKM",           director: "full", team_leader: "full",     operator: "full"     },
+                { label: "시험장",        director: "full", team_leader: "readonly", operator: "readonly" },
+                { label: "입찰검토",      director: "full", team_leader: "full",     operator: "full"     },
+                { label: "외부정보",      director: "full", team_leader: "readonly", operator: "none"     },
+                { label: "인사·면담",    director: "full", team_leader: "full",     operator: "readonly" },
               ].map(({ label, ...perms }) => {
                 const level = perms[userRole as keyof typeof perms] as "full" | "readonly" | "none"
                 return (

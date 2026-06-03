@@ -184,9 +184,9 @@ export default function KnowledgePage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">품질 지식저장소 (Knowledge Base)</h1>
+        <h1 className="text-2xl font-bold text-slate-900">지식저장소 — QKM (Quality Knowledge Management)</h1>
         <p className="text-slate-500">
-          초고압/해저 케이블 관련 국제·국가 규격, 고객 요구 사양서, 입찰(Tender) 문서 및 기술 연구자료를 분류하여 저장하고 RAG 임베딩 검색 엔진과 연동합니다.
+          초고압·해저 케이블 관련 국제·국가 규격, 입찰 문서, 기술 연구자료를 AI RAG 검색으로 즉시 조회합니다.
         </p>
       </div>
 

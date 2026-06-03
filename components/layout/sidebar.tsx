@@ -6,19 +6,19 @@ import { cn } from "@/lib/utils"
 import { LayoutDashboard, FlaskConical, TriangleAlert, Building2, Users, Globe, ShieldCheck, X, MessageSquare, CircleUserRound, HelpCircle, BookOpen, FileText, Coins, FileSearch } from "lucide-react"
 import type { Role } from "@/lib/generated/prisma/client"
 
-// 역할별 접근 가능한 메뉴
+// 역할별 접근 가능한 메뉴 (경영자 우선순위 기준 정렬)
 // readonlyFor: 이 역할은 해당 메뉴를 조회만 가능 (편집 불가)
 const ALL_NAV = [
-  { href: "/",             label: "대시보드",         icon: LayoutDashboard, roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-  { href: "/facilities",   label: "시험장·시험 현황",   icon: FlaskConical,    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["TEAM_LEAD", "PRACTITIONER"] },
-  { href: "/claims",       label: "고객 클레임",        icon: TriangleAlert,   roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
-  { href: "/ncr",          label: "부적합품보고(NCR)",   icon: FileText,        roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-  { href: "/qcost",        label: "품질비용(Q-Cost)",    icon: Coins,           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
-  { href: "/vendors",      label: "협력업체",           icon: Building2,       roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
-  { href: "/hr",           label: "인사·면담",          icon: Users,           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
-  { href: "/intelligence", label: "외부 정보",          icon: Globe,           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD"],                 readonlyFor: ["TEAM_LEAD"] },
-  { href: "/knowledge",    label: "지식 검색",           icon: BookOpen,        roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-  { href: "/dashboard",    label: "입찰 검토 AI",        icon: FileSearch,      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+  { href: "/",             label: "대시보드",            icon: LayoutDashboard, roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+  { href: "/qcost",        label: "품질비용(Q-Cost)",     icon: Coins,           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
+  { href: "/claims",       label: "고객 클레임",          icon: TriangleAlert,   roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
+  { href: "/ncr",          label: "부적합품보고(NCR)",    icon: FileText,        roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+  { href: "/vendors",      label: "공급망관리",           icon: Building2,       roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
+  { href: "/knowledge",    label: "지식저장소(QKM)",      icon: BookOpen,        roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+  { href: "/facilities",   label: "시험장·시험 현황",     icon: FlaskConical,    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["TEAM_LEAD", "PRACTITIONER"] },
+  { href: "/dashboard",    label: "입찰검토시스템",       icon: FileSearch,      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+  { href: "/intelligence", label: "외부 정보",            icon: Globe,           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD"],                 readonlyFor: ["TEAM_LEAD"] },
+  { href: "/hr",           label: "인사·면담",            icon: Users,           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
 ] as const
 
 interface SidebarProps {

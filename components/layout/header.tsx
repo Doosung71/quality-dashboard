@@ -11,11 +11,15 @@ import type { Role } from "@/lib/generated/prisma/client"
 
 const titles: Record<string, string> = {
   "/": "메인 대시보드",
-  "/facilities": "시험장·시험 현황",
+  "/qcost": "품질비용(Q-Cost)",
   "/claims": "고객 클레임",
-  "/vendors": "협력업체",
-  "/hr": "인사·면담",
+  "/ncr": "부적합품보고(NCR)",
+  "/vendors": "공급망관리",
+  "/knowledge": "지식저장소(QKM)",
+  "/facilities": "시험장·시험 현황",
+  "/dashboard": "입찰검토시스템",
   "/intelligence": "외부 정보",
+  "/hr": "인사·면담",
 }
 
 export function Header({ onMenuOpen, session }: { onMenuOpen: () => void; session: Session }) {
