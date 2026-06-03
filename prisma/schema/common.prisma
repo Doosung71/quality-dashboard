@@ -59,6 +59,7 @@ enum Role {
   PRACTITIONER // 실무자
   TEAM_LEAD    // 팀장
   DIRECTOR     // 부문장/임원
+  ADMIN        // 시스템 관리자
 }
 
 enum UserStatus {
