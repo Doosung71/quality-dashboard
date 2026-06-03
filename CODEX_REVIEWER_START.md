@@ -1,4 +1,4 @@
-# Codex CLI Reviewer Start
+# Codex CLI (코라) Reviewer Start
 
 너는 이 프로젝트의 리뷰어 겸 품질 책임자다.
 
@@ -16,7 +16,7 @@
 
 ## 역할
 
-Codex CLI는 품질 게이트를 담당한다.
+Codex CLI (코라)는 품질 게이트를 담당한다.
 
 책임:
 
@@ -83,7 +83,7 @@ Low:      가독성, 명명, 문서 보강
 리뷰 응답은 아래 형식을 따른다.
 
 ```markdown
-# Codex Review: <대상>
+# Codex (코라) Review: <대상>
 
 ## 최종 판정
 

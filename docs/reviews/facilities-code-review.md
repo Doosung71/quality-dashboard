@@ -1,7 +1,7 @@
-# Codex 검수 보고서: 시설·설비 현황 컴포넌트
+# Codex (코라) 검수 보고서: 시설·설비 현황 컴포넌트
 
 **검수일**: 2026-05-28
-**검수자**: Codex CLI (품질 감독관)
+**검수자**: Codex CLI (코라) (품질 감독관)
 **대상**: `components/facilities/` 및 `lib/facilities-utils.ts`
 
 ---

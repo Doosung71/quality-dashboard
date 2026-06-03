@@ -1,6 +1,6 @@
 # Multi-Agent Session Startup Guide
 
-이 문서는 새 세션을 시작할 때 Claude Code, Gemini CLI, Codex CLI를 어떤 순서로 깨우고 어떤 파일을 읽게 할지 정리한 가이드다.
+이 문서는 새 세션을 시작할 때 Claude Code (클로이), Gemini CLI, Codex CLI (코라)를 어떤 순서로 깨우고 어떤 파일을 읽게 할지 정리한 가이드다.
 
 **이 프로젝트**: LS전선 품질부문장 대시보드 (quality-dashboard)  
 **D-day**: 2026년 9월 품질전략기능회의 (CEO + 임원진 시연)
@@ -11,8 +11,8 @@
 
 ```text
 1. 각 Agent에게 자기 역할 파일을 먼저 읽힌다.
-2. Claude Code에게 프로젝트를 읽고 오늘 작업 계획을 만들게 한다.
-3. Claude Code가 필요할 때 Gemini와 Codex에게 구체 요청문을 작성한다.
+2. Claude Code (클로이)에게 프로젝트를 읽고 오늘 작업 계획을 만들게 한다.
+3. Claude Code (클로이)가 필요할 때 Gemini와 Codex에게 구체 요청문을 작성한다.
 4. Gemini와 Codex는 자기 역할 파일을 기준으로 응답한다.
 ```
 
@@ -24,10 +24,10 @@
 
 ```text
 AGENTS.md                   # 전체 운영 규칙 + 프로젝트 아키텍처 + 코딩 규칙
-CLAUDE.md                   # Claude Code 특화 지침
-CLAUDE_AGENT_START.md       # Claude Code 세션 시작 지침
+CLAUDE.md                   # Claude Code (클로이) 특화 지침
+CLAUDE_AGENT_START.md       # Claude Code (클로이) 세션 시작 지침
 GEMINI_RESEARCHER_START.md  # Gemini CLI 시작 지침
-CODEX_REVIEWER_START.md     # Codex CLI 시작 지침
+CODEX_REVIEWER_START.md     # Codex CLI (코라) 시작 지침
 PRD.md                      # 제품 요구사항 (D-day 역산 마일스톤)
 ```
 
@@ -35,14 +35,14 @@ PRD.md                      # 제품 요구사항 (D-day 역산 마일스톤)
 
 ```text
 docs/research/     Gemini 조사 결과
-docs/reviews/      Codex 리뷰 결과
+docs/reviews/      Codex (코라) 리뷰 결과
 ```
 
 ## 새 세션 시작 순서
 
-### 1. Claude Code 세션
+### 1. Claude Code (클로이) 세션
 
-Claude Code에게 먼저 아래처럼 말한다.
+Claude Code (클로이)에게 먼저 아래처럼 말한다.
 
 ```markdown
 프로젝트 루트의 AGENTS.md, CLAUDE_AGENT_START.md, PRD.md를 읽어줘.
@@ -62,15 +62,15 @@ Gemini CLI에는 아래처럼 시작한다.
 
 - GEMINI_RESEARCHER_START.md
 
-파일을 직접 수정하지 말고, Claude Code가 docs/research/에 저장할 수 있는 Markdown 형식으로 조사 결과를 작성해줘.
+파일을 직접 수정하지 말고, Claude Code (클로이)가 docs/research/에 저장할 수 있는 Markdown 형식으로 조사 결과를 작성해줘.
 앞으로 내가 주는 Research Request에만 답해줘.
 ```
 
 그 뒤 Claude가 만든 리서치 요청문을 붙여 넣는다.
 
-### 3. Codex CLI 세션
+### 3. Codex CLI (코라) 세션
 
-Codex CLI에는 아래처럼 시작한다.
+Codex CLI (코라)에는 아래처럼 시작한다.
 
 ```markdown
 아래 파일의 역할 지침을 기준으로 이 세션에서 리뷰어 겸 품질 책임자 역할을 수행해줘.
@@ -91,9 +91,9 @@ Codex CLI에는 아래처럼 시작한다.
 ```text
 사용자
   ↓
-Claude Code = PM + Main Coder
+Claude Code (클로이) = PM + Main Coder
   ├─ Gemini CLI = Researcher
-  └─ Codex CLI = Reviewer + Quality Owner
+  └─ Codex CLI (코라) = Reviewer + Quality Owner
 ```
 
 사용자는 세 Agent 모두에게 직접 전체 맥락을 반복 설명하지 않는다.
@@ -102,7 +102,7 @@ Claude가 할 일:
 
 - 필요한 질문을 Gemini용 리서치 요청문으로 바꾼다.
 - 구현 결과를 Codex용 리뷰 요청문으로 바꾼다.
-- Gemini/Codex 결과를 프로젝트 문서와 코드에 반영한다.
+- Gemini/Codex (코라) 결과를 프로젝트 문서와 코드에 반영한다.
 
 Gemini가 할 일:
 
@@ -125,7 +125,7 @@ Codex가 할 일:
 ```text
 Claude: AGENTS.md + CLAUDE_AGENT_START.md + PRD.md
 Gemini: GEMINI_RESEARCHER_START.md
-Codex:  AGENTS.md + CODEX_REVIEWER_START.md
+Codex (코라):  AGENTS.md + CODEX_REVIEWER_START.md
 ```
 
 Gemini가 로컬 파일을 직접 읽지 못하는 환경이면 `GEMINI_RESEARCHER_START.md` 내용을 처음 한 번 붙여 넣는다.
@@ -148,7 +148,7 @@ Claude가 PRD.md 해당 영역 요구사항 확인 + 불확실성 정리
 Claude가 구현 및 npm run build 확인
 → Codex에게 구현 리뷰
 → Claude가 Critical/High 수정
-→ Codex 재리뷰 (필요 시)
+→ Codex (코라) 재리뷰 (필요 시)
 → docs/reviews/ 에 결과 저장
 ```
 
@@ -188,7 +188,7 @@ GEMINI_RESEARCHER_START.md 기준으로 리서처 역할을 해줘.
 파일 수정 없이, 출처 포함 Markdown 조사 결과만 작성해줘.
 ```
 
-Codex:
+Codex (코라):
 
 ```markdown
 AGENTS.md와 CODEX_REVIEWER_START.md 기준으로 리뷰어 겸 품질 책임자 역할을 해줘.

@@ -1,7 +1,7 @@
 # Gemini Research Request — 시험장·설비 현황 페이지 UX 고도화
 
 **요청일**: 2026-05-25  
-**요청자**: Claude Code (PM)  
+**요청자**: Claude Code (클로이) (PM)  
 **결과 저장 위치**: `docs/research/result-facilities-ux-enhancement.md`
 
 ---

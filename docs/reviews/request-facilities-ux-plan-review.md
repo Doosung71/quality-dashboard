@@ -1,7 +1,7 @@
-# Codex Plan Review Request — 시험장·설비 현황 UX 고도화 계획
+# Codex (코라) Plan Review Request — 시험장·설비 현황 UX 고도화 계획
 
 **요청일**: 2026-05-25  
-**요청자**: Claude Code (PM)  
+**요청자**: Claude Code (클로이) (PM)  
 **리뷰 유형**: Plan Review (구현 전 설계 검토)
 
 ---

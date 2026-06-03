@@ -498,11 +498,14 @@ export function IntelligenceView({ data }: IntelligenceViewProps) {
                   </form>
                 )}
 
-                {/* 요약 상세 */}
+                {/* 요약 상세 — 잡지형 리딩 뷰 */}
                 <div className="space-y-3">
                   <h4 className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">주요 수집 내용 요약</h4>
-                  <div className="bg-slate-50/70 p-4.5 rounded-2xl border border-slate-100 text-xs text-slate-700 leading-relaxed font-medium">
-                    {selectedItem.summary}
+                  <div className="flex gap-4">
+                    <div className={`w-1 rounded-full shrink-0 ${CATEGORY_STYLES[selectedItem.category].dot}`} />
+                    <p className="text-sm text-slate-700 leading-loose font-normal tracking-tight">
+                      {selectedItem.summary}
+                    </p>
                   </div>
                 </div>
 
@@ -525,13 +528,13 @@ export function IntelligenceView({ data }: IntelligenceViewProps) {
                   </h4>
                   
                   {selectedItem.actionItem ? (
-                    <div className="bg-indigo-50/30 text-indigo-950 p-4 rounded-2xl border border-indigo-100/50 flex items-start gap-3 text-xs leading-relaxed">
-                      <span className="px-2.5 py-1 bg-indigo-100 text-indigo-800 font-extrabold rounded-lg text-[9px] uppercase tracking-wider shrink-0 mt-0.5">
+                    <div className="bg-linear-to-br from-amber-500/6 to-orange-400/4 text-amber-950 p-4 rounded-2xl border border-amber-300/50 flex items-start gap-3 text-xs leading-relaxed shadow-sm shadow-amber-100/50">
+                      <span className="px-2.5 py-1 bg-linear-to-r from-amber-500 to-orange-400 text-white font-extrabold rounded-lg text-[9px] uppercase tracking-wider shrink-0 mt-0.5 shadow-sm">
                         Action Plan
                       </span>
-                      <div className="font-bold flex items-center gap-1.5">
-                        <ArrowRight className="w-4 h-4 text-indigo-400 shrink-0 self-start mt-0.5" />
-                        <span>{selectedItem.actionItem}</span>
+                      <div className="font-semibold flex items-start gap-1.5 text-amber-900">
+                        <ArrowRight className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                        <span className="leading-relaxed">{selectedItem.actionItem}</span>
                       </div>
                     </div>
                   ) : (
@@ -573,6 +576,20 @@ export function IntelligenceView({ data }: IntelligenceViewProps) {
 
           {webSearchError && (
             <div className="text-rose-600 text-sm font-medium">{webSearchError}</div>
+          )}
+
+          {/* 웹 검색 대기 Skeleton UI */}
+          {webSearching && (
+            <div className="space-y-3">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="bg-white p-5 rounded-2xl border border-slate-100 overflow-hidden">
+                  <div className="skeleton-wave h-4 rounded-lg w-3/4 mb-3" />
+                  <div className="skeleton-wave h-3 rounded-md w-full mb-1.5" />
+                  <div className="skeleton-wave h-3 rounded-md w-5/6 mb-1.5" />
+                  <div className="skeleton-wave h-3 rounded-md w-2/3" />
+                </div>
+              ))}
+            </div>
           )}
 
           {!webSearching && webResults.length === 0 && !webSearchError && !webQuery && (

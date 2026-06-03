@@ -1,7 +1,7 @@
-# Codex 재검수 요청 — 클레임 트래커 1차 보류 항목 수정
+# Codex (코라) 재검수 요청 — 클레임 트래커 1차 보류 항목 수정
 
 **요청일**: 2026-05-29  
-**요청자**: Claude Code (PM)  
+**요청자**: Claude Code (클로이) (PM)  
 **리뷰 유형**: Re-review (1차 보류 판정 후 수정 완료)  
 **선행 문서**: `docs/reviews/2026-05-29_claims-tracker-mvp-review.md` (보류 판정)
 

@@ -2,13 +2,13 @@
 
 ## 1. 목적
 
-이 문서는 이 프로젝트에서 Claude Code CLI, Codex CLI, Antigravity CLI, ChatGPT를 어떻게 사용할지 정하는 작업 규칙이다.
+이 문서는 이 프로젝트에서 Claude Code (클로이) CLI, Codex CLI (코라), Antigravity CLI (앤), ChatGPT를 어떻게 사용할지 정하는 작업 규칙이다.
 
 이 프로젝트의 기본 운영 방식은 다음과 같다.
 
-- Claude Code CLI를 중심으로 개발을 진행한다.
-- Codex CLI는 코드 리뷰와 검증에 사용한다.
-- Antigravity CLI는 기술 조사와 대안 비교가 필요할 때 사용한다.
+- Claude Code (클로이) CLI를 중심으로 개발을 진행한다.
+- Codex CLI (코라)는 코드 리뷰와 검증에 사용한다.
+- Antigravity CLI (앤)는 기술 조사와 대안 비교가 필요할 때 사용한다.
 - ChatGPT는 전략 정리, 학습, 프롬프트 작성, 문서화를 돕는다.
 
 처음부터 여러 Agent가 동시에 코드를 수정하지 않는다.
@@ -21,9 +21,9 @@
 
 한 번에 하나의 Agent만 파일을 수정한다.
 
-기본적으로 파일 수정 권한은 Claude Code CLI에게만 있다.
+기본적으로 파일 수정 권한은 Claude Code (클로이) CLI에게만 있다.
 
-Codex CLI와 Antigravity CLI는 사용자가 명확히 허락하지 않는 한 파일을 수정하지 않는다.
+Codex CLI (코라)와 Antigravity CLI (앤)는 사용자가 명확히 허락하지 않는 한 파일을 수정하지 않는다.
 
 기본 역할은 다음과 같다.
 
@@ -138,8 +138,8 @@ quality-dashboard/
 │       ├── common.prisma                  # User, Feedback, enum (QD·TRA 공유)
 │       └── tra.prisma                     # Tender, Analysis, SpecRequirement, Standard, ReviewHistory, Comment
 ├── docs/
-│   ├── research/                          # Antigravity 조사 결과
-│   └── reviews/                           # Codex 리뷰 결과
+│   ├── research/                          # Antigravity (앤) 조사 결과
+│   └── reviews/                           # Codex (코라) 리뷰 결과
 ├── auth.ts / auth.config.ts               # NextAuth v5 설정
 ├── middleware.ts                           # Edge 미들웨어
 └── PRD.md                                 # 제품 요구사항 (마일스톤 포함)
@@ -223,12 +223,12 @@ npx prisma db push   # 스키마를 DB에 반영 (개발용)
 
 ---
 
-## 9. Antigravity·Codex 협업 방법 (수동 운영)
+## 9. Antigravity (앤)·Codex (코라) 협업 방법 (수동 운영)
 
 모든 협업은 대화창에서 명시적 요청으로 시작한다. 자동 실행 훅은 사용하지 않는다.
-**파일 수정 주체는 Claude Code 하나로 제한** — Antigravity와 Codex는 코드를 직접 작성하거나 파일을 수정하지 않는다.
+**파일 수정 주체는 Claude Code (클로이) 하나로 제한** — Antigravity와 Codex는 코드를 직접 작성하거나 파일을 수정하지 않는다.
 
-### Antigravity 리서치 요청
+### Antigravity (앤) 리서치 요청
 설계 전 조사가 필요할 때 아래 형식으로 대화창에 직접 요청.
 결과는 `docs/research/` 에 저장 후 참조.
 
@@ -241,7 +241,7 @@ npx prisma db push   # 스키마를 DB에 반영 (개발용)
 출처 요구:
 ```
 
-### Codex 리뷰 요청
+### Codex (코라) 리뷰 요청
 구현 완료 후 아래 형식으로 대화창에 직접 요청.
 결과는 `docs/reviews/` 에 저장.
 🔴 Critical 항목 발생 시 즉시 수정 후 재진행.
@@ -261,7 +261,7 @@ npx prisma db push   # 스키마를 DB에 반영 (개발용)
 **보관함 경로**: `C:\Obsidian\Dennis-Knowledge-Vault\`
 
 코드 설계·데이터 시드 작성 전, 아래 vault 문서를 먼저 읽어 도메인 맥락을 확보한다.
-Claude Code는 구현 중 모르는 도메인 사항이 생기면 vault를 조회하고 Dennis에게 확인을 구한다.
+Claude Code (클로이)는 구현 중 모르는 도메인 사항이 생기면 vault를 조회하고 Dennis에게 확인을 구한다.
 
 ### 대시보드 영역별 참조 vault 문서
 

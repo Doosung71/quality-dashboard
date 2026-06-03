@@ -1,7 +1,7 @@
 # Phase 3 구현 계획 — 협력업체 카드 풀
 
 **작성일**: 2026-05-29  
-**작성자**: Claude Code (PM)  
+**작성자**: Claude Code (클로이) (PM)  
 **근거 문서**: `PRD.md §2-③`, `docs/research/2026-05-29_ui-implementation-options.md`, `QMS_2.0_MASTER_PLAN.md`  
 **목표**: 7월 내 구현 완료
 
@@ -137,11 +137,11 @@ Gemini 리서치 결과 추가로 도출된 클레임 트래커 개선 항목.
 | 보고서 생성 버튼 | 클립보드 복사 (`navigator.clipboard.writeText`) + toast 폴백 | `claim-detail.tsx` |
 
 이 두 항목은 Zero Double Work 원칙 구현으로 QMS 2.0 마스터플랜과 직결됨.  
-Codex 리뷰 후 Phase 3와 병행 또는 선행 처리.
+Codex (코라) 리뷰 후 Phase 3와 병행 또는 선행 처리.
 
 ---
 
-## 9. Codex 리뷰 계획
+## 9. Codex (코라) 리뷰 계획
 
 Step D 완료 후 아래 항목으로 검수 요청:
 

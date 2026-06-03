@@ -1,4 +1,4 @@
-# Codex Implementation Review — 시험장·설비 현황 UX 고도화 구현 결과
+# Codex (코라) Implementation Review — 시험장·설비 현황 UX 고도화 구현 결과
 
 **리뷰일**: 2026-05-25  
 **리뷰 유형**: Implementation Review (구현 완료 후 품질 검수)  

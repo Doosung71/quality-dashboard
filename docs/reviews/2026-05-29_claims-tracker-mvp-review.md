@@ -1,7 +1,7 @@
-# Codex Review: Phase 2 고객 클레임 트래커 MVP
+# Codex (코라) Review: Phase 2 고객 클레임 트래커 MVP
 
 **리뷰일**: 2026-05-29  
-**검수자**: Codex CLI (리뷰어 겸 품질 책임자)  
+**검수자**: Codex CLI (코라) (리뷰어 겸 품질 책임자)  
 **대상 영역**: `quality-dashboard` / Phase 2 고객 클레임 트래커  
 **검수 방식**: 코드 및 정적 구조 검토. 파일 수정 없음.  
 

@@ -1,4 +1,4 @@
-# Codex Plan Review — 시험장·설비 현황 UX 고도화 계획
+# Codex (코라) Plan Review — 시험장·설비 현황 UX 고도화 계획
 
 **리뷰일**: 2026-05-25  
 **리뷰 유형**: Plan Review (구현 전 설계 검토)  

@@ -1,7 +1,7 @@
 # [리뷰 요청] Phase 1 최종 검수 — 시험장·설비 현황 UX 고도화
 
 **요청일**: 2026-05-28  
-**요청자**: Claude Code (PM)  
+**요청자**: Claude Code (클로이) (PM)  
 **리뷰 유형**: Final Sign-off (Phase 2 진입 전 최종 승인 요청)  
 **선행 리뷰**: `docs/reviews/facilities-ux-plan-review.md` (조건부 승인) → `docs/reviews/facilities-ux-impl-review.md` (조건부 승인)
 
@@ -9,7 +9,7 @@
 
 ## 변경 내용 요약
 
-시험장·설비 현황 페이지(`/facilities`) UX 고도화 Step 1~4 전체 구현 + 이전 Codex 리뷰(C3·C5) 수정 완료.  
+시험장·설비 현황 페이지(`/facilities`) UX 고도화 Step 1~4 전체 구현 + 이전 Codex (코라) 리뷰(C3·C5) 수정 완료.  
 이 요청은 **Phase 2(고객 클레임 페이지) 착수 전 최종 품질 확인**이 목적이다.
 
 ---
@@ -24,7 +24,7 @@
 
 ---
 
-## 이전 Codex 리뷰 이후 변경 사항 (신규 확인 필요)
+## 이전 Codex (코라) 리뷰 이후 변경 사항 (신규 확인 필요)
 
 ### C3 수정 — 간트 오늘 날짜 라벨 이동
 - **Before**: 각 행 `idx === 0` 조건으로 렌더링 → 설비별 첫 시험 행마다 반복 위험

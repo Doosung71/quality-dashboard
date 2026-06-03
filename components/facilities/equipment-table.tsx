@@ -109,11 +109,13 @@ export function EquipmentTable({ equipment, tests }: { equipment: Equipment[]; t
               const eqTests = getEquipmentTests(tests, eq.id);
               const status = computeStatus(eq);
               const isAging = status === "aging";
-              const rowBg = isAging ? "bg-red-50 hover:bg-red-100" : "hover:bg-slate-50";
-              const stickyBg = isAging ? "bg-red-50" : "bg-white";
+              const rowBg = isAging
+                ? "bg-linear-to-r from-rose-500/5 via-rose-50/20 to-transparent border-l-2 animate-neon-alert"
+                : "hover:bg-slate-50/70";
+              const stickyBg = isAging ? "bg-rose-50/60" : "bg-white";
               return (
-                <tr key={eq.id} className={cn("border-b border-slate-100 last:border-0", rowBg)}>
-                  <td className={cn("sticky left-0 z-10 px-4 py-2.5 font-medium text-slate-700 whitespace-nowrap", stickyBg)}>
+                <tr key={eq.id} className={cn("border-b border-slate-100 last:border-0 transition-all", rowBg)}>
+                  <td className={cn("sticky left-0 z-10 px-4 py-2.5 font-medium text-slate-700 whitespace-nowrap transition-colors", stickyBg)}>
                     {eq.name}
                   </td>
                   <td className="px-3 py-2.5">

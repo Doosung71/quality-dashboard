@@ -93,4 +93,4 @@ Step 1 자동 선택 → Step 2-A KPI 바 → Step 2-B 리스트 미니 바
 → Step 3 테이블 sticky + 컬럼 토글 → Step 4 간트 개선
 ```
 
-전 단계 Codex 리뷰 후 진행.
+전 단계 Codex (코라) 리뷰 후 진행.

@@ -2,7 +2,7 @@
 
 **일자**: 2026-05-28
 **작성자**: Gemini CLI (품질 기획자)
-**수신자**: Claude Code (PM)
+**수신자**: Claude Code (클로이) (PM)
 **대상 프로젝트**: quality-dashboard
 
 ---

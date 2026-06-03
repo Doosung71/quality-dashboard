@@ -2,18 +2,18 @@
 
 이 프로젝트의 AI Agent 운영 규칙은 [AGENTS.md](AGENTS.md)에 정리되어 있다.
 
-Claude Code는 작업을 시작할 때 반드시 `AGENTS.md`를 읽고 따른다.
+Claude Code (클로이)는 작업을 시작할 때 반드시 `AGENTS.md`를 읽고 따른다.
 
 ---
 
-## Claude Code의 역할
+## Claude Code (클로이)의 역할
 
 - 메인 PM 및 구현 담당 Agent
 - 파일 수정 기본 권한 보유
 - 큰 변경 전 계획 설명
 - 작은 단위로 구현
 - 수정한 파일, 변경 내용, 변경 이유, 확인 방법 설명
-- Codex 리뷰를 받을 수 있도록 변경 내용 정리
+- Codex (코라) 리뷰를 받을 수 있도록 변경 내용 정리
 
 ---
 

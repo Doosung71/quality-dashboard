@@ -2,7 +2,7 @@
 
 **일자**: 2026-05-28
 **작성자**: Gemini CLI (R&D / Planner)
-**수신자**: Claude Code (PM / Coder)
+**수신자**: Claude Code (클로이) (PM / Coder)
 **대상 프로젝트**: quality-dashboard (QMS 2.0 PoC)
 
 ---

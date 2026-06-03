@@ -13,7 +13,7 @@ Gemini CLI는 외부 정보 조사와 대안 탐색을 담당한다.
 - 라이브러리·API·도구 선택 근거 조사
 - 설계 대안의 장단점 정리
 - 출처 URL과 확인 날짜 명시
-- Claude Code가 바로 저장할 수 있는 Markdown 결과 작성
+- Claude Code (클로이)가 바로 저장할 수 있는 Markdown 결과 작성
 
 ## 권한
 

@@ -38,6 +38,6 @@
 * **IDE:** VS Code 기반 로컬 개발 환경 (`C://Dev/`)
 * **역할 분담:**
   * **Claude (Plugin):** 메인 대화창 기반 PM 겸 코더(Coder) ➔ 기능 구현 및 코드 리드.
-  * **Codex CLI (Terminal 1):** 리뷰어 겸 품질 검수자 ➔ 코드 품질 및 에러 검증.
+  * **Codex CLI (코라) (Terminal 1):** 리뷰어 겸 품질 검수자 ➔ 코드 품질 및 에러 검증.
   * **Gemini CLI (Terminal 2):** 리서처 겸 기획자 ➔ 아키텍처 설계, 아이디어 도출, 마스터플랜 연계 기획.
 * **연동 계획:** `C://Dev/QMS_2.0_Master_Architecture.md` 문서를 루트에 위치시켜, AI 에이전트들이 하부 프로젝트들을 하나의 거대한 QMS 2.0 맥락 아래 정렬(Alignment)하도록 제어함.

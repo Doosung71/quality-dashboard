@@ -72,9 +72,9 @@ function IssueRow({ issue }: { issue: QualityIssueItem }) {
           </div>
           <button
             onClick={() => setShowAI(v => !v)}
-            className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-violet-50 text-violet-700 hover:bg-violet-100 transition-all border border-violet-200"
+            className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-linear-to-r from-violet-50 to-indigo-50 text-violet-700 hover:from-violet-100 hover:to-indigo-100 transition-all border border-violet-200/80 shadow-sm hover:shadow-violet-100"
           >
-            <Sparkles className="w-3 h-3" />
+            <Sparkles className={`w-3 h-3 ${showAI ? "animate-sparkle-spin" : ""}`} />
             AI 원인/대책
             {showAI ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
           </button>
@@ -88,19 +88,19 @@ function IssueRow({ issue }: { issue: QualityIssueItem }) {
         )}
       </div>
       {showAI && (
-        <div className="bg-violet-50 border-t border-violet-100 px-4 py-3 space-y-2">
+        <div className="bg-linear-to-br from-violet-500/8 to-indigo-500/5 border-t border-violet-200/40 px-4 py-3 space-y-2">
           <div className="flex items-center gap-1.5 text-[10px] font-bold text-violet-700 uppercase tracking-wider">
-            <Sparkles className="w-3 h-3" /> AI 분석 추천
+            <Sparkles className="w-3 h-3 animate-sparkle-spin text-violet-500" /> AI 분석 추천
           </div>
           {issue.aiSuggestedCause && (
-            <div className="bg-white rounded-lg p-2.5 border border-violet-100">
+            <div className="bg-white/80 backdrop-blur-sm rounded-lg p-2.5 border border-violet-200/60 shadow-sm">
               <p className="text-[10px] font-bold text-violet-600 mb-0.5">추정 근본 원인</p>
               <p className="text-xs text-slate-700 leading-relaxed">{issue.aiSuggestedCause}</p>
             </div>
           )}
           {issue.aiSuggestedAction && (
-            <div className="bg-white rounded-lg p-2.5 border border-violet-100">
-              <p className="text-[10px] font-bold text-violet-600 mb-0.5">권장 시스템 대책</p>
+            <div className="bg-white/80 backdrop-blur-sm rounded-lg p-2.5 border border-indigo-200/60 shadow-sm">
+              <p className="text-[10px] font-bold text-indigo-600 mb-0.5">권장 시스템 대책</p>
               <p className="text-xs text-slate-700 leading-relaxed">{issue.aiSuggestedAction}</p>
             </div>
           )}
@@ -133,14 +133,22 @@ function VendorDrawer({ vendor, onClose }: { vendor: Vendor; onClose: () => void
     <>
       {/* 오버레이 */}
       <div
-        className="fixed inset-0 bg-black/30 z-40 transition-opacity"
+        className="fixed inset-0 bg-black/30 backdrop-blur-[2px] z-40 transition-opacity"
         onClick={onClose}
       />
 
       {/* 슬라이드인 패널 */}
-      <div className="fixed right-0 top-0 h-full w-full max-w-2xl bg-white z-50 shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+      <div className="fixed right-0 top-0 h-full w-full max-w-2xl bg-white/95 backdrop-blur-xl z-50 shadow-2xl flex flex-col animate-in slide-in-from-right duration-300 border-l border-white/30">
+        {/* 등급별 그라데이션 스트립 */}
+        <div className={`h-[3px] w-full shrink-0 ${
+          vendor.grade === "A" ? "bg-linear-to-r from-emerald-500 to-teal-400" :
+          vendor.grade === "B" ? "bg-linear-to-r from-amber-400 to-yellow-300" :
+          vendor.grade === "C" ? "bg-linear-to-r from-rose-500 to-orange-400" :
+          "bg-linear-to-r from-slate-500 to-slate-400"
+        }`} />
+
         {/* 헤더 */}
-        <div className={`flex items-start justify-between px-6 py-5 border-b border-slate-100 border-l-[6px] ${style.border}`}>
+        <div className={`flex items-start justify-between px-6 py-5 border-b border-slate-100/80 border-l-[5px] ${style.border}`}>
           <div className="space-y-1">
             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
               {vendor.category === "RawMaterial" ? "원자재" : vendor.category === "Subcontract" ? "반제품 외주" : "상품 외주"} · {vendor.id}
@@ -160,30 +168,36 @@ function VendorDrawer({ vendor, onClose }: { vendor: Vendor; onClose: () => void
           </button>
         </div>
 
-        {/* 탭 네비게이션 */}
-        <div className="flex border-b border-slate-100 overflow-x-auto shrink-0">
-          {DETAIL_TABS.map(tab => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            const isDisabled = !d && tab.id !== "overview";
-            return (
-              <button
-                key={tab.id}
-                onClick={() => !isDisabled && setActiveTab(tab.id)}
-                disabled={isDisabled}
-                className={`flex items-center gap-1.5 px-4 py-3 text-xs font-semibold whitespace-nowrap border-b-2 transition-all ${
-                  isActive
-                    ? "border-slate-900 text-slate-900"
-                    : isDisabled
-                    ? "border-transparent text-slate-300 cursor-not-allowed"
-                    : "border-transparent text-slate-500 hover:text-slate-900 hover:border-slate-300"
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                {tab.label}
-              </button>
-            );
-          })}
+        {/* 탭 네비게이션 — 슬라이딩 인디케이터 트랙 */}
+        <div className="relative border-b border-slate-100/80 overflow-x-auto shrink-0">
+          <div className="flex">
+            {DETAIL_TABS.map((tab, idx) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              const isDisabled = !d && tab.id !== "overview";
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => !isDisabled && setActiveTab(tab.id)}
+                  disabled={isDisabled}
+                  className={`relative flex items-center gap-1.5 px-4 py-3 text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
+                    isActive
+                      ? "text-slate-900"
+                      : isDisabled
+                      ? "text-slate-300 cursor-not-allowed"
+                      : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  {tab.label}
+                  {/* 개별 탭 하단 인디케이터 */}
+                  {isActive && (
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-900 rounded-t-full transition-all duration-200" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* 탭 콘텐츠 */}

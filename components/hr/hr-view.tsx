@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import type { HRData, Employee, Interview, WorkloadStatus } from "@/types/hr";
-import { 
+import {
   Users,
   UserMinus,
   Award,
@@ -15,8 +15,48 @@ import {
   X,
   PlusCircle,
   MessageSquare,
-  ArrowRight
+  ArrowRight,
+  TrendingUp,
+  Heart,
+  Star,
 } from "lucide-react";
+
+// 업무 부하 게이지 컴포넌트
+function WorkloadGauge({ workload }: { workload: WorkloadStatus }) {
+  const config = {
+    High:   { pct: 88, color: "from-rose-500 to-orange-400",   label: "과부하",  track: "bg-rose-100"   },
+    Normal: { pct: 52, color: "from-amber-400 to-yellow-300",  label: "보통",    track: "bg-amber-100"  },
+    Low:    { pct: 22, color: "from-emerald-500 to-teal-400",  label: "여유",    track: "bg-emerald-100" },
+  }[workload];
+
+  return (
+    <div className="space-y-1 w-full max-w-[160px]">
+      <div className="flex items-center justify-between text-[10px]">
+        <span className="text-slate-500 font-medium">업무 부하도</span>
+        <span className="font-bold text-slate-700">{config.pct}%</span>
+      </div>
+      <div className={`h-2 rounded-full w-full ${config.track} overflow-hidden`}>
+        <div
+          className={`h-full rounded-full bg-linear-to-r ${config.color} transition-all duration-500`}
+          style={{ width: `${config.pct}%` }}
+        />
+      </div>
+      <p className="text-[9px] text-slate-400 font-medium">{config.label}</p>
+    </div>
+  );
+}
+
+// 면담 주제 아이콘 추론
+function InterviewTopicIcon({ topic }: { topic: string }) {
+  const t = topic.toLowerCase();
+  if (t.includes("경력") || t.includes("개발") || t.includes("성장"))
+    return <TrendingUp className="w-3.5 h-3.5 text-indigo-500 shrink-0" />;
+  if (t.includes("고충") || t.includes("상담") || t.includes("개인"))
+    return <Heart className="w-3.5 h-3.5 text-rose-400 shrink-0" />;
+  if (t.includes("성과") || t.includes("평가") || t.includes("자격"))
+    return <Star className="w-3.5 h-3.5 text-amber-500 shrink-0" />;
+  return <Briefcase className="w-3.5 h-3.5 text-slate-400 shrink-0" />;
+}
 
 interface HRViewProps {
   data: HRData;
@@ -138,7 +178,7 @@ export function HRView({ data }: HRViewProps) {
           <div className="space-y-1">
             <p className="text-xs font-semibold text-slate-500 tracking-wider">품질부문 총원</p>
             <h3 className="text-2xl font-bold text-slate-900">{kpis.total}명</h3>
-            <p className="text-[10px] text-slate-400">초고압/해저/시스템/QA</p>
+            <p className="text-[10px] text-slate-400">지중가공/해저/시공/배전/통신/구매/경영</p>
           </div>
           <div className="w-12 h-12 bg-slate-50 text-slate-500 rounded-xl flex items-center justify-center">
             <Users className="w-6 h-6" />
@@ -287,30 +327,40 @@ export function HRView({ data }: HRViewProps) {
           ) : (
             <>
               {/* 팀원 상세 프로필 */}
-              <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-6">
-                {/* 헤더 (이름/부하도/연락처) */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-slate-900 text-white font-extrabold text-lg flex items-center justify-center rounded-2xl shadow">
-                      {selectedEmployee.name.slice(0, 2)}
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden space-y-0">
+                {/* 부서 컬러 배경 헤더 스트립 */}
+                <div className={`px-6 pt-5 pb-4 border-b border-slate-100/80 ${
+                  selectedEmployee.workload === "High"
+                    ? "bg-linear-to-br from-rose-50 to-orange-50/30"
+                    : selectedEmployee.workload === "Normal"
+                    ? "bg-linear-to-br from-amber-50/60 to-slate-50"
+                    : "bg-linear-to-br from-emerald-50/60 to-slate-50"
+                }`}>
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-14 h-14 font-extrabold text-lg flex items-center justify-center rounded-2xl shadow-md ${
+                        selectedEmployee.workload === "High"   ? "bg-linear-to-br from-rose-600 to-orange-500 text-white" :
+                        selectedEmployee.workload === "Normal" ? "bg-linear-to-br from-amber-500 to-yellow-400 text-white" :
+                        "bg-linear-to-br from-emerald-600 to-teal-500 text-white"
+                      }`}>
+                        {selectedEmployee.name.slice(0, 2)}
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-black text-slate-950 flex items-baseline gap-2">
+                          {selectedEmployee.name}
+                          <span className="text-xs font-semibold text-slate-500">{selectedEmployee.rank}</span>
+                        </h4>
+                        <p className="text-xs text-slate-400 mt-0.5">{selectedEmployee.department}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-lg font-black text-slate-950 flex items-baseline gap-2">
-                        {selectedEmployee.name}
-                        <span className="text-xs font-semibold text-slate-500">{selectedEmployee.rank}</span>
-                      </h4>
-                      <p className="text-xs text-slate-400 mt-0.5">{selectedEmployee.department}</p>
-                    </div>
-                  </div>
 
-                  {/* 부하도 배지 */}
-                  <div className="flex items-center gap-2">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold border flex items-center gap-1.5 ${WORKLOAD_STYLES[selectedEmployee.workload].style}`}>
-                      <span className={`w-2 h-2 rounded-full ${WORKLOAD_STYLES[selectedEmployee.workload].dot}`} />
-                      {WORKLOAD_STYLES[selectedEmployee.workload].label}
-                    </span>
+                    {/* 부하도 게이지 */}
+                    <WorkloadGauge workload={selectedEmployee.workload} />
                   </div>
                 </div>
+
+                {/* 프로필 본문 */}
+                <div className="p-6 space-y-6">
 
                 {/* 프로필 정보 세부 격자 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
@@ -353,7 +403,88 @@ export function HRView({ data }: HRViewProps) {
                     )}
                   </div>
                 </div>
-              </div>
+                </div>{/* closes 프로필 본문 */}
+              </div>{/* closes 팀원 상세 프로필 외부 카드 */}
+
+              {/* 글래스모피즘 면담 등록 모달 오버레이 */}
+              {showAddForm && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/25 backdrop-blur-sm">
+                  <div className="w-full max-w-lg premium-glass rounded-2xl shadow-2xl border border-white/30">
+                    <div className="px-6 py-4 border-b border-slate-200/60 flex items-center justify-between">
+                      <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <MessageSquare className="w-4 h-4 text-indigo-500" /> 새 면담 등록
+                      </h3>
+                      <button
+                        onClick={() => setShowAddForm(false)}
+                        className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <form onSubmit={handleAddInterview} className="p-6 space-y-4 text-xs">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1.5">
+                          <label className="font-bold text-slate-600">면담자</label>
+                          <input
+                            type="text"
+                            required
+                            value={newInterviewer}
+                            onChange={(e) => setNewInterviewer(e.target.value)}
+                            className="w-full bg-white/80 border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="font-bold text-slate-600">면담 주제</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="예: 업무 과부하 조율, 고충 상담"
+                            value={newTopic}
+                            onChange={(e) => setNewTopic(e.target.value)}
+                            className="w-full bg-white/80 border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="font-bold text-slate-600">면담 내용 요약</label>
+                        <textarea
+                          required
+                          rows={3}
+                          placeholder="면담 시 오간 고충이나 현황을 간략히 정리해 주세요..."
+                          value={newSummary}
+                          onChange={(e) => setNewSummary(e.target.value)}
+                          className="w-full bg-white/80 border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="font-bold text-slate-600">행동 계획 (Action Plan)</label>
+                        <input
+                          type="text"
+                          placeholder="예: 추가 인력 배치 검토, 리프레쉬 휴가 배정"
+                          value={newActionPlan}
+                          onChange={(e) => setNewActionPlan(e.target.value)}
+                          className="w-full bg-white/80 border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all"
+                        />
+                      </div>
+                      <div className="flex justify-end gap-2 pt-2">
+                        <button
+                          type="button"
+                          onClick={() => setShowAddForm(false)}
+                          className="px-4 py-2 text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 font-semibold transition-all"
+                        >
+                          취소
+                        </button>
+                        <button
+                          type="submit"
+                          className="bg-linear-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 text-white font-bold px-4 py-2 rounded-lg flex items-center gap-1.5 shadow-sm hover:shadow-indigo-200 transition-all"
+                        >
+                          <PlusCircle className="w-3.5 h-3.5" /> 면담 기록 저장
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
 
               {/* 면담 결과 이력 타임라인 */}
               <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-6">
@@ -361,77 +492,13 @@ export function HRView({ data }: HRViewProps) {
                   <h4 className="text-sm font-bold text-slate-800 tracking-wide flex items-center gap-1.5">
                     <MessageSquare className="w-4 h-4 text-indigo-500" /> 인사 및 면담 결과 이력 ({selectedInterviews.length}건)
                   </h4>
-                  
-                  {/* 새 면담 등록 활성화 버튼 */}
                   <button
-                    onClick={() => setShowAddForm(prev => !prev)}
-                    className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-0.5 bg-indigo-50 px-2.5 py-1.5 rounded-lg border border-indigo-100 transition-all"
+                    onClick={() => setShowAddForm(true)}
+                    className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1.5 rounded-lg border border-indigo-100 transition-all"
                   >
-                    {showAddForm ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-                    {showAddForm ? "취소" : "새 면담 등록"}
+                    <Plus className="w-3.5 h-3.5" /> 새 면담 등록
                   </button>
                 </div>
-
-                {/* 모의 새 면담 등록 양식 (Zero Double Work) */}
-                {showAddForm && (
-                  <form onSubmit={handleAddInterview} className="bg-slate-50/70 p-4 rounded-xl border border-slate-200 animate-slide-in space-y-3 text-xs">
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-1">
-                        <label className="font-bold text-slate-600">면담 면담자</label>
-                        <input
-                          type="text"
-                          required
-                          value={newInterviewer}
-                          onChange={(e) => setNewInterviewer(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-slate-950"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="font-bold text-slate-600">면담 주제</label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="예: 업무 과부하 조율, 고충 상담"
-                          value={newTopic}
-                          onChange={(e) => setNewTopic(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-slate-950"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="font-bold text-slate-600">면담 내용 요약</label>
-                      <textarea
-                        required
-                        rows={3}
-                        placeholder="면담 시 오간 고충이나 현황을 간략히 정리해 주세요..."
-                        value={newSummary}
-                        onChange={(e) => setNewSummary(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-slate-950"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="font-bold text-slate-600">행동 계획 (Action Plan) - 조치 사항</label>
-                      <input
-                        type="text"
-                        placeholder="예: 추가 인력 배치 검토, 리프레쉬 휴가 배정"
-                        value={newActionPlan}
-                        onChange={(e) => setNewActionPlan(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-slate-950"
-                      />
-                    </div>
-
-                    <div className="flex justify-end pt-1">
-                      <button
-                        type="submit"
-                        className="bg-slate-950 hover:bg-slate-800 text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shadow"
-                      >
-                        <PlusCircle className="w-3.5 h-3.5" /> 면담 기록 저장
-                      </button>
-                    </div>
-                  </form>
-                )}
 
                 {/* 세로 타임라인 목록 */}
                 <div className="space-y-6 relative border-l border-slate-100 pl-4 ml-2 pt-2">
@@ -442,9 +509,11 @@ export function HRView({ data }: HRViewProps) {
                   ) : (
                     selectedInterviews.map((int) => (
                       <div key={int.id} className="relative group space-y-2 text-xs">
-                        {/* 타임라인 원점 */}
-                        <span className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-slate-300 border border-white group-hover:bg-slate-950 transition-colors" />
-                        
+                        {/* 타임라인 노드 아이콘 */}
+                        <span className="absolute -left-[23px] top-0.5 w-[22px] h-[22px] rounded-full bg-white border-2 border-slate-200 group-hover:border-indigo-400 flex items-center justify-center transition-colors">
+                          <InterviewTopicIcon topic={int.topic} />
+                        </span>
+
                         {/* 날짜 + 면담자 */}
                         <div className="flex items-center justify-between text-slate-400 text-[10px] mb-0.5">
                           <span className="font-mono flex items-center gap-1"><CalendarDays className="w-3.5 h-3.5" /> {int.date}</span>
@@ -452,21 +521,22 @@ export function HRView({ data }: HRViewProps) {
                         </div>
 
                         {/* 주제 */}
-                        <h5 className="font-extrabold text-slate-950 text-sm flex items-center gap-1">
+                        <h5 className="font-extrabold text-slate-950 text-sm flex items-center gap-1.5">
+                          <InterviewTopicIcon topic={int.topic} />
                           {int.topic}
                         </h5>
 
                         {/* 내용 요약 */}
-                        <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-100 leading-relaxed text-slate-700 font-medium">
+                        <div className="bg-slate-50/80 p-3.5 rounded-xl border border-slate-100 leading-relaxed text-slate-700 font-medium">
                           {int.summary}
                         </div>
 
-                        {/* Action Plan */}
-                        <div className="bg-indigo-50/30 text-indigo-950 p-2.5 rounded-xl border border-indigo-100/50 flex items-center gap-2">
-                          <span className="px-2 py-0.5 bg-indigo-100 text-indigo-800 font-bold rounded text-[9px] uppercase tracking-wider shrink-0">
+                        {/* Action Plan — 인디고/골드 강조 박스 */}
+                        <div className="bg-linear-to-r from-indigo-500/5 to-violet-500/5 text-indigo-950 p-3 rounded-xl border border-indigo-200/50 flex items-center gap-2 shadow-sm">
+                          <span className="px-2 py-0.5 bg-linear-to-r from-indigo-600 to-indigo-500 text-white font-bold rounded text-[9px] uppercase tracking-wider shrink-0 shadow-sm">
                             Action
                           </span>
-                          <span className="font-bold flex items-center gap-1.5">
+                          <span className="font-bold flex items-center gap-1.5 text-indigo-900">
                             <ArrowRight className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                             {int.actionPlan}
                           </span>

@@ -37,7 +37,7 @@
     {
       "id": "NCR-2026-003",
       "title": "동아케미칼 공급 XLPE 절연재 수입검사 이물 혼입",
-      "source": "품질보증부 (수입검사)",
+      "source": "구매품질팀 (수입검사)",
       "severity": "Critical",
       "status": "Disposition",
       "disposition": "Scrap",
@@ -105,7 +105,7 @@
     {
       "id": "NCR-2026-007",
       "title": "구미 외주가공 동피선 수입검사 전도율 미달",
-      "source": "품질보증부 (수입검사)",
+      "source": "구매품질팀 (수입검사)",
       "severity": "Major",
       "status": "CorrectiveAction",
       "disposition": "Concession",

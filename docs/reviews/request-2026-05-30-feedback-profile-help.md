@@ -1,7 +1,7 @@
-# Codex 검수 요청 — 피드백·프로필·헬프 페이지 추가 (TRA 수준 이식)
+# Codex (코라) 검수 요청 — 피드백·프로필·헬프 페이지 추가 (TRA 수준 이식)
 
 **요청일**: 2026-05-30  
-**요청자**: Claude Code (PM / Chloe)  
+**요청자**: Claude Code (클로이) (PM / 클로이)  
 **리뷰 유형**: Implementation Review  
 **선행 문서**: 없음 (신규 기능 추가)
 

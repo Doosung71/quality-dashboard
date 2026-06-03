@@ -4,9 +4,13 @@
       "id": "EMP-2026-001",
       "name": "홍경민",
       "rank": "수석연구원",
-      "department": "초고압품질팀",
+      "department": "지중가공QA팀",
       "role": "초고압 프로젝트 품질 보증 총괄",
-      "qualifications": ["CQE", "ISO 9001 선임심사원", "6시그마 BB"],
+      "qualifications": [
+        "CQE",
+        "ISO 9001 선임심사원",
+        "6시그마 BB"
+      ],
       "workload": "High",
       "email": "km.hong@ls-cable.com",
       "phone": "010-1234-5678"
@@ -15,9 +19,12 @@
       "id": "EMP-2026-002",
       "name": "이소연",
       "rank": "책임연구원",
-      "department": "해저품질팀",
+      "department": "해저QA팀",
       "role": "해저 케이블 기계적 거동 시험 주관",
-      "qualifications": ["CRE", "ISO 14001 심사원"],
+      "qualifications": [
+        "CRE",
+        "ISO 14001 심사원"
+      ],
       "workload": "High",
       "email": "sy.lee@ls-cable.com",
       "phone": "010-2345-6789"
@@ -26,9 +33,12 @@
       "id": "EMP-2026-003",
       "name": "김우진",
       "rank": "책임연구원",
-      "department": "품질보증팀",
+      "department": "구매품질팀",
       "role": "수입 검사 규격 정립 및 협력사 정밀 Audit",
-      "qualifications": ["CQE", "ISO 9001 내부심사원"],
+      "qualifications": [
+        "CQE",
+        "ISO 9001 내부심사원"
+      ],
       "workload": "Normal",
       "email": "wj.kim@ls-cable.com",
       "phone": "010-3456-7890"
@@ -37,9 +47,12 @@
       "id": "EMP-2026-004",
       "name": "박동현",
       "rank": "선임연구원",
-      "department": "초고압품질팀",
+      "department": "지중가공QA팀",
       "role": "송배전 케이블 부분방전(PD) 전기 측정",
-      "qualifications": ["전기기사", "6시그마 GB"],
+      "qualifications": [
+        "전기기사",
+        "6시그마 GB"
+      ],
       "workload": "Normal",
       "email": "dh.park@ls-cable.com",
       "phone": "010-4567-8901"
@@ -48,9 +61,12 @@
       "id": "EMP-2026-005",
       "name": "정태수",
       "rank": "책임연구원",
-      "department": "시스템품질팀",
+      "department": "품질경영팀",
       "role": "QMS 2.0 시스템 프로세스 정의 및 IT 연동 총괄",
-      "qualifications": ["PMP", "ISO 9001 선임심사원"],
+      "qualifications": [
+        "PMP",
+        "ISO 9001 선임심사원"
+      ],
       "workload": "High",
       "email": "ts.jung@ls-cable.com",
       "phone": "010-5678-9012"
@@ -59,9 +75,12 @@
       "id": "EMP-2026-006",
       "name": "윤서하",
       "rank": "선임연구원",
-      "department": "해저품질팀",
+      "department": "해저QA팀",
       "role": "해저 접속함 조인트 조립부 비파괴 UT 검증",
-      "qualifications": ["비파괴검사 2급", "6시그마 GB"],
+      "qualifications": [
+        "비파괴검사 2급",
+        "6시그마 GB"
+      ],
       "workload": "Normal",
       "email": "sh.yoon@ls-cable.com",
       "phone": "010-6789-0123"
@@ -70,9 +89,11 @@
       "id": "EMP-2026-007",
       "name": "최영민",
       "rank": "전임연구원",
-      "department": "품질보증팀",
+      "department": "구매품질팀",
       "role": "원자재XLPE 절연 콤파운드 수입검사 실무",
-      "qualifications": ["화공기사"],
+      "qualifications": [
+        "화공기사"
+      ],
       "workload": "Normal",
       "email": "ym.choi@ls-cable.com",
       "phone": "010-7890-1234"
@@ -81,9 +102,11 @@
       "id": "EMP-2026-008",
       "name": "한성민",
       "rank": "선임연구원",
-      "department": "시스템품질팀",
+      "department": "품질경영팀",
       "role": "품질 문서 표준화 관리 및 외부 감사 대응 지원",
-      "qualifications": ["ISO 9001 내부심사원"],
+      "qualifications": [
+        "ISO 9001 내부심사원"
+      ],
       "workload": "Low",
       "email": "sm.han@ls-cable.com",
       "phone": "010-8901-2345"
@@ -92,9 +115,12 @@
       "id": "EMP-2026-009",
       "name": "강우진",
       "rank": "책임연구원",
-      "department": "초고압품질팀",
+      "department": "지중가공QA팀",
       "role": "초고압 도체 연선 공정 불량 대책 수립",
-      "qualifications": ["CQE", "금속재료기사"],
+      "qualifications": [
+        "CQE",
+        "금속재료기사"
+      ],
       "workload": "Normal",
       "email": "wj.kang@ls-cable.com",
       "phone": "010-9012-3456"
@@ -103,9 +129,11 @@
       "id": "EMP-2026-010",
       "name": "신현우",
       "rank": "선임연구원",
-      "department": "해저품질팀",
+      "department": "시공QA팀",
       "role": "해저 케이블 선적 및 포설 품질 실무 모니터링",
-      "qualifications": ["산업안전기사"],
+      "qualifications": [
+        "산업안전기사"
+      ],
       "workload": "Normal",
       "email": "hw.shin@ls-cable.com",
       "phone": "010-0123-4567"
@@ -114,9 +142,11 @@
       "id": "EMP-2026-011",
       "name": "송민섭",
       "rank": "전임연구원",
-      "department": "초고압품질팀",
+      "department": "배전QA팀",
       "role": "압출 3호기 알루미늄 피복 두께 수치 통계 분석",
-      "qualifications": ["품질경영기사"],
+      "qualifications": [
+        "품질경영기사"
+      ],
       "workload": "Normal",
       "email": "ms.song@ls-cable.com",
       "phone": "010-1230-4567"
@@ -125,12 +155,28 @@
       "id": "EMP-2026-012",
       "name": "안지민",
       "rank": "전임연구원",
-      "department": "품질보증부 (고객CS)",
+      "department": "품질경영팀",
       "role": "고객사 품질 컴플레인 1차 접수 및 클레임 트래커 입력",
-      "qualifications": ["CS리더스관리사"],
+      "qualifications": [
+        "CS리더스관리사"
+      ],
       "workload": "Low",
       "email": "jm.ahn@ls-cable.com",
       "phone": "010-9876-5432"
+    },
+    {
+      "id": "EMP-2026-013",
+      "name": "유재현",
+      "rank": "선임연구원",
+      "department": "통신산업솔루션QA팀",
+      "role": "광섬유 및 통신 케이블 전송 손실 측정 신뢰성 보증",
+      "qualifications": [
+        "전기공학기사",
+        "6시그마 GB"
+      ],
+      "workload": "Normal",
+      "email": "jh.yoo@ls-cable.com",
+      "phone": "010-3344-5566"
     }
   ],
   "interviews": [
@@ -141,7 +187,7 @@
       "interviewer": "품질부문장 Dennis",
       "topic": "업무 과부하 및 하반기 인력 지원 방안 조율",
       "summary": "현재 동해 해저 3회선 대형 프로젝트와 구미 초고압 보증 총괄을 동시에 맡으며 업무 부하가 임계치를 넘음. 주 55시간 이상 근무 상태가 수주째 지속되어 체력 방전 호소.",
-      "actionPlan": "하반기 공채 인원 중 초고압품질 실무 경험자 1명을 우선 배치하여 서류 작업 및 대관 업무 부담을 덜어주기로 합의함."
+      "actionPlan": "하반기 공채 인원 중 지중가공QA 실무 경험자 1명을 우선 배치하여 서류 작업 및 대관 업무 부담을 덜어주기로 합의함."
     },
     {
       "id": "INT-2026-001-2",
@@ -165,7 +211,7 @@
       "id": "INT-2026-002-2",
       "employeeId": "EMP-2026-002",
       "date": "2026-04-05",
-      "interviewer": "초고압품질팀장",
+      "interviewer": "지중가공QA팀장",
       "topic": "신규 해저 프로젝트 배치에 따른 면담",
       "summary": "신규 수주된 대만 해저 프로젝트의 기계적 거동 검증 책임자로 투입되는 것에 대한 의사 확인. 일정 압박은 있으나 수행 의지 높음.",
       "actionPlan": "대만 프로젝트 착수 전 2주의 리프레쉬 일정을 조율해 적용함."
@@ -174,7 +220,7 @@
       "id": "INT-2026-003",
       "employeeId": "EMP-2026-003",
       "date": "2026-05-18",
-      "interviewer": "초고압품질팀장",
+      "interviewer": "지중가공QA팀장",
       "topic": "수입검사 절차 표준화 성과 및 협력사 관리 고충",
       "summary": "동아케미칼 XLPE 원자재 이물 혼입에 대한 클레임 부적합(NCR) 발행에 관하여 강경한 패널티 협의 중이나 구매팀과의 부서 이기주의 마찰 조율 요청.",
       "actionPlan": "부문장 Dennis가 주관하여 구매팀과의 마찰을 해소하고 품질 기준에 따른 엄격한 패널티 적용을 관철시키기로 정리함."
@@ -192,7 +238,7 @@
       "id": "INT-2026-004",
       "employeeId": "EMP-2026-004",
       "date": "2026-05-12",
-      "interviewer": "초고압품질팀장",
+      "interviewer": "지중가공QA팀장",
       "topic": "부분방전(PD) 전기 측정 전문가 양성 및 진로 면담",
       "summary": "전기적 부분방전 실무에서 향후 고전압 신뢰성 분석 설계 전문가로 성장하고자 사외 부분방전 정밀 계측 사외 교육을 희망함.",
       "actionPlan": "5월 학회 교육비(8.5M)를 예방비용 예산으로 긴급 배정하여 참석을 적극 지원함."
@@ -201,7 +247,7 @@
       "id": "INT-2026-004-2",
       "employeeId": "EMP-2026-004",
       "date": "2026-04-02",
-      "interviewer": "초고압품질팀장",
+      "interviewer": "지중가공QA팀장",
       "topic": "정기 진로 개발 면담",
       "summary": "현장 측정 실무에서 얻은 파형 원본 데이터를 사내 지식 RAG에 축적하여 엔지니어들의 레슨런으로 공유하겠다는 의사 표시.",
       "actionPlan": "RAG 파이프라인 Notes 폴더 내에 전기특성 관련 마크다운 색인을 구축하도록 지시함."
@@ -228,7 +274,7 @@
       "id": "INT-2026-006",
       "employeeId": "EMP-2026-006",
       "date": "2026-05-25",
-      "interviewer": "해저품질팀장",
+      "interviewer": "해저QA팀장",
       "topic": "비파괴검사 1급 자격 취득을 위한 학업 병행 상담",
       "summary": "비파괴 초음파(UT) 분야 전문성 강화를 위해 주말 대학원 및 공인 1급 자격 검정 준비를 하고자 지원 요청.",
       "actionPlan": "평가 비용 예산 범위 내에서 교재비 및 시험 응시료를 실비 지원하고, 시험 직전 연차 사용을 보장해주기로 함."
@@ -237,7 +283,7 @@
       "id": "INT-2026-006-2",
       "employeeId": "EMP-2026-006",
       "date": "2026-03-15",
-      "interviewer": "해저품질팀장",
+      "interviewer": "해저QA팀장",
       "topic": "드럼 용접 균열 검출 성과 보상 면담",
       "summary": "해저 케이블 드럼 출하 직전 비파괴 검사에서 15mm 균열을 찾아내어 초대형 출하 사고를 미연에 방지한 공로 인정.",
       "actionPlan": "상반기 우수 사원 품질 부문상 대상자로 추천 완료함."
@@ -246,7 +292,7 @@
       "id": "INT-2026-007",
       "employeeId": "EMP-2026-007",
       "date": "2026-05-14",
-      "interviewer": "품질보증팀장",
+      "interviewer": "구매품질팀장",
       "topic": "신입사원 공정 적응 멘토링 프로그램",
       "summary": "절연 콤파운드 수입검사 실무를 시작한 지 3개월이 지나 공정 흐름 및 ERP 입력 절차에 대한 적응도가 올라감. 다만 고령 협력사 품질 관리자와의 소통 시 간혹 애로사항 호소.",
       "actionPlan": "수석연구원을 소통 멘토로 지정하여 동행 수입검사 지도를 2회 더 지원하기로 함."
@@ -255,7 +301,7 @@
       "id": "INT-2026-007-2",
       "employeeId": "EMP-2026-007",
       "date": "2026-03-05",
-      "interviewer": "품질보증팀장",
+      "interviewer": "구매품질팀장",
       "topic": "신입사원 온보딩 정기 면담",
       "summary": "당사 품질부문 온보딩 가이드 및 헬프 페이지 숙지 상태 확인. 기본 시험 장비 작동법 조속 습득 진행 중.",
       "actionPlan": "구미 시험실 구미 사이트 현장 OJT 교육 매칭 지원."
@@ -264,7 +310,7 @@
       "id": "INT-2026-008",
       "employeeId": "EMP-2026-008",
       "date": "2026-05-28",
-      "interviewer": "시스템품질팀장",
+      "interviewer": "품질경영팀장",
       "topic": "품질 표준 규격 관리 업무 적성 상담",
       "summary": "최근 IEC/KS 100여 개 표준 규격을 마크다운으로 구조화하여 RAG 데이터베이스화하는 문서 표준 관리 업무에 높은 흥미와 성취감을 느끼고 있음. 업무 로드도 여유 있어 추가 학습 가능함.",
       "actionPlan": "Obsidian PKM 지식 맵 고도화를 위해 신규 규격 문서 업데이트 및 메타데이터(태그) 정렬 작업을 하반기 중 전담으로 부여하기로 함."
@@ -273,7 +319,7 @@
       "id": "INT-2026-008-2",
       "employeeId": "EMP-2026-008",
       "date": "2026-04-12",
-      "interviewer": "시스템품질팀장",
+      "interviewer": "품질경영팀장",
       "topic": "업무 조율 면담",
       "summary": "기존의 정형화된 보고서 취합 업무 외에 회사의 품질 아카이빙 구축에 기여하고 싶다는 의견 개진.",
       "actionPlan": "Obsidian 위키 구축 실무 TF 일원으로 참여 보장."
@@ -282,7 +328,7 @@
       "id": "INT-2026-009",
       "employeeId": "EMP-2026-009",
       "date": "2026-05-08",
-      "interviewer": "초고압품질팀장",
+      "interviewer": "지중가공QA팀장",
       "topic": "도체 연선 공정 편심 대책 TF 활동에 따른 업무 조율",
       "summary": "연선 공정의 다이스 교체 주기 단축 대책 수립을 주도하면서 현장 생산 조장들과의 마찰 극복 방안 조율.",
       "actionPlan": "공장장 주관 품질 공장 개선 회의 안건으로 채택하여 현장 합의 프로세스 단축 지원 조치함."
@@ -291,7 +337,7 @@
       "id": "INT-2026-010",
       "employeeId": "EMP-2026-010",
       "date": "2026-05-24",
-      "interviewer": "해저품질팀장",
+      "interviewer": "해저QA팀장",
       "topic": "해저 케이블 포설 현장 파견에 따른 건강 및 주거 고충",
       "summary": "남해 해저 가선 현장에 연속 6주 이상 주말 근무 파견을 나가며 육체적 피로 및 가정 내 고충(주말 자녀 케어 어려움)을 호소함.",
       "actionPlan": "다음 주부터 동해 공장 내 교대 조치 인력 1명을 긴급 배치하여 최소 2주간 현장 복귀 및 사무실 상근 휴식을 보장함."
@@ -300,7 +346,7 @@
       "id": "INT-2026-010-2",
       "employeeId": "EMP-2026-010",
       "date": "2026-03-25",
-      "interviewer": "해저품질팀장",
+      "interviewer": "해저QA팀장",
       "topic": "포설선 선적 품질 안전 가이드 준수 확인",
       "summary": "포설선 텐셔너 설비 속도 제어 불량에 따른 해저 케이블 인장력 과하중 방지 지침 현장 준수 여부 사전 확인 면담.",
       "actionPlan": "포설 작업 중 실시간 인장 기록기 모니터링 강제 적용 지시."
@@ -309,7 +355,7 @@
       "id": "INT-2026-011",
       "employeeId": "EMP-2026-011",
       "date": "2026-05-19",
-      "interviewer": "초고압품질팀장",
+      "interviewer": "지중가공QA팀장",
       "topic": "품질경영기사 취득에 따른 자격 승인 축하 및 업무 격려",
       "summary": "5월 품질경영기사 자격을 취득하여 사내 자격 수당 신청을 끝냄. 기계적 데이터 통계 분석 실무 능력이 비약적으로 발전함.",
       "actionPlan": "초고압 압출 설비 신뢰성 통계(Minitab) 분석 보고서 전담 작성 기회를 주어 성장을 장려함."
@@ -318,7 +364,7 @@
       "id": "INT-2026-011-2",
       "employeeId": "EMP-2026-011",
       "date": "2026-03-12",
-      "interviewer": "초고압품질팀장",
+      "interviewer": "지중가공QA팀장",
       "topic": "신임 연구원 역량 진단 면담",
       "summary": "데이터를 활용한 분석에 적성이 맞아 일반 현장 시험실 실무보다 대용량 데이터 시각화 업무로의 진로 발전을 제안받음.",
       "actionPlan": "대시보드 KPI 카드 및 연간 불량 통계 시각화 기획 TF 참여 지원."
@@ -327,7 +373,7 @@
       "id": "INT-2026-012",
       "employeeId": "EMP-2026-012",
       "date": "2026-05-29",
-      "interviewer": "품질보증팀장",
+      "interviewer": "구매품질팀장",
       "topic": "고객 클레임 1차 대응 감정 노동 스트레스 케어",
       "summary": "품질 대시보드의 클레임 입력 업무와 함께 외부 고객사들의 고성 및 무리한 단가 인하(Concession) 협의 1차 전화 대응으로 정신적 스트레스 증가 호소.",
       "actionPlan": "사내 심리 케어 프로그램 4회권을 이용하도록 보장하고, 클레임 이관 시 1차 메일 이외의 다이렉트 통화는 팀장 혹은 부문장 선에서 직접 중재하기로 결정함."

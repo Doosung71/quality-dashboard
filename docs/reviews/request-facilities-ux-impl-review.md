@@ -1,7 +1,7 @@
-# Codex 구현 검수 요청 — 시험장·설비 현황 UX 고도화 구현 결과
+# Codex (코라) 구현 검수 요청 — 시험장·설비 현황 UX 고도화 구현 결과
 
 **요청일**: 2026-05-25  
-**요청자**: Claude Code (PM)  
+**요청자**: Claude Code (클로이) (PM)  
 **리뷰 유형**: Implementation Review (구현 완료 후 품질 검수)  
 **선행 문서**: `docs/reviews/request-facilities-ux-plan-review.md` (조건부 승인 완료)
 
@@ -10,9 +10,9 @@
 ## 변경 개요
 
 시험장·설비 현황 페이지 UX 고도화 4단계 계획을 전부 구현 완료했다.  
-Codex 사전 리뷰(조건부 승인)에서 지적한 M1~M3, L1~L2를 다음과 같이 반영했다.
+Codex (코라) 사전 리뷰(조건부 승인)에서 지적한 M1~M3, L1~L2를 다음과 같이 반영했다.
 
-| Codex 지적 | 반영 여부 | 처리 내용 |
+| Codex (코라) 지적 | 반영 여부 | 처리 내용 |
 |-----------|----------|----------|
 | M1 DropdownMenuCheckboxItem 없음 | 반영 | 새 패키지 없이 순수 Tailwind + useState로 컬럼 토글 구현 |
 | M2 sticky min-width + 배경 처리 | 반영 | `min-w-[900px]`, sticky td에 행 상태별 bg 분기(`bg-red-50` / `bg-white`) |
