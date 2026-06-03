@@ -207,11 +207,14 @@ export default async function DashboardPage() {
 
         {/* 2단 그리드 형태로 업로드 폼(실무자)과 리스트 배치 */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          
-          {/* 좌측: 실무자용 업로드 폼 */}
+
+          {/* 좌측: 케이블 히어로 카드 + 실무자용 업로드 폼 */}
           {session.user.role === "PRACTITIONER" && (
-            <div className="lg:col-span-1 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-              <UploadForm />
+            <div className="lg:col-span-1 space-y-4">
+              <CableHeroCard />
+              <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                <UploadForm />
+              </div>
             </div>
           )}
 
@@ -276,5 +279,89 @@ export default async function DashboardPage() {
 
       </div>
     </main>
+  )
+}
+
+// ─── 케이블 단면도 히어로 카드 ──────────────────────────────────────────────
+
+const ARMOR_WIRES = Array.from({ length: 24 }, (_, i) => {
+  const a = (i / 24) * Math.PI * 2
+  return { x: 40 + Math.cos(a) * 27, y: 40 + Math.sin(a) * 27 }
+})
+
+function CableHeroCard() {
+  return (
+    <div className="relative overflow-hidden rounded-2xl bg-linear-to-br from-slate-900 via-[#0f1f3d] to-slate-900 border border-slate-700/60 shadow-lg p-4">
+      {/* 격자 배경 패턴 */}
+      <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="hgrid" width="16" height="16" patternUnits="userSpaceOnUse">
+            <path d="M 16 0 L 0 0 0 16" fill="none" stroke="white" strokeWidth="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#hgrid)" />
+      </svg>
+
+      <div className="relative flex items-center gap-4">
+        {/* 케이블 단면도 SVG */}
+        <div className="w-[72px] h-[72px] shrink-0 drop-shadow-lg">
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+            {/* 외부 피복 HDPE */}
+            <circle cx="40" cy="40" r="37" fill="#1e293b" stroke="#334155" strokeWidth="0.8"/>
+            {/* 베딩 레이어 */}
+            <circle cx="40" cy="40" r="31" fill="#293548"/>
+            {/* 개별 아머 와이어 */}
+            {ARMOR_WIRES.map(({ x, y }, i) => (
+              <circle key={i} cx={x} cy={y} r="2.4" fill="#94a3b8" stroke="#64748b" strokeWidth="0.4"/>
+            ))}
+            {/* 내부 피복 */}
+            <circle cx="40" cy="40" r="21.5" fill="#0f172a"/>
+            {/* XLPE 절연층 */}
+            <circle cx="40" cy="40" r="18.5" fill="#0369a1"/>
+            <circle cx="40" cy="40" r="18.5" fill="none" stroke="#38bdf8" strokeWidth="0.6"/>
+            {/* 도체 차폐층 */}
+            <circle cx="40" cy="40" r="12.5" fill="#1e3a5f"/>
+            {/* 연선 도체 외층 6가닥 */}
+            {Array.from({ length: 6 }, (_, i) => {
+              const a = (i / 6) * Math.PI * 2
+              return (
+                <circle key={i} cx={40 + Math.cos(a) * 6.8} cy={40 + Math.sin(a) * 6.8}
+                  r="3" fill="#b45309" stroke="#d97706" strokeWidth="0.4"/>
+              )
+            })}
+            {/* 중심 도체 */}
+            <circle cx="40" cy="40" r="3.2" fill="#f59e0b"/>
+            {/* 하이라이트 */}
+            <ellipse cx="32" cy="28" rx="5" ry="2.5" fill="white" opacity="0.06"/>
+          </svg>
+        </div>
+
+        {/* 텍스트 */}
+        <div className="min-w-0">
+          <p className="text-[10px] font-extrabold tracking-widest text-sky-400 uppercase mb-0.5">
+            AI 입찰 분석
+          </p>
+          <p className="text-sm font-extrabold text-white leading-snug">
+            해저·지중 케이블<br/>규격서 자동 검토
+          </p>
+          <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">
+            ITB 독소 조항 · 기술 리스크<br/>AI가 자동 판독합니다
+          </p>
+        </div>
+      </div>
+
+      {/* 하단 배지 */}
+      <div className="relative mt-3 pt-3 border-t border-slate-700/50 flex items-center gap-2 flex-wrap">
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-900/60 text-sky-300 border border-sky-700/40">
+          RAG · IEC/CIGRE
+        </span>
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-900/60 text-violet-300 border border-violet-700/40">
+          Claude Sonnet
+        </span>
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-900/60 text-emerald-300 border border-emerald-700/40">
+          Neon pgvector
+        </span>
+      </div>
+    </div>
   )
 }
