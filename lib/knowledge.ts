@@ -10,6 +10,7 @@ export interface KnowledgeChunk {
   source_path: string
   title: string | null
   similarity: number
+  rrf_score: number
   metadata: {
     tags: string[]
     section: string
@@ -59,26 +60,34 @@ export async function searchKnowledge(
   const tags = filter?.tags?.length ? filter.tags : null
   let rows: unknown[]
 
-  // source_type 기본 필터: tra_approved(승인 입찰 문서)는 명시 요청 없이 일반 지식 검색에 혼입되지 않도록 제외
-  // TRA lib/knowledge.ts와 동일한 격리 정책 적용
+  // search_knowledge_hybrid: 벡터 코사인 유사도 + FTS 키워드 RRF 결합 검색
+  // source_types: tra_approved 격리 정책 유지 (obsidian·standards만 포함)
   if (tags) {
+    // 태그 필터: 후보를 넉넉히 뽑아 post-filter 적용
     rows = await sql`
-      SELECT content, source_path, title, metadata,
-             1 - (embedding <=> ${embStr}::vector) AS similarity
-      FROM knowledge_chunks
-      WHERE source_type IN ('obsidian', 'standards')
-        AND metadata->'tags' @> ${JSON.stringify(tags)}::jsonb
-      ORDER BY embedding <=> ${embStr}::vector
+      SELECT source_type, source_path, title, content, metadata,
+             similarity::float, rrf_score::float
+      FROM search_knowledge_hybrid(
+        ${embStr}::vector,
+        ${query},
+        ${safeLimit * 3},
+        ARRAY['obsidian', 'standards'],
+        60
+      )
+      WHERE metadata->'tags' @> ${JSON.stringify(tags)}::jsonb
       LIMIT ${safeLimit}
     `
   } else {
     rows = await sql`
-      SELECT content, source_path, title, metadata,
-             1 - (embedding <=> ${embStr}::vector) AS similarity
-      FROM knowledge_chunks
-      WHERE source_type IN ('obsidian', 'standards')
-      ORDER BY embedding <=> ${embStr}::vector
-      LIMIT ${safeLimit}
+      SELECT source_type, source_path, title, content, metadata,
+             similarity::float, rrf_score::float
+      FROM search_knowledge_hybrid(
+        ${embStr}::vector,
+        ${query},
+        ${safeLimit},
+        ARRAY['obsidian', 'standards'],
+        60
+      )
     `
   }
 
@@ -87,6 +96,7 @@ export async function searchKnowledge(
     source_path: string
     title: string | null
     similarity: string | number
+    rrf_score: string | number
     metadata: KnowledgeChunk["metadata"]
   }
 
@@ -95,6 +105,7 @@ export async function searchKnowledge(
     source_path: r.source_path,
     title: r.title,
     similarity: typeof r.similarity === "number" ? r.similarity : parseFloat(r.similarity),
+    rrf_score: typeof r.rrf_score === "number" ? r.rrf_score : parseFloat(r.rrf_score),
     metadata: r.metadata,
   }))
 }
