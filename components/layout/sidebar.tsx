@@ -5,8 +5,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard, FlaskConical, Building2, Users, Globe,
-  ShieldCheck, X, MessageSquare, CircleUserRound, HelpCircle,
-  BookOpen, Coins, FileSearch,
+  X, MessageSquare, BookOpen, Coins, FileSearch,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { Role } from "@/lib/generated/prisma/client"
@@ -149,29 +148,12 @@ export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
           )
         })}
       </nav>
-      <div className="px-3 py-3 border-t border-slate-700 space-y-1">
+      <div className="px-3 py-3 border-t border-slate-700">
         <Link href="/feedback" onClick={onClose}
           className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
           <MessageSquare className="w-4 h-4 shrink-0" />
           피드백
         </Link>
-        <Link href="/profile" onClick={onClose}
-          className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
-          <CircleUserRound className="w-4 h-4 shrink-0" />
-          내 프로필
-        </Link>
-        <Link href="/help" onClick={onClose}
-          className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
-          <HelpCircle className="w-4 h-4 shrink-0" />
-          사용 가이드
-        </Link>
-        {(role === "DIRECTOR" || (role as string) === "ADMIN") && (
-          <Link href="/admin/users" onClick={onClose}
-            className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
-            <ShieldCheck className="w-4 h-4 shrink-0" />
-            사용자 관리
-          </Link>
-        )}
       </div>
     </aside>
   )
