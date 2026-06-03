@@ -3,23 +3,75 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, FlaskConical, TriangleAlert, Building2, Users, Globe, ShieldCheck, X, MessageSquare, CircleUserRound, HelpCircle, BookOpen, FileText, Coins, FileSearch } from "lucide-react"
+import {
+  LayoutDashboard, FlaskConical, Building2, Users, Globe,
+  ShieldCheck, X, MessageSquare, CircleUserRound, HelpCircle,
+  BookOpen, Coins, FileSearch,
+} from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 import type { Role } from "@/lib/generated/prisma/client"
 
+type NavChild = {
+  href: string
+  label: string
+  roles: string[]
+  readonlyFor: string[]
+}
+
+type NavItem = {
+  href: string
+  label: string
+  icon: LucideIcon
+  roles: string[]
+  readonlyFor: string[]
+  children?: NavChild[]
+}
+
 // 역할별 접근 가능한 메뉴 (경영자 우선순위 기준 정렬)
-// readonlyFor: 이 역할은 해당 메뉴를 조회만 가능 (편집 불가)
-const ALL_NAV = [
-  { href: "/",             label: "대시보드",            icon: LayoutDashboard, roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-  { href: "/qcost",        label: "품질비용(Q-Cost)",     icon: Coins,           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
-  { href: "/claims",       label: "고객 클레임",          icon: TriangleAlert,   roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
-  { href: "/ncr",          label: "부적합품보고(NCR)",    icon: FileText,        roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-  { href: "/vendors",      label: "공급망관리",           icon: Building2,       roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
-  { href: "/knowledge",    label: "지식저장소(QKM)",      icon: BookOpen,        roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-  { href: "/facilities",   label: "시험장·시험 현황",     icon: FlaskConical,    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["TEAM_LEAD", "PRACTITIONER"] },
-  { href: "/dashboard",    label: "입찰검토시스템",       icon: FileSearch,      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-  { href: "/intelligence", label: "외부 정보",            icon: Globe,           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD"],                 readonlyFor: ["TEAM_LEAD"] },
-  { href: "/hr",           label: "인사·면담",            icon: Users,           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
-] as const
+const ALL_NAV: NavItem[] = [
+  {
+    href: "/", label: "대시보드", icon: LayoutDashboard,
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
+  },
+  {
+    href: "/qcost", label: "품질비용(Q-Cost)", icon: Coins,
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
+    children: [
+      { href: "/claims", label: "고객 클레임",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"] },
+      { href: "/ncr",    label: "부적합품보고(NCR)", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+    ],
+  },
+  {
+    href: "/vendors", label: "공급망관리", icon: Building2,
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
+  },
+  {
+    href: "/knowledge", label: "지식저장소(QKM)", icon: BookOpen,
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
+    children: [
+      { href: "/knowledge", label: "IEC/CIGRE 지식 RAG 검색", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+    ],
+  },
+  {
+    href: "/facilities", label: "시험장·시험 현황", icon: FlaskConical,
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["TEAM_LEAD", "PRACTITIONER"],
+  },
+  {
+    href: "/dashboard", label: "입찰검토시스템", icon: FileSearch,
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
+    children: [
+      { href: "/dashboard", label: "입찰 검토 AI 어시스턴트", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+    ],
+  },
+  {
+    href: "/intelligence", label: "외부 정보", icon: Globe,
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD"], readonlyFor: ["TEAM_LEAD"],
+  },
+  {
+    href: "/hr", label: "인사·면담", icon: Users,
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
+  },
+]
 
 interface SidebarProps {
   isOpen: boolean
@@ -29,11 +81,15 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
   const pathname = usePathname()
+
   const navItems = ALL_NAV
-    .filter(item => (item.roles as readonly string[]).includes(role))
+    .filter(item => item.roles.includes(role))
     .map(item => ({
       ...item,
-      isReadonly: (item.readonlyFor as readonly string[]).includes(role),
+      isReadonly: item.readonlyFor.includes(role),
+      children: item.children
+        ?.filter(child => child.roles.includes(role))
+        .map(child => ({ ...child, isReadonly: child.readonlyFor.includes(role) })),
     }))
 
   return (
@@ -52,20 +108,44 @@ export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
         </button>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        {navItems.map(({ href, label, icon: Icon, isReadonly }) => {
-          const active = href === "/" ? pathname === "/" : pathname.startsWith(href)
+        {navItems.map(({ href, label, icon: Icon, isReadonly, children }) => {
+          const selfActive = href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/")
+          const hasActiveChild = children?.some(c => pathname === c.href || pathname.startsWith(c.href + "/")) ?? false
+          const parentActive = selfActive || hasActiveChild
+
           return (
-            <Link key={href} href={href} onClick={onClose}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-                active ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
-              )}>
-              <Icon className="w-4 h-4 shrink-0" />
-              <span className="flex-1">{label}</span>
-              {isReadonly && (
-                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 leading-tight">조회</span>
+            <div key={href}>
+              <Link href={href} onClick={onClose}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                  parentActive ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                )}>
+                <Icon className="w-4 h-4 shrink-0" />
+                <span className="flex-1">{label}</span>
+                {isReadonly && (
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 leading-tight">조회</span>
+                )}
+              </Link>
+              {children && children.length > 0 && (
+                <div className="mt-0.5 ml-4 pl-3 space-y-0.5 border-l border-slate-700">
+                  {children.map(({ href: childHref, label: childLabel, isReadonly: childReadonly }) => {
+                    const childActive = pathname === childHref || pathname.startsWith(childHref + "/")
+                    return (
+                      <Link key={`${href}>${childHref}`} href={childHref} onClick={onClose}
+                        className={cn(
+                          "flex items-center px-2 py-1.5 rounded-md text-xs transition-colors",
+                          childActive ? "bg-slate-600 text-white" : "text-slate-500 hover:bg-slate-800 hover:text-slate-300"
+                        )}>
+                        <span className="flex-1 leading-tight">{childLabel}</span>
+                        {childReadonly && (
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 leading-tight">조회</span>
+                        )}
+                      </Link>
+                    )
+                  })}
+                </div>
               )}
-            </Link>
+            </div>
           )
         })}
       </nav>
