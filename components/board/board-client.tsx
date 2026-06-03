@@ -450,6 +450,16 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     if (selectedId === id) loadDetail(id)
   }
 
+  async function handleToggleCategory(id: string, category: "NOTICE" | "GENERAL") {
+    await fetch(`/api/board/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ category: category === "NOTICE" ? "GENERAL" : "NOTICE" }),
+    })
+    loadPosts()
+    if (selectedId === id) loadDetail(id)
+  }
+
   // 댓글 제출
   async function handleCommentSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -707,6 +717,21 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
 
                 {/* 액션 버튼 */}
                 <div className="flex items-center gap-1.5 shrink-0">
+                  {isPrivileged && !editingPost && (
+                    <button
+                      onClick={() => handleToggleCategory(detail.id, detail.category)}
+                      className={cn(
+                        "flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-semibold transition-colors",
+                        detail.category === "NOTICE"
+                          ? "text-amber-700 bg-amber-100 hover:bg-amber-200"
+                          : "text-slate-500 hover:text-amber-700 hover:bg-amber-50 border border-slate-200"
+                      )}
+                      title={detail.category === "NOTICE" ? "일반 글로 변경" : "공지로 변경"}
+                    >
+                      <Megaphone className="w-3.5 h-3.5" />
+                      {detail.category === "NOTICE" ? "공지 해제" : "공지로 변경"}
+                    </button>
+                  )}
                   {isPrivileged && !editingPost && (
                     <button
                       onClick={() => handleTogglePin(detail.id, detail.pinned)}
