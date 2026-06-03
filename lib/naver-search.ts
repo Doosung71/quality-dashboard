@@ -57,25 +57,30 @@ export async function naverSearchResults(
       ),
     ])
 
-    const news: NaverSearchResult[] =
-      newsSettled.status === "fulfilled" && newsSettled.value.ok
-        ? ((await newsSettled.value.json()) as { items: { title: string; description: string; link: string; pubDate?: string }[] })
-            .items.map(i => ({
-              title:   `[뉴스] ${stripHtml(i.title)}`,
-              snippet: `${stripHtml(i.description)}${i.pubDate ? ` (${i.pubDate.slice(0, 16)})` : ""}`,
-              url:     i.link,
-            }))
-        : []
+    // R-02: JSON 파싱도 개별 격리 — 파싱 실패 시 해당 소스만 [] 처리
+    const news: NaverSearchResult[] = await (async () => {
+      if (newsSettled.status !== "fulfilled" || !newsSettled.value.ok) return []
+      try {
+        const data = await newsSettled.value.json() as { items: { title: string; description: string; link: string; pubDate?: string }[] }
+        return (data.items ?? []).map(i => ({
+          title:   `[뉴스] ${stripHtml(i.title)}`,
+          snippet: `${stripHtml(i.description)}${i.pubDate ? ` (${i.pubDate.slice(0, 16)})` : ""}`,
+          url:     i.link,
+        }))
+      } catch { return [] }
+    })()
 
-    const web: NaverSearchResult[] =
-      webSettled.status === "fulfilled" && webSettled.value.ok
-        ? ((await webSettled.value.json()) as { items: { title: string; description: string; link: string }[] })
-            .items.map(i => ({
-              title:   stripHtml(i.title),
-              snippet: stripHtml(i.description),
-              url:     i.link,
-            }))
-        : []
+    const web: NaverSearchResult[] = await (async () => {
+      if (webSettled.status !== "fulfilled" || !webSettled.value.ok) return []
+      try {
+        const data = await webSettled.value.json() as { items: { title: string; description: string; link: string }[] }
+        return (data.items ?? []).map(i => ({
+          title:   stripHtml(i.title),
+          snippet: stripHtml(i.description),
+          url:     i.link,
+        }))
+      } catch { return [] }
+    })()
 
     return [...news, ...web].slice(0, maxItems)
   } catch {

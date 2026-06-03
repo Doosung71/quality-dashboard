@@ -50,6 +50,11 @@ export function EquipmentTable({ equipment, tests }: { equipment: Equipment[]; t
     <div>
       {/* 모바일 카드 뷰 (md 미만) */}
       <div className="block md:hidden space-y-2 p-3">
+        {equipment.length === 0 && (
+          <div className="py-12 text-center text-xs text-slate-400">
+            등록된 설비가 없습니다.
+          </div>
+        )}
         {equipment.map((eq) => {
           const eqTests = getEquipmentTests(tests, eq.id);
           const status = computeStatus(eq);
@@ -90,8 +95,8 @@ export function EquipmentTable({ equipment, tests }: { equipment: Equipment[]; t
                   )}
                 </div>
               </div>
-              {/* R-04: 보조 정보 (제조사·대수·비고) */}
-              {(eq.maker || eq.quantity || eq.notes) && (
+              {/* R-04: 보조 정보 (제조사·대수·비고) — quantity는 number 타입이므로 > 0 체크 */}
+              {(eq.maker || eq.quantity > 0 || eq.notes) && (
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1 pt-2 border-t border-slate-100 text-[10px]">
                   {eq.maker && (
                     <div>
@@ -101,7 +106,7 @@ export function EquipmentTable({ equipment, tests }: { equipment: Equipment[]; t
                       </span>
                     </div>
                   )}
-                  {eq.quantity != null && (
+                  {eq.quantity > 0 && (
                     <div>
                       <span className="text-slate-400">대수 </span>
                       <span className="font-medium text-slate-600">{eq.quantity}대</span>
