@@ -102,48 +102,52 @@ export default async function DashboardPage() {
   return (
     <main className="min-h-screen bg-slate-50/50 pb-12">
       {/* 프리미엄 헤더바 */}
-      <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur sticky top-0 z-50 px-6 py-4 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-3">
-          <Link 
-            href="/" 
-            className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+      <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur sticky top-0 z-50 px-3 md:px-6 py-3 flex items-center justify-between gap-2 shadow-sm overflow-hidden">
+        {/* 좌측: 뒤로가기 + 제목 */}
+        <div className="flex items-center gap-2 min-w-0">
+          <Link
+            href="/"
+            className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors shrink-0"
             title="전사 품질 대시보드로 돌아가기"
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
-          <div className="flex items-center gap-2">
-            <FileSearch className="w-5.5 h-5.5 text-indigo-600" />
-            <h1 className="font-extrabold text-base text-slate-900 tracking-tight">AI 입찰검토 시스템</h1>
+          <div className="flex items-center gap-1.5 min-w-0">
+            <FileSearch className="w-4 h-4 text-indigo-600 shrink-0" />
+            <h1 className="font-extrabold text-sm text-slate-900 tracking-tight truncate">AI 입찰검토 시스템</h1>
           </div>
         </div>
 
-        <div className="flex items-center gap-4 text-xs font-bold">
-          <Link href="/" className="text-slate-500 hover:text-slate-800 flex items-center gap-1">
+        {/* 우측: 아이콘 전용 (모바일) / 텍스트 포함 (md 이상) */}
+        <div className="flex items-center gap-1 md:gap-3 text-xs font-bold shrink-0">
+          {/* md 이상에서만 텍스트 표시 */}
+          <Link href="/" className="hidden md:flex text-slate-500 hover:text-slate-800 items-center gap-1">
             <LayoutDashboard className="w-4 h-4" /> 전사대시보드
           </Link>
-          <Link href="/help" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-slate-800 flex items-center gap-1">
-            <HelpCircle className="w-4 h-4" /> 도움말
+          <Link href="/help" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors" title="도움말">
+            <HelpCircle className="w-4 h-4" />
           </Link>
-          <Link href="/feedback" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-slate-800 flex items-center gap-1">
-            <MessageSquare className="w-4 h-4" /> 피드백
+          <Link href="/feedback" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors" title="피드백">
+            <MessageSquare className="w-4 h-4" />
           </Link>
-          
+
           {isAdmin(session.user.email) && (
-            <Link href="/admin/users" className="text-slate-600 hover:text-slate-900 flex items-center gap-1 bg-slate-100 px-2.5 py-1.5 rounded-lg border">
+            <Link href="/admin/users" className="hidden md:flex text-slate-600 hover:text-slate-900 items-center gap-1 bg-slate-100 px-2.5 py-1.5 rounded-lg border">
               <UserCheck className="w-3.5 h-3.5" />
               사용자 관리
               {pendingUserCount > 0 && (
-                <span className="inline-flex items-center justify-center rounded-full bg-rose-500 text-white text-[10px] font-extrabold w-4.5 h-4.5 animate-pulse">
+                <span className="inline-flex items-center justify-center rounded-full bg-rose-500 text-white text-[10px] font-extrabold w-4 h-4 animate-pulse">
                   {pendingUserCount}
                 </span>
               )}
             </Link>
           )}
 
-          <div className="h-4 w-px bg-slate-200" />
+          <div className="hidden md:block h-4 w-px bg-slate-200" />
 
-          <span className="text-slate-600 font-semibold flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+          {/* 이름+역할: md 이상에서만 표시 */}
+          <span className="hidden md:flex text-slate-600 font-semibold items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
             <Link href="/profile" className="hover:underline">
               {displayName({ name: session.user.name!, nickname: session.user.nickname })}
             </Link>
@@ -151,7 +155,7 @@ export default async function DashboardPage() {
           </span>
 
           <form action={async () => { "use server"; await signOut({ redirectTo: "/login" }) }}>
-            <Button variant="ghost" size="sm" type="submit" className="text-slate-500 hover:text-rose-600 flex items-center gap-1 font-bold">
+            <Button variant="ghost" size="sm" type="submit" className="text-slate-400 hover:text-rose-600 p-1.5">
               <LogOut className="w-4 h-4" />
             </Button>
           </form>
@@ -159,7 +163,7 @@ export default async function DashboardPage() {
       </header>
 
       {/* 메인 레이아웃 본문 */}
-      <div className="max-w-5xl mx-auto p-6 md:p-8">
+      <div className="max-w-5xl mx-auto p-4 md:p-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
 
           {/* 좌측: 대표 이미지 + 케이블 히어로 카드 + 실무자 업로드 폼 */}
