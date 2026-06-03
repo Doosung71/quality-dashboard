@@ -3,6 +3,7 @@
  * 환경변수: NAVER_CLIENT_ID, NAVER_CLIENT_SECRET
  * 미설정 시 빈 결과 반환 (폴백, 에러 없음)
  */
+import "server-only"
 
 const NAVER_CLIENT_ID     = () => process.env.NAVER_CLIENT_ID     ?? ""
 const NAVER_CLIENT_SECRET = () => process.env.NAVER_CLIENT_SECRET ?? ""
@@ -44,7 +45,8 @@ export async function naverSearchResults(
     }
     const half = Math.ceil(maxItems / 2)
 
-    const [newsRes, webRes] = await Promise.all([
+    // R-02: Promise.allSettled — 뉴스/웹 중 하나 실패해도 나머지 결과 보존
+    const [newsSettled, webSettled] = await Promise.allSettled([
       fetch(
         `https://openapi.naver.com/v1/search/news.json?query=${encodeURIComponent(query)}&display=${half}&sort=date`,
         { headers, signal: controller.signal }
@@ -55,23 +57,25 @@ export async function naverSearchResults(
       ),
     ])
 
-    const news: NaverSearchResult[] = newsRes.ok
-      ? ((await newsRes.json()) as { items: { title: string; description: string; link: string; pubDate?: string }[] })
-          .items.map(i => ({
-            title:   `[뉴스] ${stripHtml(i.title)}`,
-            snippet: `${stripHtml(i.description)}${i.pubDate ? ` (${i.pubDate.slice(0, 16)})` : ""}`,
-            url:     i.link,
-          }))
-      : []
+    const news: NaverSearchResult[] =
+      newsSettled.status === "fulfilled" && newsSettled.value.ok
+        ? ((await newsSettled.value.json()) as { items: { title: string; description: string; link: string; pubDate?: string }[] })
+            .items.map(i => ({
+              title:   `[뉴스] ${stripHtml(i.title)}`,
+              snippet: `${stripHtml(i.description)}${i.pubDate ? ` (${i.pubDate.slice(0, 16)})` : ""}`,
+              url:     i.link,
+            }))
+        : []
 
-    const web: NaverSearchResult[] = webRes.ok
-      ? ((await webRes.json()) as { items: { title: string; description: string; link: string }[] })
-          .items.map(i => ({
-            title:   stripHtml(i.title),
-            snippet: stripHtml(i.description),
-            url:     i.link,
-          }))
-      : []
+    const web: NaverSearchResult[] =
+      webSettled.status === "fulfilled" && webSettled.value.ok
+        ? ((await webSettled.value.json()) as { items: { title: string; description: string; link: string }[] })
+            .items.map(i => ({
+              title:   stripHtml(i.title),
+              snippet: stripHtml(i.description),
+              url:     i.link,
+            }))
+        : []
 
     return [...news, ...web].slice(0, maxItems)
   } catch {

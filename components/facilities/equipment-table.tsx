@@ -90,6 +90,31 @@ export function EquipmentTable({ equipment, tests }: { equipment: Equipment[]; t
                   )}
                 </div>
               </div>
+              {/* R-04: 보조 정보 (제조사·대수·비고) */}
+              {(eq.maker || eq.quantity || eq.notes) && (
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 pt-2 border-t border-slate-100 text-[10px]">
+                  {eq.maker && (
+                    <div>
+                      <span className="text-slate-400">제조사 </span>
+                      <span className="font-medium text-slate-600">
+                        {eq.maker}{eq.makerCountry ? ` (${eq.makerCountry})` : ""}
+                      </span>
+                    </div>
+                  )}
+                  {eq.quantity != null && (
+                    <div>
+                      <span className="text-slate-400">대수 </span>
+                      <span className="font-medium text-slate-600">{eq.quantity}대</span>
+                    </div>
+                  )}
+                  {eq.notes && (
+                    <div className="col-span-2">
+                      <span className="text-slate-400">비고 </span>
+                      <span className="font-medium text-slate-500">{eq.notes}</span>
+                    </div>
+                  )}
+                </div>
+              )}
               {eqTests.length > 0 && (
                 <div className="space-y-1.5 pt-2 border-t border-slate-100">
                   {eqTests.map((t) => (
