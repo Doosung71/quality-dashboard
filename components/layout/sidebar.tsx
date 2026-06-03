@@ -48,9 +48,6 @@ const ALL_NAV: NavItem[] = [
   {
     href: "/knowledge", label: "지식저장소(QKM)", icon: BookOpen,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
-    children: [
-      { href: "/knowledge", label: "IEC/CIGRE 지식 RAG 검색", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-    ],
   },
   {
     href: "/facilities", label: "시험장·시험 현황", icon: FlaskConical,
@@ -59,9 +56,6 @@ const ALL_NAV: NavItem[] = [
   {
     href: "/dashboard", label: "입찰검토시스템", icon: FileSearch,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
-    children: [
-      { href: "/dashboard", label: "입찰 검토 AI 어시스턴트", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-    ],
   },
   {
     href: "/intelligence", label: "외부 정보", icon: Globe,
