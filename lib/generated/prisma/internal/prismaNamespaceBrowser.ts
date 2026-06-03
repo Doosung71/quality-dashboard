@@ -54,6 +54,8 @@ export const ModelName = {
   User: 'User',
   Feedback: 'Feedback',
   FeedbackReply: 'FeedbackReply',
+  BoardPost: 'BoardPost',
+  BoardComment: 'BoardComment',
   Tender: 'Tender',
   TenderDocument: 'TenderDocument',
   Analysis: 'Analysis',
@@ -118,6 +120,32 @@ export const FeedbackReplyScalarFieldEnum = {
 } as const
 
 export type FeedbackReplyScalarFieldEnum = (typeof FeedbackReplyScalarFieldEnum)[keyof typeof FeedbackReplyScalarFieldEnum]
+
+
+export const BoardPostScalarFieldEnum = {
+  id: 'id',
+  category: 'category',
+  pinned: 'pinned',
+  title: 'title',
+  content: 'content',
+  authorId: 'authorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BoardPostScalarFieldEnum = (typeof BoardPostScalarFieldEnum)[keyof typeof BoardPostScalarFieldEnum]
+
+
+export const BoardCommentScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  authorId: 'authorId',
+  content: 'content',
+  parentId: 'parentId',
+  createdAt: 'createdAt'
+} as const
+
+export type BoardCommentScalarFieldEnum = (typeof BoardCommentScalarFieldEnum)[keyof typeof BoardCommentScalarFieldEnum]
 
 
 export const TenderScalarFieldEnum = {

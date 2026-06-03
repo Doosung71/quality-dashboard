@@ -29,6 +29,14 @@ export const UserStatus = {
 export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
 
 
+export const BoardCategory = {
+  NOTICE: 'NOTICE',
+  GENERAL: 'GENERAL'
+} as const
+
+export type BoardCategory = (typeof BoardCategory)[keyof typeof BoardCategory]
+
+
 export const AnalysisStatus = {
   DRAFT: 'DRAFT',
   REVIEWED: 'REVIEWED',

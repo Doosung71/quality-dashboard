@@ -248,6 +248,8 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   feedbacks?: Prisma.FeedbackListRelationFilter
   feedbackReplies?: Prisma.FeedbackReplyListRelationFilter
+  boardPosts?: Prisma.BoardPostListRelationFilter
+  boardComments?: Prisma.BoardCommentListRelationFilter
   tenders?: Prisma.TenderListRelationFilter
   reviewActions?: Prisma.ReviewHistoryListRelationFilter
   comments?: Prisma.CommentListRelationFilter
@@ -269,6 +271,8 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   feedbacks?: Prisma.FeedbackOrderByRelationAggregateInput
   feedbackReplies?: Prisma.FeedbackReplyOrderByRelationAggregateInput
+  boardPosts?: Prisma.BoardPostOrderByRelationAggregateInput
+  boardComments?: Prisma.BoardCommentOrderByRelationAggregateInput
   tenders?: Prisma.TenderOrderByRelationAggregateInput
   reviewActions?: Prisma.ReviewHistoryOrderByRelationAggregateInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
@@ -293,6 +297,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   feedbacks?: Prisma.FeedbackListRelationFilter
   feedbackReplies?: Prisma.FeedbackReplyListRelationFilter
+  boardPosts?: Prisma.BoardPostListRelationFilter
+  boardComments?: Prisma.BoardCommentListRelationFilter
   tenders?: Prisma.TenderListRelationFilter
   reviewActions?: Prisma.ReviewHistoryListRelationFilter
   comments?: Prisma.CommentListRelationFilter
@@ -352,6 +358,8 @@ export type UserCreateInput = {
   createdAt?: Date | string
   feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
   feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
@@ -373,6 +381,8 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
   feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -394,6 +404,8 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
   feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
@@ -415,6 +427,8 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
   feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -573,6 +587,34 @@ export type UserUpdateOneRequiredWithoutFeedbackRepliesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFeedbackRepliesInput, Prisma.UserUpdateWithoutFeedbackRepliesInput>, Prisma.UserUncheckedUpdateWithoutFeedbackRepliesInput>
 }
 
+export type UserCreateNestedOneWithoutBoardPostsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBoardPostsInput, Prisma.UserUncheckedCreateWithoutBoardPostsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBoardPostsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutBoardPostsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBoardPostsInput, Prisma.UserUncheckedCreateWithoutBoardPostsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBoardPostsInput
+  upsert?: Prisma.UserUpsertWithoutBoardPostsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBoardPostsInput, Prisma.UserUpdateWithoutBoardPostsInput>, Prisma.UserUncheckedUpdateWithoutBoardPostsInput>
+}
+
+export type UserCreateNestedOneWithoutBoardCommentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBoardCommentsInput, Prisma.UserUncheckedCreateWithoutBoardCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBoardCommentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutBoardCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBoardCommentsInput, Prisma.UserUncheckedCreateWithoutBoardCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBoardCommentsInput
+  upsert?: Prisma.UserUpsertWithoutBoardCommentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBoardCommentsInput, Prisma.UserUpdateWithoutBoardCommentsInput>, Prisma.UserUncheckedUpdateWithoutBoardCommentsInput>
+}
+
 export type UserCreateNestedOneWithoutTendersInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutTendersInput, Prisma.UserUncheckedCreateWithoutTendersInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutTendersInput
@@ -630,6 +672,8 @@ export type UserCreateWithoutFeedbacksInput = {
   nickname?: string | null
   createdAt?: Date | string
   feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
@@ -650,6 +694,8 @@ export type UserUncheckedCreateWithoutFeedbacksInput = {
   nickname?: string | null
   createdAt?: Date | string
   feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -686,6 +732,8 @@ export type UserUpdateWithoutFeedbacksInput = {
   nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
@@ -706,6 +754,8 @@ export type UserUncheckedUpdateWithoutFeedbacksInput = {
   nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -726,6 +776,8 @@ export type UserCreateWithoutFeedbackRepliesInput = {
   nickname?: string | null
   createdAt?: Date | string
   feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
@@ -746,6 +798,8 @@ export type UserUncheckedCreateWithoutFeedbackRepliesInput = {
   nickname?: string | null
   createdAt?: Date | string
   feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -782,6 +836,8 @@ export type UserUpdateWithoutFeedbackRepliesInput = {
   nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
@@ -802,6 +858,216 @@ export type UserUncheckedUpdateWithoutFeedbackRepliesInput = {
   nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserCreateWithoutBoardPostsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+}
+
+export type UserUncheckedCreateWithoutBoardPostsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type UserCreateOrConnectWithoutBoardPostsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBoardPostsInput, Prisma.UserUncheckedCreateWithoutBoardPostsInput>
+}
+
+export type UserUpsertWithoutBoardPostsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBoardPostsInput, Prisma.UserUncheckedUpdateWithoutBoardPostsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBoardPostsInput, Prisma.UserUncheckedCreateWithoutBoardPostsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBoardPostsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBoardPostsInput, Prisma.UserUncheckedUpdateWithoutBoardPostsInput>
+}
+
+export type UserUpdateWithoutBoardPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBoardPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserCreateWithoutBoardCommentsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+}
+
+export type UserUncheckedCreateWithoutBoardCommentsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type UserCreateOrConnectWithoutBoardCommentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBoardCommentsInput, Prisma.UserUncheckedCreateWithoutBoardCommentsInput>
+}
+
+export type UserUpsertWithoutBoardCommentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBoardCommentsInput, Prisma.UserUncheckedUpdateWithoutBoardCommentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBoardCommentsInput, Prisma.UserUncheckedCreateWithoutBoardCommentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBoardCommentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBoardCommentsInput, Prisma.UserUncheckedUpdateWithoutBoardCommentsInput>
+}
+
+export type UserUpdateWithoutBoardCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBoardCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -823,6 +1089,8 @@ export type UserCreateWithoutTendersInput = {
   createdAt?: Date | string
   feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
   feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
 }
@@ -843,6 +1111,8 @@ export type UserUncheckedCreateWithoutTendersInput = {
   createdAt?: Date | string
   feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
   feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -879,6 +1149,8 @@ export type UserUpdateWithoutTendersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
   feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
 }
@@ -899,6 +1171,8 @@ export type UserUncheckedUpdateWithoutTendersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
   feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -919,6 +1193,8 @@ export type UserCreateWithoutReviewActionsInput = {
   createdAt?: Date | string
   feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
   feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
 }
@@ -939,6 +1215,8 @@ export type UserUncheckedCreateWithoutReviewActionsInput = {
   createdAt?: Date | string
   feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
   feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -975,6 +1253,8 @@ export type UserUpdateWithoutReviewActionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
   feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
 }
@@ -995,6 +1275,8 @@ export type UserUncheckedUpdateWithoutReviewActionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
   feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -1015,6 +1297,8 @@ export type UserCreateWithoutCommentsInput = {
   createdAt?: Date | string
   feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
   feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
 }
@@ -1035,6 +1319,8 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   createdAt?: Date | string
   feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
   feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
 }
@@ -1071,6 +1357,8 @@ export type UserUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
   feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
 }
@@ -1091,6 +1379,8 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
   feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -1103,6 +1393,8 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
 export type UserCountOutputType = {
   feedbacks: number
   feedbackReplies: number
+  boardPosts: number
+  boardComments: number
   tenders: number
   reviewActions: number
   comments: number
@@ -1111,6 +1403,8 @@ export type UserCountOutputType = {
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   feedbacks?: boolean | UserCountOutputTypeCountFeedbacksArgs
   feedbackReplies?: boolean | UserCountOutputTypeCountFeedbackRepliesArgs
+  boardPosts?: boolean | UserCountOutputTypeCountBoardPostsArgs
+  boardComments?: boolean | UserCountOutputTypeCountBoardCommentsArgs
   tenders?: boolean | UserCountOutputTypeCountTendersArgs
   reviewActions?: boolean | UserCountOutputTypeCountReviewActionsArgs
   comments?: boolean | UserCountOutputTypeCountCommentsArgs
@@ -1138,6 +1432,20 @@ export type UserCountOutputTypeCountFeedbacksArgs<ExtArgs extends runtime.Types.
  */
 export type UserCountOutputTypeCountFeedbackRepliesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.FeedbackReplyWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBoardPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BoardPostWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBoardCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BoardCommentWhereInput
 }
 
 /**
@@ -1178,6 +1486,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   feedbacks?: boolean | Prisma.User$feedbacksArgs<ExtArgs>
   feedbackReplies?: boolean | Prisma.User$feedbackRepliesArgs<ExtArgs>
+  boardPosts?: boolean | Prisma.User$boardPostsArgs<ExtArgs>
+  boardComments?: boolean | Prisma.User$boardCommentsArgs<ExtArgs>
   tenders?: boolean | Prisma.User$tendersArgs<ExtArgs>
   reviewActions?: boolean | Prisma.User$reviewActionsArgs<ExtArgs>
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
@@ -1236,6 +1546,8 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   feedbacks?: boolean | Prisma.User$feedbacksArgs<ExtArgs>
   feedbackReplies?: boolean | Prisma.User$feedbackRepliesArgs<ExtArgs>
+  boardPosts?: boolean | Prisma.User$boardPostsArgs<ExtArgs>
+  boardComments?: boolean | Prisma.User$boardCommentsArgs<ExtArgs>
   tenders?: boolean | Prisma.User$tendersArgs<ExtArgs>
   reviewActions?: boolean | Prisma.User$reviewActionsArgs<ExtArgs>
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
@@ -1249,6 +1561,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     feedbacks: Prisma.$FeedbackPayload<ExtArgs>[]
     feedbackReplies: Prisma.$FeedbackReplyPayload<ExtArgs>[]
+    boardPosts: Prisma.$BoardPostPayload<ExtArgs>[]
+    boardComments: Prisma.$BoardCommentPayload<ExtArgs>[]
     tenders: Prisma.$TenderPayload<ExtArgs>[]
     reviewActions: Prisma.$ReviewHistoryPayload<ExtArgs>[]
     comments: Prisma.$CommentPayload<ExtArgs>[]
@@ -1663,6 +1977,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   feedbacks<T extends Prisma.User$feedbacksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$feedbacksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   feedbackReplies<T extends Prisma.User$feedbackRepliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$feedbackRepliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedbackReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  boardPosts<T extends Prisma.User$boardPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$boardPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BoardPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  boardComments<T extends Prisma.User$boardCommentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$boardCommentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BoardCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tenders<T extends Prisma.User$tendersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tendersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TenderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviewActions<T extends Prisma.User$reviewActionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewActionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.User$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2146,6 +2462,54 @@ export type User$feedbackRepliesArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.FeedbackReplyScalarFieldEnum | Prisma.FeedbackReplyScalarFieldEnum[]
+}
+
+/**
+ * User.boardPosts
+ */
+export type User$boardPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BoardPost
+   */
+  select?: Prisma.BoardPostSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BoardPost
+   */
+  omit?: Prisma.BoardPostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BoardPostInclude<ExtArgs> | null
+  where?: Prisma.BoardPostWhereInput
+  orderBy?: Prisma.BoardPostOrderByWithRelationInput | Prisma.BoardPostOrderByWithRelationInput[]
+  cursor?: Prisma.BoardPostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BoardPostScalarFieldEnum | Prisma.BoardPostScalarFieldEnum[]
+}
+
+/**
+ * User.boardComments
+ */
+export type User$boardCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BoardComment
+   */
+  select?: Prisma.BoardCommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BoardComment
+   */
+  omit?: Prisma.BoardCommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BoardCommentInclude<ExtArgs> | null
+  where?: Prisma.BoardCommentWhereInput
+  orderBy?: Prisma.BoardCommentOrderByWithRelationInput | Prisma.BoardCommentOrderByWithRelationInput[]
+  cursor?: Prisma.BoardCommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BoardCommentScalarFieldEnum | Prisma.BoardCommentScalarFieldEnum[]
 }
 
 /**

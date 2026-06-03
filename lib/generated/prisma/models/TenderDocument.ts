@@ -393,10 +393,6 @@ export type TenderDocumentUncheckedUpdateManyWithoutTenderNestedInput = {
   deleteMany?: Prisma.TenderDocumentScalarWhereInput | Prisma.TenderDocumentScalarWhereInput[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type TenderDocumentCreateNestedOneWithoutAnalysesInput = {
   create?: Prisma.XOR<Prisma.TenderDocumentCreateWithoutAnalysesInput, Prisma.TenderDocumentUncheckedCreateWithoutAnalysesInput>
   connectOrCreate?: Prisma.TenderDocumentCreateOrConnectWithoutAnalysesInput

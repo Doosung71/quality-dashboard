@@ -169,9 +169,26 @@ export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
 }
 
+export type EnumBoardCategoryFilter<$PrismaModel = never> = {
+  equals?: $Enums.BoardCategory | Prisma.EnumBoardCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.BoardCategory[] | Prisma.ListEnumBoardCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BoardCategory[] | Prisma.ListEnumBoardCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBoardCategoryFilter<$PrismaModel> | $Enums.BoardCategory
+}
+
 export type BoolFilter<$PrismaModel = never> = {
   equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
   not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
+}
+
+export type EnumBoardCategoryWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BoardCategory | Prisma.EnumBoardCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.BoardCategory[] | Prisma.ListEnumBoardCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BoardCategory[] | Prisma.ListEnumBoardCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBoardCategoryWithAggregatesFilter<$PrismaModel> | $Enums.BoardCategory
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBoardCategoryFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBoardCategoryFilter<$PrismaModel>
 }
 
 export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -472,9 +489,26 @@ export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
 }
 
+export type NestedEnumBoardCategoryFilter<$PrismaModel = never> = {
+  equals?: $Enums.BoardCategory | Prisma.EnumBoardCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.BoardCategory[] | Prisma.ListEnumBoardCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BoardCategory[] | Prisma.ListEnumBoardCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBoardCategoryFilter<$PrismaModel> | $Enums.BoardCategory
+}
+
 export type NestedBoolFilter<$PrismaModel = never> = {
   equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
   not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
+}
+
+export type NestedEnumBoardCategoryWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BoardCategory | Prisma.EnumBoardCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.BoardCategory[] | Prisma.ListEnumBoardCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BoardCategory[] | Prisma.ListEnumBoardCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBoardCategoryWithAggregatesFilter<$PrismaModel> | $Enums.BoardCategory
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBoardCategoryFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBoardCategoryFilter<$PrismaModel>
 }
 
 export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {

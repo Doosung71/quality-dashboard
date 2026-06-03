@@ -387,6 +387,8 @@ export const ModelName = {
   User: 'User',
   Feedback: 'Feedback',
   FeedbackReply: 'FeedbackReply',
+  BoardPost: 'BoardPost',
+  BoardComment: 'BoardComment',
   Tender: 'Tender',
   TenderDocument: 'TenderDocument',
   Analysis: 'Analysis',
@@ -409,7 +411,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "feedback" | "feedbackReply" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment"
+    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -632,6 +634,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.FeedbackReplyCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.FeedbackReplyCountAggregateOutputType> | number
+        }
+      }
+    }
+    BoardPost: {
+      payload: Prisma.$BoardPostPayload<ExtArgs>
+      fields: Prisma.BoardPostFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BoardPostFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardPostPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BoardPostFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardPostPayload>
+        }
+        findFirst: {
+          args: Prisma.BoardPostFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardPostPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BoardPostFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardPostPayload>
+        }
+        findMany: {
+          args: Prisma.BoardPostFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardPostPayload>[]
+        }
+        create: {
+          args: Prisma.BoardPostCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardPostPayload>
+        }
+        createMany: {
+          args: Prisma.BoardPostCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BoardPostCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardPostPayload>[]
+        }
+        delete: {
+          args: Prisma.BoardPostDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardPostPayload>
+        }
+        update: {
+          args: Prisma.BoardPostUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardPostPayload>
+        }
+        deleteMany: {
+          args: Prisma.BoardPostDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BoardPostUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BoardPostUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardPostPayload>[]
+        }
+        upsert: {
+          args: Prisma.BoardPostUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardPostPayload>
+        }
+        aggregate: {
+          args: Prisma.BoardPostAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBoardPost>
+        }
+        groupBy: {
+          args: Prisma.BoardPostGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BoardPostGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BoardPostCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BoardPostCountAggregateOutputType> | number
+        }
+      }
+    }
+    BoardComment: {
+      payload: Prisma.$BoardCommentPayload<ExtArgs>
+      fields: Prisma.BoardCommentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BoardCommentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardCommentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BoardCommentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardCommentPayload>
+        }
+        findFirst: {
+          args: Prisma.BoardCommentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardCommentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BoardCommentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardCommentPayload>
+        }
+        findMany: {
+          args: Prisma.BoardCommentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardCommentPayload>[]
+        }
+        create: {
+          args: Prisma.BoardCommentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardCommentPayload>
+        }
+        createMany: {
+          args: Prisma.BoardCommentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BoardCommentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardCommentPayload>[]
+        }
+        delete: {
+          args: Prisma.BoardCommentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardCommentPayload>
+        }
+        update: {
+          args: Prisma.BoardCommentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardCommentPayload>
+        }
+        deleteMany: {
+          args: Prisma.BoardCommentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BoardCommentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BoardCommentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardCommentPayload>[]
+        }
+        upsert: {
+          args: Prisma.BoardCommentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardCommentPayload>
+        }
+        aggregate: {
+          args: Prisma.BoardCommentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBoardComment>
+        }
+        groupBy: {
+          args: Prisma.BoardCommentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BoardCommentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BoardCommentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BoardCommentCountAggregateOutputType> | number
         }
       }
     }
@@ -1233,6 +1383,32 @@ export const FeedbackReplyScalarFieldEnum = {
 export type FeedbackReplyScalarFieldEnum = (typeof FeedbackReplyScalarFieldEnum)[keyof typeof FeedbackReplyScalarFieldEnum]
 
 
+export const BoardPostScalarFieldEnum = {
+  id: 'id',
+  category: 'category',
+  pinned: 'pinned',
+  title: 'title',
+  content: 'content',
+  authorId: 'authorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BoardPostScalarFieldEnum = (typeof BoardPostScalarFieldEnum)[keyof typeof BoardPostScalarFieldEnum]
+
+
+export const BoardCommentScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  authorId: 'authorId',
+  content: 'content',
+  parentId: 'parentId',
+  createdAt: 'createdAt'
+} as const
+
+export type BoardCommentScalarFieldEnum = (typeof BoardCommentScalarFieldEnum)[keyof typeof BoardCommentScalarFieldEnum]
+
+
 export const TenderScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -1423,6 +1599,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'BoardCategory'
+ */
+export type EnumBoardCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BoardCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'BoardCategory[]'
+ */
+export type ListEnumBoardCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BoardCategory[]'>
     
 
 
@@ -1629,6 +1819,8 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   feedback?: Prisma.FeedbackOmit
   feedbackReply?: Prisma.FeedbackReplyOmit
+  boardPost?: Prisma.BoardPostOmit
+  boardComment?: Prisma.BoardCommentOmit
   tender?: Prisma.TenderOmit
   tenderDocument?: Prisma.TenderDocumentOmit
   analysis?: Prisma.AnalysisOmit

@@ -27,6 +27,8 @@ model User {
 
   feedbacks       Feedback[]
   feedbackReplies FeedbackReply[]
+  boardPosts      BoardPost[]
+  boardComments   BoardComment[]
 
   // TRA 관계 (tra.prisma 모델 추가 시 활성화)
   tenders         Tender[]
@@ -67,4 +69,37 @@ enum UserStatus {
   ACTIVE
   RESTRICTED
   BANNED
+}
+
+// ─── 품질부문 게시판 ────────────────────────────────────────
+
+enum BoardCategory {
+  NOTICE  // 공지
+  GENERAL // 일반
+}
+
+model BoardPost {
+  id         String        @id @default(cuid())
+  category   BoardCategory @default(GENERAL)
+  pinned     Boolean       @default(false)
+  title      String
+  content    String
+  author     User          @relation(fields: [authorId], references: [id])
+  authorId   String
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  comments   BoardComment[]
+}
+
+model BoardComment {
+  id        String        @id @default(cuid())
+  post      BoardPost     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  author    User          @relation(fields: [authorId], references: [id])
+  authorId  String
+  content   String
+  parentId  String?
+  parent    BoardComment? @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   BoardComment[] @relation("Replies")
+  createdAt DateTime      @default(now())
 }

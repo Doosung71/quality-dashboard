@@ -20,6 +20,7 @@ const titles: Record<string, string> = {
   "/dashboard": "입찰검토시스템",
   "/intelligence": "외부 정보",
   "/hr": "인사·면담",
+  "/board": "품질부문 게시판",
 }
 
 function HeaderIconBtn({

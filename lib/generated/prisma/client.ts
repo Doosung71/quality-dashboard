@@ -57,6 +57,16 @@ export type Feedback = Prisma.FeedbackModel
  */
 export type FeedbackReply = Prisma.FeedbackReplyModel
 /**
+ * Model BoardPost
+ * 
+ */
+export type BoardPost = Prisma.BoardPostModel
+/**
+ * Model BoardComment
+ * 
+ */
+export type BoardComment = Prisma.BoardCommentModel
+/**
  * Model Tender
  * 
  */

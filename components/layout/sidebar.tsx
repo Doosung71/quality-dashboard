@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard, FlaskConical, Building2, Users, Globe,
-  X, MessageSquare, BookOpen, Coins, FileSearch,
+  X, MessageSquare, BookOpen, Coins, FileSearch, Newspaper,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { Role } from "@/lib/generated/prisma/client"
@@ -148,9 +148,20 @@ export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
           )
         })}
       </nav>
-      <div className="px-3 py-3 border-t border-slate-700">
+      <div className="px-3 py-3 border-t border-slate-700 space-y-1">
+        <Link href="/board" onClick={onClose}
+          className={cn(
+            "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+            pathname === "/board" ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
+          )}>
+          <Newspaper className="w-4 h-4 shrink-0" />
+          게시판
+        </Link>
         <Link href="/feedback" onClick={onClose}
-          className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
+          className={cn(
+            "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+            pathname === "/feedback" ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
+          )}>
           <MessageSquare className="w-4 h-4 shrink-0" />
           피드백
         </Link>

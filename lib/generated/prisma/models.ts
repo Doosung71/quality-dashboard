@@ -11,6 +11,8 @@
 export type * from './models/User'
 export type * from './models/Feedback'
 export type * from './models/FeedbackReply'
+export type * from './models/BoardPost'
+export type * from './models/BoardComment'
 export type * from './models/Tender'
 export type * from './models/TenderDocument'
 export type * from './models/Analysis'
