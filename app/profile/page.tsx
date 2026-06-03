@@ -56,6 +56,7 @@ export default async function ProfilePage() {
             <CardTitle className="text-base">비밀번호 변경</CardTitle>
           </CardHeader>
           <CardContent>
+            <p className="text-xs text-zinc-400 mb-3">현재 비밀번호를 입력한 뒤 새 비밀번호를 설정합니다.</p>
             <PasswordChangeForm />
           </CardContent>
         </Card>
