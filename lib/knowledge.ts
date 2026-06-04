@@ -27,6 +27,8 @@ export interface KnowledgeSearchOptions {
 }
 
 const DEFAULT_SOURCE_TYPES = ['obsidian', 'standards', 'pdf_inbox']
+// tra_approved는 TRA 전용 RAG 경로에서만 사용. 일반 검색에서 항상 차단.
+const BLOCKED_SOURCE_TYPES = new Set(['tra_approved'])
 
 async function createQueryEmbedding(query: string): Promise<number[]> {
   const res = await fetch("https://api.openai.com/v1/embeddings", {
@@ -49,6 +51,8 @@ export async function searchKnowledge(
   query: string,
   { limit = 5, filter, sourceTypes = DEFAULT_SOURCE_TYPES }: KnowledgeSearchOptions = {}
 ): Promise<KnowledgeChunk[]> {
+  // 호출자가 sourceTypes를 오버라이드해도 tra_approved는 항상 차단
+  const safeSourceTypes = sourceTypes.filter((t) => !BLOCKED_SOURCE_TYPES.has(t))
   if (!process.env.DATABASE_URL_UNPOOLED) {
     throw new Error("[knowledge] DATABASE_URL_UNPOOLED 환경변수가 설정되지 않았습니다.")
   }
@@ -76,7 +80,7 @@ export async function searchKnowledge(
         ${embStr}::vector,
         ${query},
         ${safeLimit * 3},
-        ${sourceTypes}::text[],
+        ${safeSourceTypes}::text[],
         60
       )
       WHERE metadata->'tags' @> ${JSON.stringify(tags)}::jsonb
@@ -90,7 +94,7 @@ export async function searchKnowledge(
         ${embStr}::vector,
         ${query},
         ${safeLimit},
-        ${sourceTypes}::text[],
+        ${safeSourceTypes}::text[],
         60
       )
     `
