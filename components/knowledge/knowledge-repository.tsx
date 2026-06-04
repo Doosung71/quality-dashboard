@@ -7,11 +7,11 @@ import type {
   KnowledgeSubCategory
 } from "@/types/knowledge";
 import { MarkdownContent } from "@/components/ui/markdown-content";
-import { 
-  Folder, 
-  FolderOpen, 
-  FileText, 
-  Search, 
+import {
+  Folder,
+  FolderOpen,
+  FileText,
+  Search,
   Plus,
   X,
   PlusCircle,
@@ -22,7 +22,8 @@ import {
   Layers,
   Sparkles,
   Award,
-  BookMarked
+  BookMarked,
+  ChevronLeft
 } from "lucide-react";
 
 interface KnowledgeRepositoryProps {
@@ -54,6 +55,7 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
     setAssets(data.assets);
     setSelectedAssetId(data.assets[0]?.id || "");
     setContentText(null);
+    setMobileView("list");
   }, [data]);
 
   // 자산 변경 시 이전 내용·모달 즉시 초기화
@@ -114,6 +116,7 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
   const handleTreeClick = (category: KnowledgeCategory | "ALL", subCategory: KnowledgeSubCategory | "ALL") => {
     setSelectedTreeCategory(category);
     setSelectedTreeSubCategory(subCategory);
+    setMobileView("list");
   };
 
   // KPI 요약 분석
@@ -196,8 +199,9 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
   const [contentText, setContentText] = useState<string | null>(null);
   const [contentLoading, setContentLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [mobileView, setMobileView] = useState<"list" | "detail">("list");
 
-  const handleViewContent = async (asset: KnowledgeAsset) => {
+  const handleViewContent = async (asset: KnowledgeAsset, autoOpenModal = false) => {
     if (!asset.sourcePath) return;
     setContentText(null);
     setContentLoading(true);
@@ -205,6 +209,7 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
       const res = await fetch(`/api/knowledge/content?path=${encodeURIComponent(asset.sourcePath)}`);
       const data = await res.json();
       setContentText(data.text || "내용 없음");
+      if (autoOpenModal) setShowModal(true);
     } catch {
       setContentText("내용을 불러오는 데 실패했습니다.");
     } finally {
@@ -259,7 +264,7 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
         // 지식저장소 분류 브라우저 메인 화면
         <div className="space-y-6">
           {/* 1. 지식자산 요약 KPI */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-white p-4.5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
               <div className="space-y-0.5">
                 <p className="text-[10px] font-semibold text-slate-500 tracking-wider">등록 지식자산</p>
@@ -306,8 +311,8 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
           {/* 2. 트리 브라우징 & 메인 패널 */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
             
-            {/* 좌측: 카테고리 트리 네비게이션 */}
-            <div className="lg:col-span-1 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+            {/* 좌측: 카테고리 트리 네비게이션 (데스크탑만) */}
+            <div className="hidden md:block lg:col-span-1 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <span className="text-[10px] font-extrabold text-slate-400 tracking-wider uppercase">지식 분류 트리</span>
                 <button 
@@ -406,14 +411,66 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                   </button>
                 </div>
 
-                {/* 통합 검색창 */}
+                {/* 모바일 카테고리 칩 (md 미만에서만 표시) */}
+                <div className="md:hidden space-y-2">
+                  <div className="flex gap-2 overflow-x-auto pb-1">
+                    <button
+                      onClick={() => handleTreeClick("ALL", "ALL")}
+                      className={`shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold border transition-all ${selectedTreeCategory === "ALL" ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-600 border-slate-200"}`}
+                    >
+                      전체
+                    </button>
+                    {(["Standards", "TechnicalDocs", "Reports", "Others"] as KnowledgeCategory[]).map(catKey => {
+                      const labels: Record<string, string> = { Standards: "규격", TechnicalDocs: "기술자료", Reports: "보고서", Others: "기타" };
+                      const active = selectedTreeCategory === catKey;
+                      return (
+                        <button
+                          key={catKey}
+                          onClick={() => handleTreeClick(catKey, "ALL")}
+                          className={`shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold border transition-all ${active ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-600 border-slate-200"}`}
+                        >
+                          {labels[catKey]}
+                          <span className={`ml-1 text-[9px] font-mono ${active ? "text-white/70" : "text-slate-400"}`}>
+                            {assets.filter(a => a.category === catKey).length}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {selectedTreeCategory !== "ALL" && (
+                    <div className="flex gap-2 overflow-x-auto pb-1">
+                      <button
+                        onClick={() => handleTreeClick(selectedTreeCategory as KnowledgeCategory, "ALL")}
+                        className={`shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold border transition-all ${selectedTreeSubCategory === "ALL" ? "bg-slate-900 text-white border-slate-900" : "bg-slate-100 text-slate-600 border-transparent"}`}
+                      >
+                        전체
+                      </button>
+                      {SUB_CATEGORIES_BY_MAIN[selectedTreeCategory as KnowledgeCategory].map(subCat => {
+                        const isSelected = selectedTreeSubCategory === subCat;
+                        const count = assets.filter(a => a.category === selectedTreeCategory && a.subCategory === subCat).length;
+                        return (
+                          <button
+                            key={subCat}
+                            onClick={() => handleTreeClick(selectedTreeCategory as KnowledgeCategory, subCat)}
+                            className={`shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold border transition-all ${isSelected ? "bg-slate-900 text-white border-slate-900" : "bg-slate-100 text-slate-600 border-transparent"}`}
+                          >
+                            {subCat}
+                            <span className={`ml-1 text-[9px] font-mono ${isSelected ? "text-white/70" : "text-slate-400"}`}>{count}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+              {/* 통합 검색창 */}
                 <div className="relative">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="text"
                     placeholder="규격명, 번호(예: IEC), 키워드 실시간 검색..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => { setSearchQuery(e.target.value); setMobileView("list"); }}
                     className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-950 text-xs transition-all"
                   />
                 </div>
@@ -552,7 +609,7 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
                 
                 {/* 1) 매칭 문서 카드 목록 */}
-                <div className="space-y-3 overflow-y-auto max-h-[580px] pr-1">
+                <div className={`space-y-3 overflow-y-auto max-h-[580px] pr-1 ${mobileView === "detail" ? "hidden md:block" : ""}`}>
                   {filteredAssets.length === 0 ? (
                     <div className="bg-white py-12 rounded-2xl border text-center text-slate-400 text-xs">
                       매칭되는 지식 자산이 없습니다.
@@ -565,7 +622,7 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                       return (
                         <div
                           key={asset.id}
-                          onClick={() => setSelectedAssetId(asset.id)}
+                          onClick={() => { setSelectedAssetId(asset.id); setMobileView("detail"); }}
                           className={`p-4 rounded-2xl border cursor-pointer transition-all space-y-2 text-xs ${isSelected ? "bg-slate-950 border-slate-950 text-white shadow-md" : "bg-white border-slate-100 hover:border-slate-300"}`}
                         >
                           <div className="flex items-center justify-between gap-2">
@@ -599,7 +656,13 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                 </div>
 
                 {/* 2) 선택된 지식 자산의 정밀 요약 및 행동 유효성 검사 */}
-                <div className="space-y-4">
+                <div className={`space-y-4 ${mobileView === "list" ? "hidden md:block" : ""}`}>
+                  <button
+                    onClick={() => setMobileView("list")}
+                    className="md:hidden flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4" /> 목록으로
+                  </button>
                   {!selectedAsset ? (
                     <div className="bg-white py-24 rounded-2xl border text-center text-slate-400 text-xs">
                       선택된 지식이 없습니다. 좌측 목록에서 카드를 선택해 주세요.
@@ -658,8 +721,14 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                           <div className="flex gap-2">
                             <button
                               onClick={() => {
-                                if (contentText) { setContentText(null); return; }
-                                handleViewContent(selectedAsset);
+                                const isMobile = window.innerWidth < 768;
+                                if (isMobile) {
+                                  if (contentText) { setShowModal(true); return; }
+                                  handleViewContent(selectedAsset, true);
+                                } else {
+                                  if (contentText) { setContentText(null); return; }
+                                  handleViewContent(selectedAsset);
+                                }
                               }}
                               disabled={contentLoading}
                               className="flex-1 py-2 bg-slate-950 hover:bg-slate-800 text-white font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all disabled:opacity-50"
