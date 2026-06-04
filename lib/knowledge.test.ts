@@ -26,30 +26,32 @@ describe('searchKnowledge — source_type 격리', () => {
     process.env.OPENAI_API_KEY = 'mock-key'
   })
 
-  it('태그 없이 호출 시 source_type IN (obsidian, standards) 필터 포함', async () => {
+  it('태그 없이 호출 시 search_knowledge_hybrid 함수 사용 + obsidian·standards 격리', async () => {
     const { searchKnowledge } = await import('./knowledge')
     await searchKnowledge('품질 기준')
     expect(capturedQueries.length).toBeGreaterThan(0)
     const query = capturedQueries[0]
-    expect(query).toContain("source_type IN ('obsidian', 'standards')")
+    // 하이브리드 함수 호출 확인
+    expect(query).toContain('search_knowledge_hybrid')
+    // obsidian·standards 배열 전달 확인
+    expect(query).toContain("ARRAY['obsidian', 'standards']")
+    // tra_approved 혼입 차단 확인
     expect(query).not.toContain('tra_approved')
   })
 
-  it('태그 있을 때도 source_type IN (obsidian, standards) 필터 포함', async () => {
+  it('태그 있을 때도 search_knowledge_hybrid + obsidian·standards 격리', async () => {
     const { searchKnowledge } = await import('./knowledge')
     await searchKnowledge('IEC 규격', { filter: { tags: ['electrical'] } })
     const query = capturedQueries[0]
-    expect(query).toContain("source_type IN ('obsidian', 'standards')")
+    expect(query).toContain('search_knowledge_hybrid')
+    expect(query).toContain("ARRAY['obsidian', 'standards']")
     expect(query).not.toContain('tra_approved')
   })
 
   it('limit은 1~20 사이로 클램핑', async () => {
     const { searchKnowledge } = await import('./knowledge')
-    // limit 초과: 내부적으로 safeLimit = 20으로 clamp
     await searchKnowledge('테스트', { limit: 100 })
-    // limit 미만: safeLimit = 1로 clamp
     await searchKnowledge('테스트', { limit: 0 })
-    // 두 쿼리 모두 실행됨 (에러 없음)
     expect(capturedQueries.length).toBe(2)
   })
 
