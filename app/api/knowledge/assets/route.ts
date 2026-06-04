@@ -10,6 +10,15 @@ type DBRow = {
   metadata: { tags?: string[] }
 }
 
+// 국제규격: IEC, ISO, IEEE, CIGRE (국제 표준화 기구)
+const INTERNATIONAL_ORG = /\b(IEC|ISO|IEEE|CIGRE)\b/
+// 국가규격: 각국 국가 표준 (DIN=독일, BS=영국, JIS=일본, ANSI=미국, KS=한국, GB=중국)
+const NATIONAL_ORG = /\b(DIN|BS EN|BSEN|JIS|ANSI|KS|KGS|GB)\b/
+// 단체규격: 산업협회·단체 표준 (ASTM, NFPA, API, SAE, UL, CSA)
+const ASSOCIATION_ORG = /\b(ASTM|NFPA|API|SAE|UL|CSA)\b/
+// 고객규격: 발주처 사양
+const CUSTOMER_ORG = /KEPCO|한전|고객규격|CUSTOMER/
+
 function classifyDocument(
   sourceType: string,
   title: string,
@@ -18,11 +27,13 @@ function classifyDocument(
   const upper = (title + " " + sourcePath).toUpperCase()
 
   if (sourceType === "standards" || sourceType === "pdf_inbox") {
-    let subCategory: KnowledgeSubCategory = "국제규격"
-    if (/\bKS\b|KGS|KEPCO|국가기술/.test(upper)) subCategory = "국가규격"
-    else if (/TENDER|입찰/.test(upper)) subCategory = "Tender"
-    else if (/\bNFPA\b/.test(upper)) subCategory = "단체규격"
-    return { category: "Standards", subCategory }
+    if (/TENDER|입찰/.test(upper)) return { category: "Standards", subCategory: "Tender" }
+    if (CUSTOMER_ORG.test(upper)) return { category: "Standards", subCategory: "고객규격" }
+    if (NATIONAL_ORG.test(upper)) return { category: "Standards", subCategory: "국가규격" }
+    if (ASSOCIATION_ORG.test(upper)) return { category: "Standards", subCategory: "단체규격" }
+    if (INTERNATIONAL_ORG.test(upper)) return { category: "Standards", subCategory: "국제규격" }
+    // 판별 불가 → 국제규격으로 fallback
+    return { category: "Standards", subCategory: "국제규격" }
   }
 
   if (sourceType === "obsidian") {
@@ -50,7 +61,9 @@ function detectPublisher(title: string, sourcePath: string): string {
 }
 
 function detectYear(title: string, sourcePath: string): string {
-  const match = (title + " " + sourcePath).match(/20\d{2}/)
+  // 실제 연도 패턴: 하이픈·공백·언더스코어 뒤 또는 문장 끝에 있는 201x~202x
+  // 규격 번호(IEC 62067, DIN 2078 등) 안의 숫자와 구분하기 위해 앞에 \D 경계 요구
+  const match = (title + " " + sourcePath).match(/(?<![0-9])20(1\d|2[0-9])(?![0-9])/)
   return match ? match[0] : "-"
 }
 
