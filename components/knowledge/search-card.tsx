@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import type { KnowledgeChunk } from "@/lib/knowledge"
+import { MarkdownContent } from "@/components/ui/markdown-content"
 import { ChevronDown, ChevronUp } from "lucide-react"
 
 interface SearchCardProps {
@@ -49,15 +50,14 @@ export function SearchCard({ chunk }: SearchCardProps) {
 
       {!expanded ? (
         <div className="max-h-20 overflow-hidden relative">
-          <p className="text-xs text-slate-600 leading-5 whitespace-pre-line break-words">{chunk.content}</p>
+          <MarkdownContent content={chunk.content} className="text-xs" />
           <div className="absolute bottom-0 left-0 right-0 h-6 bg-linear-to-t from-white to-transparent pointer-events-none" />
         </div>
       ) : (
-        <div className="max-h-96 overflow-y-auto rounded-lg border border-slate-100 bg-slate-50 p-3 space-y-1">
-          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">PDF 원문 텍스트</p>
+        <div className="max-h-96 overflow-y-auto rounded-lg border border-slate-100 bg-white p-3">
           {loading
             ? <p className="text-xs text-slate-400 animate-pulse">불러오는 중…</p>
-            : <div className="text-xs text-slate-700 leading-6 whitespace-pre-line break-words">{fullText ?? chunk.content}</div>
+            : <MarkdownContent content={fullText ?? chunk.content} className="text-xs" />
           }
         </div>
       )}
