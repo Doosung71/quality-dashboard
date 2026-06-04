@@ -146,8 +146,7 @@ export default function FeedbackBoard({ initial }: { initial: FeedbackItem[] }) 
   const [error, setError] = useState("")
   const fileRef = useRef<HTMLInputElement>(null)
 
-  async function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files ?? [])
+  async function uploadFiles(files: File[]) {
     if (files.length === 0) return
     if (uploadedUrls.length + files.length > 3) {
       setError("이미지는 최대 3장까지 첨부할 수 있습니다")
@@ -171,7 +170,21 @@ export default function FeedbackBoard({ initial }: { initial: FeedbackItem[] }) 
     }
     setUploadedUrls((prev) => [...prev, ...newUrls])
     setUploading(false)
+  }
+
+  async function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    await uploadFiles(Array.from(e.target.files ?? []))
     if (fileRef.current) fileRef.current.value = ""
+  }
+
+  async function handlePaste(e: React.ClipboardEvent<HTMLTextAreaElement>) {
+    const imageItems = Array.from(e.clipboardData.items).filter((item) =>
+      item.type.startsWith("image/")
+    )
+    if (imageItems.length === 0) return
+    e.preventDefault()
+    const files = imageItems.map((item) => item.getAsFile()).filter(Boolean) as File[]
+    await uploadFiles(files)
   }
 
   function removeImage(url: string) {
@@ -213,6 +226,7 @@ export default function FeedbackBoard({ initial }: { initial: FeedbackItem[] }) 
           placeholder="예: ○○ 화면에서 버튼을 눌렀을 때 오류가 발생합니다. 아래 캡처 참고해주세요."
           value={text}
           onChange={(e) => setText(e.target.value)}
+          onPaste={handlePaste}
         />
 
         {uploadedUrls.length > 0 && (
@@ -232,16 +246,21 @@ export default function FeedbackBoard({ initial }: { initial: FeedbackItem[] }) 
           </div>
         )}
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
             disabled={uploading || uploadedUrls.length >= 3}
             className="text-sm px-4 py-2 rounded-lg border border-zinc-300 text-zinc-600 hover:bg-zinc-50 disabled:opacity-40 flex items-center gap-1.5"
           >
-            {uploading ? "업로드 중…" : "📎 화면 캡처 첨부"}
+            {uploading ? "업로드 중…" : "📎 파일로 첨부"}
             {uploadedUrls.length > 0 && <span className="text-xs text-zinc-400">({uploadedUrls.length}/3)</span>}
           </button>
+          {!uploading && uploadedUrls.length < 3 && (
+            <span className="text-xs text-zinc-400">
+              또는 위 입력창에 <kbd className="bg-zinc-100 border border-zinc-300 rounded px-1 py-0.5 font-mono text-[11px]">Ctrl+V</kbd> 로 스크린샷 붙여넣기
+            </span>
+          )}
           <input
             ref={fileRef}
             type="file"

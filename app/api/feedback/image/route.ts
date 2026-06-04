@@ -17,7 +17,8 @@ export async function POST(req: Request) {
   if (file.size > MAX_BYTES)
     return NextResponse.json({ error: "파일 크기는 4MB 이하여야 합니다" }, { status: 400 })
 
-  const ext = file.name.split(".").pop() ?? "png"
+  const extMap: Record<string, string> = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp", "image/gif": "gif" }
+  const ext = (file.name.split(".").pop() || extMap[file.type]) ?? "png"
   const blob = await put(`feedback/${Date.now()}-${crypto.randomUUID()}.${ext}`, file, {
     access: "public",
     contentType: file.type,
