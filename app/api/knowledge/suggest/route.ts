@@ -61,7 +61,11 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const chunks = await searchKnowledge(query, { limit: 3 })
+    // 능동 추천은 노이즈가 적은 큐레이션 소스만 사용 (pdf_inbox 원본 PDF 제외)
+    const chunks = await searchKnowledge(query, {
+      limit: 3,
+      sourceTypes: ['obsidian', 'standards'],
+    })
     const results = chunks.map((c) => ({
       title: c.title,
       content: c.content.slice(0, 200),

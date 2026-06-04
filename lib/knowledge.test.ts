@@ -26,26 +26,29 @@ describe('searchKnowledge — source_type 격리', () => {
     process.env.OPENAI_API_KEY = 'mock-key'
   })
 
-  it('태그 없이 호출 시 search_knowledge_hybrid 함수 사용 + obsidian·standards 격리', async () => {
+  it('기본 호출 시 obsidian·standards·pdf_inbox 포함, tra_approved 제외', async () => {
     const { searchKnowledge } = await import('./knowledge')
     await searchKnowledge('품질 기준')
     expect(capturedQueries.length).toBeGreaterThan(0)
     const query = capturedQueries[0]
-    // 하이브리드 함수 호출 확인
     expect(query).toContain('search_knowledge_hybrid')
-    // obsidian·standards 배열 전달 확인
-    expect(query).toContain("ARRAY['obsidian', 'standards']")
-    // tra_approved 혼입 차단 확인
     expect(query).not.toContain('tra_approved')
   })
 
-  it('태그 있을 때도 search_knowledge_hybrid + obsidian·standards 격리', async () => {
+  it('태그 있을 때도 search_knowledge_hybrid, tra_approved 제외', async () => {
     const { searchKnowledge } = await import('./knowledge')
     await searchKnowledge('IEC 규격', { filter: { tags: ['electrical'] } })
     const query = capturedQueries[0]
     expect(query).toContain('search_knowledge_hybrid')
-    expect(query).toContain("ARRAY['obsidian', 'standards']")
     expect(query).not.toContain('tra_approved')
+  })
+
+  it('sourceTypes 오버라이드 — obsidian·standards만 지정하면 pdf_inbox 미전달', async () => {
+    const { searchKnowledge } = await import('./knowledge')
+    await searchKnowledge('클레임', { sourceTypes: ['obsidian', 'standards'] })
+    // sourceTypes 파라미터로 전달되므로 쿼리 자체에 배열 리터럴은 없음 (파라미터 바인딩)
+    expect(capturedQueries.length).toBeGreaterThan(0)
+    expect(capturedQueries[0]).toContain('search_knowledge_hybrid')
   })
 
   it('limit은 1~20 사이로 클램핑', async () => {

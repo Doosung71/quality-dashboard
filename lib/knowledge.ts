@@ -22,7 +22,11 @@ export interface KnowledgeChunk {
 export interface KnowledgeSearchOptions {
   limit?: number
   filter?: { tags?: string[] }
+  /** 검색 대상 source_type 목록. 기본: obsidian·standards·pdf_inbox. tra_approved는 항상 제외. */
+  sourceTypes?: string[]
 }
+
+const DEFAULT_SOURCE_TYPES = ['obsidian', 'standards', 'pdf_inbox']
 
 async function createQueryEmbedding(query: string): Promise<number[]> {
   const res = await fetch("https://api.openai.com/v1/embeddings", {
@@ -43,7 +47,7 @@ async function createQueryEmbedding(query: string): Promise<number[]> {
 
 export async function searchKnowledge(
   query: string,
-  { limit = 5, filter }: KnowledgeSearchOptions = {}
+  { limit = 5, filter, sourceTypes = DEFAULT_SOURCE_TYPES }: KnowledgeSearchOptions = {}
 ): Promise<KnowledgeChunk[]> {
   if (!process.env.DATABASE_URL_UNPOOLED) {
     throw new Error("[knowledge] DATABASE_URL_UNPOOLED 환경변수가 설정되지 않았습니다.")
@@ -62,7 +66,7 @@ export async function searchKnowledge(
   let rows: unknown[]
 
   // search_knowledge_hybrid: 벡터 코사인 유사도 + FTS 키워드 RRF 결합 검색
-  // source_types: tra_approved 격리 정책 유지 (obsidian·standards·pdf_inbox 포함)
+  // tra_approved 격리 정책 유지. sourceTypes 인자로 호출자가 범위 제어 가능.
   if (tags) {
     // 태그 필터: 후보를 넉넉히 뽑아 post-filter 적용
     rows = await sql`
@@ -72,7 +76,7 @@ export async function searchKnowledge(
         ${embStr}::vector,
         ${query},
         ${safeLimit * 3},
-        ARRAY['obsidian', 'standards', 'pdf_inbox'],
+        ${sourceTypes}::text[],
         60
       )
       WHERE metadata->'tags' @> ${JSON.stringify(tags)}::jsonb
@@ -86,7 +90,7 @@ export async function searchKnowledge(
         ${embStr}::vector,
         ${query},
         ${safeLimit},
-        ARRAY['obsidian', 'standards', 'pdf_inbox'],
+        ${sourceTypes}::text[],
         60
       )
     `
