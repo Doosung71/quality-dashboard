@@ -98,7 +98,7 @@ export async function GET() {
         LEFT(content, 200) AS summary,
         metadata
       FROM knowledge_chunks
-      WHERE source_type IN ('obsidian', 'standards', 'pdf_inbox')
+      WHERE source_type IN ('standards', 'pdf_inbox')
       ORDER BY source_path, created_at ASC
     `) as unknown as DBRow[]
 
