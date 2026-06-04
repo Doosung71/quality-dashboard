@@ -29,7 +29,8 @@ export interface KnowledgeAsset {
   summary: string;
   fileSize?: string;
   keywords: string[];
-  linkUrl?: string; // 가상의 파일 링크
+  linkUrl?: string;
+  sourcePath?: string; // knowledge_chunks의 원본 경로 (내용 조회용)
 }
 
 export interface KnowledgeRepositoryData {

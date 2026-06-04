@@ -117,6 +117,7 @@ export async function GET() {
         publishYear: detectYear(title, r.source_path),
         summary: r.summary?.slice(0, 150) || "",
         keywords,
+        sourcePath: r.source_path,
       }
     })
 

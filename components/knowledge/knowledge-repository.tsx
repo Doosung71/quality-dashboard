@@ -14,8 +14,7 @@ import {
   Plus, 
   X, 
   PlusCircle, 
-  Download, 
-  Eye, 
+  Eye,
   Calendar,
   BookOpen,
   Layers,
@@ -52,6 +51,7 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
   useEffect(() => {
     setAssets(data.assets);
     setSelectedAssetId(data.assets[0]?.id || "");
+    setContentText(null);
   }, [data]);
   
   // 트리 구조 네비게이션 상태
@@ -184,12 +184,22 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
     setShowAddForm(false);
   };
 
-  // 가상의 다운로드 시뮬레이션
-  const handleDownload = (asset: KnowledgeAsset) => {
-    alert(`[지식 저장소 보안 통제]
-문서명: ${asset.title}
-파일명: ${asset.code ?? "DOCUMENT"}_QMS_2.0.pdf (${asset.fileSize ?? "Unknown Size"})
-다운로드 요청이 승인되었습니다. 사내 보안 등급에 따라 감사 로그가 남습니다.`);
+  const [contentText, setContentText] = useState<string | null>(null);
+  const [contentLoading, setContentLoading] = useState(false);
+
+  const handleViewContent = async (asset: KnowledgeAsset) => {
+    if (!asset.sourcePath) return;
+    setContentText(null);
+    setContentLoading(true);
+    try {
+      const res = await fetch(`/api/knowledge/content?path=${encodeURIComponent(asset.sourcePath)}`);
+      const data = await res.json();
+      setContentText(data.text || "내용 없음");
+    } catch {
+      setContentText("내용을 불러오는 데 실패했습니다.");
+    } finally {
+      setContentLoading(false);
+    }
   };
 
   return (
@@ -612,26 +622,27 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                         </div>
                       </div>
 
-                      {/* 파일 다운로드 / 뷰어 연동 버튼 */}
-                      <div className="pt-3 border-t flex gap-2">
-                        <button
-                          onClick={() => handleDownload(selectedAsset)}
-                          className="flex-1 py-2 bg-slate-950 hover:bg-slate-800 text-white font-bold rounded-lg flex items-center justify-center gap-1 transition-all"
-                        >
-                          <Download className="w-3.5 h-3.5" /> 보안 다운로드
-                        </button>
-                        {selectedAsset.code && (
-                          <a
-                            href={`/references`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="px-3 py-2 border border-slate-200 text-slate-700 rounded-lg hover:border-slate-800 font-bold flex items-center justify-center transition-all"
-                            title="입찰분석 References 폴더와 연동"
+                      {/* 내용 보기 */}
+                      {selectedAsset.sourcePath && (
+                        <div className="pt-3 border-t space-y-2">
+                          <button
+                            onClick={() => {
+                              if (contentText) { setContentText(null); return; }
+                              handleViewContent(selectedAsset);
+                            }}
+                            disabled={contentLoading}
+                            className="w-full py-2 bg-slate-950 hover:bg-slate-800 text-white font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all disabled:opacity-50"
                           >
                             <Eye className="w-3.5 h-3.5" />
-                          </a>
-                        )}
-                      </div>
+                            {contentLoading ? "불러오는 중…" : contentText ? "내용 접기" : "내용 보기"}
+                          </button>
+                          {contentText && (
+                            <div className="max-h-80 overflow-y-auto rounded-lg border border-slate-100 bg-slate-50 p-3 text-[10px] text-slate-700 leading-relaxed whitespace-pre-wrap font-mono">
+                              {contentText}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
