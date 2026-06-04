@@ -1,14 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Sparkles, Globe, Link2, FileText } from "lucide-react";
 import type { KnowledgeChunk } from "@/lib/knowledge";
 import { SearchCard } from "@/components/knowledge/search-card";
 import { knowledgeRepositoryData } from "@/data/knowledge.data";
+import type { KnowledgeRepositoryData } from "@/types/knowledge";
 import { KnowledgeRepository } from "@/components/knowledge/knowledge-repository";
 import { MarkdownContent } from "@/components/ui/markdown-content";
 
 export default function KnowledgePage() {
+  const [repoData, setRepoData] = useState<KnowledgeRepositoryData>(knowledgeRepositoryData);
+  const [repoLoading, setRepoLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/knowledge/assets")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.assets?.length > 0) setRepoData(d);
+      })
+      .catch(() => {/* fallback: 정적 JSON 유지 */})
+      .finally(() => setRepoLoading(false));
+  }, []);
+
   const [query, setQuery] = useState("");
   const [chunks, setChunks] = useState<KnowledgeChunk[]>([]);
   const [webResults, setWebResults] = useState<{ title: string; snippet: string; url: string }[]>([]);
@@ -190,9 +204,10 @@ export default function KnowledgePage() {
         </p>
       </div>
 
-      <KnowledgeRepository 
-        data={knowledgeRepositoryData} 
-        ragSearchElement={ragSearchElement} 
+      <KnowledgeRepository
+        data={repoData}
+        repoLoading={repoLoading}
+        ragSearchElement={ragSearchElement}
       />
     </div>
   );

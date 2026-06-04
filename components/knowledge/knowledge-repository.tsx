@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { 
   KnowledgeAsset, 
   KnowledgeCategory, 
@@ -26,7 +26,7 @@ import {
 
 interface KnowledgeRepositoryProps {
   data: { assets: KnowledgeAsset[] };
-  // 기존 RAG 검색 기능을 탭에서 처리하기 위해 콜백 및 렌더링 콤포넌트 지원
+  repoLoading?: boolean;
   ragSearchElement: React.ReactNode;
 }
 
@@ -44,10 +44,15 @@ const SUB_CATEGORIES_BY_MAIN: Record<KnowledgeCategory, KnowledgeSubCategory[]> 
   "Others": ["가이드라인", "매뉴얼", "기타"]
 };
 
-export function KnowledgeRepository({ data, ragSearchElement }: KnowledgeRepositoryProps) {
+export function KnowledgeRepository({ data, repoLoading = false, ragSearchElement }: KnowledgeRepositoryProps) {
   const [activeTab, setActiveTab] = useState<"browser" | "rag">("browser");
   const [assets, setAssets] = useState<KnowledgeAsset[]>(data.assets);
   const [selectedAssetId, setSelectedAssetId] = useState<string>(data.assets[0]?.id || "");
+
+  useEffect(() => {
+    setAssets(data.assets);
+    setSelectedAssetId(data.assets[0]?.id || "");
+  }, [data]);
   
   // 트리 구조 네비게이션 상태
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({
@@ -218,7 +223,9 @@ export function KnowledgeRepository({ data, ragSearchElement }: KnowledgeReposit
             <div className="bg-white p-4.5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
               <div className="space-y-0.5">
                 <p className="text-[10px] font-semibold text-slate-500 tracking-wider">등록 지식자산</p>
-                <h3 className="text-xl font-bold text-slate-900">{kpis.total}건</h3>
+                <h3 className="text-xl font-bold text-slate-900">
+                  {repoLoading ? <span className="text-slate-300 animate-pulse">…</span> : `${kpis.total}건`}
+                </h3>
               </div>
               <div className="w-10 h-10 bg-slate-50 text-slate-500 rounded-xl flex items-center justify-center">
                 <BookOpen className="w-5.5 h-5.5" />
