@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma"
 import type { Session } from "next-auth"
 import type { UserStatus } from "@/lib/generated/prisma/enums"
 
+export const TEST_MODE = process.env.TEST_MODE === "true"
+
 function restrictionExpired(status: UserStatus, restrictedUntil: Date | string | null) {
   return status === "RESTRICTED" && !!restrictedUntil && new Date(restrictedUntil) < new Date()
 }

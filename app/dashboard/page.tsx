@@ -1,7 +1,7 @@
 import { signOut } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { isAdmin } from "@/lib/admin"
-import { requireActivePageSession } from "@/lib/session-guard"
+import { requireActivePageSession, TEST_MODE } from "@/lib/session-guard"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { displayName } from "@/lib/display-name"
@@ -48,7 +48,7 @@ export default async function DashboardPage() {
   const session = await requireActivePageSession()
 
   const tenders = await prisma.tender.findMany({
-    where: session.user.role === "PRACTITIONER" ? { createdById: session.user.id } : undefined,
+    where: !TEST_MODE && session.user.role === "PRACTITIONER" ? { createdById: session.user.id } : undefined,
     orderBy: { createdAt: "desc" },
     include: {
       documents: { take: 1 },
@@ -82,7 +82,7 @@ export default async function DashboardPage() {
     : 0
 
   const pendingReviews =
-    session.user.role === "TEAM_LEAD"
+    (TEST_MODE || session.user.role === "TEAM_LEAD")
       ? await prisma.analysis.findMany({
           where: { status: "DRAFT", submittedAt: { not: null } },
           orderBy: { submittedAt: "asc" },
@@ -91,7 +91,7 @@ export default async function DashboardPage() {
       : []
 
   const pendingFinalReviews =
-    session.user.role === "DIRECTOR"
+    (TEST_MODE || session.user.role === "DIRECTOR")
       ? await prisma.analysis.findMany({
           where: { status: "REVIEWED" },
           orderBy: { updatedAt: "asc" },
@@ -178,7 +178,7 @@ export default async function DashboardPage() {
               />
             </div>
             <CableHeroCard />
-            {session.user.role === "PRACTITIONER" && (
+            {(TEST_MODE || session.user.role === "PRACTITIONER") && (
               <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
                 <UploadForm />
               </div>
@@ -188,7 +188,7 @@ export default async function DashboardPage() {
           {/* 우측: 결재 대기 패널 + 입찰 목록 */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             {/* 결재 대기 패널 (팀장 / 부문장) */}
-            {session.user.role === "DIRECTOR" && (
+            {(TEST_MODE || session.user.role === "DIRECTOR") && (
               <section className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
                 <h2 className="text-xs font-extrabold text-slate-400 tracking-wider uppercase flex items-center gap-1.5">
                   <CheckCircle2 className="w-4.5 h-4.5 text-emerald-500" /> 최종 승인 대기 목록 ({pendingFinalReviews.length}건)
@@ -209,7 +209,7 @@ export default async function DashboardPage() {
                 )}
               </section>
             )}
-            {session.user.role === "TEAM_LEAD" && (
+            {(TEST_MODE || session.user.role === "TEAM_LEAD") && (
               <section className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
                 <h2 className="text-xs font-extrabold text-slate-400 tracking-wider uppercase flex items-center gap-1.5">
                   <Clock className="w-4.5 h-4.5 text-amber-500" /> 부서 검토 대기 목록 ({pendingReviews.length}건)
@@ -238,7 +238,7 @@ export default async function DashboardPage() {
                   ? analysisStatusLabel(analysis.status, analysis.submittedAt, lastAction)
                   : ""
                 const isApproved = analysis?.status === "REVIEWED" || analysis?.status === "APPROVED"
-                const canEdit = session.user.role === "PRACTITIONER"
+                const canEdit = TEST_MODE || session.user.role === "PRACTITIONER"
 
                 const threadHistory = (analysis?.history ?? [])
                   .filter((h) => h.reason)
