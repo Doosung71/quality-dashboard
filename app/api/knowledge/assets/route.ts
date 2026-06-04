@@ -10,12 +10,13 @@ type DBRow = {
   metadata: { tags?: string[] }
 }
 
+// \b 대신 (?<![A-Z])...(?![A-Z]) 사용 — 언더스코어(_)는 \w에 포함되어 \b가 ASTM_B179 등에서 오동작함
 // 국제규격: IEC, ISO, IEEE, CIGRE (국제 표준화 기구)
-const INTERNATIONAL_ORG = /\b(IEC|ISO|IEEE|CIGRE)\b/
-// 국가규격: 각국 국가 표준 (DIN=독일, BS=영국, JIS=일본, ANSI=미국, KS=한국, GB=중국)
-const NATIONAL_ORG = /\b(DIN|BS EN|BSEN|JIS|ANSI|KS|KGS|GB)\b/
+const INTERNATIONAL_ORG = /(?<![A-Z])(IEC|ISO|IEEE|CIGRE)(?![A-Z])/
+// 국가규격: 각국 국가 표준 (DIN=독일, BSEN/BS=영국, JIS=일본, ANSI=미국, KS=한국, GB=중국)
+const NATIONAL_ORG = /(?<![A-Z])(BSEN|DIN|JIS|ANSI|KGS|KS|GB)(?![A-Z])|(?<![A-Z])BS(?![A-Z])/
 // 단체규격: 산업협회·단체 표준 (ASTM, NFPA, API, SAE, UL, CSA)
-const ASSOCIATION_ORG = /\b(ASTM|NFPA|API|SAE|UL|CSA)\b/
+const ASSOCIATION_ORG = /(?<![A-Z])(ASTM|NFPA|API|SAE|CSA)(?![A-Z])|(?<![A-Z])UL(?![A-Z])/
 // 고객규격: 발주처 사양
 const CUSTOMER_ORG = /KEPCO|한전|고객규격|CUSTOMER/
 
@@ -45,18 +46,21 @@ function classifyDocument(
   return { category: "Others", subCategory: "기타" }
 }
 
+const P = (pat: string) => new RegExp(`(?<![A-Z])${pat}(?![A-Z])`)
 function detectPublisher(title: string, sourcePath: string): string {
   const t = (title + " " + sourcePath).toUpperCase()
-  if (/\bIEC\b/.test(t)) return "IEC"
-  if (/\bISO\b/.test(t)) return "ISO"
-  if (/\bIEEE\b/.test(t)) return "IEEE"
-  if (/\bCIGRE\b/.test(t)) return "CIGRE"
-  if (/\bASTM\b/.test(t)) return "ASTM"
-  if (/\bBS EN\b|\bBSEN\b/.test(t)) return "BSI"
-  if (/\bDIN\b/.test(t)) return "DIN"
-  if (/\bUL\b/.test(t)) return "UL"
-  if (/\bKS\b/.test(t)) return "국가기술표준원"
-  if (/\bKGS\b/.test(t)) return "한국가스안전공사"
+  if (P("IEC").test(t)) return "IEC"
+  if (P("ISO").test(t)) return "ISO"
+  if (P("IEEE").test(t)) return "IEEE"
+  if (P("CIGRE").test(t)) return "CIGRE"
+  if (P("ASTM").test(t)) return "ASTM"
+  if (P("BSEN").test(t) || P("BS").test(t)) return "BSI"
+  if (P("DIN").test(t)) return "DIN"
+  if (P("UL").test(t)) return "UL"
+  if (P("KGS").test(t)) return "한국가스안전공사"
+  if (P("KS").test(t)) return "국가기술표준원"
+  if (P("NFPA").test(t)) return "NFPA"
+  if (P("API").test(t)) return "API"
   return "내부"
 }
 
