@@ -62,7 +62,7 @@ export async function searchKnowledge(
   let rows: unknown[]
 
   // search_knowledge_hybrid: 벡터 코사인 유사도 + FTS 키워드 RRF 결합 검색
-  // source_types: tra_approved 격리 정책 유지 (obsidian·standards만 포함)
+  // source_types: tra_approved 격리 정책 유지 (obsidian·standards·pdf_inbox 포함)
   if (tags) {
     // 태그 필터: 후보를 넉넉히 뽑아 post-filter 적용
     rows = await sql`
@@ -72,7 +72,7 @@ export async function searchKnowledge(
         ${embStr}::vector,
         ${query},
         ${safeLimit * 3},
-        ARRAY['obsidian', 'standards'],
+        ARRAY['obsidian', 'standards', 'pdf_inbox'],
         60
       )
       WHERE metadata->'tags' @> ${JSON.stringify(tags)}::jsonb
@@ -86,7 +86,7 @@ export async function searchKnowledge(
         ${embStr}::vector,
         ${query},
         ${safeLimit},
-        ARRAY['obsidian', 'standards'],
+        ARRAY['obsidian', 'standards', 'pdf_inbox'],
         60
       )
     `
