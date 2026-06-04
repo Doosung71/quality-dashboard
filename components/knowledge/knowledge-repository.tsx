@@ -644,8 +644,11 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                             {contentLoading ? "불러오는 중…" : contentText ? "내용 접기" : "내용 보기"}
                           </button>
                           {contentText && (
-                            <div className="max-h-96 overflow-y-auto rounded-lg border border-slate-100 bg-white p-4">
-                              <MarkdownContent content={contentText} className="text-[11px]" />
+                            <div className="max-h-96 overflow-y-auto rounded-lg border border-slate-100 bg-slate-50 p-4 space-y-2">
+                              <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">PDF 원문 텍스트</p>
+                              <div className="text-[11px] text-slate-700 leading-6 whitespace-pre-line break-words">
+                                {contentText}
+                              </div>
                             </div>
                           )}
                         </div>
