@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import type { 
-  KnowledgeAsset, 
-  KnowledgeCategory, 
-  KnowledgeSubCategory 
+import type {
+  KnowledgeAsset,
+  KnowledgeCategory,
+  KnowledgeSubCategory
 } from "@/types/knowledge";
+import { MarkdownContent } from "@/components/ui/markdown-content";
 import { 
   Folder, 
   FolderOpen, 
@@ -53,6 +54,12 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
     setSelectedAssetId(data.assets[0]?.id || "");
     setContentText(null);
   }, [data]);
+
+  // 자산 변경 시 이전 내용 즉시 초기화
+  useEffect(() => {
+    setContentText(null);
+    setContentLoading(false);
+  }, [selectedAssetId]);
   
   // 트리 구조 네비게이션 상태
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({
@@ -637,8 +644,8 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                             {contentLoading ? "불러오는 중…" : contentText ? "내용 접기" : "내용 보기"}
                           </button>
                           {contentText && (
-                            <div className="max-h-80 overflow-y-auto rounded-lg border border-slate-100 bg-slate-50 p-3 text-[10px] text-slate-700 leading-relaxed whitespace-pre-wrap font-mono">
-                              {contentText}
+                            <div className="max-h-96 overflow-y-auto rounded-lg border border-slate-100 bg-white p-4">
+                              <MarkdownContent content={contentText} className="text-[11px]" />
                             </div>
                           )}
                         </div>
