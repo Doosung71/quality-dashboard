@@ -635,8 +635,8 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                       {/* 요약 */}
                       <div className="space-y-1.5">
                         <span className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">규격 합격기준 및 기술 핵심요약</span>
-                        <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-100 leading-relaxed text-slate-700 font-medium">
-                          {selectedAsset.summary}
+                        <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-100">
+                          <MarkdownContent content={selectedAsset.summary} className="text-[11px]" />
                         </div>
                       </div>
 
