@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import type { NCRsData, NCR, NCRStatus, NCRSeverity, NCRDispositionType } from "@/types/ncr";
-import { 
+import {
   ShieldAlert,
   CheckCircle2,
   Calendar,
@@ -14,12 +14,14 @@ import {
   Search,
   SlidersHorizontal,
   X,
-  ArrowRightCircle
+  ArrowRightCircle,
+  Plus
 } from "lucide-react";
 
 interface NCRViewProps {
   data: NCRsData;
   canEdit?: boolean;
+  userName?: string;
 }
 
 const STATUS_COLUMNS: { status: NCRStatus; label: string; color: string }[] = [
@@ -38,12 +40,22 @@ function isOverdue(ncr: NCR): boolean {
   return ncr.status !== "Closed" && ncr.targetDate < getToday();
 }
 
-export function NCRView({ data, canEdit = true }: NCRViewProps) {
+export function NCRView({ data, canEdit = true, userName }: NCRViewProps) {
   const [ncrs, setNcrs] = useState<NCR[]>(data.ncrs);
   const [selectedNCR, setSelectedNCR] = useState<NCR | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSeverities, setSelectedSeverities] = useState<NCRSeverity[]>([]);
   const [selectedDispositions, setSelectedDispositions] = useState<NCRDispositionType[]>([]);
+
+  const getDefaultForm = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 14);
+    const targetDate = d.toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+    return { title: "", source: "", severity: "Major" as NCRSeverity, disposition: "TBD" as NCRDispositionType, targetDate, description: "" };
+  };
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState(getDefaultForm);
+  const [formError, setFormError] = useState("");
 
   const TODAY = getToday();
 
@@ -134,6 +146,37 @@ export function NCRView({ data, canEdit = true }: NCRViewProps) {
   // 카드 클릭 처리
   const handleCardClick = (ncr: NCR) => {
     setSelectedNCR(ncr);
+  };
+
+  // 신규 NCR 등록
+  const handleNewNCRSubmit = () => {
+    if (!formData.title.trim() || !formData.source.trim() || !formData.description.trim()) {
+      setFormError("제목, 발생처, 상세 설명은 필수 입력항목입니다.");
+      return;
+    }
+    const maxNum = ncrs.reduce((max, n) => {
+      const num = parseInt(n.id.split("-")[2] || "0");
+      return Math.max(max, num);
+    }, 0);
+    const newId = `NCR-2026-${String(maxNum + 1).padStart(3, "0")}`;
+    const assignee = userName || "등록자";
+    const newNcr: NCR = {
+      id: newId,
+      title: formData.title.trim(),
+      source: formData.source.trim(),
+      severity: formData.severity,
+      status: "Issued",
+      disposition: formData.disposition,
+      issuedDate: TODAY,
+      targetDate: formData.targetDate,
+      assignee,
+      description: formData.description.trim(),
+      timeline: [{ date: TODAY, action: "부적합 발행 (Issued)", user: assignee }],
+    };
+    setNcrs(prev => [newNcr, ...prev]);
+    setFormData(getDefaultForm());
+    setFormError("");
+    setShowForm(false);
   };
 
   // 모의 단계 이동
@@ -235,6 +278,18 @@ export function NCRView({ data, canEdit = true }: NCRViewProps) {
           </div>
         </div>
       </div>
+
+      {/* 신규 NCR 등록 버튼 */}
+      {canEdit && (
+        <div className="flex justify-end">
+          <button
+            onClick={() => { setFormData(getDefaultForm()); setFormError(""); setShowForm(true); }}
+            className="flex items-center gap-1.5 px-4 py-2 bg-slate-950 text-white text-xs font-bold rounded-xl hover:bg-slate-800 transition-all shadow-sm"
+          >
+            <Plus className="w-4 h-4" /> 신규 NCR 등록
+          </button>
+        </div>
+      )}
 
       {/* 2. 검색 및 상세 필터 패널 */}
       <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
@@ -382,6 +437,121 @@ export function NCRView({ data, canEdit = true }: NCRViewProps) {
           );
         })}
       </div>
+
+      {/* 신규 NCR 등록 모달 */}
+      {showForm && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-100 flex flex-col max-h-[90vh]">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
+              <h3 className="font-extrabold text-slate-900 text-base">신규 부적합보고서(NCR) 등록</h3>
+              <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-all">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4 overflow-y-auto flex-1 text-sm">
+              {/* 자동입력 표시 */}
+              <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-3 text-xs text-indigo-700 flex items-center gap-2">
+                <span className="font-bold">자동입력:</span>
+                <span>보고일 <strong>{TODAY}</strong> · 등록자 <strong>{userName || "현재 사용자"}</strong> · 초기 상태 <strong>발행(Issued)</strong></span>
+              </div>
+
+              {formError && (
+                <div className="bg-rose-50 border border-rose-200 rounded-xl p-3 text-xs text-rose-700 font-medium">{formError}</div>
+              )}
+
+              {/* 부적합 제목 */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">부적합 제목 <span className="text-rose-500">*</span></label>
+                <input
+                  type="text"
+                  placeholder="예: 압출 3호기 피복 두께 편차 부적합"
+                  value={formData.title}
+                  onChange={e => setFormData(p => ({ ...p, title: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 text-xs transition-all"
+                />
+              </div>
+
+              {/* 발생처 */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">발생 공장/검사처 <span className="text-rose-500">*</span></label>
+                <input
+                  type="text"
+                  placeholder="예: 구미 1공장, 수입검사 등"
+                  value={formData.source}
+                  onChange={e => setFormData(p => ({ ...p, source: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 text-xs transition-all"
+                />
+              </div>
+
+              {/* 심각도 + 처리방안 */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">심각도</label>
+                  <select
+                    value={formData.severity}
+                    onChange={e => setFormData(p => ({ ...p, severity: e.target.value as NCRSeverity }))}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 text-xs transition-all bg-white"
+                  >
+                    <option value="Critical">Critical (위험)</option>
+                    <option value="Major">Major (중요)</option>
+                    <option value="Minor">Minor (경미)</option>
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">처리방안</label>
+                  <select
+                    value={formData.disposition}
+                    onChange={e => setFormData(p => ({ ...p, disposition: e.target.value as NCRDispositionType }))}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 text-xs transition-all bg-white"
+                  >
+                    <option value="TBD">방안 미정 (TBD)</option>
+                    <option value="Rework">재작업 (Rework)</option>
+                    <option value="Concession">특채 (Concession)</option>
+                    <option value="Scrap">폐기 (Scrap)</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* 완료 예정 기한 */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">완료 예정 기한</label>
+                <input
+                  type="date"
+                  value={formData.targetDate}
+                  onChange={e => setFormData(p => ({ ...p, targetDate: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 text-xs transition-all bg-white"
+                />
+              </div>
+
+              {/* 상세 설명 */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">부적합 현상 및 원인 기술 <span className="text-rose-500">*</span></label>
+                <textarea
+                  rows={4}
+                  placeholder="부적합 발생 현상, 추정 원인, 발견 경위 등을 기술하세요."
+                  value={formData.description}
+                  onChange={e => setFormData(p => ({ ...p, description: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 text-xs transition-all resize-none"
+                />
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-slate-100 flex gap-2 justify-end shrink-0">
+              <button
+                onClick={() => setShowForm(false)}
+                className="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleNewNCRSubmit}
+                className="px-5 py-2 text-xs font-bold bg-slate-950 text-white hover:bg-slate-800 rounded-xl transition-all"
+              >
+                등록하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 4. 부적합 상세 조회 및 조치 사이드바 (슬라이드 패널) */}
       {selectedNCR && (

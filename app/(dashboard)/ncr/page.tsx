@@ -20,7 +20,7 @@ export default async function NCRPage() {
         )}
       </div>
       <Suspense fallback={<div className="text-sm text-slate-500">부적합 데이터를 불러오는 중...</div>}>
-        <NCRView data={ncrsData} canEdit={editable} />
+        <NCRView data={ncrsData} canEdit={editable} userName={session.user.name ?? undefined} />
       </Suspense>
     </div>
   );

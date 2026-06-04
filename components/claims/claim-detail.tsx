@@ -1,10 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import type { Claim, ClaimStatus } from "@/types/claim";
 import { ClaimStatusBadge, ClaimPriorityBadge } from "./claim-badges";
 import { KnowledgeSuggest } from "@/components/ui/knowledge-suggest";
+
+interface Attachment {
+  url: string;
+  name: string;
+  size: number;
+  contentType: string;
+}
 
 const STAGES: { status: ClaimStatus; label: string }[] = [
   { status: "Received",      label: "접수" },
@@ -96,11 +103,37 @@ export function ClaimDetail({ claim, onClose, onMoveStage }: ClaimDetailProps) {
   const [isMoving, setIsMoving] = useState(false);
   const [copied, setCopied] = useState(false);
   const [copyGlow, setCopyGlow] = useState(false);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setIsMoving(false);
     setCopied(false);
+    setAttachments([]);
+    setUploadError("");
   }, [claim?.id]);
+
+  const handleFileUpload = async (file: File) => {
+    setUploading(true);
+    setUploadError("");
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch("/api/board/upload", { method: "POST", body: form });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "업로드 실패");
+      }
+      const data: Attachment = await res.json();
+      setAttachments(prev => [...prev, data]);
+    } catch (e) {
+      setUploadError(e instanceof Error ? e.message : "업로드 중 오류가 발생했습니다.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleCopyReport = async () => {
     if (!claim) return;
@@ -195,6 +228,45 @@ export function ClaimDetail({ claim, onClose, onMoveStage }: ClaimDetailProps) {
             query={`${claim.title} ${claim.description}`}
             label="관련 지식 자동 추천"
           />
+
+          {/* 파일 첨부 */}
+          <div>
+            <h3 className="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+              <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+              </svg>
+              파일 첨부
+            </h3>
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.docx,.xlsx,.pptx,.txt"
+              onChange={e => { const f = e.target.files?.[0]; if (f) handleFileUpload(f); e.target.value = ""; }}
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="w-full border-2 border-dashed border-slate-200 rounded-xl py-3 text-xs font-medium text-slate-400 hover:border-slate-400 hover:text-slate-600 transition-all disabled:opacity-50"
+            >
+              {uploading ? "업로드 중..." : "+ 파일 선택 (PDF·이미지·Office, 최대 10MB)"}
+            </button>
+            {uploadError && (
+              <p className="mt-1.5 text-xs text-rose-600 font-medium">{uploadError}</p>
+            )}
+            {attachments.length > 0 && (
+              <ul className="mt-3 space-y-2">
+                {attachments.map((att, i) => (
+                  <li key={i} className="flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2 border border-slate-100 text-xs">
+                    <a href={att.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium truncate max-w-[240px]">
+                      {att.name}
+                    </a>
+                    <span className="text-slate-400 shrink-0 ml-2">{(att.size / 1024).toFixed(0)} KB</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
           {/* Timeline */}
           <div>
