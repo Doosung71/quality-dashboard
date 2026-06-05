@@ -123,13 +123,12 @@ export function OnboardingModal({ userId, role }: { userId: string; role: string
 
   useEffect(() => {
     if (!userId) return
-    // v2 키로 변경 → 기존 사용자도 업데이트된 온보딩 다시 노출
     const key = `qms_welcomed_v4_${userId}`
-    if (!localStorage.getItem(key)) setShow(true)
+    if (!sessionStorage.getItem(key)) setShow(true)
   }, [userId])
 
   function dismiss() {
-    if (userId) localStorage.setItem(`qms_welcomed_v4_${userId}`, "1")
+    if (userId) sessionStorage.setItem(`qms_welcomed_v4_${userId}`, "1")
     setShow(false)
   }
 
