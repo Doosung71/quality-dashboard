@@ -3,6 +3,7 @@ import facilitiesRaw from "@/data/facilities.json";
 import assetsRaw from "@/data/assets.json";
 import type { FacilitiesData } from "@/types/facility";
 import type { AssetData } from "@/types/asset";
+import { ACTIVE_REPAIR_STATUSES, OCCUPIED_TEST_STATUSES } from "./facilities-utils";
 
 const facilities = facilitiesRaw as unknown as FacilitiesData;
 const assetData  = assetsRaw  as unknown as AssetData;
@@ -85,6 +86,24 @@ describe("assets.json — 무결성 검증", () => {
       if (spaceId != null) {
         expect(allSpaceIds.has(spaceId), `equipment ${eq.id}의 spaceId "${spaceId}" 가 facilities에 없음`).toBe(true);
       }
+    }
+  });
+});
+
+describe("ACTIVE_REPAIR_STATUSES — 수선 삭제 차단 정책", () => {
+  it('"접수"와 "진행중"이 차단 대상에 포함된다', () => {
+    expect(ACTIVE_REPAIR_STATUSES).toContain("접수");
+    expect(ACTIVE_REPAIR_STATUSES).toContain("진행중");
+  });
+
+  it('"완료"와 "보류"는 차단 대상이 아니다 — 이 상태에서는 설비 삭제가 허용된다', () => {
+    expect(ACTIVE_REPAIR_STATUSES).not.toContain("완료");
+    expect(ACTIVE_REPAIR_STATUSES).not.toContain("보류");
+  });
+
+  it("ACTIVE_REPAIR_STATUSES와 OCCUPIED_TEST_STATUSES는 독립적인 상수다", () => {
+    for (const s of ACTIVE_REPAIR_STATUSES) {
+      expect((OCCUPIED_TEST_STATUSES as readonly string[]).includes(s)).toBe(false);
     }
   });
 });

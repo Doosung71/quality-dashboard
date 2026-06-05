@@ -5,6 +5,7 @@ import { parseSpec, parseLogs } from "@/lib/facilities-utils";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import type { AssetData } from "@/types/asset";
+import type { SiteId } from "@/types/facility";
 import type { TestsData } from "@/types/test";
 
 export default async function AssetsPage() {
@@ -22,7 +23,7 @@ export default async function AssetsPage() {
       id:             eq.id,
       hallId:         eq.hallId  ?? undefined,
       yardId:         eq.yardId  ?? undefined,
-      siteId:         eq.siteId  as "gumi" | "donghae",
+      siteId:         eq.siteId  as SiteId,
       category:       eq.category as "시험설비" | "계측설비" | "보조설비",
       name:           eq.name,
       type:           eq.type,

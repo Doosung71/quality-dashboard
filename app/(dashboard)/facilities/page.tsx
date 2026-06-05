@@ -4,6 +4,7 @@ import { FacilitiesView } from "@/components/facilities/facilities-view";
 import { parseSpec, parseLogs } from "@/lib/facilities-utils";
 import type { TestsData } from "@/types/test";
 import type { Equipment } from "@/types/asset";
+import type { SiteId } from "@/types/facility";
 
 export default async function FacilitiesPage() {
   const [equipmentRaw, testPlansRaw] = await Promise.all([
@@ -15,7 +16,7 @@ export default async function FacilitiesPage() {
     id:             eq.id,
     hallId:         eq.hallId  ?? undefined,
     yardId:         eq.yardId  ?? undefined,
-    siteId:         eq.siteId  as "gumi" | "donghae",
+    siteId:         eq.siteId  as SiteId,
     category:       eq.category as "시험설비" | "계측설비" | "보조설비",
     name:           eq.name,
     type:           eq.type,

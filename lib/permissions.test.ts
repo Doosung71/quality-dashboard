@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { canWrite, canAccess } from './permissions'
+import { canWrite, canAccess, canWriteRepair } from './permissions'
 
 describe('canWrite', () => {
   it('DIRECTOR는 모든 섹션에 쓰기 가능', () => {
@@ -50,5 +50,26 @@ describe('canAccess', () => {
     expect(canAccess('PRACTITIONER', '/hr')).toBe(true)
     expect(canAccess('PRACTITIONER', '/intelligence')).toBe(true)
     expect(canAccess(null, '/admin')).toBe(true)
+  })
+})
+
+describe('canWriteRepair', () => {
+  it('DIRECTOR·ADMIN·TEAM_LEAD는 수선 등록·수정 가능', () => {
+    expect(canWriteRepair('DIRECTOR')).toBe(true)
+    expect(canWriteRepair('ADMIN')).toBe(true)
+    expect(canWriteRepair('TEAM_LEAD')).toBe(true)
+  })
+
+  it('PRACTITIONER는 수선 등록·수정 불가 — canWrite("/facilities")와 달리 차단됨', () => {
+    expect(canWriteRepair('PRACTITIONER')).toBe(false)
+  })
+
+  it('알 수 없는 역할은 false', () => {
+    expect(canWriteRepair('UNKNOWN')).toBe(false)
+  })
+
+  it('null·undefined은 false', () => {
+    expect(canWriteRepair(null)).toBe(false)
+    expect(canWriteRepair(undefined)).toBe(false)
   })
 })

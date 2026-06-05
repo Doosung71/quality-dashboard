@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireActiveSession } from "@/lib/session-guard";
 import { prisma } from "@/lib/prisma";
-import { canWrite } from "@/lib/permissions";
+import { canWriteRepair } from "@/lib/permissions";
 
 type Params = { params: Promise<{ id: string }> };
 
-// GET /api/assets/[id]/repairs — 수선 이력 조회 (인증 사용자 전체)
+// GET /api/assets/[id]/repairs — 수선 이력 조회
+// ADR: 수선 이력(비용·업체·등록자 포함)은 담당자 이력과 달리 실무자도 조회 가능하다.
+// 수선 업무 협업에 실무자 가시성이 필요하며, 비밀 정보는 포함되지 않는다.
 export async function GET(_req: NextRequest, { params }: Params) {
   const session = await requireActiveSession();
   if (session instanceof NextResponse) return session;
@@ -44,8 +46,8 @@ export async function POST(req: NextRequest, { params }: Params) {
   if (session instanceof NextResponse) return session;
 
   const role = session.user.role as string;
-  if (!canWrite(role, "/facilities")) {
-    return NextResponse.json({ error: "권한이 없습니다." }, { status: 403 });
+  if (!canWriteRepair(role)) {
+    return NextResponse.json({ error: "권한이 없습니다. TEAM_LEAD 이상만 수선을 등록할 수 있습니다." }, { status: 403 });
   }
 
   const reporterId = session.user.id;
@@ -64,7 +66,6 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   const repair = await prisma.equipmentRepair.create({
     data: {
-      id:          `repair-${Date.now()}`,
       equipmentId: id,
       type,
       title,
@@ -102,13 +103,14 @@ export async function POST(req: NextRequest, { params }: Params) {
 }
 
 // PATCH /api/assets/[id]/repairs — 수선 상태 업데이트 (result, status, completedAt)
+// 정책: TEAM_LEAD 이상은 담당 설비 내 모든 수선을 수정할 수 있다.
 export async function PATCH(req: NextRequest, { params }: Params) {
   const session = await requireActiveSession();
   if (session instanceof NextResponse) return session;
 
   const role = session.user.role as string;
-  if (!canWrite(role, "/facilities")) {
-    return NextResponse.json({ error: "권한이 없습니다." }, { status: 403 });
+  if (!canWriteRepair(role)) {
+    return NextResponse.json({ error: "권한이 없습니다. TEAM_LEAD 이상만 수선을 수정할 수 있습니다." }, { status: 403 });
   }
 
   const { id } = await params;

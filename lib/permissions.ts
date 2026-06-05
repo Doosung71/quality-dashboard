@@ -50,3 +50,12 @@ export function canWrite(role: string | null | undefined, section: string): bool
 export function canAccess(_role: string | null | undefined, _section: string): boolean {
   return true
 }
+
+// 수선 이력 등록·수정은 PRACTITIONER를 제외한 TEAM_LEAD 이상만 허용.
+// canWrite("/facilities")는 PRACTITIONER도 통과하므로 별도 함수로 분리한다.
+const REPAIR_WRITE_ROLES = ["DIRECTOR", "ADMIN", "TEAM_LEAD"] as const;
+
+export function canWriteRepair(role: string | null | undefined): boolean {
+  if (!role) return false;
+  return (REPAIR_WRITE_ROLES as readonly string[]).includes(role);
+}

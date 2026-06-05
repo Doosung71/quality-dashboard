@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireActiveSession } from "@/lib/session-guard";
 import { prisma } from "@/lib/prisma";
 import { canWrite } from "@/lib/permissions";
-import { OCCUPIED_TEST_STATUSES } from "@/lib/facilities-utils";
+import { OCCUPIED_TEST_STATUSES, ACTIVE_REPAIR_STATUSES } from "@/lib/facilities-utils";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -126,6 +126,21 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
       {
         error: "진행 중인 시험 계획이 있어 설비를 삭제할 수 없습니다.",
         activeTests: activeTests.map((t) => ({ id: t.id, projectName: t.projectName, status: t.status })),
+      },
+      { status: 409 }
+    );
+  }
+
+  const activeRepairs = await prisma.equipmentRepair.findMany({
+    where: { equipmentId: id, status: { in: [...ACTIVE_REPAIR_STATUSES] } },
+    select: { id: true, title: true, status: true },
+  });
+
+  if (activeRepairs.length > 0) {
+    return NextResponse.json(
+      {
+        error: "처리 중인 수선 이력이 있어 설비를 삭제할 수 없습니다. 수선을 완료 또는 보류 처리 후 삭제하세요.",
+        activeRepairs: activeRepairs.map((r) => ({ id: r.id, title: r.title, status: r.status })),
       },
       { status: 409 }
     );

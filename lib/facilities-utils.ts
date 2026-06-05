@@ -18,6 +18,10 @@ export function computeStatus(eq: Equipment): ComputedStatus {
 export const OCCUPIED_TEST_STATUSES = ["준비중", "시험중", "지연"] as const;
 export type OccupiedTestStatus = (typeof OCCUPIED_TEST_STATUSES)[number];
 
+// 진행 중 수선 상태 상수 — 이 상태가 있는 설비는 삭제 차단
+export const ACTIVE_REPAIR_STATUSES = ["접수", "진행중"] as const;
+export type ActiveRepairStatus = (typeof ACTIVE_REPAIR_STATUSES)[number];
+
 // 날짜 형식·순서 + round-trip 검증
 // round-trip: new Date("2026-02-31")은 JS에서 롤오버되므로 역직렬화 불일치로 실제 불가 날짜 차단
 const DATE_RE = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
