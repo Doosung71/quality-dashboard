@@ -14,7 +14,7 @@ const titles: Record<string, string> = {
   "/qcost": "품질 비용 관리",
   "/claims": "고객 클레임",
   "/ncr": "부적합품보고 (NCR)",
-  "/vendors": "검사 업무",
+  "/vendors": "입고품질관리",
   "/knowledge": "지식 관리 (QKM)",
   "/facilities": "시험 및 품질 보증",
   "/assets": "자산 관리",

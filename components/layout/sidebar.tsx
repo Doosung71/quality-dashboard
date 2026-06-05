@@ -44,13 +44,24 @@ const ALL_NAV: NavItem[] = [
     ],
   },
 
-  // ── 자산 ──────────────────────────────────────────────
+  // ── 자산 관리 ─────────────────────────────────────────
   {
     href: "/assets", label: "자산 관리", icon: Wrench,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
   },
 
-  // ── 프로젝트 ──────────────────────────────────────────
+  // ── 입고품질관리 ──────────────────────────────────────
+  {
+    href: "/vendors", label: "입고품질관리", icon: ClipboardList,
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
+    children: [
+      { href: "/vendors/incoming",    label: "수입검사",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/vendors/inspections", label: "출장검사",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/vendors/audits",      label: "협력업체 감사", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+    ],
+  },
+
+  // ── 프로젝트 관리 ─────────────────────────────────────
   {
     href: "/projects", label: "프로젝트 관리", icon: Briefcase,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
@@ -60,21 +71,10 @@ const ALL_NAV: NavItem[] = [
     ],
   },
 
-  // ── 시험 장비 ─────────────────────────────────────────
+  // ── 시험 및 품질 보증 ─────────────────────────────────
   {
     href: "/facilities", label: "시험 및 품질 보증", icon: FlaskConical,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
-  },
-
-  // ── 검사 업무 ─────────────────────────────────────────
-  {
-    href: "/vendors", label: "검사 업무", icon: ClipboardList,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
-    children: [
-      { href: "/vendors/incoming",    label: "수입검사",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-      { href: "/vendors/inspections", label: "출장검사",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-      { href: "/vendors/audits",      label: "협력업체 감사", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-    ],
   },
 
   // ── 품질 지식 ─────────────────────────────────────────
