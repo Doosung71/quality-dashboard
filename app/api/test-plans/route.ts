@@ -53,6 +53,40 @@ export async function POST(req: NextRequest) {
   const eq = await prisma.equipment.findUnique({ where: { id: equipmentId } });
   if (!eq) return NextResponse.json({ error: "설비를 찾을 수 없습니다." }, { status: 404 });
 
+  // 서버 측 일정 충돌 검사 (High — 클라이언트 우회 방어)
+  // 준비중/시험중 상태이며 날짜가 겹치는 TestPlan 존재 여부 확인
+  const conflicting = await prisma.testPlan.findFirst({
+    where: {
+      equipmentId,
+      status: { in: ["준비중", "시험중"] },
+      plannedStart: { lte: plannedEnd },
+      plannedEnd:   { gte: plannedStart },
+    },
+    select: {
+      id: true, projectName: true, status: true,
+      plannedStart: true, plannedEnd: true,
+      managingTeam: true, ownerName: true,
+    },
+  });
+
+  if (conflicting) {
+    return NextResponse.json(
+      {
+        error: "해당 설비는 지정 기간에 이미 사용 중입니다. 담당자와 조율 후 진행하세요.",
+        conflict: {
+          id:           conflicting.id,
+          projectName:  conflicting.projectName,
+          status:       conflicting.status,
+          plannedStart: conflicting.plannedStart,
+          plannedEnd:   conflicting.plannedEnd,
+          managingTeam: conflicting.managingTeam,
+          ownerName:    conflicting.ownerName,
+        },
+      },
+      { status: 409 }
+    );
+  }
+
   const plan = await prisma.testPlan.create({
     data: {
       equipmentId,

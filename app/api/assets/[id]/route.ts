@@ -72,29 +72,38 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "변경할 항목이 없습니다." }, { status: 400 });
   }
 
-  const [equipment] = await prisma.$transaction(async (tx) => {
-    const updated = await tx.equipment.update({ where: { id }, data });
+  // Medium-F: requireActiveSession()가 DB user 조회를 보장하지만 방어 가드 추가
+  const changerId = session.user.id;
+  if (!changerId) {
+    return NextResponse.json({ error: "세션 오류: 변경자 ID를 확인할 수 없습니다." }, { status: 401 });
+  }
 
-    if (ownerChanged) {
-      await tx.equipmentOwnerHistory.create({
-        data: {
-          equipmentId:  id,
-          managingTeam: updated.managingTeam ?? null,
-          ownerId:      updated.ownerId      ?? null,
-          ownerName:    updated.ownerName    ?? null,
-          changedById:  session.user.id,
-          note:         body.ownerChangeNote ?? null,
-        },
-      });
-    }
+  const [equipment] = await prisma.$transaction(
+    async (tx) => {
+      const updated = await tx.equipment.update({ where: { id }, data });
 
-    return [updated];
-  });
+      if (ownerChanged) {
+        await tx.equipmentOwnerHistory.create({
+          data: {
+            equipmentId:  id,
+            managingTeam: updated.managingTeam ?? null,
+            ownerId:      updated.ownerId      ?? null,
+            ownerName:    updated.ownerName    ?? null,
+            changedById:  changerId,
+            note:         body.ownerChangeNote ?? null,
+          },
+        });
+      }
+
+      return [updated];
+    },
+    { maxWait: 5000, timeout: 10000 }  // Medium-B: Neon 서버리스 트랜잭션 타임아웃 명시
+  );
 
   return NextResponse.json(equipment);
 }
 
-// DELETE /api/assets/[id]
+// DELETE /api/assets/[id] — 활성 TestPlan 존재 시 삭제 차단 (Critical-H)
 export async function DELETE(_req: NextRequest, { params }: Params) {
   const session = await requireActiveSession();
   if (session instanceof NextResponse) return session;
@@ -105,6 +114,25 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   }
 
   const { id } = await params;
+
+  const activeTests = await prisma.testPlan.findMany({
+    where: {
+      equipmentId: id,
+      status: { in: ["준비중", "시험중"] },
+    },
+    select: { id: true, projectName: true, status: true },
+  });
+
+  if (activeTests.length > 0) {
+    return NextResponse.json(
+      {
+        error: "진행 중인 시험 계획이 있어 설비를 삭제할 수 없습니다.",
+        activeTests: activeTests.map((t) => ({ id: t.id, projectName: t.projectName, status: t.status })),
+      },
+      { status: 409 }
+    );
+  }
+
   await prisma.equipment.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }

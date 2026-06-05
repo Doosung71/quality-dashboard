@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { facilitiesData } from "@/data/facilities.data";
 import { AssetsView } from "@/components/assets/assets-view";
+import { parseSpec, parseLogs } from "@/lib/facilities-utils";
 import type { AssetData } from "@/types/asset";
 import type { TestsData } from "@/types/test";
 
@@ -19,7 +20,7 @@ export default async function AssetsPage() {
       category:       eq.category as "시험설비" | "계측설비" | "보조설비",
       name:           eq.name,
       type:           eq.type,
-      spec:           eq.spec as Record<string, string>,
+      spec:           parseSpec(eq.spec),
       maker:          eq.maker,
       makerCountry:   eq.makerCountry ?? null,
       yearIntroduced: eq.yearIntroduced,
@@ -49,7 +50,7 @@ export default async function AssetsPage() {
       actualEnd:        t.actualEnd    ?? null,
       status:           t.status as "준비중" | "시험중" | "완료" | "지연",
       progress:         t.progress,
-      logs:             t.logs as { date: string; note: string; progress: number }[],
+      logs:             parseLogs(t.logs),
       managingTeam:     t.managingTeam  ?? null,
       ownerId:          t.ownerId       ?? null,
       ownerName:        t.ownerName     ?? null,

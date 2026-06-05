@@ -63,23 +63,32 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "변경할 항목이 없습니다." }, { status: 400 });
   }
 
-  const [plan] = await prisma.$transaction(async (tx) => {
-    const updated = await tx.testPlan.update({ where: { id }, data });
+  // Medium-F: changerId 방어 가드
+  const changerId = session.user.id;
+  if (!changerId) {
+    return NextResponse.json({ error: "세션 오류: 변경자 ID를 확인할 수 없습니다." }, { status: 401 });
+  }
 
-    if (ownerChanged) {
-      await tx.testPlanOwnerHistory.create({
-        data: {
-          testPlanId:   id,
-          managingTeam: updated.managingTeam ?? null,
-          ownerId:      updated.ownerId      ?? null,
-          ownerName:    updated.ownerName    ?? null,
-          changedById:  session.user.id,
-          note:         body.ownerChangeNote ?? null,
-        },
-      });
-    }
-    return [updated];
-  });
+  const [plan] = await prisma.$transaction(
+    async (tx) => {
+      const updated = await tx.testPlan.update({ where: { id }, data });
+
+      if (ownerChanged) {
+        await tx.testPlanOwnerHistory.create({
+          data: {
+            testPlanId:   id,
+            managingTeam: updated.managingTeam ?? null,
+            ownerId:      updated.ownerId      ?? null,
+            ownerName:    updated.ownerName    ?? null,
+            changedById:  changerId,
+            note:         body.ownerChangeNote ?? null,
+          },
+        });
+      }
+      return [updated];
+    },
+    { maxWait: 5000, timeout: 10000 }  // Medium-B: Neon 서버리스 트랜잭션 타임아웃 명시
+  );
 
   return NextResponse.json(plan);
 }
