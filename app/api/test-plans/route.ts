@@ -2,15 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireActiveSession } from "@/lib/session-guard";
 import { prisma } from "@/lib/prisma";
 import { canWrite } from "@/lib/permissions";
+import { validateDateRange } from "@/lib/facilities-utils";
 
 // GET /api/test-plans — 시험 계획 목록 (쿼리: equipmentId, status)
+// 설계 의도(M-4): PRACTITIONER는 equipmentId 지정 없이 전체 조회 불가
 export async function GET(req: NextRequest) {
   const session = await requireActiveSession();
   if (session instanceof NextResponse) return session;
 
+  const role = session.user.role as string;
   const { searchParams } = new URL(req.url);
   const equipmentId = searchParams.get("equipmentId") ?? undefined;
   const status      = searchParams.get("status")      ?? undefined;
+
+  if (role === "PRACTITIONER" && !equipmentId) {
+    return NextResponse.json(
+      { error: "실무자는 설비(equipmentId)를 지정해 조회해야 합니다." },
+      { status: 403 }
+    );
+  }
 
   const plans = await prisma.testPlan.findMany({
     where: {
@@ -47,6 +57,12 @@ export async function POST(req: NextRequest) {
       { error: "필수 항목을 입력하세요 (설비·시험종류·프로젝트명·계획 기간)." },
       { status: 400 }
     );
+  }
+
+  // H-3: 날짜 형식 및 순서 검증
+  const dateCheck = validateDateRange(plannedStart, plannedEnd);
+  if (!dateCheck.valid) {
+    return NextResponse.json({ error: dateCheck.error }, { status: 400 });
   }
 
   // 설비 존재 확인

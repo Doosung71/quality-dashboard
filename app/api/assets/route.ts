@@ -3,14 +3,25 @@ import { requireActiveSession } from "@/lib/session-guard";
 import { prisma } from "@/lib/prisma";
 import { canWrite } from "@/lib/permissions";
 
-// GET /api/assets — 설비 목록 (쿼리: siteId, category)
+// GET /api/assets — 설비 목록
+// 설계 의도(M-4): 설비 스펙은 민감 개인정보가 아니므로 인증된 전 역할에 조회 허용.
+// 다만 PRACTITIONER는 siteId 쿼리 없이 전체 조회 불가 (범위 제한).
 export async function GET(req: NextRequest) {
   const session = await requireActiveSession();
   if (session instanceof NextResponse) return session;
 
+  const role = session.user.role as string;
   const { searchParams } = new URL(req.url);
   const siteId   = searchParams.get("siteId")   ?? undefined;
   const category = searchParams.get("category") ?? undefined;
+
+  // PRACTITIONER는 siteId 지정 없이 전체 조회 불가 (범위 남용 방지)
+  if (role === "PRACTITIONER" && !siteId) {
+    return NextResponse.json(
+      { error: "실무자는 사업장(siteId)을 지정해 조회해야 합니다." },
+      { status: 403 }
+    );
+  }
 
   const equipment = await prisma.equipment.findMany({
     where: {

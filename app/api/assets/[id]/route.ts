@@ -115,10 +115,11 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
 
   const { id } = await params;
 
+  // "지연" 포함: 설비를 실제 점유 중인 모든 비완료 상태 차단 (재검수 반영)
   const activeTests = await prisma.testPlan.findMany({
     where: {
       equipmentId: id,
-      status: { in: ["준비중", "시험중"] },
+      status: { in: ["준비중", "시험중", "지연"] },
     },
     select: { id: true, projectName: true, status: true },
   });

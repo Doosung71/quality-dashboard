@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireActiveSession } from "@/lib/session-guard";
 import { prisma } from "@/lib/prisma";
 import { canWrite } from "@/lib/permissions";
+import { validateDateRange } from "@/lib/facilities-utils";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -61,6 +62,60 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
   if (Object.keys(data).length === 0) {
     return NextResponse.json({ error: "변경할 항목이 없습니다." }, { status: 400 });
+  }
+
+  // H-3: 날짜 형식·순서 검증 (plannedStart/plannedEnd 변경 시)
+  if (data.plannedStart !== undefined || data.plannedEnd !== undefined) {
+    const current = await prisma.testPlan.findUnique({
+      where: { id },
+      select: { plannedStart: true, plannedEnd: true },
+    });
+    const newStart = (data.plannedStart as string | undefined) ?? current?.plannedStart;
+    const newEnd   = (data.plannedEnd   as string | undefined) ?? current?.plannedEnd;
+    const dateCheck = validateDateRange(newStart, newEnd);
+    if (!dateCheck.valid) {
+      return NextResponse.json({ error: dateCheck.error }, { status: 400 });
+    }
+
+    // H-2: PATCH 일정 충돌 검사 (equipmentId 또는 날짜 변경 시)
+    const eqId = (data.equipmentId as string | undefined) ?? (
+      await prisma.testPlan.findUnique({ where: { id }, select: { equipmentId: true } })
+    )?.equipmentId;
+
+    if (eqId && newStart && newEnd) {
+      const conflicting = await prisma.testPlan.findFirst({
+        where: {
+          id:          { not: id },       // 자기 자신 제외
+          equipmentId: eqId,
+          status:      { in: ["준비중", "시험중", "지연"] },
+          plannedStart: { lte: newEnd },
+          plannedEnd:   { gte: newStart },
+        },
+        select: {
+          id: true, projectName: true, status: true,
+          plannedStart: true, plannedEnd: true,
+          managingTeam: true, ownerName: true,
+        },
+      });
+
+      if (conflicting) {
+        return NextResponse.json(
+          {
+            error: "해당 설비는 지정 기간에 이미 사용 중입니다. 담당자와 조율 후 진행하세요.",
+            conflict: {
+              id:           conflicting.id,
+              projectName:  conflicting.projectName,
+              status:       conflicting.status,
+              plannedStart: conflicting.plannedStart,
+              plannedEnd:   conflicting.plannedEnd,
+              managingTeam: conflicting.managingTeam,
+              ownerName:    conflicting.ownerName,
+            },
+          },
+          { status: 409 }
+        );
+      }
+    }
   }
 
   // Medium-F: changerId 방어 가드

@@ -13,6 +13,24 @@ export function computeStatus(eq: Equipment): ComputedStatus {
   return "new";
 }
 
+// 날짜 형식·순서 검증 (H-3: 재검수 반영)
+const DATE_RE = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+export function validateDateRange(
+  start: unknown,
+  end: unknown
+): { valid: true } | { valid: false; error: string } {
+  if (typeof start !== "string" || !DATE_RE.test(start)) {
+    return { valid: false, error: "plannedStart 형식이 잘못됐습니다 (YYYY-MM-DD 필요)." };
+  }
+  if (typeof end !== "string" || !DATE_RE.test(end)) {
+    return { valid: false, error: "plannedEnd 형식이 잘못됐습니다 (YYYY-MM-DD 필요)." };
+  }
+  if (start > end) {
+    return { valid: false, error: "plannedStart가 plannedEnd보다 이후일 수 없습니다." };
+  }
+  return { valid: true };
+}
+
 // Prisma Json 컬럼 타입 가드 (Medium-C: as 캐스팅 방어)
 export function parseSpec(raw: unknown): Record<string, string> {
   if (raw !== null && typeof raw === "object" && !Array.isArray(raw)) {
