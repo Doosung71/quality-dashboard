@@ -392,6 +392,7 @@ export const ModelName = {
   Equipment: 'Equipment',
   EquipmentOwnerHistory: 'EquipmentOwnerHistory',
   TestPlan: 'TestPlan',
+  EquipmentRepair: 'EquipmentRepair',
   TestPlanOwnerHistory: 'TestPlanOwnerHistory',
   Tender: 'Tender',
   TenderDocument: 'TenderDocument',
@@ -415,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "testPlanOwnerHistory" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment"
+    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1008,6 +1009,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TestPlanCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TestPlanCountAggregateOutputType> | number
+        }
+      }
+    }
+    EquipmentRepair: {
+      payload: Prisma.$EquipmentRepairPayload<ExtArgs>
+      fields: Prisma.EquipmentRepairFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EquipmentRepairFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentRepairPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EquipmentRepairFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentRepairPayload>
+        }
+        findFirst: {
+          args: Prisma.EquipmentRepairFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentRepairPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EquipmentRepairFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentRepairPayload>
+        }
+        findMany: {
+          args: Prisma.EquipmentRepairFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentRepairPayload>[]
+        }
+        create: {
+          args: Prisma.EquipmentRepairCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentRepairPayload>
+        }
+        createMany: {
+          args: Prisma.EquipmentRepairCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EquipmentRepairCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentRepairPayload>[]
+        }
+        delete: {
+          args: Prisma.EquipmentRepairDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentRepairPayload>
+        }
+        update: {
+          args: Prisma.EquipmentRepairUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentRepairPayload>
+        }
+        deleteMany: {
+          args: Prisma.EquipmentRepairDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EquipmentRepairUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EquipmentRepairUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentRepairPayload>[]
+        }
+        upsert: {
+          args: Prisma.EquipmentRepairUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentRepairPayload>
+        }
+        aggregate: {
+          args: Prisma.EquipmentRepairAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEquipmentRepair>
+        }
+        groupBy: {
+          args: Prisma.EquipmentRepairGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EquipmentRepairGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EquipmentRepairCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EquipmentRepairCountAggregateOutputType> | number
         }
       }
     }
@@ -1779,6 +1854,26 @@ export const TestPlanScalarFieldEnum = {
 export type TestPlanScalarFieldEnum = (typeof TestPlanScalarFieldEnum)[keyof typeof TestPlanScalarFieldEnum]
 
 
+export const EquipmentRepairScalarFieldEnum = {
+  id: 'id',
+  equipmentId: 'equipmentId',
+  type: 'type',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  reportedAt: 'reportedAt',
+  completedAt: 'completedAt',
+  cost: 'cost',
+  vendor: 'vendor',
+  result: 'result',
+  reportedById: 'reportedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EquipmentRepairScalarFieldEnum = (typeof EquipmentRepairScalarFieldEnum)[keyof typeof EquipmentRepairScalarFieldEnum]
+
+
 export const TestPlanOwnerHistoryScalarFieldEnum = {
   id: 'id',
   testPlanId: 'testPlanId',
@@ -2052,6 +2147,20 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
  * Reference to a field of type 'AnalysisStatus'
  */
 export type EnumAnalysisStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnalysisStatus'>
@@ -2104,20 +2213,6 @@ export type EnumReviewActionFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'ReviewAction[]'
  */
 export type ListEnumReviewActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReviewAction[]'>
-    
-
-
-/**
- * Reference to a field of type 'Float'
- */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-/**
- * Reference to a field of type 'Float[]'
- */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -2238,6 +2333,7 @@ export type GlobalOmitConfig = {
   equipment?: Prisma.EquipmentOmit
   equipmentOwnerHistory?: Prisma.EquipmentOwnerHistoryOmit
   testPlan?: Prisma.TestPlanOmit
+  equipmentRepair?: Prisma.EquipmentRepairOmit
   testPlanOwnerHistory?: Prisma.TestPlanOwnerHistoryOmit
   tender?: Prisma.TenderOmit
   tenderDocument?: Prisma.TenderDocumentOmit

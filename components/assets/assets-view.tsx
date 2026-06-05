@@ -10,6 +10,8 @@ import { EquipmentTable } from "@/components/facilities/equipment-table";
 import { computeStatus } from "@/lib/facilities-utils";
 import { EquipmentForm } from "./equipment-form";
 import { OwnerModal } from "./owner-modal";
+import { EquipmentDetailDrawer } from "./equipment-detail-drawer";
+import { RepairForm } from "./repair-form";
 
 const CATEGORIES: { key: AssetCategory | "전체"; label: string }[] = [
   { key: "전체",    label: "전체" },
@@ -74,13 +76,13 @@ function AgingCard({ equipment }: { equipment: Equipment[] }) {
   );
 }
 
-type ModalType = "equipment" | null;
+type ModalType = "equipment" | "repair" | null;
 type OwnerTarget = { id: string; name: string; managingTeam: string | null; ownerId: string | null; ownerName: string | null } | null;
 
 export function AssetsView({
-  assetData, testsData, facilitiesData,
+  assetData, testsData, facilitiesData, userRole = "PRACTITIONER",
 }: {
-  assetData: AssetData; testsData: TestsData; facilitiesData: FacilitiesData;
+  assetData: AssetData; testsData: TestsData; facilitiesData: FacilitiesData; userRole?: string;
 }) {
   const equipment = assetData.equipment;
   const tests = testsData.tests;
@@ -90,6 +92,8 @@ export function AssetsView({
   const [activeCategory, setActiveCategory] = useState<AssetCategory | "전체">("전체");
   const [modal, setModal] = useState<ModalType>(null);
   const [ownerTarget, setOwnerTarget] = useState<OwnerTarget>(null);
+  const [detailTarget, setDetailTarget] = useState<Equipment | null>(null);
+  const [repairTarget, setRepairTarget] = useState<Equipment | null>(null);
 
   const onFormSuccess  = () => { setModal(null); router.refresh(); };
   const onOwnerSaved   = () => { setOwnerTarget(null); router.refresh(); };
@@ -187,6 +191,13 @@ export function AssetsView({
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
           설비 등록
         </button>
+        <button
+          onClick={() => setModal("repair")}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+          설비 수선
+        </button>
       </div>
 
       {/* 등록 모달 */}
@@ -251,11 +262,23 @@ export function AssetsView({
         </span>
       </div>
 
+      {/* 설비 수선 등록 모달 */}
+      {modal === "repair" && (
+        <RepairForm
+          equipmentId={repairTarget?.id}
+          equipmentName={repairTarget?.name}
+          equipmentList={repairTarget ? undefined : equipment}
+          onClose={() => { setModal(null); setRepairTarget(null); }}
+          onSaved={() => { setModal(null); setRepairTarget(null); router.refresh(); }}
+        />
+      )}
+
       {/* 설비 테이블 */}
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
         <EquipmentTable
           equipment={filtered}
           tests={tests}
+          onRowClick={(eq) => setDetailTarget(eq)}
           onOwnerClick={(eq) => setOwnerTarget({
             id:           eq.id,
             name:         eq.name,
@@ -266,8 +289,18 @@ export function AssetsView({
         />
       </div>
 
-      {/* 담당자 관리 모달 */}
-      {ownerTarget && (
+      {/* 설비 상세 드로어 */}
+      {detailTarget && (
+        <EquipmentDetailDrawer
+          equipment={detailTarget}
+          userRole={userRole}
+          onClose={() => setDetailTarget(null)}
+          onSaved={() => { setDetailTarget(null); router.refresh(); }}
+        />
+      )}
+
+      {/* 담당자 관리 모달 (레거시 — 드로어 미사용 경로 fallback) */}
+      {ownerTarget && !detailTarget && (
         <OwnerModal
           equipmentId={ownerTarget.id}
           equipmentName={ownerTarget.name}

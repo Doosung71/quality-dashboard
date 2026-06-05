@@ -59,6 +59,7 @@ export const ModelName = {
   Equipment: 'Equipment',
   EquipmentOwnerHistory: 'EquipmentOwnerHistory',
   TestPlan: 'TestPlan',
+  EquipmentRepair: 'EquipmentRepair',
   TestPlanOwnerHistory: 'TestPlanOwnerHistory',
   Tender: 'Tender',
   TenderDocument: 'TenderDocument',
@@ -220,6 +221,26 @@ export const TestPlanScalarFieldEnum = {
 } as const
 
 export type TestPlanScalarFieldEnum = (typeof TestPlanScalarFieldEnum)[keyof typeof TestPlanScalarFieldEnum]
+
+
+export const EquipmentRepairScalarFieldEnum = {
+  id: 'id',
+  equipmentId: 'equipmentId',
+  type: 'type',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  reportedAt: 'reportedAt',
+  completedAt: 'completedAt',
+  cost: 'cost',
+  vendor: 'vendor',
+  result: 'result',
+  reportedById: 'reportedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EquipmentRepairScalarFieldEnum = (typeof EquipmentRepairScalarFieldEnum)[keyof typeof EquipmentRepairScalarFieldEnum]
 
 
 export const TestPlanOwnerHistoryScalarFieldEnum = {

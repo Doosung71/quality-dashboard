@@ -2,10 +2,16 @@ import { prisma } from "@/lib/prisma";
 import { facilitiesData } from "@/data/facilities.data";
 import { AssetsView } from "@/components/assets/assets-view";
 import { parseSpec, parseLogs } from "@/lib/facilities-utils";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 import type { AssetData } from "@/types/asset";
 import type { TestsData } from "@/types/test";
 
 export default async function AssetsPage() {
+  const session = await auth();
+  if (!session) redirect("/login");
+  const userRole = session.user.role ?? "PRACTITIONER";
+
   const [equipmentRaw, testPlansRaw] = await Promise.all([
     prisma.equipment.findMany({ orderBy: [{ siteId: "asc" }, { yearIntroduced: "asc" }] }),
     prisma.testPlan.findMany({ orderBy: { plannedStart: "asc" } }),
@@ -65,6 +71,7 @@ export default async function AssetsPage() {
         assetData={assetData}
         testsData={testsData}
         facilitiesData={facilitiesData}
+        userRole={userRole}
       />
     </div>
   );

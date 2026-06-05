@@ -31,11 +31,12 @@ const TOGGLEABLE_COLS: { key: ColKey; label: string }[] = [
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function EquipmentTable({
-  equipment, tests, onOwnerClick,
+  equipment, tests, onOwnerClick, onRowClick,
 }: {
   equipment: Equipment[];
   tests: Test[];
   onOwnerClick?: (eq: Equipment) => void;
+  onRowClick?:   (eq: Equipment) => void;
 }) {
   const [hiddenCols, setHiddenCols] = useState<Set<ColKey>>(
     new Set<ColKey>(["maker", "quantity", "notes"])
@@ -69,8 +70,10 @@ export function EquipmentTable({
           return (
             <div
               key={eq.id}
+              onClick={() => onRowClick?.(eq)}
               className={cn(
                 "rounded-xl border p-4 space-y-3 transition-all",
+                onRowClick ? "cursor-pointer hover:shadow-md hover:border-blue-200" : "",
                 isAging
                   ? "border-l-2 bg-linear-to-r from-rose-500/5 via-rose-50/20 to-transparent animate-neon-alert"
                   : "border-slate-100 bg-white"
@@ -228,8 +231,11 @@ export function EquipmentTable({
                 : "hover:bg-slate-50/70";
               const stickyBg = isAging ? "bg-rose-50/60" : "bg-white";
               return (
-                <tr key={eq.id} className={cn("border-b border-slate-100 last:border-0 transition-all", rowBg)}>
-                  <td className={cn("sticky left-0 z-10 px-4 py-2.5 font-medium text-slate-700 whitespace-nowrap transition-colors", stickyBg)}>
+                <tr key={eq.id} className={cn("border-b border-slate-100 last:border-0 transition-all", rowBg, onRowClick ? "cursor-pointer" : "")}>
+                  <td
+                    className={cn("sticky left-0 z-10 px-4 py-2.5 font-medium text-slate-700 whitespace-nowrap transition-colors hover:text-blue-600 hover:underline", stickyBg)}
+                    onClick={() => onRowClick?.(eq)}
+                  >
                     {eq.name}
                   </td>
                   <td className="px-3 py-2.5">

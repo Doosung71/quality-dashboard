@@ -44,6 +44,9 @@ model User {
   ownedTestPlans          TestPlan[]              @relation("TestPlanOwner")
   testPlanOwnerHistoryAsOwner    TestPlanOwnerHistory[]  @relation("TestPlanOwnerHistoryOwner")
   testPlanOwnerHistoryAsChanger  TestPlanOwnerHistory[]  @relation("TestPlanOwnerHistoryChangedBy")
+
+  // 수선 이력
+  reportedRepairs         EquipmentRepair[]       @relation("RepairReportedBy")
 }
 
 model Feedback {

@@ -37,6 +37,26 @@ export interface EquipmentOwnerHistory {
   changedAt: string; // ISO string
 }
 
+export type RepairType   = "고장" | "예방점검" | "수선" | "교정";
+export type RepairStatus = "접수" | "진행중" | "완료" | "보류";
+
+export interface EquipmentRepair {
+  id: string;
+  equipmentId: string;
+  type: RepairType;
+  title: string;
+  description: string;
+  status: RepairStatus;
+  reportedAt: string;
+  completedAt: string | null;
+  cost: number | null;
+  vendor: string | null;
+  result: string;
+  reportedById: string;
+  reportedByName: string;
+  createdAt: string;
+}
+
 export interface AssetData {
   equipment: Equipment[];
 }

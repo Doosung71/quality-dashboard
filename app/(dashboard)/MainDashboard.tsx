@@ -26,7 +26,10 @@ import {
   Clock,
   Briefcase,
   AlertCircle,
-  ChevronRight
+  ChevronRight,
+  Wrench,
+  FlaskConical,
+  Truck
 } from "lucide-react";
 
 const TARGET_DATE = new Date("2026-09-15");
@@ -698,27 +701,64 @@ export function MainDashboard({ role, userName, userId }: Props) {
                   <FileSearch className="w-4 h-4 text-slate-500" /> 실무자 퀵 링크
                 </h4>
                 <div className="space-y-2 text-xs">
+                  {/* 입찰 검토 AI — featured full-width */}
                   <Link href="/dashboard" className="p-3 bg-indigo-950 text-white rounded-xl flex justify-between items-center group transition-all hover:bg-indigo-800">
-                    <div>
-                      <p className="font-bold">입찰 검토 AI</p>
-                      <p className="text-[9px] text-indigo-300 mt-0.5">시방서 업로드 → 독소조항 자동 분석</p>
+                    <div className="flex items-center gap-2.5">
+                      <Briefcase className="w-4 h-4 text-indigo-400 shrink-0" />
+                      <div>
+                        <p className="font-bold">입찰 검토 AI</p>
+                        <p className="text-[9px] text-indigo-300 mt-0.5">시방서 업로드 → 독소조항 자동 분석</p>
+                      </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-indigo-400 group-hover:translate-x-1 transition-transform" />
+                    <ChevronRight className="w-4 h-4 text-indigo-400 group-hover:translate-x-1 transition-transform shrink-0" />
                   </Link>
-                  <Link href="/knowledge" className="p-3 bg-indigo-50/50 border border-indigo-100/50 hover:border-indigo-500 rounded-xl flex justify-between items-center group transition-all">
-                    <div>
-                      <p className="font-bold text-slate-900">IEC/KS 규격 RAG 검색</p>
-                      <p className="text-[9px] text-slate-400 mt-0.5">합격 판정기준 신속 조회</p>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-indigo-400 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                  <Link href="/facilities" className="p-3 bg-slate-50 hover:bg-slate-100 rounded-xl flex justify-between items-center group transition-all">
-                    <div>
-                      <p className="font-bold text-slate-900">내 담당 시험 설비</p>
-                      <p className="text-[9px] text-slate-400 mt-0.5">Hipotronics 캘리브레이션</p>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                  </Link>
+
+                  {/* 2-column grid on mobile, single column on lg sidebar */}
+                  <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
+                    <Link href="/knowledge" className="p-3 bg-indigo-50/50 border border-indigo-100/50 hover:border-indigo-400 rounded-xl flex flex-col lg:flex-row justify-between lg:items-center gap-1.5 group transition-all">
+                      <div className="flex items-start gap-2">
+                        <FileSearch className="w-3.5 h-3.5 text-indigo-400 mt-0.5 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">IEC/KS 규격 RAG 검색</p>
+                          <p className="text-[9px] text-slate-400 mt-0.5">합격 판정기준 신속 조회</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-indigo-300 group-hover:translate-x-1 transition-transform hidden lg:block shrink-0" />
+                    </Link>
+
+                    <Link href="/assets" className="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-100 hover:border-slate-300 rounded-xl flex flex-col lg:flex-row justify-between lg:items-center gap-1.5 group transition-all">
+                      <div className="flex items-start gap-2">
+                        <Wrench className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">내 담당 자산관리</p>
+                          <p className="text-[9px] text-slate-400 mt-0.5">설비·자산 현황 조회</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:translate-x-1 transition-transform hidden lg:block shrink-0" />
+                    </Link>
+
+                    <Link href="/facilities" className="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-100 hover:border-slate-300 rounded-xl flex flex-col lg:flex-row justify-between lg:items-center gap-1.5 group transition-all">
+                      <div className="flex items-start gap-2">
+                        <FlaskConical className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">내 담당 시험장/시험관리</p>
+                          <p className="text-[9px] text-slate-400 mt-0.5">시험계획·결과 관리</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:translate-x-1 transition-transform hidden lg:block shrink-0" />
+                    </Link>
+
+                    <Link href="/vendors" className="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-100 hover:border-slate-300 rounded-xl flex flex-col lg:flex-row justify-between lg:items-center gap-1.5 group transition-all">
+                      <div className="flex items-start gap-2">
+                        <Truck className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">내 담당 공급망 관리</p>
+                          <p className="text-[9px] text-slate-400 mt-0.5">외주업체 품질등급 조회</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:translate-x-1 transition-transform hidden lg:block shrink-0" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
