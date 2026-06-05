@@ -22,6 +22,9 @@ export interface Test {
   status: TestStatus
   progress: number
   logs: TestLog[]
+  managingTeam: string | null
+  ownerId: string | null
+  ownerName: string | null
 }
 
 export interface TestsData {

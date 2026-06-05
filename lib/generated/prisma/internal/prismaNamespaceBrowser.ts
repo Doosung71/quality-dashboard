@@ -59,6 +59,7 @@ export const ModelName = {
   Equipment: 'Equipment',
   EquipmentOwnerHistory: 'EquipmentOwnerHistory',
   TestPlan: 'TestPlan',
+  TestPlanOwnerHistory: 'TestPlanOwnerHistory',
   Tender: 'Tender',
   TenderDocument: 'TenderDocument',
   Analysis: 'Analysis',
@@ -211,11 +212,28 @@ export const TestPlanScalarFieldEnum = {
   status: 'status',
   progress: 'progress',
   logs: 'logs',
+  managingTeam: 'managingTeam',
+  ownerId: 'ownerId',
+  ownerName: 'ownerName',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type TestPlanScalarFieldEnum = (typeof TestPlanScalarFieldEnum)[keyof typeof TestPlanScalarFieldEnum]
+
+
+export const TestPlanOwnerHistoryScalarFieldEnum = {
+  id: 'id',
+  testPlanId: 'testPlanId',
+  managingTeam: 'managingTeam',
+  ownerId: 'ownerId',
+  ownerName: 'ownerName',
+  changedById: 'changedById',
+  note: 'note',
+  changedAt: 'changedAt'
+} as const
+
+export type TestPlanOwnerHistoryScalarFieldEnum = (typeof TestPlanOwnerHistoryScalarFieldEnum)[keyof typeof TestPlanOwnerHistoryScalarFieldEnum]
 
 
 export const TenderScalarFieldEnum = {

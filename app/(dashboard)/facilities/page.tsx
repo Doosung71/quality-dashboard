@@ -48,13 +48,16 @@ export default async function FacilitiesPage() {
       status:           t.status as "준비중" | "시험중" | "완료" | "지연",
       progress:         t.progress,
       logs:             t.logs as { date: string; note: string; progress: number }[],
+      managingTeam:     t.managingTeam  ?? null,
+      ownerId:          t.ownerId       ?? null,
+      ownerName:        t.ownerName     ?? null,
     })),
   };
 
   return (
     <div className="space-y-1">
-      <h1 className="text-lg font-semibold text-slate-800">시험장·시험 현황</h1>
-      <p className="text-xs text-slate-400 mb-4">구미·동해 시험장 및 진행 중인 인증·양산 시험 현황</p>
+      <h1 className="text-lg font-semibold text-slate-800">시험장·시험 관리</h1>
+      <p className="text-xs text-slate-400 mb-4">시험장 현황 및 인증·양산 시험 계획 등록·관리</p>
       <FacilitiesView
         data={facilitiesData}
         assets={assets}

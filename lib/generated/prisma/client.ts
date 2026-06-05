@@ -82,6 +82,11 @@ export type EquipmentOwnerHistory = Prisma.EquipmentOwnerHistoryModel
  */
 export type TestPlan = Prisma.TestPlanModel
 /**
+ * Model TestPlanOwnerHistory
+ * 
+ */
+export type TestPlanOwnerHistory = Prisma.TestPlanOwnerHistoryModel
+/**
  * Model Tender
  * 
  */

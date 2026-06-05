@@ -1,4 +1,4 @@
-export type SiteId = "gumi" | "donghae";
+export type SiteId = "gumi" | "indon" | "donghae" | "external";
 export type HallStatus = "가동중" | "건축중";
 
 export interface Site {

@@ -50,6 +50,9 @@ export default async function AssetsPage() {
       status:           t.status as "준비중" | "시험중" | "완료" | "지연",
       progress:         t.progress,
       logs:             t.logs as { date: string; note: string; progress: number }[],
+      managingTeam:     t.managingTeam  ?? null,
+      ownerId:          t.ownerId       ?? null,
+      ownerName:        t.ownerName     ?? null,
     })),
   };
 

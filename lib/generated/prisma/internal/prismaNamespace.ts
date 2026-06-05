@@ -392,6 +392,7 @@ export const ModelName = {
   Equipment: 'Equipment',
   EquipmentOwnerHistory: 'EquipmentOwnerHistory',
   TestPlan: 'TestPlan',
+  TestPlanOwnerHistory: 'TestPlanOwnerHistory',
   Tender: 'Tender',
   TenderDocument: 'TenderDocument',
   Analysis: 'Analysis',
@@ -414,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment"
+    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "testPlanOwnerHistory" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1007,6 +1008,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TestPlanCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TestPlanCountAggregateOutputType> | number
+        }
+      }
+    }
+    TestPlanOwnerHistory: {
+      payload: Prisma.$TestPlanOwnerHistoryPayload<ExtArgs>
+      fields: Prisma.TestPlanOwnerHistoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TestPlanOwnerHistoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanOwnerHistoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TestPlanOwnerHistoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanOwnerHistoryPayload>
+        }
+        findFirst: {
+          args: Prisma.TestPlanOwnerHistoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanOwnerHistoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TestPlanOwnerHistoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanOwnerHistoryPayload>
+        }
+        findMany: {
+          args: Prisma.TestPlanOwnerHistoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanOwnerHistoryPayload>[]
+        }
+        create: {
+          args: Prisma.TestPlanOwnerHistoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanOwnerHistoryPayload>
+        }
+        createMany: {
+          args: Prisma.TestPlanOwnerHistoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TestPlanOwnerHistoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanOwnerHistoryPayload>[]
+        }
+        delete: {
+          args: Prisma.TestPlanOwnerHistoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanOwnerHistoryPayload>
+        }
+        update: {
+          args: Prisma.TestPlanOwnerHistoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanOwnerHistoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.TestPlanOwnerHistoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TestPlanOwnerHistoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TestPlanOwnerHistoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanOwnerHistoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.TestPlanOwnerHistoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanOwnerHistoryPayload>
+        }
+        aggregate: {
+          args: Prisma.TestPlanOwnerHistoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTestPlanOwnerHistory>
+        }
+        groupBy: {
+          args: Prisma.TestPlanOwnerHistoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TestPlanOwnerHistoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TestPlanOwnerHistoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TestPlanOwnerHistoryCountAggregateOutputType> | number
         }
       }
     }
@@ -1694,11 +1769,28 @@ export const TestPlanScalarFieldEnum = {
   status: 'status',
   progress: 'progress',
   logs: 'logs',
+  managingTeam: 'managingTeam',
+  ownerId: 'ownerId',
+  ownerName: 'ownerName',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type TestPlanScalarFieldEnum = (typeof TestPlanScalarFieldEnum)[keyof typeof TestPlanScalarFieldEnum]
+
+
+export const TestPlanOwnerHistoryScalarFieldEnum = {
+  id: 'id',
+  testPlanId: 'testPlanId',
+  managingTeam: 'managingTeam',
+  ownerId: 'ownerId',
+  ownerName: 'ownerName',
+  changedById: 'changedById',
+  note: 'note',
+  changedAt: 'changedAt'
+} as const
+
+export type TestPlanOwnerHistoryScalarFieldEnum = (typeof TestPlanOwnerHistoryScalarFieldEnum)[keyof typeof TestPlanOwnerHistoryScalarFieldEnum]
 
 
 export const TenderScalarFieldEnum = {
@@ -2146,6 +2238,7 @@ export type GlobalOmitConfig = {
   equipment?: Prisma.EquipmentOmit
   equipmentOwnerHistory?: Prisma.EquipmentOwnerHistoryOmit
   testPlan?: Prisma.TestPlanOmit
+  testPlanOwnerHistory?: Prisma.TestPlanOwnerHistoryOmit
   tender?: Prisma.TenderOmit
   tenderDocument?: Prisma.TenderDocumentOmit
   analysis?: Prisma.AnalysisOmit

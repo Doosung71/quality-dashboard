@@ -39,6 +39,11 @@ model User {
   ownedEquipment  Equipment[]             @relation("EquipmentOwner")
   ownerHistoryAsOwner    EquipmentOwnerHistory[] @relation("OwnerHistoryOwner")
   ownerHistoryAsChanger  EquipmentOwnerHistory[] @relation("OwnerHistoryChangedBy")
+
+  // 시험 계획 담당자 관계
+  ownedTestPlans          TestPlan[]              @relation("TestPlanOwner")
+  testPlanOwnerHistoryAsOwner    TestPlanOwnerHistory[]  @relation("TestPlanOwnerHistoryOwner")
+  testPlanOwnerHistoryAsChanger  TestPlanOwnerHistory[]  @relation("TestPlanOwnerHistoryChangedBy")
 }
 
 model Feedback {

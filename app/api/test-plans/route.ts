@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
     equipmentId, testCategory, projectName, sampleType,
     sampleDescription, plannedStart, plannedEnd,
     actualStart, actualEnd, status, progress,
+    managingTeam, ownerId, ownerName,
   } = body;
 
   if (!equipmentId || !testCategory || !projectName?.trim() || !plannedStart || !plannedEnd) {
@@ -63,9 +64,12 @@ export async function POST(req: NextRequest) {
       plannedEnd,
       actualStart:  actualStart  || null,
       actualEnd:    actualEnd    || null,
-      status:       status       || "준비중",
+      status:       status          || "준비중",
       progress:     Number(progress) || 0,
       logs:         [],
+      managingTeam: managingTeam || null,
+      ownerId:      ownerId      || null,
+      ownerName:    ownerName    || null,
     },
     include: { equipment: { select: { id: true, name: true, type: true, siteId: true } } },
   });

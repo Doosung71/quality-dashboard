@@ -17,9 +17,21 @@
       "country": "KR"
     },
     {
+      "id": "indon",
+      "name": "인동",
+      "fullName": "LS전선 인동사업장",
+      "country": "KR"
+    },
+    {
       "id": "donghae",
       "name": "동해",
       "fullName": "LS전선 동해사업장",
+      "country": "KR"
+    },
+    {
+      "id": "external",
+      "name": "기타(사외)",
+      "fullName": "사외 시험기관",
       "country": "KR"
     }
   ],

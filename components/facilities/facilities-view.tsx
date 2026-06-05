@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import type { FacilitiesData, SiteId, TestHall, TestYard } from "@/types/facility";
 import type { Equipment } from "@/types/asset";
 import type { Test, TestsData, TestStatus, TestCategory } from "@/types/test";
 import { computeStatus, getTodayLocalStr } from "@/lib/facilities-utils";
 import { HallStatusBadge, TypeChip, TestStatusBadge, TestCategoryChip } from "./badges";
+import { TestPlanForm } from "@/components/assets/test-plan-form";
 
 type AnySpace = TestHall | TestYard;
 
@@ -373,8 +375,10 @@ export function FacilitiesView({
 }: {
   data: FacilitiesData; assets: Equipment[]; testsData: TestsData;
 }) {
+  const router = useRouter();
   const tests = testsData.tests;
   const [activeSite, setActiveSite] = useState<SiteId>("gumi");
+  const [showTestPlanForm, setShowTestPlanForm] = useState(false);
   const [selectedSpaceId, setSelectedSpaceId] = useState<string | null>(() => {
     const gumiSpaces = [...data.testHalls, ...data.testYards].filter((s) => s.siteId === "gumi");
     return gumiSpaces[0]?.id ?? null;
@@ -424,6 +428,40 @@ export function FacilitiesView({
 
   return (
     <div className="space-y-5">
+      {/* 시험 계획 등록 버튼 */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => setShowTestPlanForm(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+          시험 계획 등록
+        </button>
+      </div>
+
+      {/* 시험 계획 등록 모달 */}
+      {showTestPlanForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[92vh] overflow-y-auto">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
+              <h2 className="text-base font-semibold text-slate-800">시험 계획 등록</h2>
+              <button onClick={() => setShowTestPlanForm(false)} className="text-slate-400 hover:text-slate-600">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="px-6 py-4">
+              <TestPlanForm
+                equipment={assets}
+                tests={tests}
+                facilitiesData={data}
+                onSuccess={() => { setShowTestPlanForm(false); router.refresh(); }}
+                onCancel={() => setShowTestPlanForm(false)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* KPI 카드 */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <KpiCard

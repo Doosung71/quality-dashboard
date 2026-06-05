@@ -60,6 +60,27 @@ model TestPlan {
   status            String    @default("준비중")  // "준비중" | "시험중" | "완료" | "지연"
   progress          Int       @default(0)    // 0–100
   logs              Json      @default("[]") // { date, note, progress }[]
+  managingTeam      String?
+  ownerId           String?
+  owner             User?     @relation("TestPlanOwner",     fields: [ownerId], references: [id], onDelete: SetNull)
+  ownerName         String?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
+
+  ownerHistory      TestPlanOwnerHistory[]
+}
+
+// 시험 계획 담당자 변경 이력 (append-only)
+model TestPlanOwnerHistory {
+  id            String   @id @default(cuid())
+  testPlan      TestPlan @relation(fields: [testPlanId], references: [id], onDelete: Cascade)
+  testPlanId    String
+  managingTeam  String?
+  ownerId       String?
+  owner         User?    @relation("TestPlanOwnerHistoryOwner",     fields: [ownerId],     references: [id], onDelete: SetNull)
+  ownerName     String?
+  changedById   String
+  changedBy     User     @relation("TestPlanOwnerHistoryChangedBy", fields: [changedById], references: [id])
+  note          String?
+  changedAt     DateTime @default(now())
 }

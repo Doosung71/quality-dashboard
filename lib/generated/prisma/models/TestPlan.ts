@@ -47,6 +47,9 @@ export type TestPlanMinAggregateOutputType = {
   actualEnd: string | null
   status: string | null
   progress: number | null
+  managingTeam: string | null
+  ownerId: string | null
+  ownerName: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -64,6 +67,9 @@ export type TestPlanMaxAggregateOutputType = {
   actualEnd: string | null
   status: string | null
   progress: number | null
+  managingTeam: string | null
+  ownerId: string | null
+  ownerName: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -82,6 +88,9 @@ export type TestPlanCountAggregateOutputType = {
   status: number
   progress: number
   logs: number
+  managingTeam: number
+  ownerId: number
+  ownerName: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -109,6 +118,9 @@ export type TestPlanMinAggregateInputType = {
   actualEnd?: true
   status?: true
   progress?: true
+  managingTeam?: true
+  ownerId?: true
+  ownerName?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -126,6 +138,9 @@ export type TestPlanMaxAggregateInputType = {
   actualEnd?: true
   status?: true
   progress?: true
+  managingTeam?: true
+  ownerId?: true
+  ownerName?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -144,6 +159,9 @@ export type TestPlanCountAggregateInputType = {
   status?: true
   progress?: true
   logs?: true
+  managingTeam?: true
+  ownerId?: true
+  ownerName?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -249,6 +267,9 @@ export type TestPlanGroupByOutputType = {
   status: string
   progress: number
   logs: runtime.JsonValue
+  managingTeam: string | null
+  ownerId: string | null
+  ownerName: string | null
   createdAt: Date
   updatedAt: Date
   _count: TestPlanCountAggregateOutputType | null
@@ -290,9 +311,14 @@ export type TestPlanWhereInput = {
   status?: Prisma.StringFilter<"TestPlan"> | string
   progress?: Prisma.IntFilter<"TestPlan"> | number
   logs?: Prisma.JsonFilter<"TestPlan">
+  managingTeam?: Prisma.StringNullableFilter<"TestPlan"> | string | null
+  ownerId?: Prisma.StringNullableFilter<"TestPlan"> | string | null
+  ownerName?: Prisma.StringNullableFilter<"TestPlan"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TestPlan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TestPlan"> | Date | string
   equipment?: Prisma.XOR<Prisma.EquipmentScalarRelationFilter, Prisma.EquipmentWhereInput>
+  owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  ownerHistory?: Prisma.TestPlanOwnerHistoryListRelationFilter
 }
 
 export type TestPlanOrderByWithRelationInput = {
@@ -309,9 +335,14 @@ export type TestPlanOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   progress?: Prisma.SortOrder
   logs?: Prisma.SortOrder
+  managingTeam?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerName?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   equipment?: Prisma.EquipmentOrderByWithRelationInput
+  owner?: Prisma.UserOrderByWithRelationInput
+  ownerHistory?: Prisma.TestPlanOwnerHistoryOrderByRelationAggregateInput
 }
 
 export type TestPlanWhereUniqueInput = Prisma.AtLeast<{
@@ -331,9 +362,14 @@ export type TestPlanWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.StringFilter<"TestPlan"> | string
   progress?: Prisma.IntFilter<"TestPlan"> | number
   logs?: Prisma.JsonFilter<"TestPlan">
+  managingTeam?: Prisma.StringNullableFilter<"TestPlan"> | string | null
+  ownerId?: Prisma.StringNullableFilter<"TestPlan"> | string | null
+  ownerName?: Prisma.StringNullableFilter<"TestPlan"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TestPlan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TestPlan"> | Date | string
   equipment?: Prisma.XOR<Prisma.EquipmentScalarRelationFilter, Prisma.EquipmentWhereInput>
+  owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  ownerHistory?: Prisma.TestPlanOwnerHistoryListRelationFilter
 }, "id">
 
 export type TestPlanOrderByWithAggregationInput = {
@@ -350,6 +386,9 @@ export type TestPlanOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   progress?: Prisma.SortOrder
   logs?: Prisma.SortOrder
+  managingTeam?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerName?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TestPlanCountOrderByAggregateInput
@@ -376,6 +415,9 @@ export type TestPlanScalarWhereWithAggregatesInput = {
   status?: Prisma.StringWithAggregatesFilter<"TestPlan"> | string
   progress?: Prisma.IntWithAggregatesFilter<"TestPlan"> | number
   logs?: Prisma.JsonWithAggregatesFilter<"TestPlan">
+  managingTeam?: Prisma.StringNullableWithAggregatesFilter<"TestPlan"> | string | null
+  ownerId?: Prisma.StringNullableWithAggregatesFilter<"TestPlan"> | string | null
+  ownerName?: Prisma.StringNullableWithAggregatesFilter<"TestPlan"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TestPlan"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TestPlan"> | Date | string
 }
@@ -393,9 +435,13 @@ export type TestPlanCreateInput = {
   status?: string
   progress?: number
   logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: string | null
+  ownerName?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   equipment: Prisma.EquipmentCreateNestedOneWithoutTestPlansInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedTestPlansInput
+  ownerHistory?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutTestPlanInput
 }
 
 export type TestPlanUncheckedCreateInput = {
@@ -412,8 +458,12 @@ export type TestPlanUncheckedCreateInput = {
   status?: string
   progress?: number
   logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: string | null
+  ownerId?: string | null
+  ownerName?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  ownerHistory?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutTestPlanInput
 }
 
 export type TestPlanUpdateInput = {
@@ -429,9 +479,13 @@ export type TestPlanUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   equipment?: Prisma.EquipmentUpdateOneRequiredWithoutTestPlansNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedTestPlansNestedInput
+  ownerHistory?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutTestPlanNestedInput
 }
 
 export type TestPlanUncheckedUpdateInput = {
@@ -448,8 +502,12 @@ export type TestPlanUncheckedUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownerHistory?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutTestPlanNestedInput
 }
 
 export type TestPlanCreateManyInput = {
@@ -466,6 +524,9 @@ export type TestPlanCreateManyInput = {
   status?: string
   progress?: number
   logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: string | null
+  ownerId?: string | null
+  ownerName?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -483,6 +544,8 @@ export type TestPlanUpdateManyMutationInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -501,6 +564,9 @@ export type TestPlanUncheckedUpdateManyInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -529,6 +595,9 @@ export type TestPlanCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   progress?: Prisma.SortOrder
   logs?: Prisma.SortOrder
+  managingTeam?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
+  ownerName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -550,6 +619,9 @@ export type TestPlanMaxOrderByAggregateInput = {
   actualEnd?: Prisma.SortOrder
   status?: Prisma.SortOrder
   progress?: Prisma.SortOrder
+  managingTeam?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
+  ownerName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -567,12 +639,62 @@ export type TestPlanMinOrderByAggregateInput = {
   actualEnd?: Prisma.SortOrder
   status?: Prisma.SortOrder
   progress?: Prisma.SortOrder
+  managingTeam?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
+  ownerName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type TestPlanSumOrderByAggregateInput = {
   progress?: Prisma.SortOrder
+}
+
+export type TestPlanScalarRelationFilter = {
+  is?: Prisma.TestPlanWhereInput
+  isNot?: Prisma.TestPlanWhereInput
+}
+
+export type TestPlanCreateNestedManyWithoutOwnerInput = {
+  create?: Prisma.XOR<Prisma.TestPlanCreateWithoutOwnerInput, Prisma.TestPlanUncheckedCreateWithoutOwnerInput> | Prisma.TestPlanCreateWithoutOwnerInput[] | Prisma.TestPlanUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.TestPlanCreateOrConnectWithoutOwnerInput | Prisma.TestPlanCreateOrConnectWithoutOwnerInput[]
+  createMany?: Prisma.TestPlanCreateManyOwnerInputEnvelope
+  connect?: Prisma.TestPlanWhereUniqueInput | Prisma.TestPlanWhereUniqueInput[]
+}
+
+export type TestPlanUncheckedCreateNestedManyWithoutOwnerInput = {
+  create?: Prisma.XOR<Prisma.TestPlanCreateWithoutOwnerInput, Prisma.TestPlanUncheckedCreateWithoutOwnerInput> | Prisma.TestPlanCreateWithoutOwnerInput[] | Prisma.TestPlanUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.TestPlanCreateOrConnectWithoutOwnerInput | Prisma.TestPlanCreateOrConnectWithoutOwnerInput[]
+  createMany?: Prisma.TestPlanCreateManyOwnerInputEnvelope
+  connect?: Prisma.TestPlanWhereUniqueInput | Prisma.TestPlanWhereUniqueInput[]
+}
+
+export type TestPlanUpdateManyWithoutOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.TestPlanCreateWithoutOwnerInput, Prisma.TestPlanUncheckedCreateWithoutOwnerInput> | Prisma.TestPlanCreateWithoutOwnerInput[] | Prisma.TestPlanUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.TestPlanCreateOrConnectWithoutOwnerInput | Prisma.TestPlanCreateOrConnectWithoutOwnerInput[]
+  upsert?: Prisma.TestPlanUpsertWithWhereUniqueWithoutOwnerInput | Prisma.TestPlanUpsertWithWhereUniqueWithoutOwnerInput[]
+  createMany?: Prisma.TestPlanCreateManyOwnerInputEnvelope
+  set?: Prisma.TestPlanWhereUniqueInput | Prisma.TestPlanWhereUniqueInput[]
+  disconnect?: Prisma.TestPlanWhereUniqueInput | Prisma.TestPlanWhereUniqueInput[]
+  delete?: Prisma.TestPlanWhereUniqueInput | Prisma.TestPlanWhereUniqueInput[]
+  connect?: Prisma.TestPlanWhereUniqueInput | Prisma.TestPlanWhereUniqueInput[]
+  update?: Prisma.TestPlanUpdateWithWhereUniqueWithoutOwnerInput | Prisma.TestPlanUpdateWithWhereUniqueWithoutOwnerInput[]
+  updateMany?: Prisma.TestPlanUpdateManyWithWhereWithoutOwnerInput | Prisma.TestPlanUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.TestPlanScalarWhereInput | Prisma.TestPlanScalarWhereInput[]
+}
+
+export type TestPlanUncheckedUpdateManyWithoutOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.TestPlanCreateWithoutOwnerInput, Prisma.TestPlanUncheckedCreateWithoutOwnerInput> | Prisma.TestPlanCreateWithoutOwnerInput[] | Prisma.TestPlanUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.TestPlanCreateOrConnectWithoutOwnerInput | Prisma.TestPlanCreateOrConnectWithoutOwnerInput[]
+  upsert?: Prisma.TestPlanUpsertWithWhereUniqueWithoutOwnerInput | Prisma.TestPlanUpsertWithWhereUniqueWithoutOwnerInput[]
+  createMany?: Prisma.TestPlanCreateManyOwnerInputEnvelope
+  set?: Prisma.TestPlanWhereUniqueInput | Prisma.TestPlanWhereUniqueInput[]
+  disconnect?: Prisma.TestPlanWhereUniqueInput | Prisma.TestPlanWhereUniqueInput[]
+  delete?: Prisma.TestPlanWhereUniqueInput | Prisma.TestPlanWhereUniqueInput[]
+  connect?: Prisma.TestPlanWhereUniqueInput | Prisma.TestPlanWhereUniqueInput[]
+  update?: Prisma.TestPlanUpdateWithWhereUniqueWithoutOwnerInput | Prisma.TestPlanUpdateWithWhereUniqueWithoutOwnerInput[]
+  updateMany?: Prisma.TestPlanUpdateManyWithWhereWithoutOwnerInput | Prisma.TestPlanUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.TestPlanScalarWhereInput | Prisma.TestPlanScalarWhereInput[]
 }
 
 export type TestPlanCreateNestedManyWithoutEquipmentInput = {
@@ -617,6 +739,112 @@ export type TestPlanUncheckedUpdateManyWithoutEquipmentNestedInput = {
   deleteMany?: Prisma.TestPlanScalarWhereInput | Prisma.TestPlanScalarWhereInput[]
 }
 
+export type TestPlanCreateNestedOneWithoutOwnerHistoryInput = {
+  create?: Prisma.XOR<Prisma.TestPlanCreateWithoutOwnerHistoryInput, Prisma.TestPlanUncheckedCreateWithoutOwnerHistoryInput>
+  connectOrCreate?: Prisma.TestPlanCreateOrConnectWithoutOwnerHistoryInput
+  connect?: Prisma.TestPlanWhereUniqueInput
+}
+
+export type TestPlanUpdateOneRequiredWithoutOwnerHistoryNestedInput = {
+  create?: Prisma.XOR<Prisma.TestPlanCreateWithoutOwnerHistoryInput, Prisma.TestPlanUncheckedCreateWithoutOwnerHistoryInput>
+  connectOrCreate?: Prisma.TestPlanCreateOrConnectWithoutOwnerHistoryInput
+  upsert?: Prisma.TestPlanUpsertWithoutOwnerHistoryInput
+  connect?: Prisma.TestPlanWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TestPlanUpdateToOneWithWhereWithoutOwnerHistoryInput, Prisma.TestPlanUpdateWithoutOwnerHistoryInput>, Prisma.TestPlanUncheckedUpdateWithoutOwnerHistoryInput>
+}
+
+export type TestPlanCreateWithoutOwnerInput = {
+  id?: string
+  testCategory: string
+  projectName: string
+  sampleType?: string
+  sampleDescription?: string
+  plannedStart: string
+  plannedEnd: string
+  actualStart?: string | null
+  actualEnd?: string | null
+  status?: string
+  progress?: number
+  logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: string | null
+  ownerName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  equipment: Prisma.EquipmentCreateNestedOneWithoutTestPlansInput
+  ownerHistory?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutTestPlanInput
+}
+
+export type TestPlanUncheckedCreateWithoutOwnerInput = {
+  id?: string
+  equipmentId: string
+  testCategory: string
+  projectName: string
+  sampleType?: string
+  sampleDescription?: string
+  plannedStart: string
+  plannedEnd: string
+  actualStart?: string | null
+  actualEnd?: string | null
+  status?: string
+  progress?: number
+  logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: string | null
+  ownerName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownerHistory?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutTestPlanInput
+}
+
+export type TestPlanCreateOrConnectWithoutOwnerInput = {
+  where: Prisma.TestPlanWhereUniqueInput
+  create: Prisma.XOR<Prisma.TestPlanCreateWithoutOwnerInput, Prisma.TestPlanUncheckedCreateWithoutOwnerInput>
+}
+
+export type TestPlanCreateManyOwnerInputEnvelope = {
+  data: Prisma.TestPlanCreateManyOwnerInput | Prisma.TestPlanCreateManyOwnerInput[]
+  skipDuplicates?: boolean
+}
+
+export type TestPlanUpsertWithWhereUniqueWithoutOwnerInput = {
+  where: Prisma.TestPlanWhereUniqueInput
+  update: Prisma.XOR<Prisma.TestPlanUpdateWithoutOwnerInput, Prisma.TestPlanUncheckedUpdateWithoutOwnerInput>
+  create: Prisma.XOR<Prisma.TestPlanCreateWithoutOwnerInput, Prisma.TestPlanUncheckedCreateWithoutOwnerInput>
+}
+
+export type TestPlanUpdateWithWhereUniqueWithoutOwnerInput = {
+  where: Prisma.TestPlanWhereUniqueInput
+  data: Prisma.XOR<Prisma.TestPlanUpdateWithoutOwnerInput, Prisma.TestPlanUncheckedUpdateWithoutOwnerInput>
+}
+
+export type TestPlanUpdateManyWithWhereWithoutOwnerInput = {
+  where: Prisma.TestPlanScalarWhereInput
+  data: Prisma.XOR<Prisma.TestPlanUpdateManyMutationInput, Prisma.TestPlanUncheckedUpdateManyWithoutOwnerInput>
+}
+
+export type TestPlanScalarWhereInput = {
+  AND?: Prisma.TestPlanScalarWhereInput | Prisma.TestPlanScalarWhereInput[]
+  OR?: Prisma.TestPlanScalarWhereInput[]
+  NOT?: Prisma.TestPlanScalarWhereInput | Prisma.TestPlanScalarWhereInput[]
+  id?: Prisma.StringFilter<"TestPlan"> | string
+  equipmentId?: Prisma.StringFilter<"TestPlan"> | string
+  testCategory?: Prisma.StringFilter<"TestPlan"> | string
+  projectName?: Prisma.StringFilter<"TestPlan"> | string
+  sampleType?: Prisma.StringFilter<"TestPlan"> | string
+  sampleDescription?: Prisma.StringFilter<"TestPlan"> | string
+  plannedStart?: Prisma.StringFilter<"TestPlan"> | string
+  plannedEnd?: Prisma.StringFilter<"TestPlan"> | string
+  actualStart?: Prisma.StringNullableFilter<"TestPlan"> | string | null
+  actualEnd?: Prisma.StringNullableFilter<"TestPlan"> | string | null
+  status?: Prisma.StringFilter<"TestPlan"> | string
+  progress?: Prisma.IntFilter<"TestPlan"> | number
+  logs?: Prisma.JsonFilter<"TestPlan">
+  managingTeam?: Prisma.StringNullableFilter<"TestPlan"> | string | null
+  ownerId?: Prisma.StringNullableFilter<"TestPlan"> | string | null
+  ownerName?: Prisma.StringNullableFilter<"TestPlan"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"TestPlan"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"TestPlan"> | Date | string
+}
+
 export type TestPlanCreateWithoutEquipmentInput = {
   id?: string
   testCategory: string
@@ -630,8 +858,12 @@ export type TestPlanCreateWithoutEquipmentInput = {
   status?: string
   progress?: number
   logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: string | null
+  ownerName?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedTestPlansInput
+  ownerHistory?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutTestPlanInput
 }
 
 export type TestPlanUncheckedCreateWithoutEquipmentInput = {
@@ -647,8 +879,12 @@ export type TestPlanUncheckedCreateWithoutEquipmentInput = {
   status?: string
   progress?: number
   logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: string | null
+  ownerId?: string | null
+  ownerName?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  ownerHistory?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutTestPlanInput
 }
 
 export type TestPlanCreateOrConnectWithoutEquipmentInput = {
@@ -677,25 +913,186 @@ export type TestPlanUpdateManyWithWhereWithoutEquipmentInput = {
   data: Prisma.XOR<Prisma.TestPlanUpdateManyMutationInput, Prisma.TestPlanUncheckedUpdateManyWithoutEquipmentInput>
 }
 
-export type TestPlanScalarWhereInput = {
-  AND?: Prisma.TestPlanScalarWhereInput | Prisma.TestPlanScalarWhereInput[]
-  OR?: Prisma.TestPlanScalarWhereInput[]
-  NOT?: Prisma.TestPlanScalarWhereInput | Prisma.TestPlanScalarWhereInput[]
-  id?: Prisma.StringFilter<"TestPlan"> | string
-  equipmentId?: Prisma.StringFilter<"TestPlan"> | string
-  testCategory?: Prisma.StringFilter<"TestPlan"> | string
-  projectName?: Prisma.StringFilter<"TestPlan"> | string
-  sampleType?: Prisma.StringFilter<"TestPlan"> | string
-  sampleDescription?: Prisma.StringFilter<"TestPlan"> | string
-  plannedStart?: Prisma.StringFilter<"TestPlan"> | string
-  plannedEnd?: Prisma.StringFilter<"TestPlan"> | string
-  actualStart?: Prisma.StringNullableFilter<"TestPlan"> | string | null
-  actualEnd?: Prisma.StringNullableFilter<"TestPlan"> | string | null
-  status?: Prisma.StringFilter<"TestPlan"> | string
-  progress?: Prisma.IntFilter<"TestPlan"> | number
-  logs?: Prisma.JsonFilter<"TestPlan">
-  createdAt?: Prisma.DateTimeFilter<"TestPlan"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"TestPlan"> | Date | string
+export type TestPlanCreateWithoutOwnerHistoryInput = {
+  id?: string
+  testCategory: string
+  projectName: string
+  sampleType?: string
+  sampleDescription?: string
+  plannedStart: string
+  plannedEnd: string
+  actualStart?: string | null
+  actualEnd?: string | null
+  status?: string
+  progress?: number
+  logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: string | null
+  ownerName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  equipment: Prisma.EquipmentCreateNestedOneWithoutTestPlansInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedTestPlansInput
+}
+
+export type TestPlanUncheckedCreateWithoutOwnerHistoryInput = {
+  id?: string
+  equipmentId: string
+  testCategory: string
+  projectName: string
+  sampleType?: string
+  sampleDescription?: string
+  plannedStart: string
+  plannedEnd: string
+  actualStart?: string | null
+  actualEnd?: string | null
+  status?: string
+  progress?: number
+  logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: string | null
+  ownerId?: string | null
+  ownerName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type TestPlanCreateOrConnectWithoutOwnerHistoryInput = {
+  where: Prisma.TestPlanWhereUniqueInput
+  create: Prisma.XOR<Prisma.TestPlanCreateWithoutOwnerHistoryInput, Prisma.TestPlanUncheckedCreateWithoutOwnerHistoryInput>
+}
+
+export type TestPlanUpsertWithoutOwnerHistoryInput = {
+  update: Prisma.XOR<Prisma.TestPlanUpdateWithoutOwnerHistoryInput, Prisma.TestPlanUncheckedUpdateWithoutOwnerHistoryInput>
+  create: Prisma.XOR<Prisma.TestPlanCreateWithoutOwnerHistoryInput, Prisma.TestPlanUncheckedCreateWithoutOwnerHistoryInput>
+  where?: Prisma.TestPlanWhereInput
+}
+
+export type TestPlanUpdateToOneWithWhereWithoutOwnerHistoryInput = {
+  where?: Prisma.TestPlanWhereInput
+  data: Prisma.XOR<Prisma.TestPlanUpdateWithoutOwnerHistoryInput, Prisma.TestPlanUncheckedUpdateWithoutOwnerHistoryInput>
+}
+
+export type TestPlanUpdateWithoutOwnerHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  testCategory?: Prisma.StringFieldUpdateOperationsInput | string
+  projectName?: Prisma.StringFieldUpdateOperationsInput | string
+  sampleType?: Prisma.StringFieldUpdateOperationsInput | string
+  sampleDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedStart?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedEnd?: Prisma.StringFieldUpdateOperationsInput | string
+  actualStart?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actualEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  progress?: Prisma.IntFieldUpdateOperationsInput | number
+  logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  equipment?: Prisma.EquipmentUpdateOneRequiredWithoutTestPlansNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedTestPlansNestedInput
+}
+
+export type TestPlanUncheckedUpdateWithoutOwnerHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  equipmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  testCategory?: Prisma.StringFieldUpdateOperationsInput | string
+  projectName?: Prisma.StringFieldUpdateOperationsInput | string
+  sampleType?: Prisma.StringFieldUpdateOperationsInput | string
+  sampleDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedStart?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedEnd?: Prisma.StringFieldUpdateOperationsInput | string
+  actualStart?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actualEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  progress?: Prisma.IntFieldUpdateOperationsInput | number
+  logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TestPlanCreateManyOwnerInput = {
+  id?: string
+  equipmentId: string
+  testCategory: string
+  projectName: string
+  sampleType?: string
+  sampleDescription?: string
+  plannedStart: string
+  plannedEnd: string
+  actualStart?: string | null
+  actualEnd?: string | null
+  status?: string
+  progress?: number
+  logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: string | null
+  ownerName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type TestPlanUpdateWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  testCategory?: Prisma.StringFieldUpdateOperationsInput | string
+  projectName?: Prisma.StringFieldUpdateOperationsInput | string
+  sampleType?: Prisma.StringFieldUpdateOperationsInput | string
+  sampleDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedStart?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedEnd?: Prisma.StringFieldUpdateOperationsInput | string
+  actualStart?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actualEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  progress?: Prisma.IntFieldUpdateOperationsInput | number
+  logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  equipment?: Prisma.EquipmentUpdateOneRequiredWithoutTestPlansNestedInput
+  ownerHistory?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutTestPlanNestedInput
+}
+
+export type TestPlanUncheckedUpdateWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  equipmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  testCategory?: Prisma.StringFieldUpdateOperationsInput | string
+  projectName?: Prisma.StringFieldUpdateOperationsInput | string
+  sampleType?: Prisma.StringFieldUpdateOperationsInput | string
+  sampleDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedStart?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedEnd?: Prisma.StringFieldUpdateOperationsInput | string
+  actualStart?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actualEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  progress?: Prisma.IntFieldUpdateOperationsInput | number
+  logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownerHistory?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutTestPlanNestedInput
+}
+
+export type TestPlanUncheckedUpdateManyWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  equipmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  testCategory?: Prisma.StringFieldUpdateOperationsInput | string
+  projectName?: Prisma.StringFieldUpdateOperationsInput | string
+  sampleType?: Prisma.StringFieldUpdateOperationsInput | string
+  sampleDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedStart?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedEnd?: Prisma.StringFieldUpdateOperationsInput | string
+  actualStart?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actualEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  progress?: Prisma.IntFieldUpdateOperationsInput | number
+  logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TestPlanCreateManyEquipmentInput = {
@@ -711,6 +1108,9 @@ export type TestPlanCreateManyEquipmentInput = {
   status?: string
   progress?: number
   logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: string | null
+  ownerId?: string | null
+  ownerName?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -728,8 +1128,12 @@ export type TestPlanUpdateWithoutEquipmentInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneWithoutOwnedTestPlansNestedInput
+  ownerHistory?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutTestPlanNestedInput
 }
 
 export type TestPlanUncheckedUpdateWithoutEquipmentInput = {
@@ -745,8 +1149,12 @@ export type TestPlanUncheckedUpdateWithoutEquipmentInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownerHistory?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutTestPlanNestedInput
 }
 
 export type TestPlanUncheckedUpdateManyWithoutEquipmentInput = {
@@ -762,10 +1170,42 @@ export type TestPlanUncheckedUpdateManyWithoutEquipmentInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   logs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type TestPlanCountOutputType
+ */
+
+export type TestPlanCountOutputType = {
+  ownerHistory: number
+}
+
+export type TestPlanCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  ownerHistory?: boolean | TestPlanCountOutputTypeCountOwnerHistoryArgs
+}
+
+/**
+ * TestPlanCountOutputType without action
+ */
+export type TestPlanCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TestPlanCountOutputType
+   */
+  select?: Prisma.TestPlanCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * TestPlanCountOutputType without action
+ */
+export type TestPlanCountOutputTypeCountOwnerHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TestPlanOwnerHistoryWhereInput
+}
 
 
 export type TestPlanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -782,9 +1222,15 @@ export type TestPlanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   status?: boolean
   progress?: boolean
   logs?: boolean
+  managingTeam?: boolean
+  ownerId?: boolean
+  ownerName?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   equipment?: boolean | Prisma.EquipmentDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.TestPlan$ownerArgs<ExtArgs>
+  ownerHistory?: boolean | Prisma.TestPlan$ownerHistoryArgs<ExtArgs>
+  _count?: boolean | Prisma.TestPlanCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["testPlan"]>
 
 export type TestPlanSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -801,9 +1247,13 @@ export type TestPlanSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   status?: boolean
   progress?: boolean
   logs?: boolean
+  managingTeam?: boolean
+  ownerId?: boolean
+  ownerName?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   equipment?: boolean | Prisma.EquipmentDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.TestPlan$ownerArgs<ExtArgs>
 }, ExtArgs["result"]["testPlan"]>
 
 export type TestPlanSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -820,9 +1270,13 @@ export type TestPlanSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   status?: boolean
   progress?: boolean
   logs?: boolean
+  managingTeam?: boolean
+  ownerId?: boolean
+  ownerName?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   equipment?: boolean | Prisma.EquipmentDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.TestPlan$ownerArgs<ExtArgs>
 }, ExtArgs["result"]["testPlan"]>
 
 export type TestPlanSelectScalar = {
@@ -839,25 +1293,35 @@ export type TestPlanSelectScalar = {
   status?: boolean
   progress?: boolean
   logs?: boolean
+  managingTeam?: boolean
+  ownerId?: boolean
+  ownerName?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TestPlanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "equipmentId" | "testCategory" | "projectName" | "sampleType" | "sampleDescription" | "plannedStart" | "plannedEnd" | "actualStart" | "actualEnd" | "status" | "progress" | "logs" | "createdAt" | "updatedAt", ExtArgs["result"]["testPlan"]>
+export type TestPlanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "equipmentId" | "testCategory" | "projectName" | "sampleType" | "sampleDescription" | "plannedStart" | "plannedEnd" | "actualStart" | "actualEnd" | "status" | "progress" | "logs" | "managingTeam" | "ownerId" | "ownerName" | "createdAt" | "updatedAt", ExtArgs["result"]["testPlan"]>
 export type TestPlanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   equipment?: boolean | Prisma.EquipmentDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.TestPlan$ownerArgs<ExtArgs>
+  ownerHistory?: boolean | Prisma.TestPlan$ownerHistoryArgs<ExtArgs>
+  _count?: boolean | Prisma.TestPlanCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TestPlanIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   equipment?: boolean | Prisma.EquipmentDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.TestPlan$ownerArgs<ExtArgs>
 }
 export type TestPlanIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   equipment?: boolean | Prisma.EquipmentDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.TestPlan$ownerArgs<ExtArgs>
 }
 
 export type $TestPlanPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "TestPlan"
   objects: {
     equipment: Prisma.$EquipmentPayload<ExtArgs>
+    owner: Prisma.$UserPayload<ExtArgs> | null
+    ownerHistory: Prisma.$TestPlanOwnerHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -873,6 +1337,9 @@ export type $TestPlanPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     status: string
     progress: number
     logs: runtime.JsonValue
+    managingTeam: string | null
+    ownerId: string | null
+    ownerName: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["testPlan"]>
@@ -1270,6 +1737,8 @@ readonly fields: TestPlanFieldRefs;
 export interface Prisma__TestPlanClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   equipment<T extends Prisma.EquipmentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EquipmentDefaultArgs<ExtArgs>>): Prisma.Prisma__EquipmentClient<runtime.Types.Result.GetResult<Prisma.$EquipmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  owner<T extends Prisma.TestPlan$ownerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TestPlan$ownerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  ownerHistory<T extends Prisma.TestPlan$ownerHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TestPlan$ownerHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TestPlanOwnerHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1312,6 +1781,9 @@ export interface TestPlanFieldRefs {
   readonly status: Prisma.FieldRef<"TestPlan", 'String'>
   readonly progress: Prisma.FieldRef<"TestPlan", 'Int'>
   readonly logs: Prisma.FieldRef<"TestPlan", 'Json'>
+  readonly managingTeam: Prisma.FieldRef<"TestPlan", 'String'>
+  readonly ownerId: Prisma.FieldRef<"TestPlan", 'String'>
+  readonly ownerName: Prisma.FieldRef<"TestPlan", 'String'>
   readonly createdAt: Prisma.FieldRef<"TestPlan", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TestPlan", 'DateTime'>
 }
@@ -1712,6 +2184,49 @@ export type TestPlanDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many TestPlans to delete.
    */
   limit?: number
+}
+
+/**
+ * TestPlan.owner
+ */
+export type TestPlan$ownerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * TestPlan.ownerHistory
+ */
+export type TestPlan$ownerHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TestPlanOwnerHistory
+   */
+  select?: Prisma.TestPlanOwnerHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TestPlanOwnerHistory
+   */
+  omit?: Prisma.TestPlanOwnerHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TestPlanOwnerHistoryInclude<ExtArgs> | null
+  where?: Prisma.TestPlanOwnerHistoryWhereInput
+  orderBy?: Prisma.TestPlanOwnerHistoryOrderByWithRelationInput | Prisma.TestPlanOwnerHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.TestPlanOwnerHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TestPlanOwnerHistoryScalarFieldEnum | Prisma.TestPlanOwnerHistoryScalarFieldEnum[]
 }
 
 /**

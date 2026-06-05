@@ -52,7 +52,7 @@ const ALL_NAV: NavItem[] = [
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
-    href: "/facilities", label: "시험장·시험 현황", icon: FlaskConical,
+    href: "/facilities", label: "시험장·시험 관리", icon: FlaskConical,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
