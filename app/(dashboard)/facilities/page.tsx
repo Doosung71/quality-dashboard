@@ -27,6 +27,9 @@ export default async function FacilitiesPage() {
     replacedBy:     eq.replacedById ?? null,
     replaces:       eq.replacesId   ?? null,
     notes:          eq.notes,
+    managingTeam:   eq.managingTeam ?? null,
+    ownerId:        eq.ownerId      ?? null,
+    ownerName:      eq.ownerName    ?? null,
   }));
 
   const testsData: TestsData = {

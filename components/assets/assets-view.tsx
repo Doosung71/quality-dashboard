@@ -10,6 +10,7 @@ import { EquipmentTable } from "@/components/facilities/equipment-table";
 import { computeStatus } from "@/lib/facilities-utils";
 import { EquipmentForm } from "./equipment-form";
 import { TestPlanForm } from "./test-plan-form";
+import { OwnerModal } from "./owner-modal";
 
 const CATEGORIES: { key: AssetCategory | "전체"; label: string }[] = [
   { key: "전체",    label: "전체" },
@@ -75,6 +76,7 @@ function AgingCard({ equipment }: { equipment: Equipment[] }) {
 }
 
 type ModalType = "equipment" | "testplan" | null;
+type OwnerTarget = { id: string; name: string; managingTeam: string | null; ownerId: string | null; ownerName: string | null } | null;
 
 export function AssetsView({
   assetData, testsData, facilitiesData,
@@ -88,8 +90,10 @@ export function AssetsView({
   const [activeSite, setActiveSite] = useState<SiteId | "전체">("전체");
   const [activeCategory, setActiveCategory] = useState<AssetCategory | "전체">("전체");
   const [modal, setModal] = useState<ModalType>(null);
+  const [ownerTarget, setOwnerTarget] = useState<OwnerTarget>(null);
 
-  const onFormSuccess = () => { setModal(null); router.refresh(); };
+  const onFormSuccess  = () => { setModal(null); router.refresh(); };
+  const onOwnerSaved   = () => { setOwnerTarget(null); router.refresh(); };
 
   const siteOptions: { key: SiteId | "전체"; label: string }[] = [
     { key: "전체", label: "전체" },
@@ -266,8 +270,31 @@ export function AssetsView({
 
       {/* 설비 테이블 */}
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <EquipmentTable equipment={filtered} tests={tests} />
+        <EquipmentTable
+          equipment={filtered}
+          tests={tests}
+          onOwnerClick={(eq) => setOwnerTarget({
+            id:           eq.id,
+            name:         eq.name,
+            managingTeam: eq.managingTeam,
+            ownerId:      eq.ownerId,
+            ownerName:    eq.ownerName,
+          })}
+        />
       </div>
+
+      {/* 담당자 관리 모달 */}
+      {ownerTarget && (
+        <OwnerModal
+          equipmentId={ownerTarget.id}
+          equipmentName={ownerTarget.name}
+          currentManagingTeam={ownerTarget.managingTeam}
+          currentOwnerId={ownerTarget.ownerId}
+          currentOwnerName={ownerTarget.ownerName}
+          onClose={() => setOwnerTarget(null)}
+          onSaved={onOwnerSaved}
+        />
+      )}
     </div>
   );
 }

@@ -19,9 +19,10 @@ function getEquipmentTests(tests: Test[], equipmentId: string): Test[] {
   return tests.filter((t) => t.equipmentId === equipmentId);
 }
 
-type ColKey = "maker" | "quantity" | "notes";
+type ColKey = "maker" | "quantity" | "notes" | "owner";
 
 const TOGGLEABLE_COLS: { key: ColKey; label: string }[] = [
+  { key: "owner",    label: "담당자" },
   { key: "maker",    label: "제조사" },
   { key: "quantity", label: "대수" },
   { key: "notes",    label: "비고" },
@@ -29,7 +30,13 @@ const TOGGLEABLE_COLS: { key: ColKey; label: string }[] = [
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function EquipmentTable({ equipment, tests }: { equipment: Equipment[]; tests: Test[] }) {
+export function EquipmentTable({
+  equipment, tests, onOwnerClick,
+}: {
+  equipment: Equipment[];
+  tests: Test[];
+  onOwnerClick?: (eq: Equipment) => void;
+}) {
   const [hiddenCols, setHiddenCols] = useState<Set<ColKey>>(
     new Set<ColKey>(["maker", "quantity", "notes"])
   );
@@ -201,6 +208,7 @@ export function EquipmentTable({ equipment, tests }: { equipment: Equipment[]; t
               <th className="sticky left-0 z-20 bg-slate-50 text-left px-4 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">설비명</th>
               <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">유형</th>
               <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">규격</th>
+              {shown("owner") && <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">관리팀·담당자</th>}
               {shown("maker") && <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">제조사</th>}
               <th className="text-right px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">도입</th>
               <th className="text-right px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">사용연수</th>
@@ -230,6 +238,38 @@ export function EquipmentTable({ equipment, tests }: { equipment: Equipment[]; t
                   <td className="px-3 py-2.5 text-slate-600 whitespace-nowrap font-mono text-xs">
                     {formatSpec(eq.spec)}
                   </td>
+                  {shown("owner") && (
+                    <td className="px-3 py-2.5 whitespace-nowrap">
+                      {onOwnerClick ? (
+                        <button
+                          onClick={() => onOwnerClick(eq)}
+                          className="text-left group"
+                          title="담당자 변경"
+                        >
+                          {eq.managingTeam || eq.ownerName || eq.ownerId ? (
+                            <div className="space-y-0.5">
+                              {eq.managingTeam && (
+                                <p className="text-xs text-slate-500">{eq.managingTeam}</p>
+                              )}
+                              {(eq.ownerName || eq.ownerId) && (
+                                <p className="text-xs font-medium text-slate-700 group-hover:text-blue-600">
+                                  {eq.ownerName ?? "—"}
+                                </p>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-xs text-slate-300 group-hover:text-blue-400">미지정</span>
+                          )}
+                        </button>
+                      ) : (
+                        <div>
+                          {eq.managingTeam && <p className="text-xs text-slate-500">{eq.managingTeam}</p>}
+                          {eq.ownerName && <p className="text-xs font-medium text-slate-700">{eq.ownerName}</p>}
+                          {!eq.managingTeam && !eq.ownerName && <span className="text-xs text-slate-300">미지정</span>}
+                        </div>
+                      )}
+                    </td>
+                  )}
                   {shown("maker") && (
                     <td className="px-3 py-2.5 text-slate-600 whitespace-nowrap">
                       {eq.maker}

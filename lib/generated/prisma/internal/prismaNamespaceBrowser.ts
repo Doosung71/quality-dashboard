@@ -57,6 +57,7 @@ export const ModelName = {
   BoardPost: 'BoardPost',
   BoardComment: 'BoardComment',
   Equipment: 'Equipment',
+  EquipmentOwnerHistory: 'EquipmentOwnerHistory',
   TestPlan: 'TestPlan',
   Tender: 'Tender',
   TenderDocument: 'TenderDocument',
@@ -172,11 +173,28 @@ export const EquipmentScalarFieldEnum = {
   replacedById: 'replacedById',
   replacesId: 'replacesId',
   notes: 'notes',
+  managingTeam: 'managingTeam',
+  ownerId: 'ownerId',
+  ownerName: 'ownerName',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type EquipmentScalarFieldEnum = (typeof EquipmentScalarFieldEnum)[keyof typeof EquipmentScalarFieldEnum]
+
+
+export const EquipmentOwnerHistoryScalarFieldEnum = {
+  id: 'id',
+  equipmentId: 'equipmentId',
+  managingTeam: 'managingTeam',
+  ownerId: 'ownerId',
+  ownerName: 'ownerName',
+  changedById: 'changedById',
+  note: 'note',
+  changedAt: 'changedAt'
+} as const
+
+export type EquipmentOwnerHistoryScalarFieldEnum = (typeof EquipmentOwnerHistoryScalarFieldEnum)[keyof typeof EquipmentOwnerHistoryScalarFieldEnum]
 
 
 export const TestPlanScalarFieldEnum = {

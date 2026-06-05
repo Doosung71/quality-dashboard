@@ -19,10 +19,30 @@ model Equipment {
   replacedById   String?                  // 이 설비를 교체할 설비 ID
   replacesId     String?                  // 이 설비가 교체하는 설비 ID
   notes          String    @default("")
+  managingTeam   String?                  // 관리팀 (예: "구미 시험1팀")
+  ownerId        String?                  // 담당자 User.id (nullable)
+  owner          User?     @relation("EquipmentOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  ownerName      String?                  // 시스템 외 담당자명 fallback
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
   testPlans      TestPlan[]
+  ownerHistory   EquipmentOwnerHistory[]
+}
+
+// 담당자·관리팀 변경 이력 (append-only)
+model EquipmentOwnerHistory {
+  id            String    @id @default(cuid())
+  equipment     Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  equipmentId   String
+  managingTeam  String?
+  ownerId       String?
+  owner         User?     @relation("OwnerHistoryOwner",     fields: [ownerId],     references: [id], onDelete: SetNull)
+  ownerName     String?
+  changedById   String
+  changedBy     User      @relation("OwnerHistoryChangedBy", fields: [changedById], references: [id])
+  note          String?
+  changedAt     DateTime  @default(now())
 }
 
 model TestPlan {

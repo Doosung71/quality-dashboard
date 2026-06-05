@@ -30,10 +30,15 @@ model User {
   boardPosts      BoardPost[]
   boardComments   BoardComment[]
 
-  // TRA 관계 (tra.prisma 모델 추가 시 활성화)
+  // TRA 관계
   tenders         Tender[]
   reviewActions   ReviewHistory[]
   comments        Comment[]
+
+  // 시설 자산 관계
+  ownedEquipment  Equipment[]             @relation("EquipmentOwner")
+  ownerHistoryAsOwner    EquipmentOwnerHistory[] @relation("OwnerHistoryOwner")
+  ownerHistoryAsChanger  EquipmentOwnerHistory[] @relation("OwnerHistoryChangedBy")
 }
 
 model Feedback {

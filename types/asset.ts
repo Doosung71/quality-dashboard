@@ -20,6 +20,21 @@ export interface Equipment {
   replacedBy: string | null;
   replaces: string | null;
   notes: string;
+  managingTeam: string | null;
+  ownerId: string | null;
+  ownerName: string | null;
+}
+
+export interface EquipmentOwnerHistory {
+  id: string;
+  equipmentId: string;
+  managingTeam: string | null;
+  ownerId: string | null;
+  ownerName: string | null;
+  changedById: string;
+  changedByName: string;
+  note: string | null;
+  changedAt: string; // ISO string
 }
 
 export interface AssetData {

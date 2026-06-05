@@ -48,6 +48,11 @@ export type BoardComment = Prisma.BoardCommentModel
  */
 export type Equipment = Prisma.EquipmentModel
 /**
+ * Model EquipmentOwnerHistory
+ * 
+ */
+export type EquipmentOwnerHistory = Prisma.EquipmentOwnerHistoryModel
+/**
  * Model TestPlan
  * 
  */

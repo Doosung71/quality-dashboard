@@ -390,6 +390,7 @@ export const ModelName = {
   BoardPost: 'BoardPost',
   BoardComment: 'BoardComment',
   Equipment: 'Equipment',
+  EquipmentOwnerHistory: 'EquipmentOwnerHistory',
   TestPlan: 'TestPlan',
   Tender: 'Tender',
   TenderDocument: 'TenderDocument',
@@ -413,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "testPlan" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment"
+    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -858,6 +859,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.EquipmentCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.EquipmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    EquipmentOwnerHistory: {
+      payload: Prisma.$EquipmentOwnerHistoryPayload<ExtArgs>
+      fields: Prisma.EquipmentOwnerHistoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EquipmentOwnerHistoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentOwnerHistoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EquipmentOwnerHistoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentOwnerHistoryPayload>
+        }
+        findFirst: {
+          args: Prisma.EquipmentOwnerHistoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentOwnerHistoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EquipmentOwnerHistoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentOwnerHistoryPayload>
+        }
+        findMany: {
+          args: Prisma.EquipmentOwnerHistoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentOwnerHistoryPayload>[]
+        }
+        create: {
+          args: Prisma.EquipmentOwnerHistoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentOwnerHistoryPayload>
+        }
+        createMany: {
+          args: Prisma.EquipmentOwnerHistoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EquipmentOwnerHistoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentOwnerHistoryPayload>[]
+        }
+        delete: {
+          args: Prisma.EquipmentOwnerHistoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentOwnerHistoryPayload>
+        }
+        update: {
+          args: Prisma.EquipmentOwnerHistoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentOwnerHistoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.EquipmentOwnerHistoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EquipmentOwnerHistoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EquipmentOwnerHistoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentOwnerHistoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.EquipmentOwnerHistoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentOwnerHistoryPayload>
+        }
+        aggregate: {
+          args: Prisma.EquipmentOwnerHistoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEquipmentOwnerHistory>
+        }
+        groupBy: {
+          args: Prisma.EquipmentOwnerHistoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EquipmentOwnerHistoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EquipmentOwnerHistoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EquipmentOwnerHistoryCountAggregateOutputType> | number
         }
       }
     }
@@ -1581,11 +1656,28 @@ export const EquipmentScalarFieldEnum = {
   replacedById: 'replacedById',
   replacesId: 'replacesId',
   notes: 'notes',
+  managingTeam: 'managingTeam',
+  ownerId: 'ownerId',
+  ownerName: 'ownerName',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type EquipmentScalarFieldEnum = (typeof EquipmentScalarFieldEnum)[keyof typeof EquipmentScalarFieldEnum]
+
+
+export const EquipmentOwnerHistoryScalarFieldEnum = {
+  id: 'id',
+  equipmentId: 'equipmentId',
+  managingTeam: 'managingTeam',
+  ownerId: 'ownerId',
+  ownerName: 'ownerName',
+  changedById: 'changedById',
+  note: 'note',
+  changedAt: 'changedAt'
+} as const
+
+export type EquipmentOwnerHistoryScalarFieldEnum = (typeof EquipmentOwnerHistoryScalarFieldEnum)[keyof typeof EquipmentOwnerHistoryScalarFieldEnum]
 
 
 export const TestPlanScalarFieldEnum = {
@@ -2052,6 +2144,7 @@ export type GlobalOmitConfig = {
   boardPost?: Prisma.BoardPostOmit
   boardComment?: Prisma.BoardCommentOmit
   equipment?: Prisma.EquipmentOmit
+  equipmentOwnerHistory?: Prisma.EquipmentOwnerHistoryOmit
   testPlan?: Prisma.TestPlanOmit
   tender?: Prisma.TenderOmit
   tenderDocument?: Prisma.TenderDocumentOmit

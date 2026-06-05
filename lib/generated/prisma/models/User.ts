@@ -253,6 +253,9 @@ export type UserWhereInput = {
   tenders?: Prisma.TenderListRelationFilter
   reviewActions?: Prisma.ReviewHistoryListRelationFilter
   comments?: Prisma.CommentListRelationFilter
+  ownedEquipment?: Prisma.EquipmentListRelationFilter
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryListRelationFilter
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -276,6 +279,9 @@ export type UserOrderByWithRelationInput = {
   tenders?: Prisma.TenderOrderByRelationAggregateInput
   reviewActions?: Prisma.ReviewHistoryOrderByRelationAggregateInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
+  ownedEquipment?: Prisma.EquipmentOrderByRelationAggregateInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryOrderByRelationAggregateInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -302,6 +308,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   tenders?: Prisma.TenderListRelationFilter
   reviewActions?: Prisma.ReviewHistoryListRelationFilter
   comments?: Prisma.CommentListRelationFilter
+  ownedEquipment?: Prisma.EquipmentListRelationFilter
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryListRelationFilter
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -363,6 +372,9 @@ export type UserCreateInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -386,6 +398,9 @@ export type UserUncheckedCreateInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUpdateInput = {
@@ -409,6 +424,9 @@ export type UserUpdateInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -432,6 +450,9 @@ export type UserUncheckedUpdateInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -535,6 +556,11 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -615,6 +641,52 @@ export type UserUpdateOneRequiredWithoutBoardCommentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBoardCommentsInput, Prisma.UserUpdateWithoutBoardCommentsInput>, Prisma.UserUncheckedUpdateWithoutBoardCommentsInput>
 }
 
+export type UserCreateNestedOneWithoutOwnedEquipmentInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedEquipmentInput, Prisma.UserUncheckedCreateWithoutOwnedEquipmentInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedEquipmentInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutOwnedEquipmentNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedEquipmentInput, Prisma.UserUncheckedCreateWithoutOwnedEquipmentInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedEquipmentInput
+  upsert?: Prisma.UserUpsertWithoutOwnedEquipmentInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOwnedEquipmentInput, Prisma.UserUpdateWithoutOwnedEquipmentInput>, Prisma.UserUncheckedUpdateWithoutOwnedEquipmentInput>
+}
+
+export type UserCreateNestedOneWithoutOwnerHistoryAsOwnerInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnerHistoryAsOwnerInput, Prisma.UserUncheckedCreateWithoutOwnerHistoryAsOwnerInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnerHistoryAsOwnerInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutOwnerHistoryAsChangerInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnerHistoryAsChangerInput, Prisma.UserUncheckedCreateWithoutOwnerHistoryAsChangerInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnerHistoryAsChangerInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutOwnerHistoryAsOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnerHistoryAsOwnerInput, Prisma.UserUncheckedCreateWithoutOwnerHistoryAsOwnerInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnerHistoryAsOwnerInput
+  upsert?: Prisma.UserUpsertWithoutOwnerHistoryAsOwnerInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOwnerHistoryAsOwnerInput, Prisma.UserUpdateWithoutOwnerHistoryAsOwnerInput>, Prisma.UserUncheckedUpdateWithoutOwnerHistoryAsOwnerInput>
+}
+
+export type UserUpdateOneRequiredWithoutOwnerHistoryAsChangerNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnerHistoryAsChangerInput, Prisma.UserUncheckedCreateWithoutOwnerHistoryAsChangerInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnerHistoryAsChangerInput
+  upsert?: Prisma.UserUpsertWithoutOwnerHistoryAsChangerInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOwnerHistoryAsChangerInput, Prisma.UserUpdateWithoutOwnerHistoryAsChangerInput>, Prisma.UserUncheckedUpdateWithoutOwnerHistoryAsChangerInput>
+}
+
 export type UserCreateNestedOneWithoutTendersInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutTendersInput, Prisma.UserUncheckedCreateWithoutTendersInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutTendersInput
@@ -677,6 +749,9 @@ export type UserCreateWithoutFeedbacksInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutFeedbacksInput = {
@@ -699,6 +774,9 @@ export type UserUncheckedCreateWithoutFeedbacksInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutFeedbacksInput = {
@@ -737,6 +815,9 @@ export type UserUpdateWithoutFeedbacksInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFeedbacksInput = {
@@ -759,6 +840,9 @@ export type UserUncheckedUpdateWithoutFeedbacksInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutFeedbackRepliesInput = {
@@ -781,6 +865,9 @@ export type UserCreateWithoutFeedbackRepliesInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutFeedbackRepliesInput = {
@@ -803,6 +890,9 @@ export type UserUncheckedCreateWithoutFeedbackRepliesInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutFeedbackRepliesInput = {
@@ -841,6 +931,9 @@ export type UserUpdateWithoutFeedbackRepliesInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFeedbackRepliesInput = {
@@ -863,6 +956,9 @@ export type UserUncheckedUpdateWithoutFeedbackRepliesInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutBoardPostsInput = {
@@ -885,6 +981,9 @@ export type UserCreateWithoutBoardPostsInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutBoardPostsInput = {
@@ -907,6 +1006,9 @@ export type UserUncheckedCreateWithoutBoardPostsInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutBoardPostsInput = {
@@ -945,6 +1047,9 @@ export type UserUpdateWithoutBoardPostsInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBoardPostsInput = {
@@ -967,6 +1072,9 @@ export type UserUncheckedUpdateWithoutBoardPostsInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutBoardCommentsInput = {
@@ -989,6 +1097,9 @@ export type UserCreateWithoutBoardCommentsInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutBoardCommentsInput = {
@@ -1011,6 +1122,9 @@ export type UserUncheckedCreateWithoutBoardCommentsInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutBoardCommentsInput = {
@@ -1049,6 +1163,9 @@ export type UserUpdateWithoutBoardCommentsInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBoardCommentsInput = {
@@ -1071,6 +1188,357 @@ export type UserUncheckedUpdateWithoutBoardCommentsInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+}
+
+export type UserCreateWithoutOwnedEquipmentInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
+}
+
+export type UserUncheckedCreateWithoutOwnedEquipmentInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+}
+
+export type UserCreateOrConnectWithoutOwnedEquipmentInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedEquipmentInput, Prisma.UserUncheckedCreateWithoutOwnedEquipmentInput>
+}
+
+export type UserUpsertWithoutOwnedEquipmentInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOwnedEquipmentInput, Prisma.UserUncheckedUpdateWithoutOwnedEquipmentInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedEquipmentInput, Prisma.UserUncheckedCreateWithoutOwnedEquipmentInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOwnedEquipmentInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOwnedEquipmentInput, Prisma.UserUncheckedUpdateWithoutOwnedEquipmentInput>
+}
+
+export type UserUpdateWithoutOwnedEquipmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOwnedEquipmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+}
+
+export type UserCreateWithoutOwnerHistoryAsOwnerInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
+}
+
+export type UserUncheckedCreateWithoutOwnerHistoryAsOwnerInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+}
+
+export type UserCreateOrConnectWithoutOwnerHistoryAsOwnerInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnerHistoryAsOwnerInput, Prisma.UserUncheckedCreateWithoutOwnerHistoryAsOwnerInput>
+}
+
+export type UserCreateWithoutOwnerHistoryAsChangerInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+}
+
+export type UserUncheckedCreateWithoutOwnerHistoryAsChangerInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+}
+
+export type UserCreateOrConnectWithoutOwnerHistoryAsChangerInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnerHistoryAsChangerInput, Prisma.UserUncheckedCreateWithoutOwnerHistoryAsChangerInput>
+}
+
+export type UserUpsertWithoutOwnerHistoryAsOwnerInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOwnerHistoryAsOwnerInput, Prisma.UserUncheckedUpdateWithoutOwnerHistoryAsOwnerInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnerHistoryAsOwnerInput, Prisma.UserUncheckedCreateWithoutOwnerHistoryAsOwnerInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOwnerHistoryAsOwnerInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOwnerHistoryAsOwnerInput, Prisma.UserUncheckedUpdateWithoutOwnerHistoryAsOwnerInput>
+}
+
+export type UserUpdateWithoutOwnerHistoryAsOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOwnerHistoryAsOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+}
+
+export type UserUpsertWithoutOwnerHistoryAsChangerInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOwnerHistoryAsChangerInput, Prisma.UserUncheckedUpdateWithoutOwnerHistoryAsChangerInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnerHistoryAsChangerInput, Prisma.UserUncheckedCreateWithoutOwnerHistoryAsChangerInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOwnerHistoryAsChangerInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOwnerHistoryAsChangerInput, Prisma.UserUncheckedUpdateWithoutOwnerHistoryAsChangerInput>
+}
+
+export type UserUpdateWithoutOwnerHistoryAsChangerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOwnerHistoryAsChangerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutTendersInput = {
@@ -1093,6 +1561,9 @@ export type UserCreateWithoutTendersInput = {
   boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutTendersInput = {
@@ -1115,6 +1586,9 @@ export type UserUncheckedCreateWithoutTendersInput = {
   boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutTendersInput = {
@@ -1153,6 +1627,9 @@ export type UserUpdateWithoutTendersInput = {
   boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTendersInput = {
@@ -1175,6 +1652,9 @@ export type UserUncheckedUpdateWithoutTendersInput = {
   boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutReviewActionsInput = {
@@ -1197,6 +1677,9 @@ export type UserCreateWithoutReviewActionsInput = {
   boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutReviewActionsInput = {
@@ -1219,6 +1702,9 @@ export type UserUncheckedCreateWithoutReviewActionsInput = {
   boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutReviewActionsInput = {
@@ -1257,6 +1743,9 @@ export type UserUpdateWithoutReviewActionsInput = {
   boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewActionsInput = {
@@ -1279,6 +1768,9 @@ export type UserUncheckedUpdateWithoutReviewActionsInput = {
   boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -1301,6 +1793,9 @@ export type UserCreateWithoutCommentsInput = {
   boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -1323,6 +1818,9 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -1361,6 +1859,9 @@ export type UserUpdateWithoutCommentsInput = {
   boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -1383,6 +1884,9 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 
@@ -1398,6 +1902,9 @@ export type UserCountOutputType = {
   tenders: number
   reviewActions: number
   comments: number
+  ownedEquipment: number
+  ownerHistoryAsOwner: number
+  ownerHistoryAsChanger: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1408,6 +1915,9 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   tenders?: boolean | UserCountOutputTypeCountTendersArgs
   reviewActions?: boolean | UserCountOutputTypeCountReviewActionsArgs
   comments?: boolean | UserCountOutputTypeCountCommentsArgs
+  ownedEquipment?: boolean | UserCountOutputTypeCountOwnedEquipmentArgs
+  ownerHistoryAsOwner?: boolean | UserCountOutputTypeCountOwnerHistoryAsOwnerArgs
+  ownerHistoryAsChanger?: boolean | UserCountOutputTypeCountOwnerHistoryAsChangerArgs
 }
 
 /**
@@ -1469,6 +1979,27 @@ export type UserCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.CommentWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountOwnedEquipmentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EquipmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountOwnerHistoryAsOwnerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EquipmentOwnerHistoryWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountOwnerHistoryAsChangerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EquipmentOwnerHistoryWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1491,6 +2022,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   tenders?: boolean | Prisma.User$tendersArgs<ExtArgs>
   reviewActions?: boolean | Prisma.User$reviewActionsArgs<ExtArgs>
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
+  ownedEquipment?: boolean | Prisma.User$ownedEquipmentArgs<ExtArgs>
+  ownerHistoryAsOwner?: boolean | Prisma.User$ownerHistoryAsOwnerArgs<ExtArgs>
+  ownerHistoryAsChanger?: boolean | Prisma.User$ownerHistoryAsChangerArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1551,6 +2085,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   tenders?: boolean | Prisma.User$tendersArgs<ExtArgs>
   reviewActions?: boolean | Prisma.User$reviewActionsArgs<ExtArgs>
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
+  ownedEquipment?: boolean | Prisma.User$ownedEquipmentArgs<ExtArgs>
+  ownerHistoryAsOwner?: boolean | Prisma.User$ownerHistoryAsOwnerArgs<ExtArgs>
+  ownerHistoryAsChanger?: boolean | Prisma.User$ownerHistoryAsChangerArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1566,6 +2103,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     tenders: Prisma.$TenderPayload<ExtArgs>[]
     reviewActions: Prisma.$ReviewHistoryPayload<ExtArgs>[]
     comments: Prisma.$CommentPayload<ExtArgs>[]
+    ownedEquipment: Prisma.$EquipmentPayload<ExtArgs>[]
+    ownerHistoryAsOwner: Prisma.$EquipmentOwnerHistoryPayload<ExtArgs>[]
+    ownerHistoryAsChanger: Prisma.$EquipmentOwnerHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1982,6 +2522,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   tenders<T extends Prisma.User$tendersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tendersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TenderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviewActions<T extends Prisma.User$reviewActionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewActionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.User$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ownedEquipment<T extends Prisma.User$ownedEquipmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedEquipmentArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ownerHistoryAsOwner<T extends Prisma.User$ownerHistoryAsOwnerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownerHistoryAsOwnerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentOwnerHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ownerHistoryAsChanger<T extends Prisma.User$ownerHistoryAsChangerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownerHistoryAsChangerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentOwnerHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2582,6 +3125,78 @@ export type User$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
+}
+
+/**
+ * User.ownedEquipment
+ */
+export type User$ownedEquipmentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Equipment
+   */
+  select?: Prisma.EquipmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Equipment
+   */
+  omit?: Prisma.EquipmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EquipmentInclude<ExtArgs> | null
+  where?: Prisma.EquipmentWhereInput
+  orderBy?: Prisma.EquipmentOrderByWithRelationInput | Prisma.EquipmentOrderByWithRelationInput[]
+  cursor?: Prisma.EquipmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EquipmentScalarFieldEnum | Prisma.EquipmentScalarFieldEnum[]
+}
+
+/**
+ * User.ownerHistoryAsOwner
+ */
+export type User$ownerHistoryAsOwnerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EquipmentOwnerHistory
+   */
+  select?: Prisma.EquipmentOwnerHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EquipmentOwnerHistory
+   */
+  omit?: Prisma.EquipmentOwnerHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EquipmentOwnerHistoryInclude<ExtArgs> | null
+  where?: Prisma.EquipmentOwnerHistoryWhereInput
+  orderBy?: Prisma.EquipmentOwnerHistoryOrderByWithRelationInput | Prisma.EquipmentOwnerHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.EquipmentOwnerHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EquipmentOwnerHistoryScalarFieldEnum | Prisma.EquipmentOwnerHistoryScalarFieldEnum[]
+}
+
+/**
+ * User.ownerHistoryAsChanger
+ */
+export type User$ownerHistoryAsChangerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EquipmentOwnerHistory
+   */
+  select?: Prisma.EquipmentOwnerHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EquipmentOwnerHistory
+   */
+  omit?: Prisma.EquipmentOwnerHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EquipmentOwnerHistoryInclude<ExtArgs> | null
+  where?: Prisma.EquipmentOwnerHistoryWhereInput
+  orderBy?: Prisma.EquipmentOwnerHistoryOrderByWithRelationInput | Prisma.EquipmentOwnerHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.EquipmentOwnerHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EquipmentOwnerHistoryScalarFieldEnum | Prisma.EquipmentOwnerHistoryScalarFieldEnum[]
 }
 
 /**
