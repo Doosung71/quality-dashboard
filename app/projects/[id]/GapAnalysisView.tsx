@@ -21,11 +21,13 @@ export default function GapAnalysisView({
   gapTypeBadge,
   analysisStatus,
   aiUsed,
+  hasTender,
 }: {
   gaps: Gap[]
   gapTypeBadge: Record<string, GapBadge>
   analysisStatus: string
   aiUsed: string | null
+  hasTender: boolean
 }) {
   const [filter, setFilter] = useState<string>("ALL")
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
@@ -61,7 +63,7 @@ export default function GapAnalysisView({
       {/* 헤더 요약 */}
       <div className="px-5 py-4 border-b border-slate-100">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-slate-800">갭 분석 결과 ({gaps.length}건)</h2>
+          <h2 className="text-sm font-semibold text-slate-800">{hasTender ? "갭 분석 결과" : "리스크 분석 결과"} ({gaps.length}건)</h2>
           <div className="flex items-center gap-2">
             {aiUsed && <span className="text-[10px] text-slate-400">by {aiUsed}</span>}
             <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${statusBadge[analysisStatus] ?? statusBadge.DRAFT}`}>
@@ -125,13 +127,15 @@ export default function GapAnalysisView({
               </button>
               {isOpen && (
                 <div className="mt-3 space-y-2 ml-0">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-indigo-50/50 rounded-lg p-3 border border-indigo-100">
-                      <p className="text-[10px] font-bold text-indigo-600 mb-1">입찰 약속</p>
-                      <p className="text-xs text-slate-700 leading-relaxed">{g.tenderItem}</p>
-                    </div>
+                  <div className={hasTender ? "grid grid-cols-2 gap-3" : ""}>
+                    {hasTender && g.tenderItem && g.tenderItem !== "해당 없음" && (
+                      <div className="bg-indigo-50/50 rounded-lg p-3 border border-indigo-100">
+                        <p className="text-[10px] font-bold text-indigo-600 mb-1">입찰 약속</p>
+                        <p className="text-xs text-slate-700 leading-relaxed">{g.tenderItem}</p>
+                      </div>
+                    )}
                     <div className="bg-slate-50 rounded-lg p-3 border border-slate-100">
-                      <p className="text-[10px] font-bold text-slate-500 mb-1">계약서 요구사항</p>
+                      <p className="text-[10px] font-bold text-slate-500 mb-1">{hasTender ? "계약서 요구사항" : "계약 요구사항"}</p>
                       <p className="text-xs text-slate-700 leading-relaxed">{g.contractItem}</p>
                     </div>
                   </div>

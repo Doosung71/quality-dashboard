@@ -373,6 +373,69 @@ ${contractText}`,
   return ContractGapResultSchema.parse(toolUse.input)
 }
 
+// 입찰 없는 수의계약: 계약서 자체 리스크/요구사항 추출
+export async function extractContractRisks(contractText: string): Promise<ContractGapExtractResult> {
+  try {
+    const data = await extractContractRisksClaude(contractText)
+    return { data, aiUsed: "Claude" }
+  } catch (err) {
+    console.warn("[extractContractRisks] Claude 실패 → OpenAI fallback:", (err as Error).message)
+    const data = await extractContractRisksOpenAI(contractText)
+    return { data, aiUsed: "OpenAI" }
+  }
+}
+
+async function extractContractRisksClaude(contractText: string): Promise<ContractGapResult> {
+  const inputSchema = z.toJSONSchema(ContractGapResultSchema) as Anthropic.Tool["input_schema"]
+
+  const response = await client.messages.create({
+    model: "claude-sonnet-4-6",
+    max_tokens: 4096,
+    tools: [{ name: CONTRACT_GAP_TOOL, description: "계약서에서 리스크·요구사항을 구조화하여 추출한다.", input_schema: inputSchema }],
+    tool_choice: { type: "tool", name: CONTRACT_GAP_TOOL },
+    messages: [{
+      role: "user",
+      content: `당신은 LS전선 품질부문 계약 검토 전문가입니다.
+아래 계약서를 분석하여 이행 리스크와 주요 요구사항을 추출하세요. (입찰 비교 없는 수의계약입니다)
+
+규칙:
+- gapType은 모두 "NEW"로 설정 (비교 대상 없음)
+- isRisk=true: 이행 난이도 높거나 품질 위험이 있는 항목
+- 명시된 내용만 추출, 추측 금지
+- category: 케이블, 접속재, QA, 시험, 납기, 검사, 문서 등
+
+[계약서]
+${contractText}`,
+    }],
+  })
+
+  const toolUse = response.content.find((c) => c.type === "tool_use")
+  if (!toolUse || toolUse.type !== "tool_use") throw new Error("Claude tool_use 응답 없음")
+  return ContractGapResultSchema.parse(toolUse.input)
+}
+
+async function extractContractRisksOpenAI(contractText: string): Promise<ContractGapResult> {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) throw new Error("OPENAI_API_KEY 없음")
+  const schema = z.toJSONSchema(ContractGapResultSchema)
+  const body = {
+    model: "gpt-4o",
+    response_format: { type: "json_schema", json_schema: { name: CONTRACT_GAP_TOOL, schema, strict: true } },
+    messages: [
+      { role: "system", content: "계약서에서 이행 리스크와 요구사항을 JSON으로 반환하세요. gapType은 모두 NEW." },
+      { role: "user", content: contractText },
+    ],
+  }
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST", headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" }, body: JSON.stringify(body),
+  })
+  if (!res.ok) throw new Error(`OpenAI API 오류: ${res.status}`)
+  const json = (await res.json()) as { choices: { message: { content: string } }[] }
+  const content = json.choices?.[0]?.message?.content
+  if (!content) throw new Error("OpenAI 빈 응답")
+  return ContractGapResultSchema.parse(JSON.parse(content))
+}
+
 async function extractContractGapsOpenAI(
   contractText: string,
   tenderRequirements: { category: string; content: string }[]

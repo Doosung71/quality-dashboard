@@ -65,9 +65,7 @@ export default async function AwardedProjectsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {approvedTenders.length > 0 && (
-            <CreateProjectButton approvedTenders={approvedTenders} />
-          )}
+          <CreateProjectButton approvedTenders={approvedTenders} />
           <Link
             href="/projects"
             className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-800 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors"
@@ -160,7 +158,7 @@ export default async function AwardedProjectsPage() {
 
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-slate-900 truncate group-hover:text-emerald-700">
-                      {p.tender.title}
+                      {p.title ?? p.tender?.title ?? "제목 없음"}
                     </p>
                     <div className="flex items-center gap-3 mt-1 flex-wrap">
                       <span className="text-xs text-slate-400">

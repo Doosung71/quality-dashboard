@@ -3,7 +3,7 @@ import { requireActiveSession } from "@/lib/session-guard"
 import { prisma } from "@/lib/prisma"
 import { extractTextFromPdf } from "@/lib/pdf"
 import { readBlobBuffer } from "@/lib/storage"
-import { extractContractGaps } from "@/lib/ai/extract"
+import { extractContractGaps, extractContractRisks } from "@/lib/ai/extract"
 
 // POST /api/awarded-projects/[id]/analyze — AI 갭 분석 실행
 export async function POST(
@@ -51,13 +51,13 @@ export async function POST(
   if (!buffer) return NextResponse.json({ error: "PDF를 읽을 수 없습니다." }, { status: 502 })
   const { text: contractText } = await extractTextFromPdf(buffer)
 
-  // 입찰 요구사항 수집 (APPROVED 분석 기준)
-  const tenderRequirements = project.tender.analyses[0]?.requirements ?? []
-
-  // AI 갭 분석
+  // 입찰 연계 여부에 따라 갭 분석 vs 리스크 분석 선택
+  const tenderRequirements = project.tender?.analyses[0]?.requirements ?? []
   let extracted
   try {
-    extracted = await extractContractGaps(contractText, tenderRequirements)
+    extracted = tenderRequirements.length > 0
+      ? await extractContractGaps(contractText, tenderRequirements)
+      : await extractContractRisks(contractText)
   } catch (e) {
     return NextResponse.json({ error: `AI 분석 실패: ${(e as Error).message}` }, { status: 500 })
   }

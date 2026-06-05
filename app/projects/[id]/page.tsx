@@ -2,7 +2,7 @@ import { requireActivePageSession } from "@/lib/session-guard"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, FolderOpen } from "lucide-react"
+import { ArrowLeft, FolderOpen, Link as LinkIcon } from "lucide-react"
 import ContractUploadForm from "./ContractUploadForm"
 import GapAnalysisView from "./GapAnalysisView"
 import WorkflowActions from "./WorkflowActions"
@@ -48,23 +48,19 @@ export default async function ProjectDetailPage({
     },
   })
 
-  if (!project) redirect("/projects")
+  if (!project) redirect("/projects/awarded")
 
-  const tenderAnalysis = project.tender.analyses[0]
-  const latestAnalysis = project.analyses[0]
+  const projectTitle = project.title ?? project.tender?.title ?? "제목 없음"
+  const tenderAnalysis = project.tender?.analyses[0] ?? null
+  const hasTender = !!project.tender
+  const latestAnalysis = project.analyses[0] ?? null
   const role = session.user.role
 
   const gapTypeBadge: Record<string, { label: string; cls: string }> = {
-    MATCH:   { label: "일치",     cls: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-    GAP:     { label: "차이",     cls: "bg-rose-50 text-rose-700 border-rose-200" },
-    RELAXED: { label: "완화",     cls: "bg-blue-50 text-blue-700 border-blue-200" },
-    NEW:     { label: "신규",     cls: "bg-amber-50 text-amber-700 border-amber-200" },
-  }
-
-  const statusLabel: Record<string, string> = {
-    DRAFT:    "작성 중",
-    REVIEWED: "팀장 승인",
-    APPROVED: "최종 승인",
+    MATCH:   { label: "일치",   cls: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+    GAP:     { label: "차이",   cls: "bg-rose-50 text-rose-700 border-rose-200" },
+    RELAXED: { label: "완화",   cls: "bg-blue-50 text-blue-700 border-blue-200" },
+    NEW:     { label: hasTender ? "신규" : "요구사항", cls: "bg-amber-50 text-amber-700 border-amber-200" },
   }
 
   const actionLabel: Record<string, string> = {
@@ -80,13 +76,19 @@ export default async function ProjectDetailPage({
       {/* 헤더 */}
       <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur sticky top-0 z-50 px-4 md:px-6 py-3 flex items-center justify-between gap-2 shadow-sm">
         <div className="flex items-center gap-2 min-w-0">
-          <Link href="/projects" className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors shrink-0">
+          <Link href="/projects/awarded" className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors shrink-0">
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <FolderOpen className="w-4 h-4 text-emerald-600 shrink-0" />
-          <h1 className="font-extrabold text-sm text-slate-900 tracking-tight truncate">
-            {project.tender.title}
-          </h1>
+          <h1 className="font-extrabold text-sm text-slate-900 tracking-tight truncate">{projectTitle}</h1>
+          {!hasTender && (
+            <span className="shrink-0 text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-200 font-medium">수의계약</span>
+          )}
+          {hasTender && (
+            <span className="shrink-0 text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200 flex items-center gap-0.5">
+              <LinkIcon className="w-2.5 h-2.5" />입찰 연계
+            </span>
+          )}
         </div>
         <span className={`text-[10px] font-bold px-2 py-1 rounded-full border shrink-0 ${
           project.status === "COMPLETED" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
@@ -98,13 +100,14 @@ export default async function ProjectDetailPage({
       </header>
 
       <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 space-y-6">
-        {/* 입찰 요구사항 요약 */}
-        {tenderAnalysis && (
+
+        {/* 입찰 연계 시: 입찰 요구사항 요약 */}
+        {hasTender && tenderAnalysis && (
           <section className="bg-white rounded-xl border border-slate-200 p-5">
             <h2 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-indigo-400" />
               입찰 단계 요구사항 ({tenderAnalysis.requirements.length}건)
-              <span className="text-xs font-normal text-slate-400">최종 승인 기준</span>
+              <span className="text-xs font-normal text-slate-400">최종 승인 기준 — 갭 분석 기준점</span>
             </h2>
             <div className="flex flex-wrap gap-1.5">
               {Array.from(new Set(tenderAnalysis.requirements.map(r => r.category))).map(cat => {
@@ -120,15 +123,29 @@ export default async function ProjectDetailPage({
           </section>
         )}
 
+        {/* 수의계약 안내 */}
+        {!hasTender && (
+          <div className="bg-indigo-50 border border-indigo-200 rounded-xl px-5 py-4 flex items-start gap-3">
+            <FolderOpen className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold text-indigo-800">수의계약 — 계약서 리스크 분석</p>
+              <p className="text-xs text-indigo-600 mt-0.5">
+                입찰 비교 없이 계약서를 직접 분석합니다. AI가 이행 리스크와 주요 요구사항을 추출합니다.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* 계약서 업로드 + 분석 실행 */}
         <ContractUploadForm
           projectId={project.id}
           documents={project.documents.map(d => ({ id: d.id, filename: d.filename, uploadedAt: d.uploadedAt.toISOString() }))}
           latestAnalysisId={latestAnalysis?.id ?? null}
           hasAnalysis={!!latestAnalysis}
+          hasTender={hasTender}
         />
 
-        {/* 갭 분석 결과 */}
+        {/* 분석 결과 */}
         {latestAnalysis && (
           <>
             <GapAnalysisView
@@ -145,9 +162,9 @@ export default async function ProjectDetailPage({
               gapTypeBadge={gapTypeBadge}
               analysisStatus={latestAnalysis.status}
               aiUsed={latestAnalysis.aiUsed}
+              hasTender={hasTender}
             />
 
-            {/* 워크플로우 액션 */}
             <WorkflowActions
               analysisId={latestAnalysis.id}
               status={latestAnalysis.status}
@@ -155,7 +172,6 @@ export default async function ProjectDetailPage({
               role={role}
             />
 
-            {/* 검토 이력 */}
             {latestAnalysis.history.length > 0 && (
               <section className="bg-white rounded-xl border border-slate-200 p-5">
                 <h2 className="text-sm font-semibold text-slate-800 mb-3">검토 이력</h2>

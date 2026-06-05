@@ -26,6 +26,7 @@ export type AggregateAwardedProject = {
 
 export type AwardedProjectMinAggregateOutputType = {
   id: string | null
+  title: string | null
   tenderId: string | null
   status: $Enums.AwardedProjectStatus | null
   createdAt: Date | null
@@ -35,6 +36,7 @@ export type AwardedProjectMinAggregateOutputType = {
 
 export type AwardedProjectMaxAggregateOutputType = {
   id: string | null
+  title: string | null
   tenderId: string | null
   status: $Enums.AwardedProjectStatus | null
   createdAt: Date | null
@@ -44,6 +46,7 @@ export type AwardedProjectMaxAggregateOutputType = {
 
 export type AwardedProjectCountAggregateOutputType = {
   id: number
+  title: number
   tenderId: number
   status: number
   createdAt: number
@@ -55,6 +58,7 @@ export type AwardedProjectCountAggregateOutputType = {
 
 export type AwardedProjectMinAggregateInputType = {
   id?: true
+  title?: true
   tenderId?: true
   status?: true
   createdAt?: true
@@ -64,6 +68,7 @@ export type AwardedProjectMinAggregateInputType = {
 
 export type AwardedProjectMaxAggregateInputType = {
   id?: true
+  title?: true
   tenderId?: true
   status?: true
   createdAt?: true
@@ -73,6 +78,7 @@ export type AwardedProjectMaxAggregateInputType = {
 
 export type AwardedProjectCountAggregateInputType = {
   id?: true
+  title?: true
   tenderId?: true
   status?: true
   createdAt?: true
@@ -155,7 +161,8 @@ export type AwardedProjectGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
 
 export type AwardedProjectGroupByOutputType = {
   id: string
-  tenderId: string
+  title: string | null
+  tenderId: string | null
   status: $Enums.AwardedProjectStatus
   createdAt: Date
   updatedAt: Date
@@ -185,12 +192,13 @@ export type AwardedProjectWhereInput = {
   OR?: Prisma.AwardedProjectWhereInput[]
   NOT?: Prisma.AwardedProjectWhereInput | Prisma.AwardedProjectWhereInput[]
   id?: Prisma.StringFilter<"AwardedProject"> | string
-  tenderId?: Prisma.StringFilter<"AwardedProject"> | string
+  title?: Prisma.StringNullableFilter<"AwardedProject"> | string | null
+  tenderId?: Prisma.StringNullableFilter<"AwardedProject"> | string | null
   status?: Prisma.EnumAwardedProjectStatusFilter<"AwardedProject"> | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFilter<"AwardedProject"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AwardedProject"> | Date | string
   createdById?: Prisma.StringFilter<"AwardedProject"> | string
-  tender?: Prisma.XOR<Prisma.TenderScalarRelationFilter, Prisma.TenderWhereInput>
+  tender?: Prisma.XOR<Prisma.TenderNullableScalarRelationFilter, Prisma.TenderWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   documents?: Prisma.ContractDocumentListRelationFilter
   analyses?: Prisma.ContractAnalysisListRelationFilter
@@ -198,7 +206,8 @@ export type AwardedProjectWhereInput = {
 
 export type AwardedProjectOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  tenderId?: Prisma.SortOrder
+  title?: Prisma.SortOrderInput | Prisma.SortOrder
+  tenderId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -215,11 +224,12 @@ export type AwardedProjectWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.AwardedProjectWhereInput | Prisma.AwardedProjectWhereInput[]
   OR?: Prisma.AwardedProjectWhereInput[]
   NOT?: Prisma.AwardedProjectWhereInput | Prisma.AwardedProjectWhereInput[]
+  title?: Prisma.StringNullableFilter<"AwardedProject"> | string | null
   status?: Prisma.EnumAwardedProjectStatusFilter<"AwardedProject"> | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFilter<"AwardedProject"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AwardedProject"> | Date | string
   createdById?: Prisma.StringFilter<"AwardedProject"> | string
-  tender?: Prisma.XOR<Prisma.TenderScalarRelationFilter, Prisma.TenderWhereInput>
+  tender?: Prisma.XOR<Prisma.TenderNullableScalarRelationFilter, Prisma.TenderWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   documents?: Prisma.ContractDocumentListRelationFilter
   analyses?: Prisma.ContractAnalysisListRelationFilter
@@ -227,7 +237,8 @@ export type AwardedProjectWhereUniqueInput = Prisma.AtLeast<{
 
 export type AwardedProjectOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  tenderId?: Prisma.SortOrder
+  title?: Prisma.SortOrderInput | Prisma.SortOrder
+  tenderId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -242,7 +253,8 @@ export type AwardedProjectScalarWhereWithAggregatesInput = {
   OR?: Prisma.AwardedProjectScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AwardedProjectScalarWhereWithAggregatesInput | Prisma.AwardedProjectScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"AwardedProject"> | string
-  tenderId?: Prisma.StringWithAggregatesFilter<"AwardedProject"> | string
+  title?: Prisma.StringNullableWithAggregatesFilter<"AwardedProject"> | string | null
+  tenderId?: Prisma.StringNullableWithAggregatesFilter<"AwardedProject"> | string | null
   status?: Prisma.EnumAwardedProjectStatusWithAggregatesFilter<"AwardedProject"> | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AwardedProject"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AwardedProject"> | Date | string
@@ -251,10 +263,11 @@ export type AwardedProjectScalarWhereWithAggregatesInput = {
 
 export type AwardedProjectCreateInput = {
   id?: string
+  title?: string | null
   status?: $Enums.AwardedProjectStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  tender: Prisma.TenderCreateNestedOneWithoutAwardedProjectInput
+  tender?: Prisma.TenderCreateNestedOneWithoutAwardedProjectInput
   createdBy: Prisma.UserCreateNestedOneWithoutAwardedProjectsInput
   documents?: Prisma.ContractDocumentCreateNestedManyWithoutProjectInput
   analyses?: Prisma.ContractAnalysisCreateNestedManyWithoutProjectInput
@@ -262,7 +275,8 @@ export type AwardedProjectCreateInput = {
 
 export type AwardedProjectUncheckedCreateInput = {
   id?: string
-  tenderId: string
+  title?: string | null
+  tenderId?: string | null
   status?: $Enums.AwardedProjectStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -273,10 +287,11 @@ export type AwardedProjectUncheckedCreateInput = {
 
 export type AwardedProjectUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAwardedProjectStatusFieldUpdateOperationsInput | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  tender?: Prisma.TenderUpdateOneRequiredWithoutAwardedProjectNestedInput
+  tender?: Prisma.TenderUpdateOneWithoutAwardedProjectNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutAwardedProjectsNestedInput
   documents?: Prisma.ContractDocumentUpdateManyWithoutProjectNestedInput
   analyses?: Prisma.ContractAnalysisUpdateManyWithoutProjectNestedInput
@@ -284,7 +299,8 @@ export type AwardedProjectUpdateInput = {
 
 export type AwardedProjectUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  tenderId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAwardedProjectStatusFieldUpdateOperationsInput | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -295,7 +311,8 @@ export type AwardedProjectUncheckedUpdateInput = {
 
 export type AwardedProjectCreateManyInput = {
   id?: string
-  tenderId: string
+  title?: string | null
+  tenderId?: string | null
   status?: $Enums.AwardedProjectStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -304,6 +321,7 @@ export type AwardedProjectCreateManyInput = {
 
 export type AwardedProjectUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAwardedProjectStatusFieldUpdateOperationsInput | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -311,7 +329,8 @@ export type AwardedProjectUpdateManyMutationInput = {
 
 export type AwardedProjectUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  tenderId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAwardedProjectStatusFieldUpdateOperationsInput | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -335,6 +354,7 @@ export type AwardedProjectNullableScalarRelationFilter = {
 
 export type AwardedProjectCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   tenderId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -344,6 +364,7 @@ export type AwardedProjectCountOrderByAggregateInput = {
 
 export type AwardedProjectMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   tenderId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -353,6 +374,7 @@ export type AwardedProjectMaxOrderByAggregateInput = {
 
 export type AwardedProjectMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   tenderId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -473,17 +495,19 @@ export type AwardedProjectUpdateOneRequiredWithoutAnalysesNestedInput = {
 
 export type AwardedProjectCreateWithoutCreatedByInput = {
   id?: string
+  title?: string | null
   status?: $Enums.AwardedProjectStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  tender: Prisma.TenderCreateNestedOneWithoutAwardedProjectInput
+  tender?: Prisma.TenderCreateNestedOneWithoutAwardedProjectInput
   documents?: Prisma.ContractDocumentCreateNestedManyWithoutProjectInput
   analyses?: Prisma.ContractAnalysisCreateNestedManyWithoutProjectInput
 }
 
 export type AwardedProjectUncheckedCreateWithoutCreatedByInput = {
   id?: string
-  tenderId: string
+  title?: string | null
+  tenderId?: string | null
   status?: $Enums.AwardedProjectStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -522,7 +546,8 @@ export type AwardedProjectScalarWhereInput = {
   OR?: Prisma.AwardedProjectScalarWhereInput[]
   NOT?: Prisma.AwardedProjectScalarWhereInput | Prisma.AwardedProjectScalarWhereInput[]
   id?: Prisma.StringFilter<"AwardedProject"> | string
-  tenderId?: Prisma.StringFilter<"AwardedProject"> | string
+  title?: Prisma.StringNullableFilter<"AwardedProject"> | string | null
+  tenderId?: Prisma.StringNullableFilter<"AwardedProject"> | string | null
   status?: Prisma.EnumAwardedProjectStatusFilter<"AwardedProject"> | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFilter<"AwardedProject"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AwardedProject"> | Date | string
@@ -531,6 +556,7 @@ export type AwardedProjectScalarWhereInput = {
 
 export type AwardedProjectCreateWithoutTenderInput = {
   id?: string
+  title?: string | null
   status?: $Enums.AwardedProjectStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -541,6 +567,7 @@ export type AwardedProjectCreateWithoutTenderInput = {
 
 export type AwardedProjectUncheckedCreateWithoutTenderInput = {
   id?: string
+  title?: string | null
   status?: $Enums.AwardedProjectStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -567,6 +594,7 @@ export type AwardedProjectUpdateToOneWithWhereWithoutTenderInput = {
 
 export type AwardedProjectUpdateWithoutTenderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAwardedProjectStatusFieldUpdateOperationsInput | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -577,6 +605,7 @@ export type AwardedProjectUpdateWithoutTenderInput = {
 
 export type AwardedProjectUncheckedUpdateWithoutTenderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAwardedProjectStatusFieldUpdateOperationsInput | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -587,17 +616,19 @@ export type AwardedProjectUncheckedUpdateWithoutTenderInput = {
 
 export type AwardedProjectCreateWithoutDocumentsInput = {
   id?: string
+  title?: string | null
   status?: $Enums.AwardedProjectStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  tender: Prisma.TenderCreateNestedOneWithoutAwardedProjectInput
+  tender?: Prisma.TenderCreateNestedOneWithoutAwardedProjectInput
   createdBy: Prisma.UserCreateNestedOneWithoutAwardedProjectsInput
   analyses?: Prisma.ContractAnalysisCreateNestedManyWithoutProjectInput
 }
 
 export type AwardedProjectUncheckedCreateWithoutDocumentsInput = {
   id?: string
-  tenderId: string
+  title?: string | null
+  tenderId?: string | null
   status?: $Enums.AwardedProjectStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -623,17 +654,19 @@ export type AwardedProjectUpdateToOneWithWhereWithoutDocumentsInput = {
 
 export type AwardedProjectUpdateWithoutDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAwardedProjectStatusFieldUpdateOperationsInput | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  tender?: Prisma.TenderUpdateOneRequiredWithoutAwardedProjectNestedInput
+  tender?: Prisma.TenderUpdateOneWithoutAwardedProjectNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutAwardedProjectsNestedInput
   analyses?: Prisma.ContractAnalysisUpdateManyWithoutProjectNestedInput
 }
 
 export type AwardedProjectUncheckedUpdateWithoutDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  tenderId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAwardedProjectStatusFieldUpdateOperationsInput | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -643,17 +676,19 @@ export type AwardedProjectUncheckedUpdateWithoutDocumentsInput = {
 
 export type AwardedProjectCreateWithoutAnalysesInput = {
   id?: string
+  title?: string | null
   status?: $Enums.AwardedProjectStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  tender: Prisma.TenderCreateNestedOneWithoutAwardedProjectInput
+  tender?: Prisma.TenderCreateNestedOneWithoutAwardedProjectInput
   createdBy: Prisma.UserCreateNestedOneWithoutAwardedProjectsInput
   documents?: Prisma.ContractDocumentCreateNestedManyWithoutProjectInput
 }
 
 export type AwardedProjectUncheckedCreateWithoutAnalysesInput = {
   id?: string
-  tenderId: string
+  title?: string | null
+  tenderId?: string | null
   status?: $Enums.AwardedProjectStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -679,17 +714,19 @@ export type AwardedProjectUpdateToOneWithWhereWithoutAnalysesInput = {
 
 export type AwardedProjectUpdateWithoutAnalysesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAwardedProjectStatusFieldUpdateOperationsInput | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  tender?: Prisma.TenderUpdateOneRequiredWithoutAwardedProjectNestedInput
+  tender?: Prisma.TenderUpdateOneWithoutAwardedProjectNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutAwardedProjectsNestedInput
   documents?: Prisma.ContractDocumentUpdateManyWithoutProjectNestedInput
 }
 
 export type AwardedProjectUncheckedUpdateWithoutAnalysesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  tenderId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAwardedProjectStatusFieldUpdateOperationsInput | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -699,7 +736,8 @@ export type AwardedProjectUncheckedUpdateWithoutAnalysesInput = {
 
 export type AwardedProjectCreateManyCreatedByInput = {
   id?: string
-  tenderId: string
+  title?: string | null
+  tenderId?: string | null
   status?: $Enums.AwardedProjectStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -707,17 +745,19 @@ export type AwardedProjectCreateManyCreatedByInput = {
 
 export type AwardedProjectUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAwardedProjectStatusFieldUpdateOperationsInput | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  tender?: Prisma.TenderUpdateOneRequiredWithoutAwardedProjectNestedInput
+  tender?: Prisma.TenderUpdateOneWithoutAwardedProjectNestedInput
   documents?: Prisma.ContractDocumentUpdateManyWithoutProjectNestedInput
   analyses?: Prisma.ContractAnalysisUpdateManyWithoutProjectNestedInput
 }
 
 export type AwardedProjectUncheckedUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  tenderId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAwardedProjectStatusFieldUpdateOperationsInput | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -727,7 +767,8 @@ export type AwardedProjectUncheckedUpdateWithoutCreatedByInput = {
 
 export type AwardedProjectUncheckedUpdateManyWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  tenderId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAwardedProjectStatusFieldUpdateOperationsInput | $Enums.AwardedProjectStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -775,12 +816,13 @@ export type AwardedProjectCountOutputTypeCountAnalysesArgs<ExtArgs extends runti
 
 export type AwardedProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  title?: boolean
   tenderId?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
-  tender?: boolean | Prisma.TenderDefaultArgs<ExtArgs>
+  tender?: boolean | Prisma.AwardedProject$tenderArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   documents?: boolean | Prisma.AwardedProject$documentsArgs<ExtArgs>
   analyses?: boolean | Prisma.AwardedProject$analysesArgs<ExtArgs>
@@ -789,28 +831,31 @@ export type AwardedProjectSelect<ExtArgs extends runtime.Types.Extensions.Intern
 
 export type AwardedProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  title?: boolean
   tenderId?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
-  tender?: boolean | Prisma.TenderDefaultArgs<ExtArgs>
+  tender?: boolean | Prisma.AwardedProject$tenderArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["awardedProject"]>
 
 export type AwardedProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  title?: boolean
   tenderId?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
-  tender?: boolean | Prisma.TenderDefaultArgs<ExtArgs>
+  tender?: boolean | Prisma.AwardedProject$tenderArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["awardedProject"]>
 
 export type AwardedProjectSelectScalar = {
   id?: boolean
+  title?: boolean
   tenderId?: boolean
   status?: boolean
   createdAt?: boolean
@@ -818,34 +863,35 @@ export type AwardedProjectSelectScalar = {
   createdById?: boolean
 }
 
-export type AwardedProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenderId" | "status" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["awardedProject"]>
+export type AwardedProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "tenderId" | "status" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["awardedProject"]>
 export type AwardedProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  tender?: boolean | Prisma.TenderDefaultArgs<ExtArgs>
+  tender?: boolean | Prisma.AwardedProject$tenderArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   documents?: boolean | Prisma.AwardedProject$documentsArgs<ExtArgs>
   analyses?: boolean | Prisma.AwardedProject$analysesArgs<ExtArgs>
   _count?: boolean | Prisma.AwardedProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AwardedProjectIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  tender?: boolean | Prisma.TenderDefaultArgs<ExtArgs>
+  tender?: boolean | Prisma.AwardedProject$tenderArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type AwardedProjectIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  tender?: boolean | Prisma.TenderDefaultArgs<ExtArgs>
+  tender?: boolean | Prisma.AwardedProject$tenderArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $AwardedProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AwardedProject"
   objects: {
-    tender: Prisma.$TenderPayload<ExtArgs>
+    tender: Prisma.$TenderPayload<ExtArgs> | null
     createdBy: Prisma.$UserPayload<ExtArgs>
     documents: Prisma.$ContractDocumentPayload<ExtArgs>[]
     analyses: Prisma.$ContractAnalysisPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    tenderId: string
+    title: string | null
+    tenderId: string | null
     status: $Enums.AwardedProjectStatus
     createdAt: Date
     updatedAt: Date
@@ -1244,7 +1290,7 @@ readonly fields: AwardedProjectFieldRefs;
  */
 export interface Prisma__AwardedProjectClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  tender<T extends Prisma.TenderDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenderDefaultArgs<ExtArgs>>): Prisma.Prisma__TenderClient<runtime.Types.Result.GetResult<Prisma.$TenderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  tender<T extends Prisma.AwardedProject$tenderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AwardedProject$tenderArgs<ExtArgs>>): Prisma.Prisma__TenderClient<runtime.Types.Result.GetResult<Prisma.$TenderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   documents<T extends Prisma.AwardedProject$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AwardedProject$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContractDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   analyses<T extends Prisma.AwardedProject$analysesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AwardedProject$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContractAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1278,6 +1324,7 @@ export interface Prisma__AwardedProjectClient<T, Null = never, ExtArgs extends r
  */
 export interface AwardedProjectFieldRefs {
   readonly id: Prisma.FieldRef<"AwardedProject", 'String'>
+  readonly title: Prisma.FieldRef<"AwardedProject", 'String'>
   readonly tenderId: Prisma.FieldRef<"AwardedProject", 'String'>
   readonly status: Prisma.FieldRef<"AwardedProject", 'AwardedProjectStatus'>
   readonly createdAt: Prisma.FieldRef<"AwardedProject", 'DateTime'>
@@ -1681,6 +1728,25 @@ export type AwardedProjectDeleteManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many AwardedProjects to delete.
    */
   limit?: number
+}
+
+/**
+ * AwardedProject.tender
+ */
+export type AwardedProject$tenderArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Tender
+   */
+  select?: Prisma.TenderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Tender
+   */
+  omit?: Prisma.TenderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TenderInclude<ExtArgs> | null
+  where?: Prisma.TenderWhereInput
 }
 
 /**

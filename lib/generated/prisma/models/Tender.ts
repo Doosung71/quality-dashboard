@@ -321,6 +321,11 @@ export type TenderScalarRelationFilter = {
   isNot?: Prisma.TenderWhereInput
 }
 
+export type TenderNullableScalarRelationFilter = {
+  is?: Prisma.TenderWhereInput | null
+  isNot?: Prisma.TenderWhereInput | null
+}
+
 export type TenderCreateNestedManyWithoutCreatedByInput = {
   create?: Prisma.XOR<Prisma.TenderCreateWithoutCreatedByInput, Prisma.TenderUncheckedCreateWithoutCreatedByInput> | Prisma.TenderCreateWithoutCreatedByInput[] | Prisma.TenderUncheckedCreateWithoutCreatedByInput[]
   connectOrCreate?: Prisma.TenderCreateOrConnectWithoutCreatedByInput | Prisma.TenderCreateOrConnectWithoutCreatedByInput[]
@@ -397,10 +402,12 @@ export type TenderCreateNestedOneWithoutAwardedProjectInput = {
   connect?: Prisma.TenderWhereUniqueInput
 }
 
-export type TenderUpdateOneRequiredWithoutAwardedProjectNestedInput = {
+export type TenderUpdateOneWithoutAwardedProjectNestedInput = {
   create?: Prisma.XOR<Prisma.TenderCreateWithoutAwardedProjectInput, Prisma.TenderUncheckedCreateWithoutAwardedProjectInput>
   connectOrCreate?: Prisma.TenderCreateOrConnectWithoutAwardedProjectInput
   upsert?: Prisma.TenderUpsertWithoutAwardedProjectInput
+  disconnect?: Prisma.TenderWhereInput | boolean
+  delete?: Prisma.TenderWhereInput | boolean
   connect?: Prisma.TenderWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenderUpdateToOneWithWhereWithoutAwardedProjectInput, Prisma.TenderUpdateWithoutAwardedProjectInput>, Prisma.TenderUncheckedUpdateWithoutAwardedProjectInput>
 }

@@ -12,11 +12,13 @@ export default function ContractUploadForm({
   documents,
   latestAnalysisId,
   hasAnalysis,
+  hasTender,
 }: {
   projectId: string
   documents: Doc[]
   latestAnalysisId: string | null
   hasAnalysis: boolean
+  hasTender: boolean
 }) {
   const router = useRouter()
   const fileRef = useRef<HTMLInputElement>(null)
@@ -151,10 +153,12 @@ export default function ContractUploadForm({
             {analyzeState === "loading" ? (
               <><Loader2 className="w-3.5 h-3.5 animate-spin" /> AI 분석 중...</>
             ) : (
-              <><Zap className="w-3.5 h-3.5" /> {hasAnalysis ? "재분석" : "AI 갭 분석 시작"}</>
+              <><Zap className="w-3.5 h-3.5" /> {hasAnalysis ? "재분석" : hasTender ? "AI 갭 분석 시작" : "AI 리스크 분석 시작"}</>
             )}
           </button>
-          <p className="text-xs text-slate-400">입찰 요구사항과 계약서를 비교해 차이를 추출합니다.</p>
+          <p className="text-xs text-slate-400">
+            {hasTender ? "입찰 요구사항과 계약서를 비교해 차이를 추출합니다." : "계약서에서 이행 리스크와 요구사항을 추출합니다."}
+          </p>
         </div>
       )}
 

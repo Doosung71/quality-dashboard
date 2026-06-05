@@ -74,9 +74,7 @@ export default async function ProjectsPage() {
           <h1 className="text-2xl font-bold text-slate-900">프로젝트 관리</h1>
           <p className="text-slate-500 text-sm mt-1">입찰 검토 현황과 수주 후 계약 관리를 한눈에 확인합니다.</p>
         </div>
-        {approvedTenders.length > 0 && (
-          <CreateProjectButton approvedTenders={approvedTenders} />
-        )}
+        <CreateProjectButton approvedTenders={approvedTenders} />
       </div>
 
       {/* 요약 카드 */}
@@ -188,7 +186,7 @@ export default async function ProjectsPage() {
                 <Link key={p.id} href={`/projects/${p.id}`} className="flex items-center gap-3 px-5 py-3 hover:bg-slate-50 transition-colors group">
                   <div className="w-2 h-2 rounded-full bg-emerald-400 shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-800 truncate group-hover:text-emerald-700">{p.tender.title}</p>
+                    <p className="text-sm font-medium text-slate-800 truncate group-hover:text-emerald-700">{p.title ?? p.tender?.title ?? "제목 없음"}</p>
                     <p className="text-xs text-slate-400 mt-0.5">
                       {new Date(p.createdAt).toLocaleDateString("ko-KR")}
                       {riskCount > 0 && <span className="ml-2 inline-flex items-center gap-0.5 text-rose-500"><AlertCircle className="w-3 h-3" /> 리스크 {riskCount}</span>}

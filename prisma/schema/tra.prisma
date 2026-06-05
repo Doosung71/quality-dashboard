@@ -159,9 +159,10 @@ model Comment {
 // ─── 수주 프로젝트 관리 ────────────────────────────────────────
 
 model AwardedProject {
-  id          String              @id @default(cuid())
-  tender      Tender              @relation(fields: [tenderId], references: [id])
-  tenderId    String              @unique
+  id          String               @id @default(cuid())
+  title       String?              // 수의계약 등 입찰 미연계 프로젝트용
+  tender      Tender?              @relation(fields: [tenderId], references: [id])
+  tenderId    String?              @unique
   status      AwardedProjectStatus @default(DRAFT)
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt

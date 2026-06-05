@@ -372,6 +372,7 @@ export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeo
 
 export const AwardedProjectScalarFieldEnum = {
   id: 'id',
+  title: 'title',
   tenderId: 'tenderId',
   status: 'status',
   createdAt: 'createdAt',
