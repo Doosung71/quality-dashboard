@@ -253,6 +253,9 @@ export type UserWhereInput = {
   tenders?: Prisma.TenderListRelationFilter
   reviewActions?: Prisma.ReviewHistoryListRelationFilter
   comments?: Prisma.CommentListRelationFilter
+  awardedProjects?: Prisma.AwardedProjectListRelationFilter
+  contractReviewActions?: Prisma.ContractReviewHistoryListRelationFilter
+  contractComments?: Prisma.ContractCommentListRelationFilter
   ownedEquipment?: Prisma.EquipmentListRelationFilter
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryListRelationFilter
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryListRelationFilter
@@ -283,6 +286,9 @@ export type UserOrderByWithRelationInput = {
   tenders?: Prisma.TenderOrderByRelationAggregateInput
   reviewActions?: Prisma.ReviewHistoryOrderByRelationAggregateInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
+  awardedProjects?: Prisma.AwardedProjectOrderByRelationAggregateInput
+  contractReviewActions?: Prisma.ContractReviewHistoryOrderByRelationAggregateInput
+  contractComments?: Prisma.ContractCommentOrderByRelationAggregateInput
   ownedEquipment?: Prisma.EquipmentOrderByRelationAggregateInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryOrderByRelationAggregateInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryOrderByRelationAggregateInput
@@ -316,6 +322,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   tenders?: Prisma.TenderListRelationFilter
   reviewActions?: Prisma.ReviewHistoryListRelationFilter
   comments?: Prisma.CommentListRelationFilter
+  awardedProjects?: Prisma.AwardedProjectListRelationFilter
+  contractReviewActions?: Prisma.ContractReviewHistoryListRelationFilter
+  contractComments?: Prisma.ContractCommentListRelationFilter
   ownedEquipment?: Prisma.EquipmentListRelationFilter
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryListRelationFilter
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryListRelationFilter
@@ -384,6 +393,9 @@ export type UserCreateInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
@@ -414,6 +426,9 @@ export type UserUncheckedCreateInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
@@ -444,6 +459,9 @@ export type UserUpdateInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
@@ -474,6 +492,9 @@ export type UserUncheckedUpdateInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
@@ -817,6 +838,48 @@ export type UserUpdateOneRequiredWithoutCommentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCommentsInput, Prisma.UserUpdateWithoutCommentsInput>, Prisma.UserUncheckedUpdateWithoutCommentsInput>
 }
 
+export type UserCreateNestedOneWithoutAwardedProjectsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAwardedProjectsInput, Prisma.UserUncheckedCreateWithoutAwardedProjectsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAwardedProjectsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAwardedProjectsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAwardedProjectsInput, Prisma.UserUncheckedCreateWithoutAwardedProjectsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAwardedProjectsInput
+  upsert?: Prisma.UserUpsertWithoutAwardedProjectsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAwardedProjectsInput, Prisma.UserUpdateWithoutAwardedProjectsInput>, Prisma.UserUncheckedUpdateWithoutAwardedProjectsInput>
+}
+
+export type UserCreateNestedOneWithoutContractReviewActionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutContractReviewActionsInput, Prisma.UserUncheckedCreateWithoutContractReviewActionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutContractReviewActionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutContractReviewActionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutContractReviewActionsInput, Prisma.UserUncheckedCreateWithoutContractReviewActionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutContractReviewActionsInput
+  upsert?: Prisma.UserUpsertWithoutContractReviewActionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutContractReviewActionsInput, Prisma.UserUpdateWithoutContractReviewActionsInput>, Prisma.UserUncheckedUpdateWithoutContractReviewActionsInput>
+}
+
+export type UserCreateNestedOneWithoutContractCommentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutContractCommentsInput, Prisma.UserUncheckedCreateWithoutContractCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutContractCommentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutContractCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutContractCommentsInput, Prisma.UserUncheckedCreateWithoutContractCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutContractCommentsInput
+  upsert?: Prisma.UserUpsertWithoutContractCommentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutContractCommentsInput, Prisma.UserUpdateWithoutContractCommentsInput>, Prisma.UserUncheckedUpdateWithoutContractCommentsInput>
+}
+
 export type UserCreateWithoutFeedbacksInput = {
   id?: string
   name: string
@@ -837,6 +900,9 @@ export type UserCreateWithoutFeedbacksInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
@@ -866,6 +932,9 @@ export type UserUncheckedCreateWithoutFeedbacksInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
@@ -911,6 +980,9 @@ export type UserUpdateWithoutFeedbacksInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
@@ -940,6 +1012,9 @@ export type UserUncheckedUpdateWithoutFeedbacksInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
@@ -969,6 +1044,9 @@ export type UserCreateWithoutFeedbackRepliesInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
@@ -998,6 +1076,9 @@ export type UserUncheckedCreateWithoutFeedbackRepliesInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
@@ -1043,6 +1124,9 @@ export type UserUpdateWithoutFeedbackRepliesInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
@@ -1072,6 +1156,9 @@ export type UserUncheckedUpdateWithoutFeedbackRepliesInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
@@ -1101,6 +1188,9 @@ export type UserCreateWithoutBoardPostsInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
@@ -1130,6 +1220,9 @@ export type UserUncheckedCreateWithoutBoardPostsInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
@@ -1175,6 +1268,9 @@ export type UserUpdateWithoutBoardPostsInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
@@ -1204,6 +1300,9 @@ export type UserUncheckedUpdateWithoutBoardPostsInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
@@ -1233,6 +1332,9 @@ export type UserCreateWithoutBoardCommentsInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
@@ -1262,6 +1364,9 @@ export type UserUncheckedCreateWithoutBoardCommentsInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
@@ -1307,6 +1412,9 @@ export type UserUpdateWithoutBoardCommentsInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
@@ -1336,6 +1444,9 @@ export type UserUncheckedUpdateWithoutBoardCommentsInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
@@ -1366,6 +1477,9 @@ export type UserCreateWithoutOwnedEquipmentInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
   ownedTestPlans?: Prisma.TestPlanCreateNestedManyWithoutOwnerInput
@@ -1395,6 +1509,9 @@ export type UserUncheckedCreateWithoutOwnedEquipmentInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   ownedTestPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutOwnerInput
@@ -1440,6 +1557,9 @@ export type UserUpdateWithoutOwnedEquipmentInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
   ownedTestPlans?: Prisma.TestPlanUpdateManyWithoutOwnerNestedInput
@@ -1469,6 +1589,9 @@ export type UserUncheckedUpdateWithoutOwnedEquipmentInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   ownedTestPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1498,6 +1621,9 @@ export type UserCreateWithoutOwnerHistoryAsOwnerInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
   ownedTestPlans?: Prisma.TestPlanCreateNestedManyWithoutOwnerInput
@@ -1527,6 +1653,9 @@ export type UserUncheckedCreateWithoutOwnerHistoryAsOwnerInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   ownedTestPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutOwnerInput
@@ -1561,6 +1690,9 @@ export type UserCreateWithoutOwnerHistoryAsChangerInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
   ownedTestPlans?: Prisma.TestPlanCreateNestedManyWithoutOwnerInput
@@ -1590,6 +1722,9 @@ export type UserUncheckedCreateWithoutOwnerHistoryAsChangerInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   ownedTestPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutOwnerInput
@@ -1635,6 +1770,9 @@ export type UserUpdateWithoutOwnerHistoryAsOwnerInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
   ownedTestPlans?: Prisma.TestPlanUpdateManyWithoutOwnerNestedInput
@@ -1664,6 +1802,9 @@ export type UserUncheckedUpdateWithoutOwnerHistoryAsOwnerInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   ownedTestPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1704,6 +1845,9 @@ export type UserUpdateWithoutOwnerHistoryAsChangerInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
   ownedTestPlans?: Prisma.TestPlanUpdateManyWithoutOwnerNestedInput
@@ -1733,6 +1877,9 @@ export type UserUncheckedUpdateWithoutOwnerHistoryAsChangerInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownedTestPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1762,6 +1909,9 @@ export type UserCreateWithoutOwnedTestPlansInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
@@ -1791,6 +1941,9 @@ export type UserUncheckedCreateWithoutOwnedTestPlansInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
@@ -1836,6 +1989,9 @@ export type UserUpdateWithoutOwnedTestPlansInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
@@ -1865,6 +2021,9 @@ export type UserUncheckedUpdateWithoutOwnedTestPlansInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
@@ -1894,6 +2053,9 @@ export type UserCreateWithoutReportedRepairsInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
@@ -1923,6 +2085,9 @@ export type UserUncheckedCreateWithoutReportedRepairsInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
@@ -1968,6 +2133,9 @@ export type UserUpdateWithoutReportedRepairsInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
@@ -1997,6 +2165,9 @@ export type UserUncheckedUpdateWithoutReportedRepairsInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
@@ -2026,6 +2197,9 @@ export type UserCreateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
@@ -2055,6 +2229,9 @@ export type UserUncheckedCreateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
@@ -2089,6 +2266,9 @@ export type UserCreateWithoutTestPlanOwnerHistoryAsChangerInput = {
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
@@ -2118,6 +2298,9 @@ export type UserUncheckedCreateWithoutTestPlanOwnerHistoryAsChangerInput = {
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
@@ -2163,6 +2346,9 @@ export type UserUpdateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
@@ -2192,6 +2378,9 @@ export type UserUncheckedUpdateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
@@ -2232,6 +2421,9 @@ export type UserUpdateWithoutTestPlanOwnerHistoryAsChangerInput = {
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
@@ -2261,6 +2453,9 @@ export type UserUncheckedUpdateWithoutTestPlanOwnerHistoryAsChangerInput = {
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
@@ -2289,6 +2484,9 @@ export type UserCreateWithoutTendersInput = {
   boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
@@ -2318,6 +2516,9 @@ export type UserUncheckedCreateWithoutTendersInput = {
   boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
@@ -2363,6 +2564,9 @@ export type UserUpdateWithoutTendersInput = {
   boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
@@ -2392,6 +2596,9 @@ export type UserUncheckedUpdateWithoutTendersInput = {
   boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
@@ -2421,6 +2628,9 @@ export type UserCreateWithoutReviewActionsInput = {
   boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
@@ -2450,6 +2660,9 @@ export type UserUncheckedCreateWithoutReviewActionsInput = {
   boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
@@ -2495,6 +2708,9 @@ export type UserUpdateWithoutReviewActionsInput = {
   boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
@@ -2524,6 +2740,9 @@ export type UserUncheckedUpdateWithoutReviewActionsInput = {
   boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
@@ -2553,6 +2772,9 @@ export type UserCreateWithoutCommentsInput = {
   boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
@@ -2582,6 +2804,9 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
   tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
   reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
   ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
@@ -2627,6 +2852,9 @@ export type UserUpdateWithoutCommentsInput = {
   boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
@@ -2656,6 +2884,441 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  ownedTestPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+}
+
+export type UserCreateWithoutAwardedProjectsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
+  ownedTestPlans?: Prisma.TestPlanCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
+  reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+}
+
+export type UserUncheckedCreateWithoutAwardedProjectsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  ownedTestPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+}
+
+export type UserCreateOrConnectWithoutAwardedProjectsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAwardedProjectsInput, Prisma.UserUncheckedCreateWithoutAwardedProjectsInput>
+}
+
+export type UserUpsertWithoutAwardedProjectsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAwardedProjectsInput, Prisma.UserUncheckedUpdateWithoutAwardedProjectsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAwardedProjectsInput, Prisma.UserUncheckedCreateWithoutAwardedProjectsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAwardedProjectsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAwardedProjectsInput, Prisma.UserUncheckedUpdateWithoutAwardedProjectsInput>
+}
+
+export type UserUpdateWithoutAwardedProjectsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  ownedTestPlans?: Prisma.TestPlanUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAwardedProjectsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  ownedTestPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+}
+
+export type UserCreateWithoutContractReviewActionsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
+  ownedTestPlans?: Prisma.TestPlanCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
+  reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+}
+
+export type UserUncheckedCreateWithoutContractReviewActionsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  ownedTestPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+}
+
+export type UserCreateOrConnectWithoutContractReviewActionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutContractReviewActionsInput, Prisma.UserUncheckedCreateWithoutContractReviewActionsInput>
+}
+
+export type UserUpsertWithoutContractReviewActionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutContractReviewActionsInput, Prisma.UserUncheckedUpdateWithoutContractReviewActionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutContractReviewActionsInput, Prisma.UserUncheckedCreateWithoutContractReviewActionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutContractReviewActionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutContractReviewActionsInput, Prisma.UserUncheckedUpdateWithoutContractReviewActionsInput>
+}
+
+export type UserUpdateWithoutContractReviewActionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  ownedTestPlans?: Prisma.TestPlanUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutContractReviewActionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  ownedTestPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+}
+
+export type UserCreateWithoutContractCommentsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
+  ownedTestPlans?: Prisma.TestPlanCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
+  reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+}
+
+export type UserUncheckedCreateWithoutContractCommentsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  ownedTestPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+}
+
+export type UserCreateOrConnectWithoutContractCommentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutContractCommentsInput, Prisma.UserUncheckedCreateWithoutContractCommentsInput>
+}
+
+export type UserUpsertWithoutContractCommentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutContractCommentsInput, Prisma.UserUncheckedUpdateWithoutContractCommentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutContractCommentsInput, Prisma.UserUncheckedCreateWithoutContractCommentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutContractCommentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutContractCommentsInput, Prisma.UserUncheckedUpdateWithoutContractCommentsInput>
+}
+
+export type UserUpdateWithoutContractCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  ownedTestPlans?: Prisma.TestPlanUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutContractCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
@@ -2678,6 +3341,9 @@ export type UserCountOutputType = {
   tenders: number
   reviewActions: number
   comments: number
+  awardedProjects: number
+  contractReviewActions: number
+  contractComments: number
   ownedEquipment: number
   ownerHistoryAsOwner: number
   ownerHistoryAsChanger: number
@@ -2695,6 +3361,9 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   tenders?: boolean | UserCountOutputTypeCountTendersArgs
   reviewActions?: boolean | UserCountOutputTypeCountReviewActionsArgs
   comments?: boolean | UserCountOutputTypeCountCommentsArgs
+  awardedProjects?: boolean | UserCountOutputTypeCountAwardedProjectsArgs
+  contractReviewActions?: boolean | UserCountOutputTypeCountContractReviewActionsArgs
+  contractComments?: boolean | UserCountOutputTypeCountContractCommentsArgs
   ownedEquipment?: boolean | UserCountOutputTypeCountOwnedEquipmentArgs
   ownerHistoryAsOwner?: boolean | UserCountOutputTypeCountOwnerHistoryAsOwnerArgs
   ownerHistoryAsChanger?: boolean | UserCountOutputTypeCountOwnerHistoryAsChangerArgs
@@ -2761,6 +3430,27 @@ export type UserCountOutputTypeCountReviewActionsArgs<ExtArgs extends runtime.Ty
  */
 export type UserCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.CommentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAwardedProjectsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AwardedProjectWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountContractReviewActionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ContractReviewHistoryWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountContractCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ContractCommentWhereInput
 }
 
 /**
@@ -2834,6 +3524,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   tenders?: boolean | Prisma.User$tendersArgs<ExtArgs>
   reviewActions?: boolean | Prisma.User$reviewActionsArgs<ExtArgs>
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
+  awardedProjects?: boolean | Prisma.User$awardedProjectsArgs<ExtArgs>
+  contractReviewActions?: boolean | Prisma.User$contractReviewActionsArgs<ExtArgs>
+  contractComments?: boolean | Prisma.User$contractCommentsArgs<ExtArgs>
   ownedEquipment?: boolean | Prisma.User$ownedEquipmentArgs<ExtArgs>
   ownerHistoryAsOwner?: boolean | Prisma.User$ownerHistoryAsOwnerArgs<ExtArgs>
   ownerHistoryAsChanger?: boolean | Prisma.User$ownerHistoryAsChangerArgs<ExtArgs>
@@ -2901,6 +3594,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   tenders?: boolean | Prisma.User$tendersArgs<ExtArgs>
   reviewActions?: boolean | Prisma.User$reviewActionsArgs<ExtArgs>
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
+  awardedProjects?: boolean | Prisma.User$awardedProjectsArgs<ExtArgs>
+  contractReviewActions?: boolean | Prisma.User$contractReviewActionsArgs<ExtArgs>
+  contractComments?: boolean | Prisma.User$contractCommentsArgs<ExtArgs>
   ownedEquipment?: boolean | Prisma.User$ownedEquipmentArgs<ExtArgs>
   ownerHistoryAsOwner?: boolean | Prisma.User$ownerHistoryAsOwnerArgs<ExtArgs>
   ownerHistoryAsChanger?: boolean | Prisma.User$ownerHistoryAsChangerArgs<ExtArgs>
@@ -2923,6 +3619,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     tenders: Prisma.$TenderPayload<ExtArgs>[]
     reviewActions: Prisma.$ReviewHistoryPayload<ExtArgs>[]
     comments: Prisma.$CommentPayload<ExtArgs>[]
+    awardedProjects: Prisma.$AwardedProjectPayload<ExtArgs>[]
+    contractReviewActions: Prisma.$ContractReviewHistoryPayload<ExtArgs>[]
+    contractComments: Prisma.$ContractCommentPayload<ExtArgs>[]
     ownedEquipment: Prisma.$EquipmentPayload<ExtArgs>[]
     ownerHistoryAsOwner: Prisma.$EquipmentOwnerHistoryPayload<ExtArgs>[]
     ownerHistoryAsChanger: Prisma.$EquipmentOwnerHistoryPayload<ExtArgs>[]
@@ -3346,6 +4045,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   tenders<T extends Prisma.User$tendersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tendersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TenderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviewActions<T extends Prisma.User$reviewActionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewActionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.User$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  awardedProjects<T extends Prisma.User$awardedProjectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$awardedProjectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AwardedProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  contractReviewActions<T extends Prisma.User$contractReviewActionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$contractReviewActionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContractReviewHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  contractComments<T extends Prisma.User$contractCommentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$contractCommentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContractCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ownedEquipment<T extends Prisma.User$ownedEquipmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedEquipmentArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ownerHistoryAsOwner<T extends Prisma.User$ownerHistoryAsOwnerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownerHistoryAsOwnerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentOwnerHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ownerHistoryAsChanger<T extends Prisma.User$ownerHistoryAsChangerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownerHistoryAsChangerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentOwnerHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3953,6 +4655,78 @@ export type User$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
+}
+
+/**
+ * User.awardedProjects
+ */
+export type User$awardedProjectsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AwardedProject
+   */
+  select?: Prisma.AwardedProjectSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AwardedProject
+   */
+  omit?: Prisma.AwardedProjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AwardedProjectInclude<ExtArgs> | null
+  where?: Prisma.AwardedProjectWhereInput
+  orderBy?: Prisma.AwardedProjectOrderByWithRelationInput | Prisma.AwardedProjectOrderByWithRelationInput[]
+  cursor?: Prisma.AwardedProjectWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AwardedProjectScalarFieldEnum | Prisma.AwardedProjectScalarFieldEnum[]
+}
+
+/**
+ * User.contractReviewActions
+ */
+export type User$contractReviewActionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ContractReviewHistory
+   */
+  select?: Prisma.ContractReviewHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ContractReviewHistory
+   */
+  omit?: Prisma.ContractReviewHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ContractReviewHistoryInclude<ExtArgs> | null
+  where?: Prisma.ContractReviewHistoryWhereInput
+  orderBy?: Prisma.ContractReviewHistoryOrderByWithRelationInput | Prisma.ContractReviewHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.ContractReviewHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ContractReviewHistoryScalarFieldEnum | Prisma.ContractReviewHistoryScalarFieldEnum[]
+}
+
+/**
+ * User.contractComments
+ */
+export type User$contractCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ContractComment
+   */
+  select?: Prisma.ContractCommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ContractComment
+   */
+  omit?: Prisma.ContractCommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ContractCommentInclude<ExtArgs> | null
+  where?: Prisma.ContractCommentWhereInput
+  orderBy?: Prisma.ContractCommentOrderByWithRelationInput | Prisma.ContractCommentOrderByWithRelationInput[]
+  cursor?: Prisma.ContractCommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ContractCommentScalarFieldEnum | Prisma.ContractCommentScalarFieldEnum[]
 }
 
 /**

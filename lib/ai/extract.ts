@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk"
 import { z } from "zod"
-import { ExtractionResultSchema, type ExtractionResult } from "@/lib/schemas"
+import { ExtractionResultSchema, type ExtractionResult, ContractGapResultSchema, type ContractGapResult } from "@/lib/schemas"
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -295,4 +295,117 @@ ${pdfText}`
 
   const parsed = JSON.parse(textOutput) as unknown
   return ExtractionResultSchema.parse(parsed)
+}
+
+// ─── 수주 프로젝트: 계약 갭 분석 ─────────────────────────────────
+
+const CONTRACT_GAP_TOOL = "analyze_contract_gaps"
+
+export type ContractGapExtractResult = {
+  data: ContractGapResult
+  aiUsed: "Claude" | "OpenAI"
+}
+
+export async function extractContractGaps(
+  contractText: string,
+  tenderRequirements: { category: string; content: string }[]
+): Promise<ContractGapExtractResult> {
+  try {
+    const data = await extractContractGapsClaude(contractText, tenderRequirements)
+    return { data, aiUsed: "Claude" }
+  } catch (err) {
+    console.warn("[extractContractGaps] Claude 실패 → OpenAI fallback:", (err as Error).message)
+    const data = await extractContractGapsOpenAI(contractText, tenderRequirements)
+    return { data, aiUsed: "OpenAI" }
+  }
+}
+
+function buildTenderSummary(reqs: { category: string; content: string }[]): string {
+  if (reqs.length === 0) return "입찰 요구사항 정보 없음"
+  return reqs.map((r, i) => `[${i + 1}] [${r.category}] ${r.content}`).join("\n")
+}
+
+async function extractContractGapsClaude(
+  contractText: string,
+  tenderRequirements: { category: string; content: string }[]
+): Promise<ContractGapResult> {
+  const inputSchema = z.toJSONSchema(ContractGapResultSchema) as Anthropic.Tool["input_schema"]
+  const tenderSummary = buildTenderSummary(tenderRequirements)
+
+  const response = await client.messages.create({
+    model: "claude-sonnet-4-6",
+    max_tokens: 4096,
+    tools: [
+      {
+        name: CONTRACT_GAP_TOOL,
+        description: "계약서와 입찰 약속을 비교해 차이(갭)를 구조화하여 추출한다.",
+        input_schema: inputSchema,
+      },
+    ],
+    tool_choice: { type: "tool", name: CONTRACT_GAP_TOOL },
+    messages: [
+      {
+        role: "user",
+        content: `당신은 LS전선 품질부문 계약 검토 전문가입니다.
+아래 [입찰 단계 요구사항]과 [계약서 텍스트]를 비교하여 갭 분석을 수행하세요.
+
+분석 규칙:
+- MATCH: 입찰 약속과 계약 요구사항이 실질적으로 일치
+- GAP: 계약서가 입찰보다 더 엄격한 요구사항을 포함 (리스크)
+- RELAXED: 계약서 요구사항이 입찰보다 완화됨 (기회)
+- NEW: 입찰에 없던 새로운 계약 요구사항 (추가 범위)
+- isRisk=true: 계약 이행에 실질적 위험이 되는 항목
+- 명시된 내용만 추출하고, 추측하지 않는다.
+
+[입찰 단계 요구사항]
+${tenderSummary}
+
+[계약서 텍스트]
+${contractText}`,
+      },
+    ],
+  })
+
+  const toolUse = response.content.find((c) => c.type === "tool_use")
+  if (!toolUse || toolUse.type !== "tool_use") {
+    throw new Error("Claude가 tool_use 응답을 반환하지 않았습니다.")
+  }
+  return ContractGapResultSchema.parse(toolUse.input)
+}
+
+async function extractContractGapsOpenAI(
+  contractText: string,
+  tenderRequirements: { category: string; content: string }[]
+): Promise<ContractGapResult> {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) throw new Error("OPENAI_API_KEY가 설정되지 않았습니다.")
+
+  const tenderSummary = buildTenderSummary(tenderRequirements)
+  const schema = z.toJSONSchema(ContractGapResultSchema)
+
+  const body = {
+    model: "gpt-4o",
+    response_format: { type: "json_schema", json_schema: { name: CONTRACT_GAP_TOOL, schema, strict: true } },
+    messages: [
+      {
+        role: "system",
+        content: "당신은 케이블 프로젝트 계약 검토 전문가입니다. 입찰 약속과 계약 요구사항의 갭을 JSON으로 반환하세요.",
+      },
+      {
+        role: "user",
+        content: `[입찰 요구사항]\n${tenderSummary}\n\n[계약서]\n${contractText}`,
+      },
+    ],
+  }
+
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) throw new Error(`OpenAI API 오류: ${res.status}`)
+  const json = (await res.json()) as { choices: { message: { content: string } }[] }
+  const content = json.choices?.[0]?.message?.content
+  if (!content) throw new Error("OpenAI API가 빈 응답을 반환했습니다.")
+  return ContractGapResultSchema.parse(JSON.parse(content))
 }

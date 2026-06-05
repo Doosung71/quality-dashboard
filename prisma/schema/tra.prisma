@@ -1,4 +1,4 @@
-// TRA 전용 스키마 — Tender Review Assistant 모델
+// TRA 전용 스키마 — Tender Review Assistant + Awarded Project Management
 // User·Feedback·FeedbackReply·Role·UserStatus는 common.prisma 참조
 
 // ─── 입찰 ────────────────────────────────────────────────
@@ -9,8 +9,9 @@ model Tender {
   createdBy   User     @relation(fields: [createdById], references: [id])
   createdById String
 
-  documents TenderDocument[]
-  analyses  Analysis[]
+  documents       TenderDocument[]
+  analyses        Analysis[]
+  awardedProject  AwardedProject?
 }
 
 model TenderDocument {
@@ -153,4 +154,105 @@ model Comment {
   parentId String?
   parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
   replies  Comment[] @relation("CommentReplies")
+}
+
+// ─── 수주 프로젝트 관리 ────────────────────────────────────────
+
+model AwardedProject {
+  id          String              @id @default(cuid())
+  tender      Tender              @relation(fields: [tenderId], references: [id])
+  tenderId    String              @unique
+  status      AwardedProjectStatus @default(DRAFT)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  createdBy   User                @relation("AwardedProjectCreator", fields: [createdById], references: [id])
+  createdById String
+
+  documents ContractDocument[]
+  analyses  ContractAnalysis[]
+}
+
+enum AwardedProjectStatus {
+  DRAFT
+  IN_REVIEW
+  COMPLETED
+}
+
+model ContractDocument {
+  id               String         @id @default(cuid())
+  project          AwardedProject @relation(fields: [projectId], references: [id])
+  projectId        String
+  filename         String
+  storagePath      String
+  uploadedAt       DateTime       @default(now())
+  isAnalysisSource Boolean        @default(true)
+
+  analyses ContractAnalysis[]
+}
+
+model ContractAnalysis {
+  id          String         @id @default(cuid())
+  project     AwardedProject @relation(fields: [projectId], references: [id])
+  projectId   String
+  document    ContractDocument? @relation(fields: [documentId], references: [id])
+  documentId  String?
+  status      AnalysisStatus @default(DRAFT)
+  submittedAt DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  aiUsed      String?
+  ragChunkCount Int          @default(0)
+  directorMemo  String?
+  draftOpinion  String?
+
+  gaps     ContractGap[]
+  history  ContractReviewHistory[]
+  comments ContractComment[]
+}
+
+model ContractGap {
+  id           String          @id @default(cuid())
+  analysis     ContractAnalysis @relation(fields: [analysisId], references: [id])
+  analysisId   String
+  category     String
+  tenderItem   String
+  contractItem String
+  gapType      ContractGapType
+  isRisk       Boolean         @default(false)
+  sourcePage   Int?
+  remark       String?
+}
+
+enum ContractGapType {
+  MATCH    // 일치
+  GAP      // 차이 (계약 요구 > 입찰 약속)
+  RELAXED  // 완화 (계약 요구 < 입찰 약속)
+  NEW      // 계약서 신규 요구사항
+}
+
+model ContractReviewHistory {
+  id         String         @id @default(cuid())
+  analysis   ContractAnalysis @relation(fields: [analysisId], references: [id])
+  analysisId String
+  user       User           @relation("ContractReviewHistoryUser", fields: [userId], references: [id])
+  userId     String
+  action     ReviewAction
+  fromStatus AnalysisStatus
+  toStatus   AnalysisStatus
+  reason     String?
+  createdAt  DateTime       @default(now())
+}
+
+model ContractComment {
+  id         String         @id @default(cuid())
+  analysis   ContractAnalysis @relation(fields: [analysisId], references: [id])
+  analysisId String
+  author     User           @relation("ContractCommentAuthor", fields: [authorId], references: [id])
+  authorId   String
+  content    String
+  createdAt  DateTime       @default(now())
+
+  parentId String?
+  parent   ContractComment?  @relation("ContractCommentReplies", fields: [parentId], references: [id])
+  replies  ContractComment[] @relation("ContractCommentReplies")
 }

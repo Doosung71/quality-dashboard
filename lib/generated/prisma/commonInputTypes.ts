@@ -399,6 +399,40 @@ export type EnumReviewActionWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumReviewActionFilter<$PrismaModel>
 }
 
+export type EnumAwardedProjectStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.AwardedProjectStatus | Prisma.EnumAwardedProjectStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AwardedProjectStatus[] | Prisma.ListEnumAwardedProjectStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AwardedProjectStatus[] | Prisma.ListEnumAwardedProjectStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAwardedProjectStatusFilter<$PrismaModel> | $Enums.AwardedProjectStatus
+}
+
+export type EnumAwardedProjectStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AwardedProjectStatus | Prisma.EnumAwardedProjectStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AwardedProjectStatus[] | Prisma.ListEnumAwardedProjectStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AwardedProjectStatus[] | Prisma.ListEnumAwardedProjectStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAwardedProjectStatusWithAggregatesFilter<$PrismaModel> | $Enums.AwardedProjectStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAwardedProjectStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAwardedProjectStatusFilter<$PrismaModel>
+}
+
+export type EnumContractGapTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContractGapType | Prisma.EnumContractGapTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ContractGapType[] | Prisma.ListEnumContractGapTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContractGapType[] | Prisma.ListEnumContractGapTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContractGapTypeFilter<$PrismaModel> | $Enums.ContractGapType
+}
+
+export type EnumContractGapTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContractGapType | Prisma.EnumContractGapTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ContractGapType[] | Prisma.ListEnumContractGapTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContractGapType[] | Prisma.ListEnumContractGapTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContractGapTypeWithAggregatesFilter<$PrismaModel> | $Enums.ContractGapType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumContractGapTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumContractGapTypeFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -757,6 +791,40 @@ export type NestedEnumReviewActionWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumReviewActionFilter<$PrismaModel>
   _max?: Prisma.NestedEnumReviewActionFilter<$PrismaModel>
+}
+
+export type NestedEnumAwardedProjectStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.AwardedProjectStatus | Prisma.EnumAwardedProjectStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AwardedProjectStatus[] | Prisma.ListEnumAwardedProjectStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AwardedProjectStatus[] | Prisma.ListEnumAwardedProjectStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAwardedProjectStatusFilter<$PrismaModel> | $Enums.AwardedProjectStatus
+}
+
+export type NestedEnumAwardedProjectStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AwardedProjectStatus | Prisma.EnumAwardedProjectStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AwardedProjectStatus[] | Prisma.ListEnumAwardedProjectStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AwardedProjectStatus[] | Prisma.ListEnumAwardedProjectStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAwardedProjectStatusWithAggregatesFilter<$PrismaModel> | $Enums.AwardedProjectStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAwardedProjectStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAwardedProjectStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumContractGapTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContractGapType | Prisma.EnumContractGapTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ContractGapType[] | Prisma.ListEnumContractGapTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContractGapType[] | Prisma.ListEnumContractGapTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContractGapTypeFilter<$PrismaModel> | $Enums.ContractGapType
+}
+
+export type NestedEnumContractGapTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContractGapType | Prisma.EnumContractGapTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ContractGapType[] | Prisma.ListEnumContractGapTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContractGapType[] | Prisma.ListEnumContractGapTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContractGapTypeWithAggregatesFilter<$PrismaModel> | $Enums.ContractGapType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumContractGapTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumContractGapTypeFilter<$PrismaModel>
 }
 
 

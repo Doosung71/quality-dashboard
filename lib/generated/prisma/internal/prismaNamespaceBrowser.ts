@@ -67,7 +67,13 @@ export const ModelName = {
   SpecRequirement: 'SpecRequirement',
   Standard: 'Standard',
   ReviewHistory: 'ReviewHistory',
-  Comment: 'Comment'
+  Comment: 'Comment',
+  AwardedProject: 'AwardedProject',
+  ContractDocument: 'ContractDocument',
+  ContractAnalysis: 'ContractAnalysis',
+  ContractGap: 'ContractGap',
+  ContractReviewHistory: 'ContractReviewHistory',
+  ContractComment: 'ContractComment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -362,6 +368,88 @@ export const CommentScalarFieldEnum = {
 } as const
 
 export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const AwardedProjectScalarFieldEnum = {
+  id: 'id',
+  tenderId: 'tenderId',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type AwardedProjectScalarFieldEnum = (typeof AwardedProjectScalarFieldEnum)[keyof typeof AwardedProjectScalarFieldEnum]
+
+
+export const ContractDocumentScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  filename: 'filename',
+  storagePath: 'storagePath',
+  uploadedAt: 'uploadedAt',
+  isAnalysisSource: 'isAnalysisSource'
+} as const
+
+export type ContractDocumentScalarFieldEnum = (typeof ContractDocumentScalarFieldEnum)[keyof typeof ContractDocumentScalarFieldEnum]
+
+
+export const ContractAnalysisScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  documentId: 'documentId',
+  status: 'status',
+  submittedAt: 'submittedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  aiUsed: 'aiUsed',
+  ragChunkCount: 'ragChunkCount',
+  directorMemo: 'directorMemo',
+  draftOpinion: 'draftOpinion'
+} as const
+
+export type ContractAnalysisScalarFieldEnum = (typeof ContractAnalysisScalarFieldEnum)[keyof typeof ContractAnalysisScalarFieldEnum]
+
+
+export const ContractGapScalarFieldEnum = {
+  id: 'id',
+  analysisId: 'analysisId',
+  category: 'category',
+  tenderItem: 'tenderItem',
+  contractItem: 'contractItem',
+  gapType: 'gapType',
+  isRisk: 'isRisk',
+  sourcePage: 'sourcePage',
+  remark: 'remark'
+} as const
+
+export type ContractGapScalarFieldEnum = (typeof ContractGapScalarFieldEnum)[keyof typeof ContractGapScalarFieldEnum]
+
+
+export const ContractReviewHistoryScalarFieldEnum = {
+  id: 'id',
+  analysisId: 'analysisId',
+  userId: 'userId',
+  action: 'action',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type ContractReviewHistoryScalarFieldEnum = (typeof ContractReviewHistoryScalarFieldEnum)[keyof typeof ContractReviewHistoryScalarFieldEnum]
+
+
+export const ContractCommentScalarFieldEnum = {
+  id: 'id',
+  analysisId: 'analysisId',
+  authorId: 'authorId',
+  content: 'content',
+  createdAt: 'createdAt',
+  parentId: 'parentId'
+} as const
+
+export type ContractCommentScalarFieldEnum = (typeof ContractCommentScalarFieldEnum)[keyof typeof ContractCommentScalarFieldEnum]
 
 
 export const SortOrder = {

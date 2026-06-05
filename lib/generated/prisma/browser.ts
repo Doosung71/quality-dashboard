@@ -102,3 +102,33 @@ export type ReviewHistory = Prisma.ReviewHistoryModel
  * 
  */
 export type Comment = Prisma.CommentModel
+/**
+ * Model AwardedProject
+ * 
+ */
+export type AwardedProject = Prisma.AwardedProjectModel
+/**
+ * Model ContractDocument
+ * 
+ */
+export type ContractDocument = Prisma.ContractDocumentModel
+/**
+ * Model ContractAnalysis
+ * 
+ */
+export type ContractAnalysis = Prisma.ContractAnalysisModel
+/**
+ * Model ContractGap
+ * 
+ */
+export type ContractGap = Prisma.ContractGapModel
+/**
+ * Model ContractReviewHistory
+ * 
+ */
+export type ContractReviewHistory = Prisma.ContractReviewHistoryModel
+/**
+ * Model ContractComment
+ * 
+ */
+export type ContractComment = Prisma.ContractCommentModel

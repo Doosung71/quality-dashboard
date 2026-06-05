@@ -177,6 +177,7 @@ export type TenderWhereInput = {
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   documents?: Prisma.TenderDocumentListRelationFilter
   analyses?: Prisma.AnalysisListRelationFilter
+  awardedProject?: Prisma.XOR<Prisma.AwardedProjectNullableScalarRelationFilter, Prisma.AwardedProjectWhereInput> | null
 }
 
 export type TenderOrderByWithRelationInput = {
@@ -187,6 +188,7 @@ export type TenderOrderByWithRelationInput = {
   createdBy?: Prisma.UserOrderByWithRelationInput
   documents?: Prisma.TenderDocumentOrderByRelationAggregateInput
   analyses?: Prisma.AnalysisOrderByRelationAggregateInput
+  awardedProject?: Prisma.AwardedProjectOrderByWithRelationInput
 }
 
 export type TenderWhereUniqueInput = Prisma.AtLeast<{
@@ -200,6 +202,7 @@ export type TenderWhereUniqueInput = Prisma.AtLeast<{
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   documents?: Prisma.TenderDocumentListRelationFilter
   analyses?: Prisma.AnalysisListRelationFilter
+  awardedProject?: Prisma.XOR<Prisma.AwardedProjectNullableScalarRelationFilter, Prisma.AwardedProjectWhereInput> | null
 }, "id">
 
 export type TenderOrderByWithAggregationInput = {
@@ -229,6 +232,7 @@ export type TenderCreateInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutTendersInput
   documents?: Prisma.TenderDocumentCreateNestedManyWithoutTenderInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutTenderInput
+  awardedProject?: Prisma.AwardedProjectCreateNestedOneWithoutTenderInput
 }
 
 export type TenderUncheckedCreateInput = {
@@ -238,6 +242,7 @@ export type TenderUncheckedCreateInput = {
   createdById: string
   documents?: Prisma.TenderDocumentUncheckedCreateNestedManyWithoutTenderInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutTenderInput
+  awardedProject?: Prisma.AwardedProjectUncheckedCreateNestedOneWithoutTenderInput
 }
 
 export type TenderUpdateInput = {
@@ -247,6 +252,7 @@ export type TenderUpdateInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutTendersNestedInput
   documents?: Prisma.TenderDocumentUpdateManyWithoutTenderNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutTenderNestedInput
+  awardedProject?: Prisma.AwardedProjectUpdateOneWithoutTenderNestedInput
 }
 
 export type TenderUncheckedUpdateInput = {
@@ -256,6 +262,7 @@ export type TenderUncheckedUpdateInput = {
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   documents?: Prisma.TenderDocumentUncheckedUpdateManyWithoutTenderNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutTenderNestedInput
+  awardedProject?: Prisma.AwardedProjectUncheckedUpdateOneWithoutTenderNestedInput
 }
 
 export type TenderCreateManyInput = {
@@ -384,12 +391,27 @@ export type TenderUpdateOneRequiredWithoutAnalysesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenderUpdateToOneWithWhereWithoutAnalysesInput, Prisma.TenderUpdateWithoutAnalysesInput>, Prisma.TenderUncheckedUpdateWithoutAnalysesInput>
 }
 
+export type TenderCreateNestedOneWithoutAwardedProjectInput = {
+  create?: Prisma.XOR<Prisma.TenderCreateWithoutAwardedProjectInput, Prisma.TenderUncheckedCreateWithoutAwardedProjectInput>
+  connectOrCreate?: Prisma.TenderCreateOrConnectWithoutAwardedProjectInput
+  connect?: Prisma.TenderWhereUniqueInput
+}
+
+export type TenderUpdateOneRequiredWithoutAwardedProjectNestedInput = {
+  create?: Prisma.XOR<Prisma.TenderCreateWithoutAwardedProjectInput, Prisma.TenderUncheckedCreateWithoutAwardedProjectInput>
+  connectOrCreate?: Prisma.TenderCreateOrConnectWithoutAwardedProjectInput
+  upsert?: Prisma.TenderUpsertWithoutAwardedProjectInput
+  connect?: Prisma.TenderWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenderUpdateToOneWithWhereWithoutAwardedProjectInput, Prisma.TenderUpdateWithoutAwardedProjectInput>, Prisma.TenderUncheckedUpdateWithoutAwardedProjectInput>
+}
+
 export type TenderCreateWithoutCreatedByInput = {
   id?: string
   title: string
   createdAt?: Date | string
   documents?: Prisma.TenderDocumentCreateNestedManyWithoutTenderInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutTenderInput
+  awardedProject?: Prisma.AwardedProjectCreateNestedOneWithoutTenderInput
 }
 
 export type TenderUncheckedCreateWithoutCreatedByInput = {
@@ -398,6 +420,7 @@ export type TenderUncheckedCreateWithoutCreatedByInput = {
   createdAt?: Date | string
   documents?: Prisma.TenderDocumentUncheckedCreateNestedManyWithoutTenderInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutTenderInput
+  awardedProject?: Prisma.AwardedProjectUncheckedCreateNestedOneWithoutTenderInput
 }
 
 export type TenderCreateOrConnectWithoutCreatedByInput = {
@@ -442,6 +465,7 @@ export type TenderCreateWithoutDocumentsInput = {
   createdAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutTendersInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutTenderInput
+  awardedProject?: Prisma.AwardedProjectCreateNestedOneWithoutTenderInput
 }
 
 export type TenderUncheckedCreateWithoutDocumentsInput = {
@@ -450,6 +474,7 @@ export type TenderUncheckedCreateWithoutDocumentsInput = {
   createdAt?: Date | string
   createdById: string
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutTenderInput
+  awardedProject?: Prisma.AwardedProjectUncheckedCreateNestedOneWithoutTenderInput
 }
 
 export type TenderCreateOrConnectWithoutDocumentsInput = {
@@ -474,6 +499,7 @@ export type TenderUpdateWithoutDocumentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutTendersNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutTenderNestedInput
+  awardedProject?: Prisma.AwardedProjectUpdateOneWithoutTenderNestedInput
 }
 
 export type TenderUncheckedUpdateWithoutDocumentsInput = {
@@ -482,6 +508,7 @@ export type TenderUncheckedUpdateWithoutDocumentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutTenderNestedInput
+  awardedProject?: Prisma.AwardedProjectUncheckedUpdateOneWithoutTenderNestedInput
 }
 
 export type TenderCreateWithoutAnalysesInput = {
@@ -490,6 +517,7 @@ export type TenderCreateWithoutAnalysesInput = {
   createdAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutTendersInput
   documents?: Prisma.TenderDocumentCreateNestedManyWithoutTenderInput
+  awardedProject?: Prisma.AwardedProjectCreateNestedOneWithoutTenderInput
 }
 
 export type TenderUncheckedCreateWithoutAnalysesInput = {
@@ -498,6 +526,7 @@ export type TenderUncheckedCreateWithoutAnalysesInput = {
   createdAt?: Date | string
   createdById: string
   documents?: Prisma.TenderDocumentUncheckedCreateNestedManyWithoutTenderInput
+  awardedProject?: Prisma.AwardedProjectUncheckedCreateNestedOneWithoutTenderInput
 }
 
 export type TenderCreateOrConnectWithoutAnalysesInput = {
@@ -522,6 +551,7 @@ export type TenderUpdateWithoutAnalysesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutTendersNestedInput
   documents?: Prisma.TenderDocumentUpdateManyWithoutTenderNestedInput
+  awardedProject?: Prisma.AwardedProjectUpdateOneWithoutTenderNestedInput
 }
 
 export type TenderUncheckedUpdateWithoutAnalysesInput = {
@@ -530,6 +560,59 @@ export type TenderUncheckedUpdateWithoutAnalysesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   documents?: Prisma.TenderDocumentUncheckedUpdateManyWithoutTenderNestedInput
+  awardedProject?: Prisma.AwardedProjectUncheckedUpdateOneWithoutTenderNestedInput
+}
+
+export type TenderCreateWithoutAwardedProjectInput = {
+  id?: string
+  title: string
+  createdAt?: Date | string
+  createdBy: Prisma.UserCreateNestedOneWithoutTendersInput
+  documents?: Prisma.TenderDocumentCreateNestedManyWithoutTenderInput
+  analyses?: Prisma.AnalysisCreateNestedManyWithoutTenderInput
+}
+
+export type TenderUncheckedCreateWithoutAwardedProjectInput = {
+  id?: string
+  title: string
+  createdAt?: Date | string
+  createdById: string
+  documents?: Prisma.TenderDocumentUncheckedCreateNestedManyWithoutTenderInput
+  analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutTenderInput
+}
+
+export type TenderCreateOrConnectWithoutAwardedProjectInput = {
+  where: Prisma.TenderWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenderCreateWithoutAwardedProjectInput, Prisma.TenderUncheckedCreateWithoutAwardedProjectInput>
+}
+
+export type TenderUpsertWithoutAwardedProjectInput = {
+  update: Prisma.XOR<Prisma.TenderUpdateWithoutAwardedProjectInput, Prisma.TenderUncheckedUpdateWithoutAwardedProjectInput>
+  create: Prisma.XOR<Prisma.TenderCreateWithoutAwardedProjectInput, Prisma.TenderUncheckedCreateWithoutAwardedProjectInput>
+  where?: Prisma.TenderWhereInput
+}
+
+export type TenderUpdateToOneWithWhereWithoutAwardedProjectInput = {
+  where?: Prisma.TenderWhereInput
+  data: Prisma.XOR<Prisma.TenderUpdateWithoutAwardedProjectInput, Prisma.TenderUncheckedUpdateWithoutAwardedProjectInput>
+}
+
+export type TenderUpdateWithoutAwardedProjectInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutTendersNestedInput
+  documents?: Prisma.TenderDocumentUpdateManyWithoutTenderNestedInput
+  analyses?: Prisma.AnalysisUpdateManyWithoutTenderNestedInput
+}
+
+export type TenderUncheckedUpdateWithoutAwardedProjectInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  documents?: Prisma.TenderDocumentUncheckedUpdateManyWithoutTenderNestedInput
+  analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutTenderNestedInput
 }
 
 export type TenderCreateManyCreatedByInput = {
@@ -544,6 +627,7 @@ export type TenderUpdateWithoutCreatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.TenderDocumentUpdateManyWithoutTenderNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutTenderNestedInput
+  awardedProject?: Prisma.AwardedProjectUpdateOneWithoutTenderNestedInput
 }
 
 export type TenderUncheckedUpdateWithoutCreatedByInput = {
@@ -552,6 +636,7 @@ export type TenderUncheckedUpdateWithoutCreatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.TenderDocumentUncheckedUpdateManyWithoutTenderNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutTenderNestedInput
+  awardedProject?: Prisma.AwardedProjectUncheckedUpdateOneWithoutTenderNestedInput
 }
 
 export type TenderUncheckedUpdateManyWithoutCreatedByInput = {
@@ -608,6 +693,7 @@ export type TenderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   documents?: boolean | Prisma.Tender$documentsArgs<ExtArgs>
   analyses?: boolean | Prisma.Tender$analysesArgs<ExtArgs>
+  awardedProject?: boolean | Prisma.Tender$awardedProjectArgs<ExtArgs>
   _count?: boolean | Prisma.TenderCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tender"]>
 
@@ -639,6 +725,7 @@ export type TenderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   documents?: boolean | Prisma.Tender$documentsArgs<ExtArgs>
   analyses?: boolean | Prisma.Tender$analysesArgs<ExtArgs>
+  awardedProject?: boolean | Prisma.Tender$awardedProjectArgs<ExtArgs>
   _count?: boolean | Prisma.TenderCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TenderIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -654,6 +741,7 @@ export type $TenderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     createdBy: Prisma.$UserPayload<ExtArgs>
     documents: Prisma.$TenderDocumentPayload<ExtArgs>[]
     analyses: Prisma.$AnalysisPayload<ExtArgs>[]
+    awardedProject: Prisma.$AwardedProjectPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1057,6 +1145,7 @@ export interface Prisma__TenderClient<T, Null = never, ExtArgs extends runtime.T
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   documents<T extends Prisma.Tender$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tender$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TenderDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   analyses<T extends Prisma.Tender$analysesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tender$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  awardedProject<T extends Prisma.Tender$awardedProjectArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tender$awardedProjectArgs<ExtArgs>>): Prisma.Prisma__AwardedProjectClient<runtime.Types.Result.GetResult<Prisma.$AwardedProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1536,6 +1625,25 @@ export type Tender$analysesArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.AnalysisScalarFieldEnum | Prisma.AnalysisScalarFieldEnum[]
+}
+
+/**
+ * Tender.awardedProject
+ */
+export type Tender$awardedProjectArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AwardedProject
+   */
+  select?: Prisma.AwardedProjectSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AwardedProject
+   */
+  omit?: Prisma.AwardedProjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AwardedProjectInclude<ExtArgs> | null
+  where?: Prisma.AwardedProjectWhereInput
 }
 
 /**

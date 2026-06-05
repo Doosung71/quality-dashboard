@@ -35,6 +35,11 @@ model User {
   reviewActions   ReviewHistory[]
   comments        Comment[]
 
+  // 수주 프로젝트 관계
+  awardedProjects       AwardedProject[]        @relation("AwardedProjectCreator")
+  contractReviewActions ContractReviewHistory[] @relation("ContractReviewHistoryUser")
+  contractComments      ContractComment[]       @relation("ContractCommentAuthor")
+
   // 시설 자산 관계
   ownedEquipment  Equipment[]             @relation("EquipmentOwner")
   ownerHistoryAsOwner    EquipmentOwnerHistory[] @relation("OwnerHistoryOwner")

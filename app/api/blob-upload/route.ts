@@ -7,8 +7,9 @@ const MAX_UPLOAD_BYTES = 500 * 1024 * 1024
 const TOKEN_TTL_MS = 60 * 60 * 1000
 const PDF_CONTENT_TYPES = ["application/pdf"]
 
-function assertTenderPdfPath(pathname: string) {
-  if (!pathname.startsWith("tender-documents/") || !pathname.endsWith(".pdf")) {
+function assertAllowedPdfPath(pathname: string) {
+  const allowed = pathname.startsWith("tender-documents/") || pathname.startsWith("contract-documents/")
+  if (!allowed || !pathname.endsWith(".pdf")) {
     throw new Error("허용되지 않은 업로드 경로입니다.")
   }
 }
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
       request,
       webhookPublicKey: "not-used",
       getSignedToken: async (pathname) => {
-        assertTenderPdfPath(pathname)
+        assertAllowedPdfPath(pathname)
         const validUntil = Date.now() + TOKEN_TTL_MS
         return {
           token: await issueSignedToken({

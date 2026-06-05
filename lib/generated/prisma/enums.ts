@@ -73,3 +73,22 @@ export const ReviewAction = {
 } as const
 
 export type ReviewAction = (typeof ReviewAction)[keyof typeof ReviewAction]
+
+
+export const AwardedProjectStatus = {
+  DRAFT: 'DRAFT',
+  IN_REVIEW: 'IN_REVIEW',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type AwardedProjectStatus = (typeof AwardedProjectStatus)[keyof typeof AwardedProjectStatus]
+
+
+export const ContractGapType = {
+  MATCH: 'MATCH',
+  GAP: 'GAP',
+  RELAXED: 'RELAXED',
+  NEW: 'NEW'
+} as const
+
+export type ContractGapType = (typeof ContractGapType)[keyof typeof ContractGapType]
