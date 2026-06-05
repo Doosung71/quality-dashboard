@@ -4,8 +4,9 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
-  LayoutDashboard, FlaskConical, Building2, Users, Globe,
-  X, MessageSquare, BookOpen, Coins, FileSearch, Newspaper, Wrench,
+  LayoutDashboard, FlaskConical, Users, Globe,
+  X, MessageSquare, BookOpen, Newspaper, Wrench,
+  ClipboardList, ShieldAlert, Briefcase,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { Role } from "@/lib/generated/prisma/client"
@@ -26,56 +27,62 @@ type NavItem = {
   children?: NavChild[]
 }
 
-// 역할별 접근 가능한 메뉴 (경영자 우선순위 기준 정렬)
+// 역할별 접근 가능한 메뉴 — 실무자 퀵링크 기준 정렬
 const ALL_NAV: NavItem[] = [
   {
     href: "/", label: "대시보드", icon: LayoutDashboard,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
+
+  // ── 실무자 핵심 업무 ──────────────────────────────────
   {
-    href: "/qcost", label: "품질비용관리 (Q-Cost Management)", icon: Coins,
+    href: "/vendors", label: "검사 업무", icon: ClipboardList,
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
+    children: [
+      { href: "/vendors/incoming",    label: "수입검사",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/vendors/inspections", label: "출장검사",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/vendors/audits",      label: "협력업체 감사", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+    ],
+  },
+  {
+    href: "/qcost", label: "품질 이슈", icon: ShieldAlert,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
     children: [
-      { href: "/claims", label: "고객 클레임 관리 (Customer Claim Management)",    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-      { href: "/ncr",    label: "부적합품관리 (Non-Conformance Management)", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/claims", label: "고객 클레임", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/ncr",    label: "부적합품 (NCR)", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
     ],
   },
+
+  // ── 프로젝트 ──────────────────────────────────────────
   {
-    href: "/vendors", label: "공급망 관리 (Supply Chain Management)", icon: Building2,
+    href: "/projects", label: "프로젝트", icon: Briefcase,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
     children: [
-      { href: "/vendors/audits",            label: "협력업체 감사 (Supplier Audit)",        roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-      { href: "/vendors/incoming",          label: "수입검사 (Incoming Inspection)",         roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-      { href: "/vendors/inspections",       label: "출장검사 (Source Inspection)",           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/dashboard",        label: "입찰 검토",    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/projects/awarded", label: "수주 프로젝트", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
     ],
   },
+
+  // ── 지식·장비 ─────────────────────────────────────────
   {
-    href: "/knowledge", label: "품질지식관리 (Quality Knowledge Management)", icon: BookOpen,
+    href: "/knowledge", label: "품질 지식", icon: BookOpen,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
-    href: "/facilities", label: "시험 관리 (Test Management)", icon: FlaskConical,
+    href: "/facilities", label: "시험 장비", icon: FlaskConical,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
-    href: "/assets", label: "자산관리 (Assets Management)", icon: Wrench,
+    href: "/assets", label: "자산", icon: Wrench,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
   },
+
+  // ── 정보·조직 ─────────────────────────────────────────
   {
-    href: "/projects", label: "프로젝트 관리 (Projects Management)", icon: FileSearch,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
-    children: [
-      { href: "/dashboard",         label: "입찰 검토 (Tender Review Management)",           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-      { href: "/projects/awarded",  label: "수주 프로젝트 관리 (Awarded Project Management)", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-    ],
-  },
-  {
-    // 외부정보: 전 역할 쓰기 (팀원도 포함)
     href: "/intelligence", label: "외부 정보", icon: Globe,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
-    // 인사·면담: 부문장=전체, 팀장=자기팀, 팀원=메뉴 없음
     href: "/hr", label: "인사·면담", icon: Users,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD"], readonlyFor: [],
   },
