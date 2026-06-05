@@ -15,19 +15,12 @@ export async function GET(_req: NextRequest, { params }: Params) {
   if (session instanceof NextResponse) return session;
 
   const { id } = await params;
+  // ownerHistory 미포함 — 이력은 /test-plans/[id]/owner-history(TEAM_LEAD 이상)에서만 제공
   const plan = await prisma.testPlan.findUnique({
     where: { id },
     include: {
-      equipment:    true,
-      owner:        { select: { id: true, name: true, department: true } },
-      ownerHistory: {
-        include: {
-          owner:     { select: { id: true, name: true, department: true } },
-          changedBy: { select: { id: true, name: true } },
-        },
-        orderBy: { changedAt: "desc" },
-        take: 10,
-      },
+      equipment: true,
+      owner:     { select: { id: true, name: true, department: true } },
     },
   });
 
