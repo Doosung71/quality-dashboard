@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 
 type User = {
   id: string; name: string; email: string
@@ -8,6 +8,142 @@ type User = {
   department: string | null; employeeId: string | null
   phone: string | null
   createdAt: Date; restrictedUntil: Date | null
+}
+
+type ActivityRow = {
+  id: string; name: string; email: string
+  role: string; status: string; department: string | null
+  posts: number; comments: number
+  claims: number; ncrs: number
+  incomingInspections: number; sourceInspections: number; audits: number
+  total: number; lastActivity: string | null
+}
+
+const ACTIVITY_COLS: { key: keyof ActivityRow; label: string; color: string }[] = [
+  { key: "posts",               label: "게시글",      color: "text-indigo-600" },
+  { key: "comments",            label: "댓글",        color: "text-violet-600" },
+  { key: "claims",              label: "클레임",      color: "text-blue-600"   },
+  { key: "ncrs",                label: "NCR",         color: "text-rose-600"   },
+  { key: "incomingInspections", label: "수입검사",    color: "text-sky-600"    },
+  { key: "sourceInspections",   label: "출장검사",    color: "text-emerald-600"},
+  { key: "audits",              label: "협력업체감사", color: "text-amber-600"  },
+]
+
+function ActivityView() {
+  const [period, setPeriod] = useState<"all" | "30" | "7">("all")
+  const [rows, setRows] = useState<ActivityRow[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const load = useCallback(async () => {
+    setLoading(true)
+    const res = await fetch(`/api/admin/activity?period=${period}`)
+    if (res.ok) setRows(await res.json())
+    setLoading(false)
+  }, [period])
+
+  useEffect(() => { load() }, [load])
+
+  const ROLE_LABEL: Record<string, string> = {
+    PRACTITIONER: "실무자", TEAM_LEAD: "팀장", DIRECTOR: "임원", ADMIN: "관리자"
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* 기간 필터 */}
+      <div className="flex items-center gap-2">
+        <span className="text-xs text-slate-500">기간:</span>
+        {([["all", "전체"], ["30", "최근 30일"], ["7", "최근 7일"]] as const).map(([v, l]) => (
+          <button
+            key={v}
+            onClick={() => setPeriod(v)}
+            className={`px-3 py-1 text-xs rounded-full border transition-colors ${
+              period === v
+                ? "bg-slate-800 text-white border-slate-800"
+                : "border-slate-200 text-slate-600 hover:border-slate-400"
+            }`}
+          >
+            {l}
+          </button>
+        ))}
+        <span className="ml-auto text-xs text-slate-400">
+          활동이 많은 순으로 정렬
+        </span>
+      </div>
+
+      {loading ? (
+        <div className="py-12 text-center text-sm text-slate-400">집계 중...</div>
+      ) : (
+        <>
+          {/* 요약 카드 */}
+          <div className="grid grid-cols-4 gap-3">
+            {[
+              { label: "총 활동 수",   value: rows.reduce((s, r) => s + r.total, 0),    color: "text-slate-800" },
+              { label: "게시글+댓글", value: rows.reduce((s, r) => s + r.posts + r.comments, 0), color: "text-indigo-600" },
+              { label: "검사 기록",   value: rows.reduce((s, r) => s + r.incomingInspections + r.sourceInspections + r.audits, 0), color: "text-emerald-600" },
+              { label: "클레임+NCR", value: rows.reduce((s, r) => s + r.claims + r.ncrs, 0), color: "text-rose-600" },
+            ].map(({ label, value, color }) => (
+              <div key={label} className="bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-center">
+                <p className={`text-2xl font-bold ${color}`}>{value}</p>
+                <p className="text-xs text-slate-500 mt-0.5">{label}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* 테이블 */}
+          <div className="bg-white border border-slate-200 rounded-xl overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-slate-50 border-b border-slate-200">
+                <tr>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">#</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">이름</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">역할</th>
+                  {ACTIVITY_COLS.map(c => (
+                    <th key={c.key} className={`text-right px-3 py-3 text-xs font-medium whitespace-nowrap ${c.color}`}>
+                      {c.label}
+                    </th>
+                  ))}
+                  <th className="text-right px-4 py-3 text-xs font-bold text-slate-700 whitespace-nowrap">합계</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">마지막 활동</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r, idx) => (
+                  <tr key={r.id} className={`border-b border-slate-100 last:border-0 ${r.total === 0 ? "opacity-50" : "hover:bg-slate-50"}`}>
+                    <td className="px-4 py-2.5 text-xs text-slate-400">{idx + 1}</td>
+                    <td className="px-4 py-2.5">
+                      <p className="font-medium text-slate-800">{r.name}</p>
+                      <p className="text-[11px] text-slate-400">{r.department ?? r.email}</p>
+                    </td>
+                    <td className="px-4 py-2.5 text-xs text-slate-500 whitespace-nowrap">
+                      {ROLE_LABEL[r.role] ?? r.role}
+                    </td>
+                    {ACTIVITY_COLS.map(c => (
+                      <td key={c.key} className={`px-3 py-2.5 text-right text-sm font-medium ${(r[c.key] as number) > 0 ? c.color : "text-slate-200"}`}>
+                        {r[c.key] as number}
+                      </td>
+                    ))}
+                    <td className={`px-4 py-2.5 text-right text-sm font-bold ${
+                      r.total >= 10 ? "text-slate-900" : r.total > 0 ? "text-slate-600" : "text-slate-200"
+                    }`}>
+                      {r.total}
+                    </td>
+                    <td className="px-4 py-2.5 text-xs text-slate-400 whitespace-nowrap">
+                      {r.lastActivity
+                        ? new Date(r.lastActivity).toLocaleString("ko-KR", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })
+                        : "—"}
+                    </td>
+                  </tr>
+                ))}
+                {rows.length === 0 && (
+                  <tr><td colSpan={12} className="text-center py-10 text-sm text-slate-400">활동 데이터 없음</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </div>
+  )
 }
 
 function formatPhone(value: string): string {
@@ -53,6 +189,7 @@ function restrictedUntilLabel(until: Date | null | undefined): string {
 }
 
 export function AdminUsersClient({ users: initial }: { users: User[] }) {
+  const [activeTab, setActiveTab] = useState<"users" | "activity">("users")
   const [users, setUsers] = useState(initial)
   const [loading, setLoading] = useState<string | null>(null)
   const [tempPasswords, setTempPasswords] = useState<Record<string, string>>({})
@@ -327,6 +464,29 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
   }
 
   return (
+    <div className="space-y-4">
+      {/* 탭 바 */}
+      <div className="flex gap-1 bg-slate-100 p-1 rounded-xl w-fit">
+        {([["users", "사용자 목록"], ["activity", "활동 현황"]] as const).map(([tab, label]) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+              activeTab === tab
+                ? "bg-white text-slate-900 shadow-sm"
+                : "text-slate-500 hover:text-slate-700"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* 활동 현황 탭 */}
+      {activeTab === "activity" && <ActivityView />}
+
+      {/* 사용자 목록 탭 */}
+      {activeTab === "users" && (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
 
       {/* 모바일: 카드 목록 (sm 미만) */}
@@ -435,6 +595,8 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
           </tbody>
         </table>
       </div>
+    </div>
+      )}
     </div>
   )
 }

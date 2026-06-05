@@ -1,0 +1,118 @@
+import { auth } from "@/auth"
+import { isAdmin } from "@/lib/admin"
+import { prisma } from "@/lib/prisma"
+import { NextResponse } from "next/server"
+
+export async function GET(req: Request) {
+  const session = await auth()
+  if (!session || !isAdmin(session.user.email)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
+
+  const { searchParams } = new URL(req.url)
+  const period = searchParams.get("period") ?? "all" // "7" | "30" | "all"
+
+  let since: Date | undefined
+  if (period === "7")  since = new Date(Date.now() - 7  * 86400000)
+  if (period === "30") since = new Date(Date.now() - 30 * 86400000)
+  const dateFilter = since ? { createdAt: { gte: since } } : {}
+
+  const [
+    users,
+    posts, comments,
+    claims, ncrs,
+    incoming, source, audits,
+  ] = await Promise.all([
+    prisma.user.findMany({
+      orderBy: { createdAt: "asc" },
+      select: { id: true, name: true, email: true, role: true, status: true, department: true },
+    }),
+    prisma.boardPost.groupBy({
+      by: ["authorId"], where: dateFilter,
+      _count: { _all: true }, _max: { createdAt: true },
+    }),
+    prisma.boardComment.groupBy({
+      by: ["authorId"], where: dateFilter,
+      _count: { _all: true }, _max: { createdAt: true },
+    }),
+    prisma.claim.groupBy({
+      by: ["createdById"], where: dateFilter,
+      _count: { _all: true }, _max: { createdAt: true },
+    }),
+    prisma.ncr.groupBy({
+      by: ["createdById"], where: dateFilter,
+      _count: { _all: true }, _max: { createdAt: true },
+    }),
+    prisma.incomingInspection.groupBy({
+      by: ["createdById"], where: dateFilter,
+      _count: { _all: true }, _max: { createdAt: true },
+    }),
+    prisma.sourceInspection.groupBy({
+      by: ["createdById"], where: dateFilter,
+      _count: { _all: true }, _max: { createdAt: true },
+    }),
+    prisma.supplierAudit.groupBy({
+      by: ["createdById"], where: dateFilter,
+      _count: { _all: true }, _max: { createdAt: true },
+    }),
+  ])
+
+  // userId → { count, last } 맵으로 변환
+  const toMap = (rows: { _count: { _all: number }; _max: { createdAt: Date | null } }[], key: string) =>
+    Object.fromEntries(
+      rows.map(r => [(r as Record<string, unknown>)[key] as string, { count: r._count._all, last: r._max.createdAt }])
+    )
+
+  const postMap      = toMap(posts,    "authorId")
+  const commentMap   = toMap(comments, "authorId")
+  const claimMap     = toMap(claims,   "createdById")
+  const ncrMap       = toMap(ncrs,     "createdById")
+  const incomingMap  = toMap(incoming, "createdById")
+  const sourceMap    = toMap(source,   "createdById")
+  const auditMap     = toMap(audits,   "createdById")
+
+  const result = users.map(u => {
+    const pc = postMap[u.id]?.count     ?? 0
+    const cc = commentMap[u.id]?.count  ?? 0
+    const cl = claimMap[u.id]?.count    ?? 0
+    const nc = ncrMap[u.id]?.count      ?? 0
+    const ic = incomingMap[u.id]?.count ?? 0
+    const sc = sourceMap[u.id]?.count   ?? 0
+    const ac = auditMap[u.id]?.count    ?? 0
+    const total = pc + cc + cl + nc + ic + sc + ac
+
+    const dates = [
+      postMap[u.id]?.last,
+      commentMap[u.id]?.last,
+      claimMap[u.id]?.last,
+      ncrMap[u.id]?.last,
+      incomingMap[u.id]?.last,
+      sourceMap[u.id]?.last,
+      auditMap[u.id]?.last,
+    ].filter(Boolean) as Date[]
+
+    const lastActivity = dates.length > 0
+      ? new Date(Math.max(...dates.map(d => new Date(d).getTime())))
+      : null
+
+    return {
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      role: u.role,
+      status: u.status,
+      department: u.department,
+      posts: pc,
+      comments: cc,
+      claims: cl,
+      ncrs: nc,
+      incomingInspections: ic,
+      sourceInspections: sc,
+      audits: ac,
+      total,
+      lastActivity: lastActivity?.toISOString() ?? null,
+    }
+  }).sort((a, b) => b.total - a.total)
+
+  return NextResponse.json(result)
+}
