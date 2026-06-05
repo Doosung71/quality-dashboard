@@ -1,13 +1,64 @@
-import { assetData } from "@/data/assets.data";
-import { testsData } from "@/data/tests.data";
+import { prisma } from "@/lib/prisma";
+import { facilitiesData } from "@/data/facilities.data";
 import { AssetsView } from "@/components/assets/assets-view";
+import type { AssetData } from "@/types/asset";
+import type { TestsData } from "@/types/test";
 
-export default function AssetsPage() {
+export default async function AssetsPage() {
+  const [equipmentRaw, testPlansRaw] = await Promise.all([
+    prisma.equipment.findMany({ orderBy: [{ siteId: "asc" }, { yearIntroduced: "asc" }] }),
+    prisma.testPlan.findMany({ orderBy: { plannedStart: "asc" } }),
+  ]);
+
+  const assetData: AssetData = {
+    equipment: equipmentRaw.map((eq) => ({
+      id:             eq.id,
+      hallId:         eq.hallId  ?? undefined,
+      yardId:         eq.yardId  ?? undefined,
+      siteId:         eq.siteId  as "gumi" | "donghae",
+      category:       eq.category as "시험설비" | "계측설비" | "보조설비",
+      name:           eq.name,
+      type:           eq.type,
+      spec:           eq.spec as Record<string, string>,
+      maker:          eq.maker,
+      makerCountry:   eq.makerCountry ?? null,
+      yearIntroduced: eq.yearIntroduced,
+      quantity:       eq.quantity,
+      status:         eq.status as "new" | "normal" | "aging" | "planned",
+      replacedBy:     eq.replacedById ?? null,
+      replaces:       eq.replacesId   ?? null,
+      notes:          eq.notes,
+    })),
+  };
+
+  const testsData: TestsData = {
+    _meta: { version: "db", lastUpdated: new Date().toISOString().slice(0, 10), note: "DB 직접 조회" },
+    tests: testPlansRaw.map((t) => ({
+      id:               t.id,
+      equipmentId:      t.equipmentId,
+      testCategory:     t.testCategory as "Type" | "EQ" | "PQ" | "양산" | "개발",
+      projectName:      t.projectName,
+      sampleType:       t.sampleType as "cable" | "accessory",
+      sampleDescription: t.sampleDescription,
+      plannedStart:     t.plannedStart,
+      plannedEnd:       t.plannedEnd,
+      actualStart:      t.actualStart  ?? null,
+      actualEnd:        t.actualEnd    ?? null,
+      status:           t.status as "준비중" | "시험중" | "완료" | "지연",
+      progress:         t.progress,
+      logs:             t.logs as { date: string; note: string; progress: number }[],
+    })),
+  };
+
   return (
     <div className="space-y-1">
       <h1 className="text-lg font-semibold text-slate-800">자산관리</h1>
-      <p className="text-xs text-slate-400 mb-4">시험설비·계측설비 자산 현황 및 노후도 관리 (2026.03 기준)</p>
-      <AssetsView assetData={assetData} testsData={testsData} />
+      <p className="text-xs text-slate-400 mb-4">시험설비·계측설비 자산 현황 및 노후도 관리</p>
+      <AssetsView
+        assetData={assetData}
+        testsData={testsData}
+        facilitiesData={facilitiesData}
+      />
     </div>
   );
 }

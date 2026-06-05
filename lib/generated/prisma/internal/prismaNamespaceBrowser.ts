@@ -56,6 +56,8 @@ export const ModelName = {
   FeedbackReply: 'FeedbackReply',
   BoardPost: 'BoardPost',
   BoardComment: 'BoardComment',
+  Equipment: 'Equipment',
+  TestPlan: 'TestPlan',
   Tender: 'Tender',
   TenderDocument: 'TenderDocument',
   Analysis: 'Analysis',
@@ -151,6 +153,51 @@ export const BoardCommentScalarFieldEnum = {
 } as const
 
 export type BoardCommentScalarFieldEnum = (typeof BoardCommentScalarFieldEnum)[keyof typeof BoardCommentScalarFieldEnum]
+
+
+export const EquipmentScalarFieldEnum = {
+  id: 'id',
+  hallId: 'hallId',
+  yardId: 'yardId',
+  siteId: 'siteId',
+  category: 'category',
+  name: 'name',
+  type: 'type',
+  spec: 'spec',
+  maker: 'maker',
+  makerCountry: 'makerCountry',
+  yearIntroduced: 'yearIntroduced',
+  quantity: 'quantity',
+  status: 'status',
+  replacedById: 'replacedById',
+  replacesId: 'replacesId',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EquipmentScalarFieldEnum = (typeof EquipmentScalarFieldEnum)[keyof typeof EquipmentScalarFieldEnum]
+
+
+export const TestPlanScalarFieldEnum = {
+  id: 'id',
+  equipmentId: 'equipmentId',
+  testCategory: 'testCategory',
+  projectName: 'projectName',
+  sampleType: 'sampleType',
+  sampleDescription: 'sampleDescription',
+  plannedStart: 'plannedStart',
+  plannedEnd: 'plannedEnd',
+  actualStart: 'actualStart',
+  actualEnd: 'actualEnd',
+  status: 'status',
+  progress: 'progress',
+  logs: 'logs',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TestPlanScalarFieldEnum = (typeof TestPlanScalarFieldEnum)[keyof typeof TestPlanScalarFieldEnum]
 
 
 export const TenderScalarFieldEnum = {

@@ -67,6 +67,16 @@ export type BoardPost = Prisma.BoardPostModel
  */
 export type BoardComment = Prisma.BoardCommentModel
 /**
+ * Model Equipment
+ * 
+ */
+export type Equipment = Prisma.EquipmentModel
+/**
+ * Model TestPlan
+ * 
+ */
+export type TestPlan = Prisma.TestPlanModel
+/**
  * Model Tender
  * 
  */

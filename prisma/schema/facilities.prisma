@@ -1,0 +1,45 @@
+// 시험장 설비 자산 및 시험 계획 스키마
+// facilities.json의 testHalls/testYards는 계속 JSON으로 관리 (장소 데이터는 변경 빈도 낮음)
+// 설비(Equipment)와 시험계획(TestPlan)만 DB로 전환
+
+model Equipment {
+  id             String    @id            // 기존 JSON ID 유지 (예: "gumi-dc1-eq-001")
+  hallId         String?                  // facilities.json testHalls.id 참조
+  yardId         String?                  // facilities.json testYards.id 참조
+  siteId         String                   // "gumi" | "donghae"
+  category       String    @default("시험설비")  // "시험설비" | "계측설비" | "보조설비"
+  name           String
+  type           String                   // "DC" | "AC" | "Imp" | "전류원" 등
+  spec           Json      @default("{}")
+  maker          String    @default("")
+  makerCountry   String?
+  yearIntroduced Int
+  quantity       Int       @default(1)
+  status         String    @default("normal") // "new" | "normal" | "aging" | "planned"
+  replacedById   String?                  // 이 설비를 교체할 설비 ID
+  replacesId     String?                  // 이 설비가 교체하는 설비 ID
+  notes          String    @default("")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  testPlans      TestPlan[]
+}
+
+model TestPlan {
+  id                String    @id @default(cuid())
+  equipment         Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  equipmentId       String
+  testCategory      String                   // "Type" | "EQ" | "PQ" | "양산" | "개발"
+  projectName       String
+  sampleType        String    @default("cable")  // "cable" | "accessory"
+  sampleDescription String    @default("")
+  plannedStart      String                   // "YYYY-MM-DD"
+  plannedEnd        String                   // "YYYY-MM-DD"
+  actualStart       String?
+  actualEnd         String?
+  status            String    @default("준비중")  // "준비중" | "시험중" | "완료" | "지연"
+  progress          Int       @default(0)    // 0–100
+  logs              Json      @default("[]") // { date, note, progress }[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}

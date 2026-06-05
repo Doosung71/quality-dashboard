@@ -389,6 +389,8 @@ export const ModelName = {
   FeedbackReply: 'FeedbackReply',
   BoardPost: 'BoardPost',
   BoardComment: 'BoardComment',
+  Equipment: 'Equipment',
+  TestPlan: 'TestPlan',
   Tender: 'Tender',
   TenderDocument: 'TenderDocument',
   Analysis: 'Analysis',
@@ -411,7 +413,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment"
+    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "testPlan" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -782,6 +784,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.BoardCommentCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.BoardCommentCountAggregateOutputType> | number
+        }
+      }
+    }
+    Equipment: {
+      payload: Prisma.$EquipmentPayload<ExtArgs>
+      fields: Prisma.EquipmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EquipmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EquipmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentPayload>
+        }
+        findFirst: {
+          args: Prisma.EquipmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EquipmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentPayload>
+        }
+        findMany: {
+          args: Prisma.EquipmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentPayload>[]
+        }
+        create: {
+          args: Prisma.EquipmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentPayload>
+        }
+        createMany: {
+          args: Prisma.EquipmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EquipmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentPayload>[]
+        }
+        delete: {
+          args: Prisma.EquipmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentPayload>
+        }
+        update: {
+          args: Prisma.EquipmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.EquipmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EquipmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EquipmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.EquipmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentPayload>
+        }
+        aggregate: {
+          args: Prisma.EquipmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEquipment>
+        }
+        groupBy: {
+          args: Prisma.EquipmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EquipmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EquipmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EquipmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    TestPlan: {
+      payload: Prisma.$TestPlanPayload<ExtArgs>
+      fields: Prisma.TestPlanFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TestPlanFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TestPlanFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanPayload>
+        }
+        findFirst: {
+          args: Prisma.TestPlanFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TestPlanFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanPayload>
+        }
+        findMany: {
+          args: Prisma.TestPlanFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanPayload>[]
+        }
+        create: {
+          args: Prisma.TestPlanCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanPayload>
+        }
+        createMany: {
+          args: Prisma.TestPlanCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TestPlanCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanPayload>[]
+        }
+        delete: {
+          args: Prisma.TestPlanDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanPayload>
+        }
+        update: {
+          args: Prisma.TestPlanUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanPayload>
+        }
+        deleteMany: {
+          args: Prisma.TestPlanDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TestPlanUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TestPlanUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanPayload>[]
+        }
+        upsert: {
+          args: Prisma.TestPlanUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestPlanPayload>
+        }
+        aggregate: {
+          args: Prisma.TestPlanAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTestPlan>
+        }
+        groupBy: {
+          args: Prisma.TestPlanGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TestPlanGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TestPlanCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TestPlanCountAggregateOutputType> | number
         }
       }
     }
@@ -1414,6 +1564,51 @@ export const BoardCommentScalarFieldEnum = {
 export type BoardCommentScalarFieldEnum = (typeof BoardCommentScalarFieldEnum)[keyof typeof BoardCommentScalarFieldEnum]
 
 
+export const EquipmentScalarFieldEnum = {
+  id: 'id',
+  hallId: 'hallId',
+  yardId: 'yardId',
+  siteId: 'siteId',
+  category: 'category',
+  name: 'name',
+  type: 'type',
+  spec: 'spec',
+  maker: 'maker',
+  makerCountry: 'makerCountry',
+  yearIntroduced: 'yearIntroduced',
+  quantity: 'quantity',
+  status: 'status',
+  replacedById: 'replacedById',
+  replacesId: 'replacesId',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EquipmentScalarFieldEnum = (typeof EquipmentScalarFieldEnum)[keyof typeof EquipmentScalarFieldEnum]
+
+
+export const TestPlanScalarFieldEnum = {
+  id: 'id',
+  equipmentId: 'equipmentId',
+  testCategory: 'testCategory',
+  projectName: 'projectName',
+  sampleType: 'sampleType',
+  sampleDescription: 'sampleDescription',
+  plannedStart: 'plannedStart',
+  plannedEnd: 'plannedEnd',
+  actualStart: 'actualStart',
+  actualEnd: 'actualEnd',
+  status: 'status',
+  progress: 'progress',
+  logs: 'logs',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TestPlanScalarFieldEnum = (typeof TestPlanScalarFieldEnum)[keyof typeof TestPlanScalarFieldEnum]
+
+
 export const TenderScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -1659,20 +1854,6 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 
 
 /**
- * Reference to a field of type 'AnalysisStatus'
- */
-export type EnumAnalysisStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnalysisStatus'>
-    
-
-
-/**
- * Reference to a field of type 'AnalysisStatus[]'
- */
-export type ListEnumAnalysisStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnalysisStatus[]'>
-    
-
-
-/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -1683,6 +1864,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AnalysisStatus'
+ */
+export type EnumAnalysisStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnalysisStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AnalysisStatus[]'
+ */
+export type ListEnumAnalysisStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnalysisStatus[]'>
     
 
 
@@ -1856,6 +2051,8 @@ export type GlobalOmitConfig = {
   feedbackReply?: Prisma.FeedbackReplyOmit
   boardPost?: Prisma.BoardPostOmit
   boardComment?: Prisma.BoardCommentOmit
+  equipment?: Prisma.EquipmentOmit
+  testPlan?: Prisma.TestPlanOmit
   tender?: Prisma.TenderOmit
   tenderDocument?: Prisma.TenderDocumentOmit
   analysis?: Prisma.AnalysisOmit

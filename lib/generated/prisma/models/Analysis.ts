@@ -763,14 +763,6 @@ export type EnumAnalysisStatusFieldUpdateOperationsInput = {
   set?: $Enums.AnalysisStatus
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type AnalysisCreateNestedOneWithoutRequirementsInput = {
   create?: Prisma.XOR<Prisma.AnalysisCreateWithoutRequirementsInput, Prisma.AnalysisUncheckedCreateWithoutRequirementsInput>
   connectOrCreate?: Prisma.AnalysisCreateOrConnectWithoutRequirementsInput
