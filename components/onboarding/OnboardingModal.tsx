@@ -35,28 +35,29 @@ const NOTICE = {
 type MenuItem = { icon: string; path: string; desc: string; sub?: string[] }
 const MENU: Record<string, MenuItem[]> = {
   DIRECTOR: [
-    { icon: "💰", path: "품질비용(Q-Cost)", desc: "Q-Cost KPI 총괄", sub: ["고객 클레임", "부적합품보고(NCR)"] },
-    { icon: "🏭", path: "공급망관리", desc: "협력업체 A/B/C/D 등급 카드 및 품질 지표" },
-    { icon: "📚", path: "지식저장소(QKM)", desc: "IEC·KS·CIGRE 규격 자연어 RAG 검색" },
-    { icon: "🔬", path: "시험장·시험 현황", desc: "구미·동해 설비 가동 상태·노후도" },
-    { icon: "🔍", path: "입찰검토시스템", desc: "시방서 PDF → AI 독소조항·리스크 분석·최종 승인" },
-    { icon: "🌐", path: "외부 정보", desc: "수집 동향 카드 + 실시간 외부 웹검색 (탭 전환)" },
+    { icon: "🔎", path: "검사 업무", desc: "검사 결과 CRUD · 이력 관리", sub: ["수입검사", "출장검사", "협력업체 감사"] },
+    { icon: "⚠️", path: "품질 이슈", desc: "클레임·NCR 접수부터 종결까지", sub: ["고객 클레임", "부적합품보고 (NCR)"] },
+    { icon: "📁", path: "프로젝트", desc: "입찰 검토 AI · 수주 프로젝트 현황", sub: ["입찰 검토", "수주 프로젝트"] },
+    { icon: "📚", path: "품질 지식", desc: "IEC·KS·CIGRE 규격 자연어 RAG 검색" },
+    { icon: "🔬", path: "시험 장비", desc: "구미·동해 설비 가동 상태·노후도" },
+    { icon: "🔧", path: "자산", desc: "설비·자산 현황 및 수선 이력" },
+    { icon: "🌐", path: "외부 정보", desc: "수집 동향 카드 + 실시간 외부 웹검색" },
     { icon: "👥", path: "인사·면담", desc: "팀원 현황 및 면담 이력" },
   ],
   TEAM_LEAD: [
-    { icon: "💰", path: "품질비용(Q-Cost)", desc: "Q-Cost KPI — 조회 전용", sub: ["고객 클레임 (조회)", "부적합품보고 NCR (조회)"] },
-    { icon: "🏭", path: "공급망관리", desc: "협력업체 현황 — 조회 전용" },
-    { icon: "📚", path: "지식저장소(QKM)", desc: "규격 자연어 RAG 검색" },
-    { icon: "🔬", path: "시험장·시험 현황", desc: "설비 가동 상태 — 조회 전용" },
-    { icon: "🔍", path: "입찰검토시스템", desc: "실무자 Draft 1차 검토·승인·반려" },
-    { icon: "🌐", path: "외부 정보", desc: "수집 동향 + 실시간 웹검색 — 조회 전용" },
+    { icon: "🔎", path: "검사 업무", desc: "수입·출장·협력업체 감사 CRUD", sub: ["수입검사", "출장검사", "협력업체 감사"] },
+    { icon: "⚠️", path: "품질 이슈", desc: "클레임·NCR 접수부터 종결까지", sub: ["고객 클레임", "부적합품보고 (NCR)"] },
+    { icon: "📁", path: "프로젝트", desc: "실무자 Draft 1차 검토·승인·반려", sub: ["입찰 검토", "수주 프로젝트"] },
+    { icon: "📚", path: "품질 지식", desc: "규격 자연어 RAG 검색" },
+    { icon: "🔬", path: "시험 장비", desc: "설비 가동 상태 조회" },
+    { icon: "🌐", path: "외부 정보", desc: "수집 동향 + 실시간 웹검색" },
   ],
   PRACTITIONER: [
-    { icon: "💰", path: "품질비용(Q-Cost)", desc: "하위 메뉴로 이동", sub: ["고객 클레임 (조회)", "부적합품보고 NCR"] },
-    { icon: "🏭", path: "공급망관리", desc: "협력업체 현황 — 조회 전용" },
-    { icon: "📚", path: "지식저장소(QKM)", desc: "IEC·KS·CIGRE 규격 자연어 RAG 검색" },
-    { icon: "🔬", path: "시험장·시험 현황", desc: "담당 설비 현황 — 조회 전용" },
-    { icon: "🔍", path: "입찰검토시스템", desc: "시방서 PDF 업로드 → AI 분석 → 팀장 상신" },
+    { icon: "🔎", path: "검사 업무", desc: "현장 검사 결과 직접 등록·수정·삭제", sub: ["수입검사 (CRUD)", "출장검사 (CRUD)", "협력업체 감사 (CRUD)"] },
+    { icon: "⚠️", path: "품질 이슈", desc: "클레임·NCR 등록·단계이동·종결", sub: ["고객 클레임 (CRUD)", "부적합품보고 NCR (CRUD)"] },
+    { icon: "📁", path: "프로젝트", desc: "시방서 PDF → AI 분석 → 팀장 상신", sub: ["입찰 검토", "수주 프로젝트"] },
+    { icon: "📚", path: "품질 지식", desc: "IEC·KS·CIGRE 규격 자연어 RAG 검색" },
+    { icon: "🔬", path: "시험 장비", desc: "담당 설비 현황 조회" },
   ],
 }
 
@@ -85,9 +86,11 @@ const ACTIONS: Record<string, { title: string; items: string[] }> = {
   PRACTITIONER: {
     title: "주요 업무 흐름",
     items: [
-      "입찰검토시스템: 시방서 PDF 업로드 → AI 분석 결과 검토·수정 → '검토 요청'으로 팀장 상신",
-      "지식저장소(QKM): 규격 기준·합격 판정 자연어 검색으로 분석 내용 보완",
-      "시험장·시험 현황: 담당 설비 상태·교정 주기 조회",
+      "검사 업무: 수입검사·출장검사·협력업체 감사 결과를 해당 메뉴에서 직접 등록·수정·삭제",
+      "품질 이슈: 고객 클레임 접수 → 상세 페이지에서 단계 이동(조사→대책→검증→종결) 및 처리 이력 추가",
+      "품질 이슈: NCR 발행 → 처리방안·시정조치·효과검증 단계 이동, 기한 초과 시 빨간 경고 표시",
+      "입찰 검토: 시방서 PDF 업로드 → AI 독소조항 분석 → 팀장 상신",
+      "품질 지식: 규격 기준·합격 판정을 자연어로 검색해 검사 판정 근거 확보",
       "불편하거나 막히는 점은 즉시 사이드바 하단 '피드백'에 남겨주세요",
     ],
   },
@@ -102,12 +105,12 @@ export function OnboardingModal({ userId, role }: { userId: string; role: string
   useEffect(() => {
     if (!userId) return
     // v2 키로 변경 → 기존 사용자도 업데이트된 온보딩 다시 노출
-    const key = `qms_welcomed_v2_${userId}`
+    const key = `qms_welcomed_v3_${userId}`
     if (!localStorage.getItem(key)) setShow(true)
   }, [userId])
 
   function dismiss() {
-    if (userId) localStorage.setItem(`qms_welcomed_v2_${userId}`, "1")
+    if (userId) localStorage.setItem(`qms_welcomed_v3_${userId}`, "1")
     setShow(false)
   }
 
@@ -178,8 +181,8 @@ export function OnboardingModal({ userId, role }: { userId: string; role: string
           {step === 1 && (
             <div className="space-y-4 pb-2">
               <div>
-                <h2 className="text-lg font-black text-slate-900">새 사이드바 메뉴 구조</h2>
-                <p className="text-xs text-slate-400 mt-0.5">경영자 우선순위(손익·비용) 기준으로 재정렬됐습니다.</p>
+                <h2 className="text-lg font-black text-slate-900">사이드바 메뉴 구조</h2>
+                <p className="text-xs text-slate-400 mt-0.5">실무자 퀵링크 기준 — 검사 업무·품질 이슈가 최상단에 위치합니다.</p>
               </div>
               <div className="space-y-2">
                 {menuItems.map((item, i) => (
