@@ -233,7 +233,7 @@ export function OwnerModal({
                           )}
                           <p className="text-slate-400">변경자: {h.changedByName}</p>
                           {h.note && (
-                            <p className="text-slate-500 italic">"{h.note}"</p>
+                            <p className="text-slate-500 italic">&ldquo;{h.note}&rdquo;</p>
                           )}
                         </div>
                       </div>
