@@ -55,7 +55,7 @@ const ALL_NAV: NavItem[] = [
     href: "/projects", label: "프로젝트 관리", icon: Briefcase,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
     children: [
-      { href: "/dashboard",        label: "입찰 검토",    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/dashboard",        label: "입찰 프로젝트", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
       { href: "/projects/awarded", label: "수주 프로젝트", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
     ],
   },

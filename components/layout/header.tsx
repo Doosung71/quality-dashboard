@@ -19,7 +19,7 @@ const titles: Record<string, string> = {
   "/facilities": "시험 및 품질 보증",
   "/assets": "자산 관리",
   "/projects": "프로젝트 관리",
-  "/dashboard": "입찰 검토",
+  "/dashboard": "입찰 프로젝트",
   "/intelligence": "외부 정보",
   "/hr": "인사·면담",
   "/board": "품질부문 게시판",
