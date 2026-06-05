@@ -95,11 +95,10 @@ export function AssetsView({
   const onOwnerSaved   = () => { setOwnerTarget(null); router.refresh(); };
 
   const siteOptions: { key: SiteId | "전체"; label: string }[] = [
-    { key: "전체",     label: "전체" },
-    { key: "gumi",     label: "구미" },
-    { key: "indon",    label: "인동" },
-    { key: "donghae",  label: "동해" },
-    { key: "external", label: "기타(사외)" },
+    { key: "전체",    label: "전체" },
+    { key: "gumi",    label: "구미" },
+    { key: "indon",   label: "인동" },
+    { key: "donghae", label: "동해" },
   ];
 
   const filtered = equipment.filter((e) => {
