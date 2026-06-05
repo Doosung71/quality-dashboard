@@ -12,9 +12,9 @@ export async function POST(req: NextRequest) {
   if (tenderId) {
     // 입찰 연계 모드: APPROVED 입찰에서 생성
     const tender = await prisma.tender.findFirst({
-      where: { id: tenderId, analyses: { some: { status: "APPROVED" } } },
+      where: { id: tenderId },
     })
-    if (!tender) return NextResponse.json({ error: "최종 승인된 입찰을 찾을 수 없습니다." }, { status: 404 })
+    if (!tender) return NextResponse.json({ error: "입찰을 찾을 수 없습니다." }, { status: 404 })
     const existing = await prisma.awardedProject.findUnique({ where: { tenderId } })
     if (existing) return NextResponse.json({ error: "이미 수주 프로젝트가 존재합니다." }, { status: 409 })
     const project = await prisma.awardedProject.create({ data: { tenderId, createdById: session.user.id } })

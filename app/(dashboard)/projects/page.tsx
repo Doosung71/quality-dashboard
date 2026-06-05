@@ -52,10 +52,7 @@ export default async function ProjectsPage() {
     }),
     // 수주 프로젝트로 등록 가능한 APPROVED 입찰 (미등록된 것만)
     prisma.tender.findMany({
-      where: {
-        analyses: { some: { status: "APPROVED" } },
-        awardedProject: null,
-      },
+      where: { awardedProject: null },
       select: { id: true, title: true },
       orderBy: { createdAt: "desc" },
     }),

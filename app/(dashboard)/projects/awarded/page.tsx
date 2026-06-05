@@ -38,10 +38,7 @@ export default async function AwardedProjectsPage() {
       },
     }),
     prisma.tender.findMany({
-      where: {
-        analyses: { some: { status: "APPROVED" } },
-        awardedProject: null,
-      },
+      where: { awardedProject: null },
       select: { id: true, title: true },
       orderBy: { createdAt: "desc" },
     }),

@@ -17,7 +17,7 @@ export default function CreateProjectButton({ approvedTenders }: { approvedTende
   const [error, setError] = useState("")
 
   function handleOpen() {
-    setMode(approvedTenders.length > 0 ? "tender" : "standalone")
+    setMode("tender")
     setSelected("")
     setTitle("")
     setError("")
@@ -87,8 +87,7 @@ export default function CreateProjectButton({ approvedTenders }: { approvedTende
               </button>
               <button
                 onClick={() => setMode("tender")}
-                disabled={approvedTenders.length === 0}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold transition-colors ${
                   mode === "tender"
                     ? "bg-emerald-600 text-white"
                     : "text-slate-500 hover:bg-slate-50"
