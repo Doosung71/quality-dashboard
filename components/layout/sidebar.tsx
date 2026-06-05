@@ -36,7 +36,7 @@ const ALL_NAV: NavItem[] = [
 
   // ── 품질 이슈 ─────────────────────────────────────────
   {
-    href: "/qcost", label: "품질 이슈", icon: ShieldAlert,
+    href: "/qcost", label: "품질 비용 관리", icon: ShieldAlert,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
     children: [
       { href: "/claims", label: "고객 클레임",    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
@@ -46,13 +46,13 @@ const ALL_NAV: NavItem[] = [
 
   // ── 자산 ──────────────────────────────────────────────
   {
-    href: "/assets", label: "자산", icon: Wrench,
+    href: "/assets", label: "자산 관리", icon: Wrench,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
   },
 
   // ── 프로젝트 ──────────────────────────────────────────
   {
-    href: "/projects", label: "프로젝트", icon: Briefcase,
+    href: "/projects", label: "프로젝트 관리", icon: Briefcase,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
     children: [
       { href: "/dashboard",        label: "입찰 검토",    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
@@ -62,7 +62,7 @@ const ALL_NAV: NavItem[] = [
 
   // ── 시험 장비 ─────────────────────────────────────────
   {
-    href: "/facilities", label: "시험 장비", icon: FlaskConical,
+    href: "/facilities", label: "시험 및 품질 보증", icon: FlaskConical,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
 
@@ -79,7 +79,7 @@ const ALL_NAV: NavItem[] = [
 
   // ── 품질 지식 ─────────────────────────────────────────
   {
-    href: "/knowledge", label: "품질 지식", icon: BookOpen,
+    href: "/knowledge", label: "지식 관리", icon: BookOpen,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
 
