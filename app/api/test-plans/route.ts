@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireActiveSession } from "@/lib/session-guard";
 import { prisma } from "@/lib/prisma";
 import { canWrite } from "@/lib/permissions";
-import { validateDateRange } from "@/lib/facilities-utils";
+import { validateDateRange, OCCUPIED_TEST_STATUSES } from "@/lib/facilities-utils";
 
 // GET /api/test-plans — 시험 계획 목록 (쿼리: equipmentId, status)
 // 설계 의도(M-4): PRACTITIONER는 equipmentId 지정 없이 전체 조회 불가
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
   const conflicting = await prisma.testPlan.findFirst({
     where: {
       equipmentId,
-      status: { in: ["준비중", "시험중"] },
+      status: { in: [...OCCUPIED_TEST_STATUSES] },
       plannedStart: { lte: plannedEnd },
       plannedEnd:   { gte: plannedStart },
     },

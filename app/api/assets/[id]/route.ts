@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireActiveSession } from "@/lib/session-guard";
 import { prisma } from "@/lib/prisma";
 import { canWrite } from "@/lib/permissions";
+import { OCCUPIED_TEST_STATUSES } from "@/lib/facilities-utils";
 
 type Params = { params: Promise<{ id: string }> };
 
 // GET /api/assets/[id]
+// ADR: 설비 상세는 인증된 전 역할 허용 (PoC 설계 의도, 설비 스펙은 비민감).
+// PRACTITIONER는 목록 GET에서 siteId 필수로 범위 제한 적용 중.
+// 담당자 이력은 /owner-history에서 TEAM_LEAD 이상만 허용.
 export async function GET(_req: NextRequest, { params }: Params) {
   const session = await requireActiveSession();
   if (session instanceof NextResponse) return session;
@@ -115,11 +119,11 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
 
   const { id } = await params;
 
-  // "지연" 포함: 설비를 실제 점유 중인 모든 비완료 상태 차단 (재검수 반영)
+  // OCCUPIED_TEST_STATUSES 공통 상수 사용 (재재검수 반영)
   const activeTests = await prisma.testPlan.findMany({
     where: {
       equipmentId: id,
-      status: { in: ["준비중", "시험중", "지연"] },
+      status: { in: [...OCCUPIED_TEST_STATUSES] },
     },
     select: { id: true, projectName: true, status: true },
   });

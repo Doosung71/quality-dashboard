@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireActiveSession } from "@/lib/session-guard";
 import { prisma } from "@/lib/prisma";
 import { canWrite } from "@/lib/permissions";
-import { validateDateRange } from "@/lib/facilities-utils";
+import { validateDateRange, OCCUPIED_TEST_STATUSES } from "@/lib/facilities-utils";
 
 type Params = { params: Promise<{ id: string }> };
 
 // GET /api/test-plans/[id]
+// ADR: 시험 계획 상세는 인증된 전 역할 허용 (PoC 설계 의도).
+// PRACTITIONER는 목록 GET에서 equipmentId 필수로 범위 제한.
+// 이력은 test-plans/[id]/owner-history에서 TEAM_LEAD 이상만 제공 예정.
 export async function GET(_req: NextRequest, { params }: Params) {
   const session = await requireActiveSession();
   if (session instanceof NextResponse) return session;
@@ -64,30 +67,38 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "변경할 항목이 없습니다." }, { status: 400 });
   }
 
-  // H-3: 날짜 형식·순서 검증 (plannedStart/plannedEnd 변경 시)
-  if (data.plannedStart !== undefined || data.plannedEnd !== undefined) {
+  // H-2/H-3: equipmentId 또는 날짜 변경 시 충돌 검사 + 날짜 검증
+  // equipmentId 단독 변경도 트리거 (재재검수 반영)
+  if (
+    data.plannedStart !== undefined ||
+    data.plannedEnd   !== undefined ||
+    data.equipmentId  !== undefined
+  ) {
+    // 현재 값을 한 번만 조회하여 병합
     const current = await prisma.testPlan.findUnique({
       where: { id },
-      select: { plannedStart: true, plannedEnd: true },
+      select: { plannedStart: true, plannedEnd: true, equipmentId: true },
     });
     const newStart = (data.plannedStart as string | undefined) ?? current?.plannedStart;
     const newEnd   = (data.plannedEnd   as string | undefined) ?? current?.plannedEnd;
-    const dateCheck = validateDateRange(newStart, newEnd);
-    if (!dateCheck.valid) {
-      return NextResponse.json({ error: dateCheck.error }, { status: 400 });
+
+    // H-3: 날짜 검증 (날짜가 변경된 경우에만)
+    if (data.plannedStart !== undefined || data.plannedEnd !== undefined) {
+      const dateCheck = validateDateRange(newStart, newEnd);
+      if (!dateCheck.valid) {
+        return NextResponse.json({ error: dateCheck.error }, { status: 400 });
+      }
     }
 
-    // H-2: PATCH 일정 충돌 검사 (equipmentId 또는 날짜 변경 시)
-    const eqId = (data.equipmentId as string | undefined) ?? (
-      await prisma.testPlan.findUnique({ where: { id }, select: { equipmentId: true } })
-    )?.equipmentId;
+    // H-2: 충돌 검사 — 공통 상수 OCCUPIED_TEST_STATUSES 사용
+    const eqId = (data.equipmentId as string | undefined) ?? current?.equipmentId;
 
     if (eqId && newStart && newEnd) {
       const conflicting = await prisma.testPlan.findFirst({
         where: {
-          id:          { not: id },       // 자기 자신 제외
-          equipmentId: eqId,
-          status:      { in: ["준비중", "시험중", "지연"] },
+          id:           { not: id },      // 자기 자신 제외
+          equipmentId:  eqId,
+          status:       { in: [...OCCUPIED_TEST_STATUSES] },
           plannedStart: { lte: newEnd },
           plannedEnd:   { gte: newStart },
         },

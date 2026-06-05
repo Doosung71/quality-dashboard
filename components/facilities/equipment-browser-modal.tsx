@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import type { Equipment } from "@/types/asset";
 import type { Test } from "@/types/test";
 import type { FacilitiesData } from "@/types/facility";
-import { computeStatus } from "@/lib/facilities-utils";
+import { computeStatus, OCCUPIED_TEST_STATUSES } from "@/lib/facilities-utils";
 
 interface ConflictInfo {
   projectName: string;
@@ -22,10 +22,11 @@ function checkConflict(
   plannedStart: string,
   plannedEnd: string
 ): ConflictInfo | null {
+  // OCCUPIED_TEST_STATUSES 공통 상수 사용 — 서버와 동일한 정의
   const activeTests = tests.filter(
     (t) =>
       t.equipmentId === eq.id &&
-      (t.status === "시험중" || t.status === "준비중") &&
+      (OCCUPIED_TEST_STATUSES as readonly string[]).includes(t.status) &&
       t.plannedEnd >= plannedStart &&
       t.plannedStart <= plannedEnd
   );

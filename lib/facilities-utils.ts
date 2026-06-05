@@ -13,7 +13,13 @@ export function computeStatus(eq: Equipment): ComputedStatus {
   return "new";
 }
 
-// 날짜 형식·순서 검증 (H-3: 재검수 반영)
+// 설비 점유 상태 공통 상수 (서버·클라이언트 공유)
+// POST/PATCH/DELETE API + UI 충돌 판정 모두 이 상수를 사용한다.
+export const OCCUPIED_TEST_STATUSES = ["준비중", "시험중", "지연"] as const;
+export type OccupiedTestStatus = (typeof OCCUPIED_TEST_STATUSES)[number];
+
+// 날짜 형식·순서 + round-trip 검증
+// round-trip: new Date("2026-02-31")은 JS에서 롤오버되므로 역직렬화 불일치로 실제 불가 날짜 차단
 const DATE_RE = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
 export function validateDateRange(
   start: unknown,
@@ -24,6 +30,15 @@ export function validateDateRange(
   }
   if (typeof end !== "string" || !DATE_RE.test(end)) {
     return { valid: false, error: "plannedEnd 형식이 잘못됐습니다 (YYYY-MM-DD 필요)." };
+  }
+  // round-trip: 실제 달력에 없는 날짜 차단 (예: 2026-02-31 → 롤오버 감지)
+  const startParsed = new Date(start);
+  if (isNaN(startParsed.getTime()) || startParsed.toISOString().slice(0, 10) !== start) {
+    return { valid: false, error: "plannedStart가 실제 존재하지 않는 날짜입니다." };
+  }
+  const endParsed = new Date(end);
+  if (isNaN(endParsed.getTime()) || endParsed.toISOString().slice(0, 10) !== end) {
+    return { valid: false, error: "plannedEnd가 실제 존재하지 않는 날짜입니다." };
   }
   if (start > end) {
     return { valid: false, error: "plannedStart가 plannedEnd보다 이후일 수 없습니다." };

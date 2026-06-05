@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import type { FacilitiesData, SiteId, TestHall, TestYard } from "@/types/facility";
 import type { Equipment } from "@/types/asset";
 import type { Test, TestsData, TestStatus, TestCategory } from "@/types/test";
-import { computeStatus, getTodayLocalStr } from "@/lib/facilities-utils";
+import { computeStatus, getTodayLocalStr, OCCUPIED_TEST_STATUSES } from "@/lib/facilities-utils";
 import { HallStatusBadge, TypeChip, TestStatusBadge, TestCategoryChip } from "./badges";
 import { TestPlanForm } from "@/components/assets/test-plan-form";
 
@@ -400,7 +400,8 @@ export function FacilitiesView({
   const certSpacesAll     = allSpaces.filter((s) => s.purpose.includes("인증")).length;
   const prodSpacesAll     = allSpaces.filter((s) => s.purpose === "양산시험").length;
 
-  const activeTests = tests.filter((t) => t.status === "시험중").length;
+  // 점유 중인 시험 = 준비중+시험중+지연 (공통 상수)
+  const activeTests = tests.filter((t) => (OCCUPIED_TEST_STATUSES as readonly string[]).includes(t.status)).length;
   const totalTests  = tests.length;
 
   const siteHalls = data.testHalls.filter((h) => h.siteId === activeSite);
@@ -540,7 +541,7 @@ export function FacilitiesView({
                         aging:   eqs.filter((e) => computeStatus(e) === "aging").length,
                         planned: eqs.filter((e) => computeStatus(e) === "planned").length,
                       }}
-                      activeTestCount={spaceTests.filter((t) => t.status === "시험중" || t.status === "준비중").length}
+                      activeTestCount={spaceTests.filter((t) => (OCCUPIED_TEST_STATUSES as readonly string[]).includes(t.status)).length}
                       selected={selectedSpaceId === space.id}
                       checked={checkedSpaceIds.has(space.id)}
                       isOutdoor={yardIds.has(space.id)}
@@ -568,7 +569,7 @@ export function FacilitiesView({
                         aging:   eqs.filter((e) => computeStatus(e) === "aging").length,
                         planned: eqs.filter((e) => computeStatus(e) === "planned").length,
                       }}
-                      activeTestCount={spaceTests.filter((t) => t.status === "시험중" || t.status === "준비중").length}
+                      activeTestCount={spaceTests.filter((t) => (OCCUPIED_TEST_STATUSES as readonly string[]).includes(t.status)).length}
                       selected={selectedSpaceId === space.id}
                       checked={checkedSpaceIds.has(space.id)}
                       isOutdoor={yardIds.has(space.id)}
