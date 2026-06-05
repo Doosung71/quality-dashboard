@@ -2,16 +2,16 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import type { FacilityData, SiteId, Equipment, TestHall, TestYard } from "@/types/facility";
+import type { FacilitiesData, SiteId, TestHall, TestYard } from "@/types/facility";
+import type { Equipment } from "@/types/asset";
 import type { Test, TestsData, TestStatus, TestCategory } from "@/types/test";
-import { EquipmentTable } from "./equipment-table";
 import { computeStatus, getTodayLocalStr } from "@/lib/facilities-utils";
 import { HallStatusBadge, TypeChip, TestStatusBadge, TestCategoryChip } from "./badges";
 
 type AnySpace = TestHall | TestYard;
 
-function getSpaceEquipment(data: FacilityData, spaceId: string): Equipment[] {
-  return data.equipment.filter((e) => e.hallId === spaceId || e.yardId === spaceId);
+function getSpaceEquipment(assets: Equipment[], spaceId: string): Equipment[] {
+  return assets.filter((e) => e.hallId === spaceId || e.yardId === spaceId);
 }
 
 // 2026년 기준 날짜 → 가로 위치 % (간트 차트용)
@@ -24,11 +24,13 @@ function dateToPct(dateStr: string): number {
   return Math.max(0, Math.min(100, ((t - GANTT_START) / GANTT_TOTAL) * 100));
 }
 
-function getEquipmentTests(tests: Test[], equipmentId: string): Test[] {
-  return tests.filter((t) => t.equipmentId === equipmentId);
+function getSpaceTests(tests: Test[], assets: Equipment[], spaceId: string): Test[] {
+  const spaceEqIds = new Set(
+    assets.filter((e) => e.hallId === spaceId || e.yardId === spaceId).map((e) => e.id)
+  );
+  return tests.filter((t) => spaceEqIds.has(t.equipmentId));
 }
 
-// 인증시험 종류별 예상 소요기간 (준비 포함)
 const CERT_DURATION: Partial<Record<TestCategory, string>> = {
   Type: "~3개월",
   EQ:   "~6개월",
@@ -41,23 +43,16 @@ interface KpiItem { label: string; value: number; color: string }
 interface KpiBarSegment { color: string; pct: number; label: string }
 
 function KpiCard({
-  title,
-  main,
-  mainColor = "text-slate-800",
-  items,
-  bar,
+  title, main, mainColor = "text-slate-800", items, bar,
 }: {
-  title: string;
-  main: string;
-  mainColor?: string;
-  items: KpiItem[];
-  bar?: KpiBarSegment[];
+  title: string; main: string; mainColor?: string;
+  items: KpiItem[]; bar?: KpiBarSegment[];
 }) {
   return (
     <div className="bg-white rounded-xl border border-slate-200 px-5 py-4">
       <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">{title}</p>
       <p className={cn("text-3xl font-bold mt-1 mb-3", mainColor)}>{main}</p>
-      <div className="flex gap-4">
+      <div className="flex gap-4 flex-wrap">
         {items.map((it) => (
           <div key={it.label}>
             <p className="text-xs text-slate-400">{it.label}</p>
@@ -66,11 +61,7 @@ function KpiCard({
         ))}
       </div>
       {bar && bar.length > 0 && (
-        <div
-          className="flex h-1.5 w-full overflow-hidden rounded-full mt-3"
-          role="img"
-          aria-label={bar.map((s) => `${s.label}: ${Math.round(s.pct)}%`).join(", ")}
-        >
+        <div className="flex h-1.5 w-full overflow-hidden rounded-full mt-3">
           {bar.map((s) => (
             <div key={s.label} className={s.color} style={{ width: `${s.pct}%` }} />
           ))}
@@ -80,38 +71,24 @@ function KpiCard({
   );
 }
 
-// ─── Hall list row ────────────────────────────────────────────────────────────
+// ─── Space row ────────────────────────────────────────────────────────────────
 
 interface SpaceStatusCounts { new: number; normal: number; aging: number; planned: number }
 
 function SpaceRow({
-  space,
-  equipCount,
-  agingCount,
-  statusCounts,
-  selected,
-  checked,
-  isOutdoor,
-  onCheck,
-  onClick,
+  space, equipCount, agingCount, statusCounts,
+  activeTestCount, selected, checked, isOutdoor, onCheck, onClick,
 }: {
-  space: AnySpace;
-  equipCount: number;
-  agingCount: number;
-  statusCounts: SpaceStatusCounts;
-  selected: boolean;
-  checked: boolean;
-  isOutdoor: boolean;
-  onCheck: () => void;
-  onClick: () => void;
+  space: AnySpace; equipCount: number; agingCount: number;
+  statusCounts: SpaceStatusCounts; activeTestCount: number;
+  selected: boolean; checked: boolean; isOutdoor: boolean;
+  onCheck: () => void; onClick: () => void;
 }) {
   return (
-    <div
-      className={cn(
-        "flex items-start border-b border-slate-100 last:border-0 transition-colors",
-        selected ? "bg-blue-50" : "hover:bg-slate-50"
-      )}
-    >
+    <div className={cn(
+      "flex items-start border-b border-slate-100 last:border-0 transition-colors",
+      selected ? "bg-blue-50" : "hover:bg-slate-50"
+    )}>
       <button
         onClick={(e) => { e.stopPropagation(); onCheck(); }}
         className="pl-3 pr-1 py-3 shrink-0 flex items-start"
@@ -138,35 +115,153 @@ function SpaceRow({
         <div className="flex items-center gap-2 mt-1.5 flex-wrap">
           <TypeChip type={space.type} />
           {isOutdoor && (
-            <span className="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium bg-amber-50 text-amber-700">
-              옥외
-            </span>
+            <span className="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium bg-amber-50 text-amber-700">옥외</span>
           )}
           {space.purpose === "인증시험/양산시험" && (
-            <span className="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium bg-violet-50 text-violet-700">
-              복합
-            </span>
+            <span className="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium bg-violet-50 text-violet-700">복합</span>
           )}
           <span className="ml-auto text-xs text-slate-400">
             설비 {equipCount}개
-            {agingCount > 0 && (
-              <span className="ml-1 text-red-500">· 노후 {agingCount}</span>
-            )}
+            {agingCount > 0 && <span className="ml-1 text-red-500">· 노후 {agingCount}</span>}
           </span>
         </div>
+        {activeTestCount > 0 && (
+          <div className="mt-1.5 flex items-center gap-1">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
+            <span className="text-xs text-blue-600 font-medium">시험 진행 {activeTestCount}건</span>
+          </div>
+        )}
         {equipCount > 0 && (
-          <div
-            className="flex h-1 w-full overflow-hidden rounded-full mt-2"
-            role="img"
-            aria-label={`신규 ${statusCounts.new}, 정상 ${statusCounts.normal}, 노후 ${statusCounts.aging}, 도입예정 ${statusCounts.planned}`}
-          >
-            {statusCounts.new > 0 && <div className="bg-blue-400" style={{ width: `${(statusCounts.new / equipCount) * 100}%` }} />}
-            {statusCounts.normal > 0 && <div className="bg-emerald-400" style={{ width: `${(statusCounts.normal / equipCount) * 100}%` }} />}
-            {statusCounts.aging > 0 && <div className="bg-red-400" style={{ width: `${(statusCounts.aging / equipCount) * 100}%` }} />}
-            {statusCounts.planned > 0 && <div className="bg-slate-200" style={{ width: `${(statusCounts.planned / equipCount) * 100}%` }} />}
+          <div className="flex h-1 w-full overflow-hidden rounded-full mt-2">
+            {statusCounts.new > 0     && <div className="bg-blue-400"    style={{ width: `${(statusCounts.new     / equipCount) * 100}%` }} />}
+            {statusCounts.normal > 0  && <div className="bg-emerald-400" style={{ width: `${(statusCounts.normal  / equipCount) * 100}%` }} />}
+            {statusCounts.aging > 0   && <div className="bg-red-400"     style={{ width: `${(statusCounts.aging   / equipCount) * 100}%` }} />}
+            {statusCounts.planned > 0 && <div className="bg-slate-200"   style={{ width: `${(statusCounts.planned / equipCount) * 100}%` }} />}
           </div>
         )}
       </button>
+    </div>
+  );
+}
+
+// ─── Active Tests Panel ───────────────────────────────────────────────────────
+
+const STATUS_BADGE_COLOR: Record<TestStatus, string> = {
+  "준비중": "bg-slate-100 text-slate-600",
+  "시험중": "bg-blue-50 text-blue-700 border border-blue-200",
+  "완료":   "bg-emerald-50 text-emerald-700 border border-emerald-200",
+  "지연":   "bg-red-50 text-red-700 border border-red-200",
+};
+
+function ActiveTestsPanel({
+  space, tests, assets,
+}: {
+  space: AnySpace; tests: Test[]; assets: Equipment[];
+}) {
+  const spaceTests = getSpaceTests(tests, assets, space.id);
+  const spaceEquipment = getSpaceEquipment(assets, space.id);
+
+  return (
+    <div className="flex-1 flex flex-col overflow-hidden">
+      {/* 헤더 */}
+      <div className="px-6 py-4 border-b border-slate-200 shrink-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <h2 className="text-base font-semibold text-slate-800">{space.name}</h2>
+          <HallStatusBadge status={space.status} />
+          <TypeChip type={space.type} />
+          <span className="text-xs text-slate-400 ml-1">목적: {space.purpose}</span>
+        </div>
+        <p className="text-xs text-slate-400 mt-1">
+          설비 {spaceEquipment.length}개
+          {spaceEquipment.filter((e) => computeStatus(e) === "aging").length > 0 && (
+            <span className="text-red-500 ml-2">
+              · 노후 {spaceEquipment.filter((e) => computeStatus(e) === "aging").length}건
+            </span>
+          )}
+          {spaceTests.length > 0 && (
+            <span className="text-blue-500 ml-2">· 시험 {spaceTests.length}건</span>
+          )}
+        </p>
+        {space.purpose.includes("인증") && (
+          <p className="text-xs text-purple-500 mt-1">
+            인증시험 소요기간 (준비 포함): Type ~3개월 · EQ ~6개월 · PQ ~14개월
+          </p>
+        )}
+      </div>
+
+      {/* 시험 목록 */}
+      <div className="flex-1 overflow-auto px-6 py-4">
+        {spaceTests.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full gap-2 text-slate-400">
+            <svg className="w-10 h-10 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <p className="text-sm">진행 중인 시험 없음</p>
+            <p className="text-xs text-slate-300">설비 상세 내역은 자산관리에서 확인하세요</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+              시험 현황 ({spaceTests.length}건)
+            </p>
+            {spaceTests.map((t) => {
+              const eq = assets.find((e) => e.id === t.equipmentId);
+              const plannedStartPct = dateToPct(t.plannedStart);
+              const plannedEndPct   = dateToPct(t.plannedEnd);
+              const plannedWidthPct = Math.max(2, plannedEndPct - plannedStartPct);
+              const duration = CERT_DURATION[t.testCategory];
+
+              return (
+                <div key={t.id} className="bg-white rounded-xl border border-slate-100 p-4 space-y-3 hover:border-slate-200 transition-colors">
+                  {/* 상단: 제품명 + 상태 */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="space-y-1">
+                      <p className="text-sm font-semibold text-slate-800">{t.projectName}</p>
+                      <p className="text-xs text-slate-500">{t.sampleDescription}</p>
+                    </div>
+                    <span className={cn("shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold", STATUS_BADGE_COLOR[t.status])}>
+                      {t.status}
+                    </span>
+                  </div>
+
+                  {/* 중간: 메타 */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <TestCategoryChip category={t.testCategory} />
+                    {duration && <span className="text-[10px] text-slate-400 font-medium">{duration}</span>}
+                    {eq && <span className="text-[10px] text-slate-400">설비: {eq.name}</span>}
+                  </div>
+
+                  {/* 하단: 진행률 바 */}
+                  {t.progress > 0 && (
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-[10px] text-slate-400">
+                        <span>{t.plannedStart.slice(0, 7)} ~ {t.plannedEnd.slice(0, 7)}</span>
+                        <span className="font-semibold text-blue-600">{t.progress}%</span>
+                      </div>
+                      <div className="relative h-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className="absolute top-0 left-0 h-full bg-slate-100 rounded-full overflow-hidden"
+                          style={{ left: `${plannedStartPct}%`, width: `${plannedWidthPct}%` }}
+                        >
+                          <div
+                            className={cn("h-full rounded-full transition-all", {
+                              "bg-blue-400":    t.status === "시험중",
+                              "bg-emerald-400": t.status === "완료",
+                              "bg-red-400":     t.status === "지연",
+                              "bg-slate-300":   t.status === "준비중",
+                            })}
+                            style={{ width: `${t.progress}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -175,7 +270,6 @@ function SpaceRow({
 
 const MONTHS = ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"];
 
-// 월 경계선 위치 (2월~12월 시작점 %)
 const MONTH_GRID_PCTS = [
   "2026-02-01","2026-03-01","2026-04-01","2026-05-01","2026-06-01",
   "2026-07-01","2026-08-01","2026-09-01","2026-10-01","2026-11-01","2026-12-01",
@@ -188,11 +282,10 @@ const STATUS_BAR_COLOR: Record<TestStatus, string> = {
   "지연":   "bg-red-400",
 };
 
-function GanttChart({ tests, equipment, filteredCount }: { tests: Test[]; equipment: Equipment[]; filteredCount: number }) {
-  const testsWithEq = tests.filter((t) => equipment.some((e) => e.id === t.equipmentId));
+function GanttChart({ tests, assets, filteredCount }: { tests: Test[]; assets: Equipment[]; filteredCount: number }) {
+  const testsWithEq = tests.filter((t) => assets.some((e) => e.id === t.equipmentId));
   if (testsWithEq.length === 0) return null;
 
-  const equipsWithTests = equipment.filter((e) => tests.some((t) => t.equipmentId === e.id));
   const todayStr = getTodayLocalStr();
   const todayPct = dateToPct(todayStr);
   const todayLabel = todayStr.slice(5).replace("-", "/");
@@ -205,104 +298,67 @@ function GanttChart({ tests, equipment, filteredCount }: { tests: Test[]; equipm
           계획 기간 대비 실제 진행률.{" "}
           {filteredCount > 0
             ? <span className="text-blue-500 font-medium">{filteredCount}개 시험장 필터 중</span>
-            : "전체 설비 기준."}
-          <span className="ml-3 text-purple-500">
-            Type ~3개월 · EQ ~6개월 · PQ ~14개월
-          </span>
+            : "전체 시험장 기준."}
+          <span className="ml-3 text-purple-500">Type ~3개월 · EQ ~6개월 · PQ ~14개월</span>
         </p>
       </div>
       <div className="overflow-x-auto">
         <div className="min-w-[800px]">
-          {/* 월 헤더 */}
           <div className="flex border-b border-slate-100">
-            <div className="w-72 shrink-0 px-4 py-2 text-xs text-slate-400">설비 / 시험 종류</div>
+            <div className="w-72 shrink-0 px-4 py-2 text-xs text-slate-400">시험 제품 / 종류</div>
             <div className="flex-1 flex relative">
               {MONTHS.map((m) => (
-                <div key={m} className="flex-1 text-center text-xs text-slate-400 py-2 border-l border-slate-100 first:border-0">
-                  {m}
-                </div>
+                <div key={m} className="flex-1 text-center text-xs text-slate-400 py-2 border-l border-slate-100 first:border-0">{m}</div>
               ))}
-              {/* 오늘 날짜 라벨 — 헤더에 고정, 반복 없음 */}
               <span
                 className="absolute bottom-0.5 text-[9px] font-semibold text-red-500 leading-none pointer-events-none whitespace-nowrap -translate-x-1/2"
                 style={{ left: `${todayPct}%` }}
-              >
-                {todayLabel}
-              </span>
+              >{todayLabel}</span>
             </div>
           </div>
 
-          {/* 행: 설비별 → 시험별 */}
-          {equipsWithTests.map((eq) => {
-            const eqTests = getEquipmentTests(tests, eq.id);
-            return eqTests.map((t, idx) => {
-              const plannedStartPct = dateToPct(t.plannedStart);
-              const plannedEndPct   = dateToPct(t.plannedEnd);
-              const plannedWidthPct = Math.max(0.5, plannedEndPct - plannedStartPct);
-              const duration = CERT_DURATION[t.testCategory];
+          {testsWithEq.map((t) => {
+            const eq = assets.find((e) => e.id === t.equipmentId);
+            const plannedStartPct = dateToPct(t.plannedStart);
+            const plannedEndPct   = dateToPct(t.plannedEnd);
+            const plannedWidthPct = Math.max(0.5, plannedEndPct - plannedStartPct);
+            const duration = CERT_DURATION[t.testCategory];
 
-              return (
-                <div
-                  key={t.id}
-                  className={cn("flex items-center border-b border-slate-50 last:border-0 hover:bg-slate-50")}
-                >
-                  {/* 좌측 라벨 */}
-                  <div className="w-72 shrink-0 px-4 py-2.5">
-                    {idx === 0 && (
-                      <p className="text-xs font-medium text-slate-700 truncate">{eq.name}</p>
-                    )}
-                    <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                      <TestStatusBadge status={t.status} />
-                      <TestCategoryChip category={t.testCategory} />
-                      {duration && (
-                        <span className="text-[10px] text-slate-400 font-medium">{duration}</span>
-                      )}
-                    </div>
-                    <p className="text-xs text-slate-500 mt-0.5 truncate" title={t.projectName}>
-                      {t.projectName}
-                    </p>
-                    <p className="text-xs text-slate-400 truncate">{t.sampleDescription}</p>
+            return (
+              <div key={t.id} className="flex items-center border-b border-slate-50 last:border-0 hover:bg-slate-50">
+                <div className="w-72 shrink-0 px-4 py-2.5">
+                  <p className="text-xs font-medium text-slate-700 truncate">{t.projectName}</p>
+                  <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                    <TestStatusBadge status={t.status} />
+                    <TestCategoryChip category={t.testCategory} />
+                    {duration && <span className="text-[10px] text-slate-400 font-medium">{duration}</span>}
                   </div>
-
-                  {/* 우측 간트 영역 */}
-                  <div className="flex-1 relative h-14 py-4 px-1">
-                    {/* 월 그리드라인 */}
-                    {MONTH_GRID_PCTS.map((pct, i) => (
-                      <div
-                        key={i}
-                        className="absolute top-0 bottom-0 w-px bg-slate-100 pointer-events-none"
-                        style={{ left: `${pct}%` }}
-                      />
-                    ))}
-                    {/* 계획 바 (회색 배경) */}
+                  {eq && <p className="text-[10px] text-slate-400 truncate mt-0.5">{eq.name}</p>}
+                  <p className="text-xs text-slate-400 truncate">{t.sampleDescription}</p>
+                </div>
+                <div className="flex-1 relative h-14 py-4 px-1">
+                  {MONTH_GRID_PCTS.map((pct, i) => (
+                    <div key={i} className="absolute top-0 bottom-0 w-px bg-slate-100 pointer-events-none" style={{ left: `${pct}%` }} />
+                  ))}
+                  <div
+                    className="absolute top-3.5 h-5 rounded bg-slate-100 border border-slate-200 overflow-hidden"
+                    style={{ left: `${plannedStartPct}%`, width: `${plannedWidthPct}%` }}
+                  >
                     <div
-                      className="absolute top-3.5 h-5 rounded bg-slate-100 border border-slate-200 overflow-hidden"
-                      style={{ left: `${plannedStartPct}%`, width: `${plannedWidthPct}%` }}
-                    >
-                      {/* 진행 오버레이 */}
-                      <div
-                        className={cn("h-full rounded", STATUS_BAR_COLOR[t.status])}
-                        style={{ width: `${t.progress}%`, opacity: t.status === "준비중" ? 0 : 1 }}
-                      />
-                    </div>
-                    {/* 진행률 라벨 */}
-                    {t.progress > 0 && (
-                      <span
-                        className="absolute top-4 text-[10px] font-medium text-white leading-none pointer-events-none"
-                        style={{ left: `calc(${plannedStartPct}% + 4px)` }}
-                      >
-                        {t.progress}%
-                      </span>
-                    )}
-                    {/* 오늘 기준선 */}
-                    <div
-                      className="absolute top-0 bottom-0 w-0.5 bg-red-400"
-                      style={{ left: `${todayPct}%` }}
+                      className={cn("h-full rounded", STATUS_BAR_COLOR[t.status])}
+                      style={{ width: `${t.progress}%`, opacity: t.status === "준비중" ? 0 : 1 }}
                     />
                   </div>
+                  {t.progress > 0 && (
+                    <span
+                      className="absolute top-4 text-[10px] font-medium text-white leading-none pointer-events-none"
+                      style={{ left: `calc(${plannedStartPct}% + 4px)` }}
+                    >{t.progress}%</span>
+                  )}
+                  <div className="absolute top-0 bottom-0 w-0.5 bg-red-400" style={{ left: `${todayPct}%` }} />
                 </div>
-              );
-            });
+              </div>
+            );
           })}
         </div>
       </div>
@@ -312,7 +368,11 @@ function GanttChart({ tests, equipment, filteredCount }: { tests: Test[]; equipm
 
 // ─── Main view ────────────────────────────────────────────────────────────────
 
-export function FacilitiesView({ data, testsData }: { data: FacilityData; testsData: TestsData }) {
+export function FacilitiesView({
+  data, assets, testsData,
+}: {
+  data: FacilitiesData; assets: Equipment[]; testsData: TestsData;
+}) {
   const tests = testsData.tests;
   const [activeSite, setActiveSite] = useState<SiteId>("gumi");
   const [selectedSpaceId, setSelectedSpaceId] = useState<string | null>(() => {
@@ -324,29 +384,21 @@ export function FacilitiesView({ data, testsData }: { data: FacilityData; testsD
   const toggleChecked = (id: string) => {
     setCheckedSpaceIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(id)) next.delete(id); else next.add(id);
       return next;
     });
   };
 
-  // KPI 계산
   const allSpaces = [...data.testHalls, ...data.testYards];
-  const totalSpaces = allSpaces.length;
-  const activeSpaces = allSpaces.filter((s) => s.status === "가동중").length;
+  const totalSpaces       = allSpaces.length;
+  const activeSpaces      = allSpaces.filter((s) => s.status === "가동중").length;
   const constructingSpaces = allSpaces.filter((s) => s.status === "건축중").length;
-  const certSpacesAll = allSpaces.filter((s) => s.purpose.includes("인증")).length;
-  const prodSpacesAll = allSpaces.filter((s) => s.purpose === "양산시험").length;
+  const certSpacesAll     = allSpaces.filter((s) => s.purpose.includes("인증")).length;
+  const prodSpacesAll     = allSpaces.filter((s) => s.purpose === "양산시험").length;
 
-  const totalEquip = data.equipment.length;
-  const newEquip     = data.equipment.filter((e) => computeStatus(e) === "new").length;
-  const normalEquip  = data.equipment.filter((e) => computeStatus(e) === "normal").length;
-  const agingEquip   = data.equipment.filter((e) => computeStatus(e) === "aging").length;
-  const plannedEquip = data.equipment.filter((e) => computeStatus(e) === "planned").length;
-  const agingWithReplacement = data.equipment.filter((e) => computeStatus(e) === "aging" && e.replacedBy).length;
-  const agingNoAction = agingEquip - agingWithReplacement;
+  const activeTests = tests.filter((t) => t.status === "시험중").length;
+  const totalTests  = tests.length;
 
-  // 사이트별 필터 및 인증/양산 그룹 분류
   const siteHalls = data.testHalls.filter((h) => h.siteId === activeSite);
   const siteYards = data.testYards.filter((y) => y.siteId === activeSite);
   const allSiteSpaces: AnySpace[] = [...siteHalls, ...siteYards];
@@ -355,21 +407,17 @@ export function FacilitiesView({ data, testsData }: { data: FacilityData; testsD
   const certSiteSpaces = allSiteSpaces.filter((s) => s.purpose.includes("인증"));
   const prodSiteSpaces = allSiteSpaces.filter((s) => s.purpose === "양산시험");
 
-  // 선택된 공간
   const selectedSpace = selectedSpaceId ? allSpaces.find((s) => s.id === selectedSpaceId) ?? null : null;
-  const selectedEquipment = selectedSpaceId ? getSpaceEquipment(data, selectedSpaceId) : [];
-  const selectedIsCert = selectedSpace?.purpose.includes("인증") ?? false;
-  const selectedIsProdOnly = selectedSpace?.purpose === "양산시험";
 
   const handleSiteChange = (site: SiteId) => {
     setActiveSite(site);
-    const siteSpaces = [...data.testHalls, ...data.testYards].filter((s) => s.siteId === site);
+    const siteSpaces = allSpaces.filter((s) => s.siteId === site);
     setSelectedSpaceId(siteSpaces[0]?.id ?? null);
   };
 
-  const ganttEquipment = checkedSpaceIds.size === 0
-    ? data.equipment
-    : data.equipment.filter((e) =>
+  const ganttAssets = checkedSpaceIds.size === 0
+    ? assets
+    : assets.filter((e) =>
         (e.hallId != null && checkedSpaceIds.has(e.hallId)) ||
         (e.yardId != null && checkedSpaceIds.has(e.yardId))
       );
@@ -382,44 +430,45 @@ export function FacilitiesView({ data, testsData }: { data: FacilityData; testsD
           title="시험장 현황"
           main={`${totalSpaces}개`}
           items={[
-            { label: "인증",     value: certSpacesAll,     color: "text-purple-600" },
-            { label: "양산",     value: prodSpacesAll,     color: "text-teal-600" },
-            { label: "가동중",   value: activeSpaces,       color: "text-emerald-600" },
-            { label: "건축중",   value: constructingSpaces, color: "text-amber-600" },
+            { label: "인증",   value: certSpacesAll,     color: "text-purple-600" },
+            { label: "양산",   value: prodSpacesAll,     color: "text-teal-600" },
+            { label: "가동중", value: activeSpaces,       color: "text-emerald-600" },
+            { label: "건축중", value: constructingSpaces, color: "text-amber-600" },
           ]}
         />
         <KpiCard
-          title="설비 현황"
-          main={`${totalEquip}개`}
+          title="진행 중인 시험"
+          main={`${activeTests}건`}
+          mainColor="text-blue-600"
           items={[
-            { label: "신규",     value: newEquip,     color: "text-blue-600" },
-            { label: "정상",     value: normalEquip,  color: "text-emerald-600" },
-            { label: "노후",     value: agingEquip,   color: "text-red-600" },
-            { label: "도입예정", value: plannedEquip, color: "text-slate-500" },
+            { label: "전체",   value: totalTests,                                                   color: "text-slate-500" },
+            { label: "시험중", value: activeTests,                                                  color: "text-blue-600" },
+            { label: "지연",   value: tests.filter((t) => t.status === "지연").length,              color: "text-red-500" },
+            { label: "완료",   value: tests.filter((t) => t.status === "완료").length,              color: "text-emerald-600" },
           ]}
-          bar={totalEquip > 0 ? [
-            { color: "bg-blue-400",    pct: (newEquip / totalEquip) * 100,     label: "신규" },
-            { color: "bg-emerald-400", pct: (normalEquip / totalEquip) * 100,  label: "정상" },
-            { color: "bg-red-400",     pct: (agingEquip / totalEquip) * 100,   label: "노후" },
-            { color: "bg-slate-200",   pct: (plannedEquip / totalEquip) * 100, label: "도입예정" },
+          bar={totalTests > 0 ? [
+            { color: "bg-blue-400",    pct: (activeTests / totalTests) * 100,                                          label: "시험중" },
+            { color: "bg-slate-300",   pct: (tests.filter((t) => t.status === "준비중").length / totalTests) * 100,   label: "준비중" },
+            { color: "bg-red-400",     pct: (tests.filter((t) => t.status === "지연").length / totalTests) * 100,     label: "지연" },
+            { color: "bg-emerald-400", pct: (tests.filter((t) => t.status === "완료").length / totalTests) * 100,     label: "완료" },
           ] : undefined}
         />
         <KpiCard
-          title="노후 설비"
-          main={`${agingEquip}건`}
-          mainColor="text-red-600"
+          title="인증시험 진행"
+          main={`${tests.filter((t) => ["Type","EQ","PQ"].includes(t.testCategory)).length}건`}
+          mainColor="text-purple-600"
           items={[
-            { label: "교체 진행", value: agingWithReplacement, color: "text-amber-600" },
-            { label: "미착수",   value: agingNoAction,         color: "text-red-500" },
+            { label: "Type", value: tests.filter((t) => t.testCategory === "Type").length, color: "text-purple-600" },
+            { label: "EQ",   value: tests.filter((t) => t.testCategory === "EQ").length,   color: "text-purple-600" },
+            { label: "PQ",   value: tests.filter((t) => t.testCategory === "PQ").length,   color: "text-purple-600" },
           ]}
         />
       </div>
 
       {/* 메인 패널 */}
-      <div className="flex flex-col lg:flex-row gap-4" style={{ minHeight: 520 }} id="facilities-main-panel">
+      <div className="flex flex-col lg:flex-row gap-4" style={{ minHeight: 520 }}>
         {/* 좌측: 시험장 리스트 */}
         <div className="w-full lg:w-80 lg:shrink-0 bg-white rounded-xl border border-slate-200 flex flex-col overflow-hidden">
-          {/* 사이트 탭 */}
           <div className="flex border-b border-slate-200 shrink-0">
             {data.sites.map((site) => (
               <button
@@ -431,25 +480,20 @@ export function FacilitiesView({ data, testsData }: { data: FacilityData; testsD
                     ? "border-b-2 border-blue-600 text-blue-600"
                     : "text-slate-500 hover:text-slate-700"
                 )}
-              >
-                {site.name}
-              </button>
+              >{site.name}</button>
             ))}
           </div>
 
-          {/* 리스트: 인증 / 양산 그룹 */}
           <div className="flex-1 overflow-y-auto">
             {certSiteSpaces.length > 0 && (
               <>
-                <p className="px-4 pt-3 pb-1 text-xs font-semibold text-purple-500 tracking-wider">
-                  인증 시험장
-                </p>
+                <p className="px-4 pt-3 pb-1 text-xs font-semibold text-purple-500 tracking-wider">인증 시험장</p>
                 {certSiteSpaces.map((space) => {
-                  const eqs = getSpaceEquipment(data, space.id);
+                  const eqs = getSpaceEquipment(assets, space.id);
+                  const spaceTests = getSpaceTests(tests, assets, space.id);
                   return (
                     <SpaceRow
-                      key={space.id}
-                      space={space}
+                      key={space.id} space={space}
                       equipCount={eqs.length}
                       agingCount={eqs.filter((e) => computeStatus(e) === "aging").length}
                       statusCounts={{
@@ -458,6 +502,7 @@ export function FacilitiesView({ data, testsData }: { data: FacilityData; testsD
                         aging:   eqs.filter((e) => computeStatus(e) === "aging").length,
                         planned: eqs.filter((e) => computeStatus(e) === "planned").length,
                       }}
+                      activeTestCount={spaceTests.filter((t) => t.status === "시험중" || t.status === "준비중").length}
                       selected={selectedSpaceId === space.id}
                       checked={checkedSpaceIds.has(space.id)}
                       isOutdoor={yardIds.has(space.id)}
@@ -470,15 +515,13 @@ export function FacilitiesView({ data, testsData }: { data: FacilityData; testsD
             )}
             {prodSiteSpaces.length > 0 && (
               <>
-                <p className="px-4 pt-3 pb-1 text-xs font-semibold text-teal-500 tracking-wider">
-                  양산 시험장
-                </p>
+                <p className="px-4 pt-3 pb-1 text-xs font-semibold text-teal-500 tracking-wider">양산 시험장</p>
                 {prodSiteSpaces.map((space) => {
-                  const eqs = getSpaceEquipment(data, space.id);
+                  const eqs = getSpaceEquipment(assets, space.id);
+                  const spaceTests = getSpaceTests(tests, assets, space.id);
                   return (
                     <SpaceRow
-                      key={space.id}
-                      space={space}
+                      key={space.id} space={space}
                       equipCount={eqs.length}
                       agingCount={eqs.filter((e) => computeStatus(e) === "aging").length}
                       statusCounts={{
@@ -487,6 +530,7 @@ export function FacilitiesView({ data, testsData }: { data: FacilityData; testsD
                         aging:   eqs.filter((e) => computeStatus(e) === "aging").length,
                         planned: eqs.filter((e) => computeStatus(e) === "planned").length,
                       }}
+                      activeTestCount={spaceTests.filter((t) => t.status === "시험중" || t.status === "준비중").length}
                       selected={selectedSpaceId === space.id}
                       checked={checkedSpaceIds.has(space.id)}
                       isOutdoor={yardIds.has(space.id)}
@@ -500,59 +544,23 @@ export function FacilitiesView({ data, testsData }: { data: FacilityData; testsD
           </div>
         </div>
 
-        {/* 우측: 설비 상세 */}
+        {/* 우측: 진행 중인 시험 패널 */}
         <div className="flex-1 bg-white rounded-xl border border-slate-200 flex flex-col overflow-hidden">
           {selectedSpace ? (
-            <>
-              <div className="px-6 py-4 border-b border-slate-200 shrink-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h2 className="text-base font-semibold text-slate-800">{selectedSpace.name}</h2>
-                  <HallStatusBadge status={selectedSpace.status} />
-                  <TypeChip type={selectedSpace.type} />
-                  <span className="text-xs text-slate-400 ml-1">목적: {selectedSpace.purpose}</span>
-                </div>
-                <p className="text-xs text-slate-400 mt-1">
-                  설비 {selectedEquipment.length}개
-                  {selectedEquipment.filter((e) => computeStatus(e) === "aging").length > 0 && (
-                    <span className="text-red-500 ml-2">
-                      · 노후 {selectedEquipment.filter((e) => computeStatus(e) === "aging").length}건
-                    </span>
-                  )}
-                </p>
-                {selectedIsCert && (
-                  <p className="text-xs text-purple-500 mt-1">
-                    인증시험 기준 소요기간 (준비 포함): Type ~3개월 · EQ ~6개월 · PQ ~14개월
-                  </p>
-                )}
-                {selectedIsProdOnly && (
-                  <p className="text-xs text-teal-500 mt-1">
-                    양산 처리량 기준: 5~10 드럼/일
-                  </p>
-                )}
-              </div>
-              <div className="flex-1 overflow-auto">
-                {selectedEquipment.length > 0 ? (
-                  <EquipmentTable equipment={selectedEquipment} tests={tests} />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-slate-400 text-sm">
-                    등록된 설비 없음
-                  </div>
-                )}
-              </div>
-            </>
+            <ActiveTestsPanel space={selectedSpace} tests={tests} assets={assets} />
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center gap-2 text-slate-400">
               <svg className="w-10 h-10 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
-              <p className="text-sm">좌측 시험장을 선택하면 설비 목록이 표시됩니다</p>
+              <p className="text-sm">좌측 시험장을 선택하면 시험 현황이 표시됩니다</p>
             </div>
           )}
         </div>
       </div>
 
       {/* 간트 차트 */}
-      <GanttChart tests={tests} equipment={ganttEquipment} filteredCount={checkedSpaceIds.size} />
+      <GanttChart tests={tests} assets={ganttAssets} filteredCount={checkedSpaceIds.size} />
     </div>
   );
 }

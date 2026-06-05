@@ -1,0 +1,167 @@
+{
+  "_meta": {
+    "version": "2.0",
+    "lastUpdated": "2026-06-05",
+    "source": "구미/동해 시험장 현황 (2026.03.23) — 설비 데이터는 assets.json으로 분리",
+    "pendingFields": [
+      "모든 testHall dimensions (길이×폭×높이) — 도면 확인 후 입력",
+      "모든 testYard dimensions (길이×폭) — 도면 확인 후 입력"
+    ]
+  },
+
+  "sites": [
+    {
+      "id": "gumi",
+      "name": "구미",
+      "fullName": "LS전선 구미사업장",
+      "country": "KR"
+    },
+    {
+      "id": "donghae",
+      "name": "동해",
+      "fullName": "LS전선 동해사업장",
+      "country": "KR"
+    }
+  ],
+
+  "testHalls": [
+    {
+      "id": "gumi-dc1",
+      "siteId": "gumi",
+      "name": "구미 DC 1시험장(옥내)",
+      "type": "DC",
+      "purpose": "인증시험",
+      "status": "가동중",
+      "dimensions": { "length": null, "width": null, "height": null, "area": null }
+    },
+    {
+      "id": "gumi-dc2",
+      "siteId": "gumi",
+      "name": "구미 DC 2시험장(옥내)",
+      "type": "복합",
+      "purpose": "양산시험",
+      "status": "가동중",
+      "dimensions": { "length": null, "width": null, "height": null, "area": null }
+    },
+    {
+      "id": "gumi-ac1",
+      "siteId": "gumi",
+      "name": "구미 AC 1시험장(실드룸)",
+      "type": "AC",
+      "purpose": "양산시험",
+      "status": "가동중",
+      "dimensions": { "length": null, "width": null, "height": null, "area": null }
+    },
+    {
+      "id": "gumi-ac2",
+      "siteId": "gumi",
+      "name": "구미 AC 2시험장(실드룸)",
+      "type": "AC",
+      "purpose": "양산시험",
+      "status": "건축중",
+      "dimensions": { "length": null, "width": null, "height": null, "area": null }
+    },
+    {
+      "id": "gumi-junggeom",
+      "siteId": "gumi",
+      "name": "구미 중검장",
+      "type": "AC",
+      "purpose": "양산시험",
+      "status": "가동중",
+      "dimensions": { "length": null, "width": null, "height": null, "area": null }
+    },
+    {
+      "id": "gumi-hvlab",
+      "siteId": "gumi",
+      "name": "구미 고전압시험장(옥내/실드룸)",
+      "type": "AC",
+      "purpose": "인증시험/양산시험",
+      "status": "가동중",
+      "dimensions": { "length": null, "width": null, "height": null, "area": null }
+    },
+    {
+      "id": "donghae-dc1",
+      "siteId": "donghae",
+      "name": "동해 DC 1시험장(옥내)",
+      "type": "복합",
+      "purpose": "인증시험",
+      "status": "가동중",
+      "dimensions": { "length": null, "width": null, "height": null, "area": null }
+    },
+    {
+      "id": "donghae-dc2",
+      "siteId": "donghae",
+      "name": "동해 DC 2시험장(옥내)",
+      "type": "복합",
+      "purpose": "인증시험",
+      "status": "가동중",
+      "dimensions": { "length": null, "width": null, "height": null, "area": null }
+    },
+    {
+      "id": "donghae-dc-prod",
+      "siteId": "donghae",
+      "name": "동해 DC 양산시험장(옥내)",
+      "type": "DC",
+      "purpose": "양산시험",
+      "status": "가동중",
+      "dimensions": { "length": null, "width": null, "height": null, "area": null }
+    },
+    {
+      "id": "donghae-ac-sr1",
+      "siteId": "donghae",
+      "name": "동해 AC 실드룸1",
+      "type": "AC",
+      "purpose": "인증시험",
+      "status": "가동중",
+      "dimensions": { "length": null, "width": null, "height": null, "area": null }
+    },
+    {
+      "id": "donghae-ac-sr2",
+      "siteId": "donghae",
+      "name": "동해 AC 실드룸2",
+      "type": "복합",
+      "purpose": "양산시험",
+      "status": "가동중",
+      "dimensions": { "length": null, "width": null, "height": null, "area": null }
+    },
+    {
+      "id": "donghae-cert",
+      "siteId": "donghae",
+      "name": "동해 AC/DC 통합 인증센터",
+      "type": "복합",
+      "purpose": "인증시험",
+      "status": "건축중",
+      "dimensions": { "length": null, "width": null, "height": null, "area": null }
+    },
+    {
+      "id": "donghae-xxl",
+      "siteId": "donghae",
+      "name": "동해 AC XXL시험장(옥내)",
+      "type": "AC",
+      "purpose": "양산시험",
+      "status": "가동중",
+      "dimensions": { "length": null, "width": null, "height": null, "area": null }
+    }
+  ],
+
+  "testYards": [
+    {
+      "id": "gumi-outdoor",
+      "siteId": "gumi",
+      "name": "구미 옥외시험장",
+      "type": "AC",
+      "purpose": "인증시험",
+      "status": "가동중",
+      "dimensions": { "length": null, "width": null, "area": null }
+    },
+    {
+      "id": "donghae-trailer",
+      "siteId": "donghae",
+      "name": "동해 AC Trailer시험장(옥외)",
+      "type": "AC",
+      "purpose": "양산시험",
+      "status": "가동중",
+      "dimensions": { "length": null, "width": null, "area": null }
+    }
+  ]
+}

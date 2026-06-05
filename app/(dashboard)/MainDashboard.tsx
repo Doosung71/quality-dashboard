@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { facilityData } from "@/data/facility.data";
+import { assetData } from "@/data/assets.data";
 import { claimsData } from "@/data/claims.data";
 import { ncrsData } from "@/data/ncr.data";
 import { qcostData } from "@/data/qcost.data";
@@ -146,7 +147,7 @@ export function MainDashboard({ role, userName, userId }: Props) {
   };
 
   const stats = useMemo(() => {
-    const totalEquipment = facilityData.equipment.reduce((acc, eq) => acc + eq.quantity, 0);
+    const totalEquipment = assetData.equipment.reduce((acc: number, eq: { quantity: number }) => acc + eq.quantity, 0);
     const totalHalls = facilityData.testHalls.length;
     const totalYards = facilityData.testYards.length;
     const totalFacilities = totalHalls + totalYards;

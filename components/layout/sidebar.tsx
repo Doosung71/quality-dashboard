@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard, FlaskConical, Building2, Users, Globe,
-  X, MessageSquare, BookOpen, Coins, FileSearch, Newspaper,
+  X, MessageSquare, BookOpen, Coins, FileSearch, Newspaper, Wrench,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { Role } from "@/lib/generated/prisma/client"
@@ -52,9 +52,12 @@ const ALL_NAV: NavItem[] = [
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
-    // 시험장: 팀장·팀원도 본인 담당 설비 등록·관리
     href: "/facilities", label: "시험장·시험 현황", icon: FlaskConical,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
+  },
+  {
+    href: "/assets", label: "자산관리", icon: Wrench,
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
   },
   {
     href: "/dashboard", label: "입찰검토시스템", icon: FileSearch,

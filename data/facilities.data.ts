@@ -1,4 +1,4 @@
 import type { FacilitiesData } from "@/types/facility";
 import raw from "./facilities.json";
 
-export const facilityData = raw as unknown as FacilitiesData;
+export const facilitiesData = raw as unknown as FacilitiesData;

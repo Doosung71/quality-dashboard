@@ -1,4 +1,4 @@
-import type { Equipment } from "@/types/facility";
+import type { Equipment } from "@/types/asset";
 
 export type ComputedStatus = "new" | "normal" | "aging" | "planned";
 

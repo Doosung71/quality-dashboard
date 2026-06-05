@@ -1,6 +1,5 @@
 export type SiteId = "gumi" | "donghae";
 export type HallStatus = "가동중" | "건축중";
-export type EquipmentStatus = "new" | "normal" | "aging" | "planned";
 
 export interface Site {
   id: SiteId;
@@ -29,27 +28,8 @@ export interface TestYard {
   dimensions: { length: number | null; width: number | null; area: number | null };
 }
 
-export interface Equipment {
-  id: string;
-  hallId?: string;
-  yardId?: string;
-  siteId: SiteId;
-  name: string;
-  type: string;
-  spec: Record<string, string>;
-  maker: string;
-  makerCountry: string | null;
-  yearIntroduced: number;
-  quantity: number;
-  status: EquipmentStatus;
-  replacedBy: string | null;
-  replaces: string | null;
-  notes: string;
-}
-
-export interface FacilityData {
+export interface FacilitiesData {
   sites: Site[];
   testHalls: TestHall[];
   testYards: TestYard[];
-  equipment: Equipment[];
 }
