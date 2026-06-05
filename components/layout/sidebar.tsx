@@ -43,6 +43,10 @@ const ALL_NAV: NavItem[] = [
   {
     href: "/vendors", label: "공급망 관리 (Supply Chain Management)", icon: Building2,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
+    children: [
+      { href: "/vendors/audits",       label: "협력업체 감사 (Supplier Audit)",    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/vendors/inspections",  label: "출장검사 (Source Inspection)",       roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+    ],
   },
   {
     href: "/knowledge", label: "품질지식관리 (Quality Knowledge Management)", icon: BookOpen,

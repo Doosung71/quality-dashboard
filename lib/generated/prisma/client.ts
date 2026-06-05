@@ -156,3 +156,18 @@ export type ContractReviewHistory = Prisma.ContractReviewHistoryModel
  * 
  */
 export type ContractComment = Prisma.ContractCommentModel
+/**
+ * Model SupplierAudit
+ * 
+ */
+export type SupplierAudit = Prisma.SupplierAuditModel
+/**
+ * Model AuditFinding
+ * 
+ */
+export type AuditFinding = Prisma.AuditFindingModel
+/**
+ * Model SourceInspection
+ * 
+ */
+export type SourceInspection = Prisma.SourceInspectionModel

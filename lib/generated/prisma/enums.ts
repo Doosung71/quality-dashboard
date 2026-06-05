@@ -92,3 +92,48 @@ export const ContractGapType = {
 } as const
 
 export type ContractGapType = (typeof ContractGapType)[keyof typeof ContractGapType]
+
+
+export const AuditType = {
+  INITIAL: 'INITIAL',
+  PERIODIC: 'PERIODIC',
+  FOLLOW_UP: 'FOLLOW_UP',
+  SPECIAL: 'SPECIAL'
+} as const
+
+export type AuditType = (typeof AuditType)[keyof typeof AuditType]
+
+
+export const AuditStatus = {
+  PLANNED: 'PLANNED',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type AuditStatus = (typeof AuditStatus)[keyof typeof AuditStatus]
+
+
+export const FindingSeverity = {
+  CRITICAL: 'CRITICAL',
+  MAJOR: 'MAJOR',
+  MINOR: 'MINOR',
+  OBSERVATION: 'OBSERVATION'
+} as const
+
+export type FindingSeverity = (typeof FindingSeverity)[keyof typeof FindingSeverity]
+
+
+export const FindingStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+} as const
+
+export type FindingStatus = (typeof FindingStatus)[keyof typeof FindingStatus]
+
+
+export const InspectionResult = {
+  PASS: 'PASS',
+  FAIL: 'FAIL',
+  CONDITIONAL_PASS: 'CONDITIONAL_PASS'
+} as const
+
+export type InspectionResult = (typeof InspectionResult)[keyof typeof InspectionResult]

@@ -1,0 +1,87 @@
+// 공급망 관리 — 협력업체 감사 & 출장검사
+
+enum AuditType {
+  INITIAL    // 초기 심사
+  PERIODIC   // 정기 심사
+  FOLLOW_UP  // 사후관리 심사
+  SPECIAL    // 특별 심사
+}
+
+enum AuditStatus {
+  PLANNED
+  COMPLETED
+}
+
+enum FindingSeverity {
+  CRITICAL    // 치명
+  MAJOR       // 주요
+  MINOR       // 경미
+  OBSERVATION // 관찰
+}
+
+enum FindingStatus {
+  OPEN
+  CLOSED
+}
+
+enum InspectionResult {
+  PASS
+  FAIL
+  CONDITIONAL_PASS
+}
+
+model SupplierAudit {
+  id           String       @id @default(cuid())
+  vendorId     String       // JSON vendors.json id (e.g. "V001")
+  vendorName   String
+  auditDate    DateTime
+  auditType    AuditType    @default(PERIODIC)
+  auditor      String       // 감사자
+  location     String?
+  overallGrade String?      // A/B/C/D
+  totalScore   Int?
+  status       AuditStatus  @default(PLANNED)
+  summary      String?      // 종합 의견
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  createdBy    User         @relation("SupplierAuditCreator", fields: [createdById], references: [id])
+  createdById  String
+  findings     AuditFinding[]
+}
+
+model AuditFinding {
+  id          String          @id @default(cuid())
+  audit       SupplierAudit   @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  auditId     String
+  category    String          // 심사 항목 분류
+  description String          // 지적 내용
+  severity    FindingSeverity @default(MINOR)
+  requirement String?         // 해당 기준/요구사항
+  status      FindingStatus   @default(OPEN)
+  dueDate     DateTime?
+  response    String?         // 업체 조치 내용
+  closedAt    DateTime?
+  createdAt   DateTime        @default(now())
+}
+
+model SourceInspection {
+  id             String           @id @default(cuid())
+  vendorId       String
+  vendorName     String
+  inspectionDate DateTime
+  location       String?
+  itemName       String           // 품목명
+  itemCode       String?          // 품목 코드/규격
+  quantity       Int              // 검사 수량
+  sampleSize     Int?
+  result         InspectionResult @default(PASS)
+  defectCount    Int?
+  defectRate     Float?
+  inspector      String           // 출장 검사원
+  notes          String?
+  status         String           @default("DRAFT")
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  createdBy      User             @relation("SourceInspectionCreator", fields: [createdById], references: [id])
+  createdById    String
+}

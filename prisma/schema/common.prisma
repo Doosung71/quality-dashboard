@@ -52,6 +52,10 @@ model User {
 
   // 수선 이력
   reportedRepairs         EquipmentRepair[]       @relation("RepairReportedBy")
+
+  // 공급망 관리
+  supplierAudits          SupplierAudit[]         @relation("SupplierAuditCreator")
+  sourceInspections       SourceInspection[]      @relation("SourceInspectionCreator")
 }
 
 model Feedback {

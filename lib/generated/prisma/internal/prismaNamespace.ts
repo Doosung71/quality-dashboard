@@ -406,7 +406,10 @@ export const ModelName = {
   ContractAnalysis: 'ContractAnalysis',
   ContractGap: 'ContractGap',
   ContractReviewHistory: 'ContractReviewHistory',
-  ContractComment: 'ContractComment'
+  ContractComment: 'ContractComment',
+  SupplierAudit: 'SupplierAudit',
+  AuditFinding: 'AuditFinding',
+  SourceInspection: 'SourceInspection'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -422,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment"
+    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "supplierAudit" | "auditFinding" | "sourceInspection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2128,6 +2131,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SupplierAudit: {
+      payload: Prisma.$SupplierAuditPayload<ExtArgs>
+      fields: Prisma.SupplierAuditFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SupplierAuditFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierAuditPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SupplierAuditFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierAuditPayload>
+        }
+        findFirst: {
+          args: Prisma.SupplierAuditFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierAuditPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SupplierAuditFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierAuditPayload>
+        }
+        findMany: {
+          args: Prisma.SupplierAuditFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierAuditPayload>[]
+        }
+        create: {
+          args: Prisma.SupplierAuditCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierAuditPayload>
+        }
+        createMany: {
+          args: Prisma.SupplierAuditCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SupplierAuditCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierAuditPayload>[]
+        }
+        delete: {
+          args: Prisma.SupplierAuditDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierAuditPayload>
+        }
+        update: {
+          args: Prisma.SupplierAuditUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierAuditPayload>
+        }
+        deleteMany: {
+          args: Prisma.SupplierAuditDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SupplierAuditUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SupplierAuditUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierAuditPayload>[]
+        }
+        upsert: {
+          args: Prisma.SupplierAuditUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierAuditPayload>
+        }
+        aggregate: {
+          args: Prisma.SupplierAuditAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSupplierAudit>
+        }
+        groupBy: {
+          args: Prisma.SupplierAuditGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SupplierAuditGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SupplierAuditCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SupplierAuditCountAggregateOutputType> | number
+        }
+      }
+    }
+    AuditFinding: {
+      payload: Prisma.$AuditFindingPayload<ExtArgs>
+      fields: Prisma.AuditFindingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AuditFindingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditFindingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AuditFindingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditFindingPayload>
+        }
+        findFirst: {
+          args: Prisma.AuditFindingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditFindingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AuditFindingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditFindingPayload>
+        }
+        findMany: {
+          args: Prisma.AuditFindingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditFindingPayload>[]
+        }
+        create: {
+          args: Prisma.AuditFindingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditFindingPayload>
+        }
+        createMany: {
+          args: Prisma.AuditFindingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AuditFindingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditFindingPayload>[]
+        }
+        delete: {
+          args: Prisma.AuditFindingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditFindingPayload>
+        }
+        update: {
+          args: Prisma.AuditFindingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditFindingPayload>
+        }
+        deleteMany: {
+          args: Prisma.AuditFindingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AuditFindingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AuditFindingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditFindingPayload>[]
+        }
+        upsert: {
+          args: Prisma.AuditFindingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditFindingPayload>
+        }
+        aggregate: {
+          args: Prisma.AuditFindingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAuditFinding>
+        }
+        groupBy: {
+          args: Prisma.AuditFindingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuditFindingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AuditFindingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuditFindingCountAggregateOutputType> | number
+        }
+      }
+    }
+    SourceInspection: {
+      payload: Prisma.$SourceInspectionPayload<ExtArgs>
+      fields: Prisma.SourceInspectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SourceInspectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceInspectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SourceInspectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceInspectionPayload>
+        }
+        findFirst: {
+          args: Prisma.SourceInspectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceInspectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SourceInspectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceInspectionPayload>
+        }
+        findMany: {
+          args: Prisma.SourceInspectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceInspectionPayload>[]
+        }
+        create: {
+          args: Prisma.SourceInspectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceInspectionPayload>
+        }
+        createMany: {
+          args: Prisma.SourceInspectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SourceInspectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceInspectionPayload>[]
+        }
+        delete: {
+          args: Prisma.SourceInspectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceInspectionPayload>
+        }
+        update: {
+          args: Prisma.SourceInspectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceInspectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.SourceInspectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SourceInspectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SourceInspectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceInspectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.SourceInspectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceInspectionPayload>
+        }
+        aggregate: {
+          args: Prisma.SourceInspectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSourceInspection>
+        }
+        groupBy: {
+          args: Prisma.SourceInspectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SourceInspectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SourceInspectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SourceInspectionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2528,6 +2753,67 @@ export const ContractCommentScalarFieldEnum = {
 export type ContractCommentScalarFieldEnum = (typeof ContractCommentScalarFieldEnum)[keyof typeof ContractCommentScalarFieldEnum]
 
 
+export const SupplierAuditScalarFieldEnum = {
+  id: 'id',
+  vendorId: 'vendorId',
+  vendorName: 'vendorName',
+  auditDate: 'auditDate',
+  auditType: 'auditType',
+  auditor: 'auditor',
+  location: 'location',
+  overallGrade: 'overallGrade',
+  totalScore: 'totalScore',
+  status: 'status',
+  summary: 'summary',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type SupplierAuditScalarFieldEnum = (typeof SupplierAuditScalarFieldEnum)[keyof typeof SupplierAuditScalarFieldEnum]
+
+
+export const AuditFindingScalarFieldEnum = {
+  id: 'id',
+  auditId: 'auditId',
+  category: 'category',
+  description: 'description',
+  severity: 'severity',
+  requirement: 'requirement',
+  status: 'status',
+  dueDate: 'dueDate',
+  response: 'response',
+  closedAt: 'closedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditFindingScalarFieldEnum = (typeof AuditFindingScalarFieldEnum)[keyof typeof AuditFindingScalarFieldEnum]
+
+
+export const SourceInspectionScalarFieldEnum = {
+  id: 'id',
+  vendorId: 'vendorId',
+  vendorName: 'vendorName',
+  inspectionDate: 'inspectionDate',
+  location: 'location',
+  itemName: 'itemName',
+  itemCode: 'itemCode',
+  quantity: 'quantity',
+  sampleSize: 'sampleSize',
+  result: 'result',
+  defectCount: 'defectCount',
+  defectRate: 'defectRate',
+  inspector: 'inspector',
+  notes: 'notes',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type SourceInspectionScalarFieldEnum = (typeof SourceInspectionScalarFieldEnum)[keyof typeof SourceInspectionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2776,6 +3062,76 @@ export type EnumContractGapTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$
 export type ListEnumContractGapTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContractGapType[]'>
     
 
+
+/**
+ * Reference to a field of type 'AuditType'
+ */
+export type EnumAuditTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditType'>
+    
+
+
+/**
+ * Reference to a field of type 'AuditType[]'
+ */
+export type ListEnumAuditTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AuditStatus'
+ */
+export type EnumAuditStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AuditStatus[]'
+ */
+export type ListEnumAuditStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FindingSeverity'
+ */
+export type EnumFindingSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FindingSeverity'>
+    
+
+
+/**
+ * Reference to a field of type 'FindingSeverity[]'
+ */
+export type ListEnumFindingSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FindingSeverity[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FindingStatus'
+ */
+export type EnumFindingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FindingStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'FindingStatus[]'
+ */
+export type ListEnumFindingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FindingStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'InspectionResult'
+ */
+export type EnumInspectionResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InspectionResult'>
+    
+
+
+/**
+ * Reference to a field of type 'InspectionResult[]'
+ */
+export type ListEnumInspectionResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InspectionResult[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -2909,6 +3265,9 @@ export type GlobalOmitConfig = {
   contractGap?: Prisma.ContractGapOmit
   contractReviewHistory?: Prisma.ContractReviewHistoryOmit
   contractComment?: Prisma.ContractCommentOmit
+  supplierAudit?: Prisma.SupplierAuditOmit
+  auditFinding?: Prisma.AuditFindingOmit
+  sourceInspection?: Prisma.SourceInspectionOmit
 }
 
 /* Types for Logging */

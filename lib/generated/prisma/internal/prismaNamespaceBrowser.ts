@@ -73,7 +73,10 @@ export const ModelName = {
   ContractAnalysis: 'ContractAnalysis',
   ContractGap: 'ContractGap',
   ContractReviewHistory: 'ContractReviewHistory',
-  ContractComment: 'ContractComment'
+  ContractComment: 'ContractComment',
+  SupplierAudit: 'SupplierAudit',
+  AuditFinding: 'AuditFinding',
+  SourceInspection: 'SourceInspection'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -451,6 +454,67 @@ export const ContractCommentScalarFieldEnum = {
 } as const
 
 export type ContractCommentScalarFieldEnum = (typeof ContractCommentScalarFieldEnum)[keyof typeof ContractCommentScalarFieldEnum]
+
+
+export const SupplierAuditScalarFieldEnum = {
+  id: 'id',
+  vendorId: 'vendorId',
+  vendorName: 'vendorName',
+  auditDate: 'auditDate',
+  auditType: 'auditType',
+  auditor: 'auditor',
+  location: 'location',
+  overallGrade: 'overallGrade',
+  totalScore: 'totalScore',
+  status: 'status',
+  summary: 'summary',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type SupplierAuditScalarFieldEnum = (typeof SupplierAuditScalarFieldEnum)[keyof typeof SupplierAuditScalarFieldEnum]
+
+
+export const AuditFindingScalarFieldEnum = {
+  id: 'id',
+  auditId: 'auditId',
+  category: 'category',
+  description: 'description',
+  severity: 'severity',
+  requirement: 'requirement',
+  status: 'status',
+  dueDate: 'dueDate',
+  response: 'response',
+  closedAt: 'closedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditFindingScalarFieldEnum = (typeof AuditFindingScalarFieldEnum)[keyof typeof AuditFindingScalarFieldEnum]
+
+
+export const SourceInspectionScalarFieldEnum = {
+  id: 'id',
+  vendorId: 'vendorId',
+  vendorName: 'vendorName',
+  inspectionDate: 'inspectionDate',
+  location: 'location',
+  itemName: 'itemName',
+  itemCode: 'itemCode',
+  quantity: 'quantity',
+  sampleSize: 'sampleSize',
+  result: 'result',
+  defectCount: 'defectCount',
+  defectRate: 'defectRate',
+  inspector: 'inspector',
+  notes: 'notes',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type SourceInspectionScalarFieldEnum = (typeof SourceInspectionScalarFieldEnum)[keyof typeof SourceInspectionScalarFieldEnum]
 
 
 export const SortOrder = {

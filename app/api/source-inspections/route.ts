@@ -1,0 +1,51 @@
+import { NextRequest, NextResponse } from "next/server"
+import { requireActiveSession } from "@/lib/session-guard"
+import { prisma } from "@/lib/prisma"
+
+export async function GET() {
+  const session = await requireActiveSession()
+  if (session instanceof NextResponse) return session
+
+  const inspections = await prisma.sourceInspection.findMany({
+    orderBy: { inspectionDate: "desc" },
+    include: { createdBy: { select: { name: true, nickname: true } } },
+  })
+  return NextResponse.json(inspections)
+}
+
+export async function POST(req: NextRequest) {
+  const session = await requireActiveSession()
+  if (session instanceof NextResponse) return session
+
+  const body = await req.json() as {
+    vendorId: string; vendorName: string; inspectionDate: string
+    location?: string; itemName: string; itemCode?: string
+    quantity: number; sampleSize?: number; result: string
+    defectCount?: number; defectRate?: number; inspector: string; notes?: string
+  }
+
+  if (!body.vendorId || !body.vendorName || !body.inspectionDate || !body.itemName || !body.inspector) {
+    return NextResponse.json({ error: "필수 항목 누락" }, { status: 400 })
+  }
+
+  const inspection = await prisma.sourceInspection.create({
+    data: {
+      vendorId:       body.vendorId,
+      vendorName:     body.vendorName,
+      inspectionDate: new Date(body.inspectionDate),
+      location:       body.location,
+      itemName:       body.itemName,
+      itemCode:       body.itemCode,
+      quantity:       body.quantity,
+      sampleSize:     body.sampleSize,
+      result:         body.result as never,
+      defectCount:    body.defectCount,
+      defectRate:     body.defectRate,
+      inspector:      body.inspector,
+      notes:          body.notes,
+      status:         "CONFIRMED",
+      createdById:    session.user.id,
+    },
+  })
+  return NextResponse.json({ id: inspection.id }, { status: 201 })
+}
