@@ -15,19 +15,12 @@ export async function GET(_req: NextRequest, { params }: Params) {
   if (session instanceof NextResponse) return session;
 
   const { id } = await params;
+  // ownerHistory는 포함하지 않음 — 이력은 /owner-history 전용 엔드포인트(TEAM_LEAD 이상)에서만 제공
   const equipment = await prisma.equipment.findUnique({
     where: { id },
     include: {
-      testPlans:    { orderBy: { plannedStart: "asc" } },
-      owner:        { select: { id: true, name: true, department: true } },
-      ownerHistory: {
-        include: {
-          owner:     { select: { id: true, name: true, department: true } },
-          changedBy: { select: { id: true, name: true } },
-        },
-        orderBy: { changedAt: "desc" },
-        take: 10,
-      },
+      testPlans: { orderBy: { plannedStart: "asc" } },
+      owner:     { select: { id: true, name: true, department: true } },
     },
   });
 
