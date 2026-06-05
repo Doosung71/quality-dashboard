@@ -53,6 +53,10 @@ model User {
   // 수선 이력
   reportedRepairs         EquipmentRepair[]       @relation("RepairReportedBy")
 
+  // Q-Cost (클레임·NCR)
+  claims                  Claim[]                 @relation("ClaimCreator")
+  ncrs                    Ncr[]                   @relation("NcrCreator")
+
   // 공급망 관리
   supplierAudits          SupplierAudit[]         @relation("SupplierAuditCreator")
   incomingInspections     IncomingInspection[]    @relation("IncomingInspectionCreator")

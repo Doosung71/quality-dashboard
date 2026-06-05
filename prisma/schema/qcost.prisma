@@ -1,0 +1,74 @@
+// Q-Cost 관리 — 고객 클레임 & 부적합품(NCR)
+
+enum ClaimPriority {
+  High
+  Mid
+  Low
+}
+
+enum ClaimStatus {
+  Received
+  Investigating
+  Action
+  Verification
+  Closed
+}
+
+enum NcrSeverity {
+  Critical
+  Major
+  Minor
+}
+
+enum NcrStatus {
+  Issued
+  Disposition
+  CorrectiveAction
+  Verification
+  Closed
+}
+
+enum NcrDisposition {
+  Scrap
+  Rework
+  Concession
+  TBD
+}
+
+model Claim {
+  id          String        @id @default(cuid())
+  claimNo     String        @unique   // CLM-YYYY-NNN
+  title       String
+  customer    String
+  priority    ClaimPriority @default(Mid)
+  status      ClaimStatus   @default(Received)
+  receivedAt  DateTime
+  closedAt    DateTime?
+  assignee    String
+  description String
+  timeline    Json          @default("[]")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  createdBy   User          @relation("ClaimCreator", fields: [createdById], references: [id])
+  createdById String
+}
+
+model Ncr {
+  id          String         @id @default(cuid())
+  ncrNo       String         @unique   // NCR-YYYY-NNN
+  title       String
+  source      String
+  severity    NcrSeverity    @default(Major)
+  status      NcrStatus      @default(Issued)
+  disposition NcrDisposition @default(TBD)
+  issuedDate  DateTime
+  targetDate  DateTime
+  closedDate  DateTime?
+  assignee    String
+  description String
+  timeline    Json           @default("[]")
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  createdBy   User           @relation("NcrCreator", fields: [createdById], references: [id])
+  createdById String
+}

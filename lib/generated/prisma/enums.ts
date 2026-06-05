@@ -37,6 +37,56 @@ export const BoardCategory = {
 export type BoardCategory = (typeof BoardCategory)[keyof typeof BoardCategory]
 
 
+export const ClaimPriority = {
+  High: 'High',
+  Mid: 'Mid',
+  Low: 'Low'
+} as const
+
+export type ClaimPriority = (typeof ClaimPriority)[keyof typeof ClaimPriority]
+
+
+export const ClaimStatus = {
+  Received: 'Received',
+  Investigating: 'Investigating',
+  Action: 'Action',
+  Verification: 'Verification',
+  Closed: 'Closed'
+} as const
+
+export type ClaimStatus = (typeof ClaimStatus)[keyof typeof ClaimStatus]
+
+
+export const NcrSeverity = {
+  Critical: 'Critical',
+  Major: 'Major',
+  Minor: 'Minor'
+} as const
+
+export type NcrSeverity = (typeof NcrSeverity)[keyof typeof NcrSeverity]
+
+
+export const NcrStatus = {
+  Issued: 'Issued',
+  Disposition: 'Disposition',
+  CorrectiveAction: 'CorrectiveAction',
+  Verification: 'Verification',
+  Closed: 'Closed'
+} as const
+
+export type NcrStatus = (typeof NcrStatus)[keyof typeof NcrStatus]
+
+
+export const NcrDisposition = {
+  Scrap: 'Scrap',
+  Rework: 'Rework',
+  Concession: 'Concession',
+  TBD: 'TBD'
+} as const
+
+export type NcrDisposition = (typeof NcrDisposition)[keyof typeof NcrDisposition]
+
+
 export const AnalysisStatus = {
   DRAFT: 'DRAFT',
   REVIEWED: 'REVIEWED',

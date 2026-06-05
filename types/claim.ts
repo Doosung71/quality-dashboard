@@ -15,7 +15,8 @@ export interface ClaimTimelineItem {
 }
 
 export interface Claim {
-  id: string;
+  id: string;         // cuid — DB primary key, used in URLs
+  claimNo: string;    // "CLM-2026-001" — display number
   title: string;
   customer: string;
   priority: ClaimPriority;

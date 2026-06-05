@@ -263,6 +263,8 @@ export type UserWhereInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryListRelationFilter
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryListRelationFilter
   reportedRepairs?: Prisma.EquipmentRepairListRelationFilter
+  claims?: Prisma.ClaimListRelationFilter
+  ncrs?: Prisma.NcrListRelationFilter
   supplierAudits?: Prisma.SupplierAuditListRelationFilter
   incomingInspections?: Prisma.IncomingInspectionListRelationFilter
   sourceInspections?: Prisma.SourceInspectionListRelationFilter
@@ -299,6 +301,8 @@ export type UserOrderByWithRelationInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryOrderByRelationAggregateInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryOrderByRelationAggregateInput
   reportedRepairs?: Prisma.EquipmentRepairOrderByRelationAggregateInput
+  claims?: Prisma.ClaimOrderByRelationAggregateInput
+  ncrs?: Prisma.NcrOrderByRelationAggregateInput
   supplierAudits?: Prisma.SupplierAuditOrderByRelationAggregateInput
   incomingInspections?: Prisma.IncomingInspectionOrderByRelationAggregateInput
   sourceInspections?: Prisma.SourceInspectionOrderByRelationAggregateInput
@@ -338,6 +342,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryListRelationFilter
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryListRelationFilter
   reportedRepairs?: Prisma.EquipmentRepairListRelationFilter
+  claims?: Prisma.ClaimListRelationFilter
+  ncrs?: Prisma.NcrListRelationFilter
   supplierAudits?: Prisma.SupplierAuditListRelationFilter
   incomingInspections?: Prisma.IncomingInspectionListRelationFilter
   sourceInspections?: Prisma.SourceInspectionListRelationFilter
@@ -412,6 +418,8 @@ export type UserCreateInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -448,6 +456,8 @@ export type UserUncheckedCreateInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -484,6 +494,8 @@ export type UserUpdateInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -520,6 +532,8 @@ export type UserUncheckedUpdateInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -817,6 +831,34 @@ export type UserUpdateOneRequiredWithoutTestPlanOwnerHistoryAsChangerNestedInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTestPlanOwnerHistoryAsChangerInput, Prisma.UserUpdateWithoutTestPlanOwnerHistoryAsChangerInput>, Prisma.UserUncheckedUpdateWithoutTestPlanOwnerHistoryAsChangerInput>
 }
 
+export type UserCreateNestedOneWithoutClaimsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutClaimsInput, Prisma.UserUncheckedCreateWithoutClaimsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutClaimsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutClaimsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutClaimsInput, Prisma.UserUncheckedCreateWithoutClaimsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutClaimsInput
+  upsert?: Prisma.UserUpsertWithoutClaimsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutClaimsInput, Prisma.UserUpdateWithoutClaimsInput>, Prisma.UserUncheckedUpdateWithoutClaimsInput>
+}
+
+export type UserCreateNestedOneWithoutNcrsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNcrsInput, Prisma.UserUncheckedCreateWithoutNcrsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNcrsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutNcrsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNcrsInput, Prisma.UserUncheckedCreateWithoutNcrsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNcrsInput
+  upsert?: Prisma.UserUpsertWithoutNcrsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNcrsInput, Prisma.UserUpdateWithoutNcrsInput>, Prisma.UserUncheckedUpdateWithoutNcrsInput>
+}
+
 export type UserCreateNestedOneWithoutTendersInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutTendersInput, Prisma.UserUncheckedCreateWithoutTendersInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutTendersInput
@@ -973,6 +1015,8 @@ export type UserCreateWithoutFeedbacksInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -1008,6 +1052,8 @@ export type UserUncheckedCreateWithoutFeedbacksInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1059,6 +1105,8 @@ export type UserUpdateWithoutFeedbacksInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -1094,6 +1142,8 @@ export type UserUncheckedUpdateWithoutFeedbacksInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1129,6 +1179,8 @@ export type UserCreateWithoutFeedbackRepliesInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -1164,6 +1216,8 @@ export type UserUncheckedCreateWithoutFeedbackRepliesInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1215,6 +1269,8 @@ export type UserUpdateWithoutFeedbackRepliesInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -1250,6 +1306,8 @@ export type UserUncheckedUpdateWithoutFeedbackRepliesInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1285,6 +1343,8 @@ export type UserCreateWithoutBoardPostsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -1320,6 +1380,8 @@ export type UserUncheckedCreateWithoutBoardPostsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1371,6 +1433,8 @@ export type UserUpdateWithoutBoardPostsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -1406,6 +1470,8 @@ export type UserUncheckedUpdateWithoutBoardPostsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1441,6 +1507,8 @@ export type UserCreateWithoutBoardCommentsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -1476,6 +1544,8 @@ export type UserUncheckedCreateWithoutBoardCommentsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1527,6 +1597,8 @@ export type UserUpdateWithoutBoardCommentsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -1562,6 +1634,8 @@ export type UserUncheckedUpdateWithoutBoardCommentsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1597,6 +1671,8 @@ export type UserCreateWithoutOwnedEquipmentInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -1632,6 +1708,8 @@ export type UserUncheckedCreateWithoutOwnedEquipmentInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1683,6 +1761,8 @@ export type UserUpdateWithoutOwnedEquipmentInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -1718,6 +1798,8 @@ export type UserUncheckedUpdateWithoutOwnedEquipmentInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1753,6 +1835,8 @@ export type UserCreateWithoutOwnerHistoryAsOwnerInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -1788,6 +1872,8 @@ export type UserUncheckedCreateWithoutOwnerHistoryAsOwnerInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1828,6 +1914,8 @@ export type UserCreateWithoutOwnerHistoryAsChangerInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -1863,6 +1951,8 @@ export type UserUncheckedCreateWithoutOwnerHistoryAsChangerInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1914,6 +2004,8 @@ export type UserUpdateWithoutOwnerHistoryAsOwnerInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -1949,6 +2041,8 @@ export type UserUncheckedUpdateWithoutOwnerHistoryAsOwnerInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1995,6 +2089,8 @@ export type UserUpdateWithoutOwnerHistoryAsChangerInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -2030,6 +2126,8 @@ export type UserUncheckedUpdateWithoutOwnerHistoryAsChangerInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -2065,6 +2163,8 @@ export type UserCreateWithoutOwnedTestPlansInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -2100,6 +2200,8 @@ export type UserUncheckedCreateWithoutOwnedTestPlansInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -2151,6 +2253,8 @@ export type UserUpdateWithoutOwnedTestPlansInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -2186,6 +2290,8 @@ export type UserUncheckedUpdateWithoutOwnedTestPlansInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -2221,6 +2327,8 @@ export type UserCreateWithoutReportedRepairsInput = {
   ownedTestPlans?: Prisma.TestPlanCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -2256,6 +2364,8 @@ export type UserUncheckedCreateWithoutReportedRepairsInput = {
   ownedTestPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -2307,6 +2417,8 @@ export type UserUpdateWithoutReportedRepairsInput = {
   ownedTestPlans?: Prisma.TestPlanUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -2342,6 +2454,8 @@ export type UserUncheckedUpdateWithoutReportedRepairsInput = {
   ownedTestPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -2377,6 +2491,8 @@ export type UserCreateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   ownedTestPlans?: Prisma.TestPlanCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -2412,6 +2528,8 @@ export type UserUncheckedCreateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   ownedTestPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -2452,6 +2570,8 @@ export type UserCreateWithoutTestPlanOwnerHistoryAsChangerInput = {
   ownedTestPlans?: Prisma.TestPlanCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -2487,6 +2607,8 @@ export type UserUncheckedCreateWithoutTestPlanOwnerHistoryAsChangerInput = {
   ownedTestPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -2538,6 +2660,8 @@ export type UserUpdateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   ownedTestPlans?: Prisma.TestPlanUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -2573,6 +2697,8 @@ export type UserUncheckedUpdateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   ownedTestPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -2619,6 +2745,8 @@ export type UserUpdateWithoutTestPlanOwnerHistoryAsChangerInput = {
   ownedTestPlans?: Prisma.TestPlanUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -2654,6 +2782,336 @@ export type UserUncheckedUpdateWithoutTestPlanOwnerHistoryAsChangerInput = {
   ownedTestPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
+  supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
+  sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutClaimsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
+  ownedTestPlans?: Prisma.TestPlanCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
+  reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
+  supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
+  incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
+  sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutClaimsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  ownedTestPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
+  supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
+  sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutClaimsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutClaimsInput, Prisma.UserUncheckedCreateWithoutClaimsInput>
+}
+
+export type UserUpsertWithoutClaimsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutClaimsInput, Prisma.UserUncheckedUpdateWithoutClaimsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutClaimsInput, Prisma.UserUncheckedCreateWithoutClaimsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutClaimsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutClaimsInput, Prisma.UserUncheckedUpdateWithoutClaimsInput>
+}
+
+export type UserUpdateWithoutClaimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  ownedTestPlans?: Prisma.TestPlanUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
+  supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
+  incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
+  sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutClaimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  ownedTestPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
+  supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
+  sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutNcrsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
+  ownedTestPlans?: Prisma.TestPlanCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
+  reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
+  incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
+  sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutNcrsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  ownedTestPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
+  sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutNcrsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutNcrsInput, Prisma.UserUncheckedCreateWithoutNcrsInput>
+}
+
+export type UserUpsertWithoutNcrsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutNcrsInput, Prisma.UserUncheckedUpdateWithoutNcrsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutNcrsInput, Prisma.UserUncheckedCreateWithoutNcrsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutNcrsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutNcrsInput, Prisma.UserUncheckedUpdateWithoutNcrsInput>
+}
+
+export type UserUpdateWithoutNcrsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  ownedTestPlans?: Prisma.TestPlanUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
+  incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
+  sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutNcrsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  ownedTestPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -2689,6 +3147,8 @@ export type UserCreateWithoutTendersInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -2724,6 +3184,8 @@ export type UserUncheckedCreateWithoutTendersInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -2775,6 +3237,8 @@ export type UserUpdateWithoutTendersInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -2810,6 +3274,8 @@ export type UserUncheckedUpdateWithoutTendersInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -2845,6 +3311,8 @@ export type UserCreateWithoutReviewActionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -2880,6 +3348,8 @@ export type UserUncheckedCreateWithoutReviewActionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -2931,6 +3401,8 @@ export type UserUpdateWithoutReviewActionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -2966,6 +3438,8 @@ export type UserUncheckedUpdateWithoutReviewActionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -3001,6 +3475,8 @@ export type UserCreateWithoutCommentsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -3036,6 +3512,8 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -3087,6 +3565,8 @@ export type UserUpdateWithoutCommentsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -3122,6 +3602,8 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -3157,6 +3639,8 @@ export type UserCreateWithoutAwardedProjectsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -3192,6 +3676,8 @@ export type UserUncheckedCreateWithoutAwardedProjectsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -3243,6 +3729,8 @@ export type UserUpdateWithoutAwardedProjectsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -3278,6 +3766,8 @@ export type UserUncheckedUpdateWithoutAwardedProjectsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -3313,6 +3803,8 @@ export type UserCreateWithoutContractReviewActionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -3348,6 +3840,8 @@ export type UserUncheckedCreateWithoutContractReviewActionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -3399,6 +3893,8 @@ export type UserUpdateWithoutContractReviewActionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -3434,6 +3930,8 @@ export type UserUncheckedUpdateWithoutContractReviewActionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -3469,6 +3967,8 @@ export type UserCreateWithoutContractCommentsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
@@ -3504,6 +4004,8 @@ export type UserUncheckedCreateWithoutContractCommentsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -3555,6 +4057,8 @@ export type UserUpdateWithoutContractCommentsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
@@ -3590,6 +4094,8 @@ export type UserUncheckedUpdateWithoutContractCommentsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -3626,6 +4132,8 @@ export type UserCreateWithoutSupplierAuditsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
 }
@@ -3661,6 +4169,8 @@ export type UserUncheckedCreateWithoutSupplierAuditsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
 }
@@ -3712,6 +4222,8 @@ export type UserUpdateWithoutSupplierAuditsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
 }
@@ -3747,6 +4259,8 @@ export type UserUncheckedUpdateWithoutSupplierAuditsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
 }
@@ -3782,6 +4296,8 @@ export type UserCreateWithoutIncomingInspectionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
 }
@@ -3817,6 +4333,8 @@ export type UserUncheckedCreateWithoutIncomingInspectionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
 }
@@ -3868,6 +4386,8 @@ export type UserUpdateWithoutIncomingInspectionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
 }
@@ -3903,6 +4423,8 @@ export type UserUncheckedUpdateWithoutIncomingInspectionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
 }
@@ -3938,6 +4460,8 @@ export type UserCreateWithoutSourceInspectionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
 }
@@ -3973,6 +4497,8 @@ export type UserUncheckedCreateWithoutSourceInspectionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
   supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
 }
@@ -4024,6 +4550,8 @@ export type UserUpdateWithoutSourceInspectionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
 }
@@ -4059,6 +4587,8 @@ export type UserUncheckedUpdateWithoutSourceInspectionsInput = {
   testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
   supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
 }
@@ -4086,6 +4616,8 @@ export type UserCountOutputType = {
   testPlanOwnerHistoryAsOwner: number
   testPlanOwnerHistoryAsChanger: number
   reportedRepairs: number
+  claims: number
+  ncrs: number
   supplierAudits: number
   incomingInspections: number
   sourceInspections: number
@@ -4109,6 +4641,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   testPlanOwnerHistoryAsOwner?: boolean | UserCountOutputTypeCountTestPlanOwnerHistoryAsOwnerArgs
   testPlanOwnerHistoryAsChanger?: boolean | UserCountOutputTypeCountTestPlanOwnerHistoryAsChangerArgs
   reportedRepairs?: boolean | UserCountOutputTypeCountReportedRepairsArgs
+  claims?: boolean | UserCountOutputTypeCountClaimsArgs
+  ncrs?: boolean | UserCountOutputTypeCountNcrsArgs
   supplierAudits?: boolean | UserCountOutputTypeCountSupplierAuditsArgs
   incomingInspections?: boolean | UserCountOutputTypeCountIncomingInspectionsArgs
   sourceInspections?: boolean | UserCountOutputTypeCountSourceInspectionsArgs
@@ -4246,6 +4780,20 @@ export type UserCountOutputTypeCountReportedRepairsArgs<ExtArgs extends runtime.
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountClaimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClaimWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountNcrsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NcrWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountSupplierAuditsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.SupplierAuditWhereInput
 }
@@ -4296,6 +4844,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   testPlanOwnerHistoryAsOwner?: boolean | Prisma.User$testPlanOwnerHistoryAsOwnerArgs<ExtArgs>
   testPlanOwnerHistoryAsChanger?: boolean | Prisma.User$testPlanOwnerHistoryAsChangerArgs<ExtArgs>
   reportedRepairs?: boolean | Prisma.User$reportedRepairsArgs<ExtArgs>
+  claims?: boolean | Prisma.User$claimsArgs<ExtArgs>
+  ncrs?: boolean | Prisma.User$ncrsArgs<ExtArgs>
   supplierAudits?: boolean | Prisma.User$supplierAuditsArgs<ExtArgs>
   incomingInspections?: boolean | Prisma.User$incomingInspectionsArgs<ExtArgs>
   sourceInspections?: boolean | Prisma.User$sourceInspectionsArgs<ExtArgs>
@@ -4369,6 +4919,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   testPlanOwnerHistoryAsOwner?: boolean | Prisma.User$testPlanOwnerHistoryAsOwnerArgs<ExtArgs>
   testPlanOwnerHistoryAsChanger?: boolean | Prisma.User$testPlanOwnerHistoryAsChangerArgs<ExtArgs>
   reportedRepairs?: boolean | Prisma.User$reportedRepairsArgs<ExtArgs>
+  claims?: boolean | Prisma.User$claimsArgs<ExtArgs>
+  ncrs?: boolean | Prisma.User$ncrsArgs<ExtArgs>
   supplierAudits?: boolean | Prisma.User$supplierAuditsArgs<ExtArgs>
   incomingInspections?: boolean | Prisma.User$incomingInspectionsArgs<ExtArgs>
   sourceInspections?: boolean | Prisma.User$sourceInspectionsArgs<ExtArgs>
@@ -4397,6 +4949,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     testPlanOwnerHistoryAsOwner: Prisma.$TestPlanOwnerHistoryPayload<ExtArgs>[]
     testPlanOwnerHistoryAsChanger: Prisma.$TestPlanOwnerHistoryPayload<ExtArgs>[]
     reportedRepairs: Prisma.$EquipmentRepairPayload<ExtArgs>[]
+    claims: Prisma.$ClaimPayload<ExtArgs>[]
+    ncrs: Prisma.$NcrPayload<ExtArgs>[]
     supplierAudits: Prisma.$SupplierAuditPayload<ExtArgs>[]
     incomingInspections: Prisma.$IncomingInspectionPayload<ExtArgs>[]
     sourceInspections: Prisma.$SourceInspectionPayload<ExtArgs>[]
@@ -4826,6 +5380,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   testPlanOwnerHistoryAsOwner<T extends Prisma.User$testPlanOwnerHistoryAsOwnerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$testPlanOwnerHistoryAsOwnerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TestPlanOwnerHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   testPlanOwnerHistoryAsChanger<T extends Prisma.User$testPlanOwnerHistoryAsChangerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$testPlanOwnerHistoryAsChangerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TestPlanOwnerHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reportedRepairs<T extends Prisma.User$reportedRepairsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reportedRepairsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentRepairPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  claims<T extends Prisma.User$claimsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$claimsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClaimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ncrs<T extends Prisma.User$ncrsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ncrsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NcrPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   supplierAudits<T extends Prisma.User$supplierAuditsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$supplierAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SupplierAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   incomingInspections<T extends Prisma.User$incomingInspectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$incomingInspectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IncomingInspectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sourceInspections<T extends Prisma.User$sourceInspectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sourceInspectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SourceInspectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5669,6 +6225,54 @@ export type User$reportedRepairsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.EquipmentRepairScalarFieldEnum | Prisma.EquipmentRepairScalarFieldEnum[]
+}
+
+/**
+ * User.claims
+ */
+export type User$claimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Claim
+   */
+  select?: Prisma.ClaimSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Claim
+   */
+  omit?: Prisma.ClaimOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClaimInclude<ExtArgs> | null
+  where?: Prisma.ClaimWhereInput
+  orderBy?: Prisma.ClaimOrderByWithRelationInput | Prisma.ClaimOrderByWithRelationInput[]
+  cursor?: Prisma.ClaimWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ClaimScalarFieldEnum | Prisma.ClaimScalarFieldEnum[]
+}
+
+/**
+ * User.ncrs
+ */
+export type User$ncrsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Ncr
+   */
+  select?: Prisma.NcrSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Ncr
+   */
+  omit?: Prisma.NcrOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NcrInclude<ExtArgs> | null
+  where?: Prisma.NcrWhereInput
+  orderBy?: Prisma.NcrOrderByWithRelationInput | Prisma.NcrOrderByWithRelationInput[]
+  cursor?: Prisma.NcrWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NcrScalarFieldEnum | Prisma.NcrScalarFieldEnum[]
 }
 
 /**

@@ -394,6 +394,8 @@ export const ModelName = {
   TestPlan: 'TestPlan',
   EquipmentRepair: 'EquipmentRepair',
   TestPlanOwnerHistory: 'TestPlanOwnerHistory',
+  Claim: 'Claim',
+  Ncr: 'Ncr',
   Tender: 'Tender',
   TenderDocument: 'TenderDocument',
   Analysis: 'Analysis',
@@ -426,7 +428,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "supplierAudit" | "auditFinding" | "incomingInspection" | "sourceInspection"
+    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "claim" | "ncr" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "supplierAudit" | "auditFinding" | "incomingInspection" | "sourceInspection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1167,6 +1169,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TestPlanOwnerHistoryCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TestPlanOwnerHistoryCountAggregateOutputType> | number
+        }
+      }
+    }
+    Claim: {
+      payload: Prisma.$ClaimPayload<ExtArgs>
+      fields: Prisma.ClaimFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ClaimFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ClaimFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>
+        }
+        findFirst: {
+          args: Prisma.ClaimFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ClaimFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>
+        }
+        findMany: {
+          args: Prisma.ClaimFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>[]
+        }
+        create: {
+          args: Prisma.ClaimCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>
+        }
+        createMany: {
+          args: Prisma.ClaimCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ClaimCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>[]
+        }
+        delete: {
+          args: Prisma.ClaimDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>
+        }
+        update: {
+          args: Prisma.ClaimUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>
+        }
+        deleteMany: {
+          args: Prisma.ClaimDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ClaimUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ClaimUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>[]
+        }
+        upsert: {
+          args: Prisma.ClaimUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>
+        }
+        aggregate: {
+          args: Prisma.ClaimAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClaim>
+        }
+        groupBy: {
+          args: Prisma.ClaimGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClaimGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ClaimCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClaimCountAggregateOutputType> | number
+        }
+      }
+    }
+    Ncr: {
+      payload: Prisma.$NcrPayload<ExtArgs>
+      fields: Prisma.NcrFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NcrFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NcrPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NcrFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NcrPayload>
+        }
+        findFirst: {
+          args: Prisma.NcrFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NcrPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NcrFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NcrPayload>
+        }
+        findMany: {
+          args: Prisma.NcrFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NcrPayload>[]
+        }
+        create: {
+          args: Prisma.NcrCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NcrPayload>
+        }
+        createMany: {
+          args: Prisma.NcrCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NcrCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NcrPayload>[]
+        }
+        delete: {
+          args: Prisma.NcrDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NcrPayload>
+        }
+        update: {
+          args: Prisma.NcrUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NcrPayload>
+        }
+        deleteMany: {
+          args: Prisma.NcrDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NcrUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NcrUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NcrPayload>[]
+        }
+        upsert: {
+          args: Prisma.NcrUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NcrPayload>
+        }
+        aggregate: {
+          args: Prisma.NcrAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNcr>
+        }
+        groupBy: {
+          args: Prisma.NcrGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NcrGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NcrCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NcrCountAggregateOutputType> | number
         }
       }
     }
@@ -2638,6 +2788,48 @@ export const TestPlanOwnerHistoryScalarFieldEnum = {
 export type TestPlanOwnerHistoryScalarFieldEnum = (typeof TestPlanOwnerHistoryScalarFieldEnum)[keyof typeof TestPlanOwnerHistoryScalarFieldEnum]
 
 
+export const ClaimScalarFieldEnum = {
+  id: 'id',
+  claimNo: 'claimNo',
+  title: 'title',
+  customer: 'customer',
+  priority: 'priority',
+  status: 'status',
+  receivedAt: 'receivedAt',
+  closedAt: 'closedAt',
+  assignee: 'assignee',
+  description: 'description',
+  timeline: 'timeline',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type ClaimScalarFieldEnum = (typeof ClaimScalarFieldEnum)[keyof typeof ClaimScalarFieldEnum]
+
+
+export const NcrScalarFieldEnum = {
+  id: 'id',
+  ncrNo: 'ncrNo',
+  title: 'title',
+  source: 'source',
+  severity: 'severity',
+  status: 'status',
+  disposition: 'disposition',
+  issuedDate: 'issuedDate',
+  targetDate: 'targetDate',
+  closedDate: 'closedDate',
+  assignee: 'assignee',
+  description: 'description',
+  timeline: 'timeline',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type NcrScalarFieldEnum = (typeof NcrScalarFieldEnum)[keyof typeof NcrScalarFieldEnum]
+
+
 export const TenderScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -3080,6 +3272,76 @@ export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
 
 
 /**
+ * Reference to a field of type 'ClaimPriority'
+ */
+export type EnumClaimPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClaimPriority'>
+    
+
+
+/**
+ * Reference to a field of type 'ClaimPriority[]'
+ */
+export type ListEnumClaimPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClaimPriority[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ClaimStatus'
+ */
+export type EnumClaimStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClaimStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ClaimStatus[]'
+ */
+export type ListEnumClaimStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClaimStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'NcrSeverity'
+ */
+export type EnumNcrSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NcrSeverity'>
+    
+
+
+/**
+ * Reference to a field of type 'NcrSeverity[]'
+ */
+export type ListEnumNcrSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NcrSeverity[]'>
+    
+
+
+/**
+ * Reference to a field of type 'NcrStatus'
+ */
+export type EnumNcrStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NcrStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'NcrStatus[]'
+ */
+export type ListEnumNcrStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NcrStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'NcrDisposition'
+ */
+export type EnumNcrDispositionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NcrDisposition'>
+    
+
+
+/**
+ * Reference to a field of type 'NcrDisposition[]'
+ */
+export type ListEnumNcrDispositionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NcrDisposition[]'>
+    
+
+
+/**
  * Reference to a field of type 'AnalysisStatus'
  */
 export type EnumAnalysisStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnalysisStatus'>
@@ -3352,6 +3614,8 @@ export type GlobalOmitConfig = {
   testPlan?: Prisma.TestPlanOmit
   equipmentRepair?: Prisma.EquipmentRepairOmit
   testPlanOwnerHistory?: Prisma.TestPlanOwnerHistoryOmit
+  claim?: Prisma.ClaimOmit
+  ncr?: Prisma.NcrOmit
   tender?: Prisma.TenderOmit
   tenderDocument?: Prisma.TenderDocumentOmit
   analysis?: Prisma.AnalysisOmit

@@ -61,6 +61,8 @@ export const ModelName = {
   TestPlan: 'TestPlan',
   EquipmentRepair: 'EquipmentRepair',
   TestPlanOwnerHistory: 'TestPlanOwnerHistory',
+  Claim: 'Claim',
+  Ncr: 'Ncr',
   Tender: 'Tender',
   TenderDocument: 'TenderDocument',
   Analysis: 'Analysis',
@@ -265,6 +267,48 @@ export const TestPlanOwnerHistoryScalarFieldEnum = {
 } as const
 
 export type TestPlanOwnerHistoryScalarFieldEnum = (typeof TestPlanOwnerHistoryScalarFieldEnum)[keyof typeof TestPlanOwnerHistoryScalarFieldEnum]
+
+
+export const ClaimScalarFieldEnum = {
+  id: 'id',
+  claimNo: 'claimNo',
+  title: 'title',
+  customer: 'customer',
+  priority: 'priority',
+  status: 'status',
+  receivedAt: 'receivedAt',
+  closedAt: 'closedAt',
+  assignee: 'assignee',
+  description: 'description',
+  timeline: 'timeline',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type ClaimScalarFieldEnum = (typeof ClaimScalarFieldEnum)[keyof typeof ClaimScalarFieldEnum]
+
+
+export const NcrScalarFieldEnum = {
+  id: 'id',
+  ncrNo: 'ncrNo',
+  title: 'title',
+  source: 'source',
+  severity: 'severity',
+  status: 'status',
+  disposition: 'disposition',
+  issuedDate: 'issuedDate',
+  targetDate: 'targetDate',
+  closedDate: 'closedDate',
+  assignee: 'assignee',
+  description: 'description',
+  timeline: 'timeline',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type NcrScalarFieldEnum = (typeof NcrScalarFieldEnum)[keyof typeof NcrScalarFieldEnum]
 
 
 export const TenderScalarFieldEnum = {

@@ -68,6 +68,16 @@ export type EquipmentRepair = Prisma.EquipmentRepairModel
  */
 export type TestPlanOwnerHistory = Prisma.TestPlanOwnerHistoryModel
 /**
+ * Model Claim
+ * 
+ */
+export type Claim = Prisma.ClaimModel
+/**
+ * Model Ncr
+ * 
+ */
+export type Ncr = Prisma.NcrModel
+/**
  * Model Tender
  * 
  */

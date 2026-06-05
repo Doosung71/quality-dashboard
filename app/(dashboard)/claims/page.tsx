@@ -1,12 +1,29 @@
 import { Suspense } from "react";
-import { claimsData } from "@/data/claims.data";
+import { prisma } from "@/lib/prisma";
 import { ClaimsView } from "@/components/claims/claims-view";
 import { requireActivePageSession } from "@/lib/session-guard";
 import { canWrite } from "@/lib/permissions";
+import type { Claim, ClaimTimelineItem } from "@/types/claim";
 
 export default async function ClaimsPage() {
   const session = await requireActivePageSession();
   const editable = canWrite(session.user.role, "/claims");
+
+  const raw = await prisma.claim.findMany({ orderBy: { receivedAt: "desc" } });
+
+  const claims: Claim[] = raw.map(c => ({
+    id:          c.id,
+    claimNo:     c.claimNo,
+    title:       c.title,
+    customer:    c.customer,
+    priority:    c.priority as Claim["priority"],
+    status:      c.status   as Claim["status"],
+    receivedAt:  c.receivedAt.toISOString().slice(0, 10),
+    closedAt:    c.closedAt?.toISOString().slice(0, 10),
+    assignee:    c.assignee,
+    description: c.description,
+    timeline:    (c.timeline as unknown as ClaimTimelineItem[]) ?? [],
+  }));
 
   return (
     <div className="flex flex-col gap-6">
@@ -20,7 +37,11 @@ export default async function ClaimsPage() {
         )}
       </div>
       <Suspense>
-        <ClaimsView data={claimsData} canEdit={editable} />
+        <ClaimsView
+          data={{ claims }}
+          canEdit={editable}
+          userName={session.user.name ?? undefined}
+        />
       </Suspense>
     </div>
   );

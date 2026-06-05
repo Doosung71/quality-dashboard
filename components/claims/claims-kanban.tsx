@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { Claim, ClaimStatus } from "@/types/claim";
 import { ClaimPriorityBadge } from "./claim-badges";
@@ -12,19 +13,19 @@ const COLUMNS: { status: ClaimStatus; label: string; color: string }[] = [
   { status: "Closed",        label: "종결",   color: "bg-emerald-500" },
 ];
 
-function ClaimCard({ claim, onClick }: { claim: Claim; onClick: () => void }) {
+function ClaimCard({ claim }: { claim: Claim }) {
   return (
-    <div 
-      onClick={onClick}
-      className="bg-white rounded-lg border border-slate-200 p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+    <Link
+      href={`/claims/${claim.id}`}
+      className="block bg-white rounded-lg border border-slate-200 p-3 shadow-sm hover:shadow-md hover:border-blue-300 transition-all"
     >
       <div className="flex justify-between items-start mb-2">
         <ClaimPriorityBadge priority={claim.priority} />
-        <span className="text-[10px] text-slate-400 font-mono">{claim.id}</span>
+        <span className="text-[10px] text-slate-400 font-mono">{claim.claimNo}</span>
       </div>
-      <h4 className="text-sm font-bold text-slate-800 leading-tight mb-1">{claim.title}</h4>
+      <h4 className="text-sm font-bold text-slate-800 leading-tight mb-1 group-hover:text-blue-700">{claim.title}</h4>
       <p className="text-xs text-slate-500 mb-3">{claim.customer}</p>
-      
+
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <div className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">
@@ -34,11 +35,11 @@ function ClaimCard({ claim, onClick }: { claim: Claim; onClick: () => void }) {
         </div>
         <span className="text-[10px] text-slate-400">{claim.receivedAt.slice(5).replace("-", "/")}</span>
       </div>
-    </div>
+    </Link>
   );
 }
 
-export function ClaimsKanban({ claims, onSelectClaim }: { claims: Claim[]; onSelectClaim: (id: string) => void }) {
+export function ClaimsKanban({ claims }: { claims: Claim[] }) {
   return (
     <div className="flex gap-4 overflow-x-auto pb-4 min-h-[600px]">
       {COLUMNS.map((col) => {
@@ -54,14 +55,10 @@ export function ClaimsKanban({ claims, onSelectClaim }: { claims: Claim[]; onSel
                 </span>
               </div>
             </div>
-            
+
             <div className="bg-slate-50/50 rounded-xl p-2 flex-1 flex flex-col gap-2 border border-dashed border-slate-200">
               {colClaims.map((claim) => (
-                <ClaimCard 
-                  key={claim.id} 
-                  claim={claim} 
-                  onClick={() => onSelectClaim(claim.id)} 
-                />
+                <ClaimCard key={claim.id} claim={claim} />
               ))}
               {colClaims.length === 0 && (
                 <div className="flex-1 flex items-center justify-center border border-dashed border-slate-200 rounded-lg">

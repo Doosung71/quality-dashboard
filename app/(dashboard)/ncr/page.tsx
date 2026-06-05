@@ -1,12 +1,31 @@
 import { Suspense } from "react";
-import { ncrsData } from "@/data/ncr.data";
+import { prisma } from "@/lib/prisma";
 import { NCRView } from "@/components/ncr/ncr-view";
 import { requireActivePageSession } from "@/lib/session-guard";
 import { canWrite } from "@/lib/permissions";
+import type { NCR, NCRTimelineItem } from "@/types/ncr";
 
 export default async function NCRPage() {
   const session = await requireActivePageSession();
   const editable = canWrite(session.user.role, "/ncr");
+
+  const raw = await prisma.ncr.findMany({ orderBy: { issuedDate: "desc" } });
+
+  const ncrs: NCR[] = raw.map(n => ({
+    id:          n.id,
+    ncrNo:       n.ncrNo,
+    title:       n.title,
+    source:      n.source,
+    severity:    n.severity    as NCR["severity"],
+    status:      n.status      as NCR["status"],
+    disposition: n.disposition as NCR["disposition"],
+    issuedDate:  n.issuedDate.toISOString().slice(0, 10),
+    targetDate:  n.targetDate.toISOString().slice(0, 10),
+    closedDate:  n.closedDate?.toISOString().slice(0, 10),
+    assignee:    n.assignee,
+    description: n.description,
+    timeline:    (n.timeline as unknown as NCRTimelineItem[]) ?? [],
+  }));
 
   return (
     <div className="flex flex-col gap-6">
@@ -20,7 +39,7 @@ export default async function NCRPage() {
         )}
       </div>
       <Suspense fallback={<div className="text-sm text-slate-500">부적합 데이터를 불러오는 중...</div>}>
-        <NCRView data={ncrsData} canEdit={editable} userName={session.user.name ?? undefined} />
+        <NCRView data={{ ncrs }} canEdit={editable} userName={session.user.name ?? undefined} />
       </Suspense>
     </div>
   );

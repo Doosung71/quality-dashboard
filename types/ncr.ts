@@ -8,7 +8,7 @@ export const NCR_STATUSES = [
 
 export type NCRStatus = (typeof NCR_STATUSES)[number];
 export type NCRSeverity = "Minor" | "Major" | "Critical";
-export type NCRDispositionType = "Scrap" | "Rework" | "Concession" | "TBD"; // 스크랩, 재작업, 특채, 미정
+export type NCRDispositionType = "Scrap" | "Rework" | "Concession" | "TBD";
 
 export interface NCRTimelineItem {
   date: string;
@@ -17,9 +17,10 @@ export interface NCRTimelineItem {
 }
 
 export interface NCR {
-  id: string;          // NCR-2026-XXX
+  id: string;         // cuid — DB primary key, used in URLs
+  ncrNo: string;      // "NCR-2026-001" — display number
   title: string;
-  source: string;      // 구미 1공장, 동해 2공장, 수입검사 등
+  source: string;
   severity: NCRSeverity;
   status: NCRStatus;
   disposition: NCRDispositionType;

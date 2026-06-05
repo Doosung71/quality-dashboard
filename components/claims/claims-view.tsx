@@ -3,18 +3,20 @@
 import { useState } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import type { ClaimsData, Claim, ClaimPriority, ClaimStatus } from "@/types/claim";
-
-const VALID_PRIORITIES: (ClaimPriority | "All")[] = ["All", "High", "Mid", "Low"];
+import type { ClaimsData, Claim, ClaimPriority } from "@/types/claim";
 import { ClaimsKpi } from "./claims-kpi";
 import { ClaimsKanban } from "./claims-kanban";
-import { ClaimDetail } from "./claim-detail";
+import { X, Plus } from "lucide-react";
 
-const STAGE_LABELS: Record<ClaimStatus, string> = {
-  Received: "접수", Investigating: "조사", Action: "대책", Verification: "검증", Closed: "종결",
-};
+const VALID_PRIORITIES: (ClaimPriority | "All")[] = ["All", "High", "Mid", "Low"];
 
-export function ClaimsView({ data, canEdit = true }: { data: ClaimsData; canEdit?: boolean }) {
+interface ClaimsViewProps {
+  data: ClaimsData;
+  canEdit?: boolean;
+  userName?: string;
+}
+
+export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -25,47 +27,59 @@ export function ClaimsView({ data, canEdit = true }: { data: ClaimsData; canEdit
     ? (rawPriority as ClaimPriority | "All")
     : "All";
 
-  const [claims, setClaims] = useState<Claim[]>(data.claims);
-  const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null);
+  const [claims] = useState<Claim[]>(data.claims);
+
+  // 신규 클레임 등록 폼
+  const [showForm, setShowForm] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
+  const today = new Date().toISOString().slice(0, 10);
+  const [form, setForm] = useState({
+    title: "", customer: "", priority: "Mid", assignee: userName ?? "", description: "", receivedAt: today,
+  });
 
   const setSearchTerm = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    if (value) params.set("q", value);
-    else params.delete("q");
+    if (value) params.set("q", value); else params.delete("q");
     router.replace(`${pathname}?${params.toString()}`);
   };
 
   const setPriorityFilter = (value: ClaimPriority | "All") => {
     const params = new URLSearchParams(searchParams.toString());
-    if (value !== "All") params.set("priority", value);
-    else params.delete("priority");
+    if (value !== "All") params.set("priority", value); else params.delete("priority");
     router.replace(`${pathname}?${params.toString()}`);
   };
 
-  const handleMoveStage = (id: string, newStatus: ClaimStatus) => {
-    const d = new Date();
-    const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-    setClaims(prev => prev.map(c => {
-      if (c.id !== id) return c;
-      return {
-        ...c,
-        status: newStatus,
-        closedAt: newStatus === "Closed" ? today : undefined,
-        timeline: [...(c.timeline ?? []), { date: today, action: `단계 이동 → ${STAGE_LABELS[newStatus]}` }],
-      };
-    }));
-  };
-
   const filteredClaims = claims.filter(c => {
-    const matchesSearch = c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         c.customer.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = !searchTerm ||
+      c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.customer.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesPriority = priorityFilter === "All" || c.priority === priorityFilter;
     return matchesSearch && matchesPriority;
   });
 
-  const selectedClaim = selectedClaimId
-    ? claims.find(c => c.id === selectedClaimId) ?? null
-    : null;
+  async function handleCreate() {
+    if (!form.title.trim() || !form.customer.trim() || !form.description.trim()) {
+      setFormError("제목, 고객사, 상세 내용은 필수입니다."); return;
+    }
+    setSubmitting(true); setFormError("");
+    try {
+      const res = await fetch("/api/claims", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("등록 실패");
+      setShowForm(false);
+      setForm({ title: "", customer: "", priority: "Mid", assignee: userName ?? "", description: "", receivedAt: today });
+      router.refresh();
+    } catch {
+      setFormError("등록 중 오류가 발생했습니다.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const inputCls = "w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs transition-all";
 
   return (
     <div className="space-y-6 relative">
@@ -75,61 +89,107 @@ export function ClaimsView({ data, canEdit = true }: { data: ClaimsData; canEdit
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <h2 className="text-lg font-semibold text-slate-800">클레임 진행 보드</h2>
-            <p className="text-xs text-slate-400 mt-1">
-              각 단계별 적체 건수를 확인하고, 지연 이슈를 집중 관리하십시오.
-            </p>
+            <p className="text-xs text-slate-400 mt-1">각 단계별 적체 건수를 확인하고, 지연 이슈를 집중 관리하십시오.</p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <div className="relative">
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
-                type="text"
-                placeholder="클레임명, 고객사 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all min-w-[240px]"
+                type="text" placeholder="클레임명, 고객사 검색..."
+                value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all min-w-[220px]"
               />
             </div>
 
             <div className="flex bg-slate-100 p-1 rounded-lg">
               {(["All", "High", "Mid", "Low"] as const).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPriorityFilter(p)}
-                  className={cn(
-                    "px-3 py-1.5 text-xs font-medium rounded-md transition-all",
-                    priorityFilter === p
-                      ? "bg-white text-slate-900 shadow-sm"
-                      : "text-slate-500 hover:text-slate-700"
-                  )}
-                >
+                <button key={p} onClick={() => setPriorityFilter(p)}
+                  className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-all",
+                    priorityFilter === p ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                  )}>
                   {p === "All" ? "전체" : p === "High" ? "높음" : p === "Mid" ? "보통" : "낮음"}
                 </button>
               ))}
             </div>
+
+            {canEdit && (
+              <button onClick={() => { setFormError(""); setShowForm(true); }}
+                className="flex items-center gap-1.5 px-3 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 transition-all shadow-sm">
+                <Plus className="w-3.5 h-3.5" /> 새 클레임 등록
+              </button>
+            )}
           </div>
         </div>
 
-        <ClaimsKanban
-          claims={filteredClaims}
-          onSelectClaim={(id) => setSelectedClaimId(id)}
-        />
+        <ClaimsKanban claims={filteredClaims} />
       </div>
 
-      {selectedClaimId && (
-        <div
-          className="fixed inset-0 bg-slate-900/20 backdrop-blur-[2px] z-40"
-          onClick={() => setSelectedClaimId(null)}
-        />
+      {/* 신규 등록 모달 */}
+      {showForm && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-100 flex flex-col max-h-[90vh]">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
+              <h3 className="font-extrabold text-slate-900 text-base">신규 고객 클레임 등록</h3>
+              <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4 overflow-y-auto flex-1 text-sm">
+              <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-700">
+                <span className="font-bold">자동입력:</span> 접수일 <strong>{today}</strong> · 초기 상태 <strong>접수(Received)</strong>
+              </div>
+              {formError && <div className="bg-rose-50 border border-rose-200 rounded-xl p-3 text-xs text-rose-700 font-medium">{formError}</div>}
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">클레임 제목 <span className="text-rose-500">*</span></label>
+                <input type="text" placeholder="예: A사 변전소 케이블 피복 균열" value={form.title}
+                  onChange={e => setForm(f => ({...f, title: e.target.value}))} className={inputCls} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">고객사 <span className="text-rose-500">*</span></label>
+                  <input type="text" placeholder="예: A-Power" value={form.customer}
+                    onChange={e => setForm(f => ({...f, customer: e.target.value}))} className={inputCls} />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">중요도</label>
+                  <select value={form.priority} onChange={e => setForm(f => ({...f, priority: e.target.value}))} className={inputCls + " bg-white"}>
+                    <option value="High">높음 (High)</option>
+                    <option value="Mid">보통 (Mid)</option>
+                    <option value="Low">낮음 (Low)</option>
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">담당자</label>
+                  <input type="text" placeholder="홍길동" value={form.assignee}
+                    onChange={e => setForm(f => ({...f, assignee: e.target.value}))} className={inputCls} />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">접수일</label>
+                  <input type="date" value={form.receivedAt}
+                    onChange={e => setForm(f => ({...f, receivedAt: e.target.value}))} className={inputCls + " bg-white"} />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">상세 내용 <span className="text-rose-500">*</span></label>
+                <textarea rows={4} placeholder="클레임 내용, 발생 경위 등을 상세히 기술하세요." value={form.description}
+                  onChange={e => setForm(f => ({...f, description: e.target.value}))}
+                  className={inputCls + " resize-none"} />
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-slate-100 flex gap-2 justify-end shrink-0">
+              <button onClick={() => setShowForm(false)} className="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">취소</button>
+              <button onClick={handleCreate} disabled={submitting}
+                className="px-5 py-2 text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 rounded-xl disabled:opacity-50">
+                {submitting ? "등록 중..." : "등록하기"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
-      <ClaimDetail
-        claim={selectedClaim}
-        onClose={() => setSelectedClaimId(null)}
-        onMoveStage={canEdit ? handleMoveStage : undefined}
-      />
     </div>
   );
 }
