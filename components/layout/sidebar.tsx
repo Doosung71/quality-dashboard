@@ -33,35 +33,36 @@ const ALL_NAV: NavItem[] = [
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
-    href: "/qcost", label: "품질비용(Q-Cost)", icon: Coins,
+    href: "/qcost", label: "품질비용관리 (Q-Cost Management)", icon: Coins,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
     children: [
-      // 클레임·NCR: 팀원도 본인 건 작성 — 조회 배지 제거
-      { href: "/claims", label: "고객 클레임",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-      { href: "/ncr",    label: "부적합품보고(NCR)", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/claims", label: "고객 클레임 관리 (Customer Claim Management)",    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/ncr",    label: "부적합품관리 (Non-Conformance Management)", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
     ],
   },
   {
-    // 공급망: 팀원도 본인 협력사 관리
-    href: "/vendors", label: "공급망관리", icon: Building2,
+    href: "/vendors", label: "공급망 관리 (Supply Chain Management)", icon: Building2,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
-    // 지식저장소: 전 역할 쓰기
-    href: "/knowledge", label: "지식저장소(QKM)", icon: BookOpen,
+    href: "/knowledge", label: "품질지식관리 (Quality Knowledge Management)", icon: BookOpen,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
-    href: "/facilities", label: "시험장·시험 관리", icon: FlaskConical,
+    href: "/facilities", label: "시험 관리 (Test Management)", icon: FlaskConical,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
   {
-    href: "/assets", label: "자산관리", icon: Wrench,
+    href: "/assets", label: "자산관리 (Assets Management)", icon: Wrench,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
   },
   {
-    href: "/dashboard", label: "입찰검토시스템", icon: FileSearch,
+    href: "/dashboard", label: "프로젝트 관리 (Projects Management)", icon: FileSearch,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
+    children: [
+      { href: "/dashboard", label: "입찰 검토 (Tender Review Management)",           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/projects",  label: "수주 프로젝트 관리 (Awarded Project Management)", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+    ],
   },
   {
     // 외부정보: 전 역할 쓰기 (팀원도 포함)
