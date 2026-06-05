@@ -27,30 +27,27 @@ type NavItem = {
   children?: NavChild[]
 }
 
-// 역할별 접근 가능한 메뉴 — 실무자 퀵링크 기준 정렬
+// 역할별 접근 가능한 메뉴
 const ALL_NAV: NavItem[] = [
   {
     href: "/", label: "대시보드", icon: LayoutDashboard,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
 
-  // ── 실무자 핵심 업무 ──────────────────────────────────
-  {
-    href: "/vendors", label: "검사 업무", icon: ClipboardList,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
-    children: [
-      { href: "/vendors/incoming",    label: "수입검사",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-      { href: "/vendors/inspections", label: "출장검사",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-      { href: "/vendors/audits",      label: "협력업체 감사", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-    ],
-  },
+  // ── 품질 이슈 ─────────────────────────────────────────
   {
     href: "/qcost", label: "품질 이슈", icon: ShieldAlert,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
     children: [
-      { href: "/claims", label: "고객 클레임", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/claims", label: "고객 클레임",    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
       { href: "/ncr",    label: "부적합품 (NCR)", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
     ],
+  },
+
+  // ── 자산 ──────────────────────────────────────────────
+  {
+    href: "/assets", label: "자산", icon: Wrench,
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
   },
 
   // ── 프로젝트 ──────────────────────────────────────────
@@ -63,18 +60,27 @@ const ALL_NAV: NavItem[] = [
     ],
   },
 
-  // ── 지식·장비 ─────────────────────────────────────────
-  {
-    href: "/knowledge", label: "품질 지식", icon: BookOpen,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
-  },
+  // ── 시험 장비 ─────────────────────────────────────────
   {
     href: "/facilities", label: "시험 장비", icon: FlaskConical,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
+
+  // ── 검사 업무 ─────────────────────────────────────────
   {
-    href: "/assets", label: "자산", icon: Wrench,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
+    href: "/vendors", label: "검사 업무", icon: ClipboardList,
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
+    children: [
+      { href: "/vendors/incoming",    label: "수입검사",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/vendors/inspections", label: "출장검사",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/vendors/audits",      label: "협력업체 감사", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+    ],
+  },
+
+  // ── 품질 지식 ─────────────────────────────────────────
+  {
+    href: "/knowledge", label: "품질 지식", icon: BookOpen,
+    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
   },
 
   // ── 정보·조직 ─────────────────────────────────────────
