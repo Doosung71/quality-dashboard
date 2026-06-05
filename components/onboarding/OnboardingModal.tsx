@@ -34,6 +34,14 @@ const NOTICE = {
 // ── 역할별: 메뉴 구조 (Step 2) ──────────────────────────
 type MenuItem = { icon: string; path: string; desc: string; sub?: string[] }
 const MENU: Record<string, MenuItem[]> = {
+  ADMIN: [
+    { icon: "🔎", path: "검사 업무", desc: "수입·출장·협력업체 감사 결과 전체 조회", sub: ["수입검사", "출장검사", "협력업체 감사"] },
+    { icon: "⚠️", path: "품질 이슈", desc: "클레임·NCR 전체 현황 조회", sub: ["고객 클레임", "부적합품보고 (NCR)"] },
+    { icon: "📁", path: "프로젝트", desc: "입찰 검토 AI · 수주 프로젝트 현황", sub: ["입찰 검토", "수주 프로젝트"] },
+    { icon: "📚", path: "품질 지식", desc: "IEC·KS·CIGRE 규격 자연어 RAG 검색" },
+    { icon: "📊", path: "사용자 관리", desc: "가입 승인·역할 부여·활동 현황 집계 (관리자 전용)", sub: ["사용자 목록 — 승인·정지·PW초기화", "활동 현황 탭 — 역할별 사용량 집계"] },
+    { icon: "📢", path: "게시판", desc: "공지·일반 게시글 작성·관리" },
+  ],
   DIRECTOR: [
     { icon: "🔎", path: "검사 업무", desc: "검사 결과 CRUD · 이력 관리", sub: ["수입검사", "출장검사", "협력업체 감사"] },
     { icon: "⚠️", path: "품질 이슈", desc: "클레임·NCR 접수부터 종결까지", sub: ["고객 클레임", "부적합품보고 (NCR)"] },
@@ -63,12 +71,23 @@ const MENU: Record<string, MenuItem[]> = {
 
 // ── 역할별: 핵심 행동 (Step 3) ──────────────────────────
 const ACTIONS: Record<string, { title: string; items: string[] }> = {
+  ADMIN: {
+    title: "E2E 관리자 업무 흐름",
+    items: [
+      "사용자 관리 → 대기 중(PENDING) 신청자 확인 → 역할(실무자·팀장·임원) 선택 → 승인",
+      "사용자 관리 → '활동 현황' 탭 → 기간 필터 선택 → 참여자별 게시글·검사·클레임·NCR 등록 현황 집계 확인",
+      "게시판 → 공지 게시글 작성(E2E 안내, 피드백 요청 등) → 핀 고정",
+      "비밀번호 분실 신고 접수 시 → 사용자 목록에서 해당 계정 PW 초기화 → 임시 비밀번호 전달",
+      "헤더 우측 '사용 가이드' 버튼으로 역할별 기능 설명 언제든 재확인 가능",
+      "불편하거나 빠진 기능은 사이드바 하단 '피드백'으로 직접 등록해 주세요",
+    ],
+  },
   DIRECTOR: {
     title: "지금 바로 확인할 것",
     items: [
-      "메인 대시보드: ①Q-Cost → ②클레임 → ③NCR → ④공급망 → ⑤시험장 순서로 KPI 이상 여부 점검",
-      "긴급 Alert 섹션에서 Overdue NCR·과부하 인원 즉시 파악 후 조치 지시",
-      "입찰검토시스템 → '최종 승인 대기' 건 검토·승인",
+      "메인 대시보드: 검사 업무·품질 이슈·프로젝트 KPI 이상 여부 점검",
+      "품질 이슈 → 클레임·NCR에서 Overdue 건 즉시 파악 후 조치 지시",
+      "입찰 검토 → '최종 승인 대기' 건 검토·승인",
       "외부 정보 → '외부 웹 검색' 탭에서 시장·기술 동향 실시간 검색",
       "좌측 하단 '피드백'으로 개선 요청 수시 등록",
     ],
@@ -76,9 +95,9 @@ const ACTIONS: Record<string, { title: string; items: string[] }> = {
   TEAM_LEAD: {
     title: "주요 업무 흐름",
     items: [
-      "입찰검토시스템 → '검토 요청' 상태 건 클릭 → 항목별 검토 → 승인 or 반려",
-      "품질비용 하위 메뉴(클레임·NCR)에서 팀 현황 조회",
-      "공급망관리에서 C·D등급 협력업체 모니터링",
+      "입찰 검토 → '검토 요청' 상태 건 클릭 → 항목별 검토 → 승인 or 반려",
+      "품질 이슈 → 클레임·NCR 목록에서 팀 처리 현황 조회",
+      "검사 업무 → 수입·출장·협력업체 감사 현황 모니터링",
       "외부 정보 → '외부 웹 검색' 탭에서 경쟁사·기술 동향 조회",
       "좌측 하단 '피드백'으로 개선 요청 수시 등록",
     ],
@@ -105,12 +124,12 @@ export function OnboardingModal({ userId, role }: { userId: string; role: string
   useEffect(() => {
     if (!userId) return
     // v2 키로 변경 → 기존 사용자도 업데이트된 온보딩 다시 노출
-    const key = `qms_welcomed_v3_${userId}`
+    const key = `qms_welcomed_v4_${userId}`
     if (!localStorage.getItem(key)) setShow(true)
   }, [userId])
 
   function dismiss() {
-    if (userId) localStorage.setItem(`qms_welcomed_v3_${userId}`, "1")
+    if (userId) localStorage.setItem(`qms_welcomed_v4_${userId}`, "1")
     setShow(false)
   }
 
