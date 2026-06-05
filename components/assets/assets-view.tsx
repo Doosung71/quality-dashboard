@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import type { AssetData, AssetCategory, EquipmentStatus, Equipment } from "@/types/asset";
+import type { AssetData, AssetCategory, Equipment } from "@/types/asset";
 import type { SiteId } from "@/types/facility";
 import type { TestsData } from "@/types/test";
 import { EquipmentTable } from "@/components/facilities/equipment-table";
