@@ -60,8 +60,8 @@ const ALL_NAV: NavItem[] = [
     href: "/projects", label: "프로젝트 관리 (Projects Management)", icon: FileSearch,
     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
     children: [
-      { href: "/dashboard", label: "입찰 검토 (Tender Review Management)",           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-      { href: "/projects",  label: "수주 프로젝트 관리 (Awarded Project Management)", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/dashboard",         label: "입찰 검토 (Tender Review Management)",           roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/projects/awarded",  label: "수주 프로젝트 관리 (Awarded Project Management)", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
     ],
   },
   {
