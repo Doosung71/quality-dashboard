@@ -409,6 +409,7 @@ export const ModelName = {
   ContractComment: 'ContractComment',
   SupplierAudit: 'SupplierAudit',
   AuditFinding: 'AuditFinding',
+  IncomingInspection: 'IncomingInspection',
   SourceInspection: 'SourceInspection'
 } as const
 
@@ -425,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "supplierAudit" | "auditFinding" | "sourceInspection"
+    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "supplierAudit" | "auditFinding" | "incomingInspection" | "sourceInspection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2279,6 +2280,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    IncomingInspection: {
+      payload: Prisma.$IncomingInspectionPayload<ExtArgs>
+      fields: Prisma.IncomingInspectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.IncomingInspectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingInspectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.IncomingInspectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingInspectionPayload>
+        }
+        findFirst: {
+          args: Prisma.IncomingInspectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingInspectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.IncomingInspectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingInspectionPayload>
+        }
+        findMany: {
+          args: Prisma.IncomingInspectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingInspectionPayload>[]
+        }
+        create: {
+          args: Prisma.IncomingInspectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingInspectionPayload>
+        }
+        createMany: {
+          args: Prisma.IncomingInspectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.IncomingInspectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingInspectionPayload>[]
+        }
+        delete: {
+          args: Prisma.IncomingInspectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingInspectionPayload>
+        }
+        update: {
+          args: Prisma.IncomingInspectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingInspectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.IncomingInspectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.IncomingInspectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.IncomingInspectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingInspectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.IncomingInspectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingInspectionPayload>
+        }
+        aggregate: {
+          args: Prisma.IncomingInspectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateIncomingInspection>
+        }
+        groupBy: {
+          args: Prisma.IncomingInspectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.IncomingInspectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.IncomingInspectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.IncomingInspectionCountAggregateOutputType> | number
+        }
+      }
+    }
     SourceInspection: {
       payload: Prisma.$SourceInspectionPayload<ExtArgs>
       fields: Prisma.SourceInspectionFieldRefs
@@ -2790,6 +2865,31 @@ export const AuditFindingScalarFieldEnum = {
 export type AuditFindingScalarFieldEnum = (typeof AuditFindingScalarFieldEnum)[keyof typeof AuditFindingScalarFieldEnum]
 
 
+export const IncomingInspectionScalarFieldEnum = {
+  id: 'id',
+  vendorId: 'vendorId',
+  vendorName: 'vendorName',
+  poNumber: 'poNumber',
+  receiptDate: 'receiptDate',
+  inspectionDate: 'inspectionDate',
+  itemName: 'itemName',
+  itemCode: 'itemCode',
+  quantity: 'quantity',
+  sampleSize: 'sampleSize',
+  result: 'result',
+  defectCount: 'defectCount',
+  defectRate: 'defectRate',
+  inspector: 'inspector',
+  notes: 'notes',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type IncomingInspectionScalarFieldEnum = (typeof IncomingInspectionScalarFieldEnum)[keyof typeof IncomingInspectionScalarFieldEnum]
+
+
 export const SourceInspectionScalarFieldEnum = {
   id: 'id',
   vendorId: 'vendorId',
@@ -3267,6 +3367,7 @@ export type GlobalOmitConfig = {
   contractComment?: Prisma.ContractCommentOmit
   supplierAudit?: Prisma.SupplierAuditOmit
   auditFinding?: Prisma.AuditFindingOmit
+  incomingInspection?: Prisma.IncomingInspectionOmit
   sourceInspection?: Prisma.SourceInspectionOmit
 }
 

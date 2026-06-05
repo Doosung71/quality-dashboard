@@ -167,6 +167,11 @@ export type SupplierAudit = Prisma.SupplierAuditModel
  */
 export type AuditFinding = Prisma.AuditFindingModel
 /**
+ * Model IncomingInspection
+ * 
+ */
+export type IncomingInspection = Prisma.IncomingInspectionModel
+/**
  * Model SourceInspection
  * 
  */

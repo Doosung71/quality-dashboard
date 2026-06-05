@@ -76,6 +76,7 @@ export const ModelName = {
   ContractComment: 'ContractComment',
   SupplierAudit: 'SupplierAudit',
   AuditFinding: 'AuditFinding',
+  IncomingInspection: 'IncomingInspection',
   SourceInspection: 'SourceInspection'
 } as const
 
@@ -491,6 +492,31 @@ export const AuditFindingScalarFieldEnum = {
 } as const
 
 export type AuditFindingScalarFieldEnum = (typeof AuditFindingScalarFieldEnum)[keyof typeof AuditFindingScalarFieldEnum]
+
+
+export const IncomingInspectionScalarFieldEnum = {
+  id: 'id',
+  vendorId: 'vendorId',
+  vendorName: 'vendorName',
+  poNumber: 'poNumber',
+  receiptDate: 'receiptDate',
+  inspectionDate: 'inspectionDate',
+  itemName: 'itemName',
+  itemCode: 'itemCode',
+  quantity: 'quantity',
+  sampleSize: 'sampleSize',
+  result: 'result',
+  defectCount: 'defectCount',
+  defectRate: 'defectRate',
+  inspector: 'inspector',
+  notes: 'notes',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type IncomingInspectionScalarFieldEnum = (typeof IncomingInspectionScalarFieldEnum)[keyof typeof IncomingInspectionScalarFieldEnum]
 
 
 export const SourceInspectionScalarFieldEnum = {

@@ -1,4 +1,4 @@
-// 공급망 관리 — 협력업체 감사 & 출장검사
+// 공급망 관리 — 협력업체 감사, 수입검사, 출장검사
 
 enum AuditType {
   INITIAL    // 초기 심사
@@ -62,6 +62,29 @@ model AuditFinding {
   response    String?         // 업체 조치 내용
   closedAt    DateTime?
   createdAt   DateTime        @default(now())
+}
+
+model IncomingInspection {
+  id             String           @id @default(cuid())
+  vendorId       String
+  vendorName     String
+  poNumber       String?          // 구매주문번호
+  receiptDate    DateTime         // 입고일
+  inspectionDate DateTime         // 검사일
+  itemName       String           // 품목명
+  itemCode       String?          // 품목코드/규격
+  quantity       Int              // 입고 수량
+  sampleSize     Int?             // 샘플 수량
+  result         InspectionResult @default(PASS)
+  defectCount    Int?
+  defectRate     Float?
+  inspector      String           // 검사원
+  notes          String?
+  status         String           @default("DRAFT")
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  createdBy      User             @relation("IncomingInspectionCreator", fields: [createdById], references: [id])
+  createdById    String
 }
 
 model SourceInspection {

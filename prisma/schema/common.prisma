@@ -55,6 +55,7 @@ model User {
 
   // 공급망 관리
   supplierAudits          SupplierAudit[]         @relation("SupplierAuditCreator")
+  incomingInspections     IncomingInspection[]    @relation("IncomingInspectionCreator")
   sourceInspections       SourceInspection[]      @relation("SourceInspectionCreator")
 }
 

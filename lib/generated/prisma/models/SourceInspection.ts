@@ -707,10 +707,6 @@ export type SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput = {
   deleteMany?: Prisma.SourceInspectionScalarWhereInput | Prisma.SourceInspectionScalarWhereInput[]
 }
 
-export type EnumInspectionResultFieldUpdateOperationsInput = {
-  set?: $Enums.InspectionResult
-}
-
 export type SourceInspectionCreateWithoutCreatedByInput = {
   id?: string
   vendorId: string
