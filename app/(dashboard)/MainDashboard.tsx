@@ -11,6 +11,7 @@ import { vendorsData } from "@/data/vendors.data";
 import { hrData } from "@/data/hr.data";
 import { intelligenceData } from "@/data/intelligence.data";
 import { testsData } from "@/data/tests.data";
+import { OCCUPIED_TEST_STATUSES } from "@/lib/facilities-utils";
 import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
 import {
   ShieldAlert,
@@ -154,7 +155,7 @@ export function MainDashboard({ role, userName, userId }: Props) {
     const totalHalls = facilityData.testHalls.length;
     const totalYards = facilityData.testYards.length;
     const totalFacilities = totalHalls + totalYards;
-    const runningTests = testsData.tests.filter(t => t.status === "시험중").length;
+    const runningTests = testsData.tests.filter(t => (OCCUPIED_TEST_STATUSES as readonly string[]).includes(t.status)).length;
 
     const totalClaims = claimsData.claims.length;
     const unresolvedClaims = claimsData.claims.filter(c => c.status !== "Closed").length;
