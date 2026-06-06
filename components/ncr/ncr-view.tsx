@@ -31,6 +31,16 @@ function isOverdue(ncr: NCR): boolean {
   return ncr.status !== "Closed" && ncr.targetDate < getToday();
 }
 
+function getDDay(ncr: NCR, today: string): { label: string; cls: string } | null {
+  if (ncr.status === "Closed") return null;
+  const days = Math.round(
+    (new Date(ncr.targetDate).getTime() - new Date(today).getTime()) / 86_400_000
+  );
+  if (days < 0)  return { label: `D+${-days}`, cls: "bg-rose-100 text-rose-700 animate-pulse" };
+  if (days <= 3) return { label: days === 0 ? "D-Day" : `D-${days}`, cls: "bg-amber-100 text-amber-700" };
+  return { label: `D-${days}`, cls: "bg-emerald-50 text-emerald-700" };
+}
+
 export function NCRView({ data, canEdit = true, userName }: NCRViewProps) {
   const router = useRouter();
   const [ncrs] = useState<NCR[]>(data.ncrs);
@@ -256,15 +266,16 @@ export function NCRView({ data, canEdit = true, userName }: NCRViewProps) {
                         </div>
                         <div className="flex items-center justify-between pt-1 border-t border-slate-50 text-[9px]">
                           <span className="text-slate-400">방안: <strong className="text-slate-600 font-semibold">{dispInfo.label}</strong></span>
-                          {overdue ? (
-                            <span className="text-rose-600 font-bold bg-rose-100 px-1 rounded flex items-center gap-0.5 animate-pulse">
-                              <ShieldAlert className="w-2.5 h-2.5" /> 기한초과
-                            </span>
-                          ) : (
-                            <span className="text-slate-500 flex items-center gap-0.5">
-                              <Calendar className="w-2.5 h-2.5 text-slate-400" /> {ncr.targetDate}
-                            </span>
-                          )}
+                          {(() => {
+                            const dd = getDDay(ncr, TODAY);
+                            if (!dd) return null;
+                            return (
+                              <span className={`px-1.5 py-0.5 rounded font-bold flex items-center gap-0.5 ${dd.cls}`}>
+                                {overdue && <ShieldAlert className="w-2.5 h-2.5" />}
+                                {dd.label}
+                              </span>
+                            );
+                          })()}
                         </div>
                       </Link>
                     );

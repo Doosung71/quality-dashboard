@@ -22,6 +22,7 @@ export interface Claim {
   priority: ClaimPriority;
   status: ClaimStatus;
   receivedAt: string;
+  targetDate?: string;
   closedAt?: string;
   assignee: string;
   description: string;

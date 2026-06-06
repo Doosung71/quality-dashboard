@@ -43,6 +43,7 @@ model Claim {
   priority    ClaimPriority @default(Mid)
   status      ClaimStatus   @default(Received)
   receivedAt  DateTime
+  targetDate  DateTime?
   closedAt    DateTime?
   assignee    String
   description String

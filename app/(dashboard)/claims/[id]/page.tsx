@@ -25,6 +25,7 @@ export default async function ClaimDetailRoute({ params }: Props) {
     priority:    raw.priority as Claim["priority"],
     status:      raw.status as Claim["status"],
     receivedAt:  raw.receivedAt.toISOString().slice(0, 10),
+    targetDate:  raw.targetDate?.toISOString().slice(0, 10),
     closedAt:    raw.closedAt?.toISOString().slice(0, 10),
     assignee:    raw.assignee,
     description: raw.description,

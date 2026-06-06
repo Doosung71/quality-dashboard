@@ -19,6 +19,7 @@ export default async function ClaimsPage() {
     priority:    c.priority as Claim["priority"],
     status:      c.status   as Claim["status"],
     receivedAt:  c.receivedAt.toISOString().slice(0, 10),
+    targetDate:  c.targetDate?.toISOString().slice(0, 10),
     closedAt:    c.closedAt?.toISOString().slice(0, 10),
     assignee:    c.assignee,
     description: c.description,

@@ -2796,6 +2796,7 @@ export const ClaimScalarFieldEnum = {
   priority: 'priority',
   status: 'status',
   receivedAt: 'receivedAt',
+  targetDate: 'targetDate',
   closedAt: 'closedAt',
   assignee: 'assignee',
   description: 'description',

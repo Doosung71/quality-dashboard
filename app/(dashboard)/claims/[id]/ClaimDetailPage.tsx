@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Claim, ClaimStatus, ClaimPriority, ClaimTimelineItem } from "@/types/claim";
 import { CLAIM_STATUSES } from "@/types/claim";
-import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTriangle, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 
 const STATUS_LABELS: Record<ClaimStatus, string> = {
@@ -58,6 +58,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
     priority:    claim.priority,
     assignee:    claim.assignee,
     description: claim.description,
+    targetDate:  claim.targetDate ?? "",
   });
   const [newEntry, setNewEntry] = useState("");
   const [addingEntry, setAddingEntry] = useState(false);
@@ -70,8 +71,16 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
         body: JSON.stringify(editForm),
       });
       if (!res.ok) throw new Error("저장 실패");
-      const updated = await res.json();
-      setClaim(prev => ({ ...prev, ...updated }));
+      await res.json();
+      setClaim(prev => ({
+        ...prev,
+        title:       editForm.title,
+        customer:    editForm.customer,
+        priority:    editForm.priority,
+        assignee:    editForm.assignee,
+        description: editForm.description,
+        targetDate:  editForm.targetDate || undefined,
+      }));
       setEditing(false);
       router.refresh();
     } finally {
@@ -173,7 +182,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
               </>
             ) : (
               <>
-                <button onClick={() => { setEditForm({ title: claim.title, customer: claim.customer, priority: claim.priority, assignee: claim.assignee, description: claim.description }); setEditing(true); }}
+                <button onClick={() => { setEditForm({ title: claim.title, customer: claim.customer, priority: claim.priority, assignee: claim.assignee, description: claim.description, targetDate: claim.targetDate ?? "" }); setEditing(true); }}
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">
                   <Edit2 className="w-3.5 h-3.5" /> 수정
                 </button>
@@ -226,6 +235,30 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
           {claim.closedAt && (
             <p className="text-[10px] text-emerald-600 mt-0.5">종결: {claim.closedAt}</p>
           )}
+          <div className="mt-2">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">목표기한</p>
+            {editing ? (
+              <input type="date" value={editForm.targetDate}
+                onChange={e => setEditForm(f => ({...f, targetDate: e.target.value}))}
+                className="text-sm font-semibold text-slate-800 border-b border-slate-300 focus:outline-none focus:border-blue-500 bg-transparent w-full" />
+            ) : claim.targetDate ? (
+              <div className="flex items-center gap-1.5">
+                <p className="text-sm font-semibold text-slate-800">{claim.targetDate}</p>
+                {(() => {
+                  if (claim.status === "Closed") return null;
+                  const today = getToday();
+                  const days = Math.round(
+                    (new Date(claim.targetDate!).getTime() - new Date(today).getTime()) / 86_400_000
+                  );
+                  if (days < 0)  return <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-rose-100 text-rose-700 animate-pulse flex items-center gap-0.5"><ShieldAlert className="w-2.5 h-2.5" />{`D+${-days}`}</span>;
+                  if (days <= 3) return <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-amber-100 text-amber-700">{days === 0 ? "D-Day" : `D-${days}`}</span>;
+                  return <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-emerald-50 text-emerald-700">{`D-${days}`}</span>;
+                })()}
+              </div>
+            ) : (
+              <p className="text-sm text-slate-400">—</p>
+            )}
+          </div>
         </div>
       </div>
 
