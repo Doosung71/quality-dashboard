@@ -28,7 +28,9 @@ function getToday() {
 }
 
 function isOverdue(ncr: NCR): boolean {
-  return ncr.status !== "Closed" && ncr.targetDate < getToday();
+  // getDDay()와 동일한 KST 재파싱 기준 — 문자열 직접 비교 시 오프셋 불일치 방지
+  const target = new Date(ncr.targetDate).toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+  return ncr.status !== "Closed" && target < getToday();
 }
 
 function getDDay(ncr: NCR, today: string): { label: string; cls: string } | null {
