@@ -790,7 +790,7 @@ export function MainDashboard({ role, userName, userId }: Props) {
                       </div>
                       <ChevronRight className="w-3.5 h-3.5 text-indigo-300 group-hover:translate-x-1 transition-transform shrink-0" />
                     </Link>
-                    <Link href="/projects" className="flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-400 rounded-xl group transition-all">
+                    <Link href="/projects/awarded?create=1" className="flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-400 rounded-xl group transition-all">
                       <div className="flex items-center gap-2">
                         <CheckCircle className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                         <div>

@@ -18,9 +18,11 @@ const gapTypeLabel: Record<string, string> = {
   MATCH: "일치", GAP: "차이", RELAXED: "완화", NEW: "신규",
 }
 
-export default async function AwardedProjectsPage() {
+export default async function AwardedProjectsPage({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
   const session = await auth()
   if (!session) redirect("/login")
+  const params = await searchParams
+  const autoOpen = params.create === "1"
 
   const [awardedProjects, approvedTenders] = await Promise.all([
     prisma.awardedProject.findMany({
@@ -62,7 +64,7 @@ export default async function AwardedProjectsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <CreateProjectButton approvedTenders={approvedTenders} />
+          <CreateProjectButton approvedTenders={approvedTenders} autoOpen={autoOpen} />
           <Link
             href="/projects"
             className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-800 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors"

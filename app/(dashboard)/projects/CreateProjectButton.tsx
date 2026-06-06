@@ -7,9 +7,15 @@ import { Plus, X, Link as LinkIcon, FileText } from "lucide-react"
 type ApprovedTender = { id: string; title: string }
 type Mode = "tender" | "standalone"
 
-export default function CreateProjectButton({ approvedTenders }: { approvedTenders: ApprovedTender[] }) {
+import { useEffect } from "react"
+
+export default function CreateProjectButton({ approvedTenders, autoOpen }: { approvedTenders: ApprovedTender[]; autoOpen?: boolean }) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (autoOpen) handleOpen()
+  }, [autoOpen]) // eslint-disable-line react-hooks/exhaustive-deps
   const [mode, setMode] = useState<Mode>("standalone")
   const [selected, setSelected] = useState("")
   const [title, setTitle] = useState("")
