@@ -21,8 +21,10 @@ function getToday() {
 function getDDay(claim: Claim): { label: string; cls: string } | null {
   if (claim.status === "Closed" || !claim.targetDate) return null;
   const today = getToday();
+  // KST 기준 날짜 문자열로 정규화 — Prisma DateTime ISO 타임스탬프의 UTC 오프셋 하루 오차 방지
+  const target = new Date(claim.targetDate).toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
   const days = Math.round(
-    (new Date(claim.targetDate).getTime() - new Date(today).getTime()) / 86_400_000
+    (new Date(target).getTime() - new Date(today).getTime()) / 86_400_000
   );
   if (days < 0)  return { label: `D+${-days}`, cls: "bg-rose-100 text-rose-700 animate-pulse" };
   if (days <= 3) return { label: days === 0 ? "D-Day" : `D-${days}`, cls: "bg-amber-100 text-amber-700" };

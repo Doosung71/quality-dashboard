@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { NCRsData, NCR, NCRStatus, NCRSeverity, NCRDispositionType } from "@/types/ncr";
 import {
-  ShieldAlert, CheckCircle2, Calendar, Clock,
+  ShieldAlert, CheckCircle2, Clock,
   MapPin, FileText, Search, SlidersHorizontal, X, Plus
 } from "lucide-react";
 
@@ -33,8 +33,10 @@ function isOverdue(ncr: NCR): boolean {
 
 function getDDay(ncr: NCR, today: string): { label: string; cls: string } | null {
   if (ncr.status === "Closed") return null;
+  // KST 기준 날짜 문자열로 정규화 — ISO 타임스탬프의 UTC 오프셋 하루 오차 방지
+  const target = new Date(ncr.targetDate).toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
   const days = Math.round(
-    (new Date(ncr.targetDate).getTime() - new Date(today).getTime()) / 86_400_000
+    (new Date(target).getTime() - new Date(today).getTime()) / 86_400_000
   );
   if (days < 0)  return { label: `D+${-days}`, cls: "bg-rose-100 text-rose-700 animate-pulse" };
   if (days <= 3) return { label: days === 0 ? "D-Day" : `D-${days}`, cls: "bg-amber-100 text-amber-700" };
