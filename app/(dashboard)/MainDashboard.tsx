@@ -780,15 +780,15 @@ export function MainDashboard({ role, userName, userId }: Props) {
                   {/* 프로젝트 관리 */}
                   <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest pt-1">프로젝트 관리</p>
                   <div className="space-y-1.5">
-                    <Link href="/dashboard" className="flex items-center justify-between p-2.5 bg-slate-900 hover:bg-slate-700 border border-slate-800 rounded-xl group transition-all">
+                    <Link href="/dashboard" className="flex items-center justify-between p-2.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 hover:border-indigo-300 rounded-xl group transition-all">
                       <div className="flex items-center gap-2">
-                        <FileSearch className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                        <FileSearch className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
                         <div>
-                          <p className="font-bold text-white leading-tight">입찰 프로젝트</p>
+                          <p className="font-bold text-slate-900 leading-tight">입찰 프로젝트</p>
                           <p className="text-[9px] text-slate-400">독소조항 자동 분석</p>
                         </div>
                       </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:translate-x-1 transition-transform shrink-0" />
+                      <ChevronRight className="w-3.5 h-3.5 text-indigo-300 group-hover:translate-x-1 transition-transform shrink-0" />
                     </Link>
                     <Link href="/projects" className="flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-400 rounded-xl group transition-all">
                       <div className="flex items-center gap-2">
