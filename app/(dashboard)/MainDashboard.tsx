@@ -292,13 +292,13 @@ export function MainDashboard({ role, userName, userId }: Props) {
             <div className="flex flex-wrap gap-1.5">
               {[
                 { label: "대시보드",   executive: "full", team_leader: "full", operator: "full"     },
-                { label: "Q-Cost",     executive: "full", team_leader: "full", operator: "readonly" },
+                { label: "품질비용관리", executive: "full", team_leader: "full", operator: "readonly" },
                 { label: "클레임",     executive: "full", team_leader: "full", operator: "full"     },
                 { label: "NCR",        executive: "full", team_leader: "full", operator: "full"     },
-                { label: "공급망관리", executive: "full", team_leader: "full", operator: "full"     },
-                { label: "QKM",        executive: "full", team_leader: "full", operator: "full"     },
-                { label: "시험장",     executive: "full", team_leader: "full", operator: "full"     },
-                { label: "입찰검토",   executive: "full", team_leader: "full", operator: "full"     },
+                { label: "입고품질관리", executive: "full", team_leader: "full", operator: "full"   },
+                { label: "지식 관리",  executive: "full", team_leader: "full", operator: "full"     },
+                { label: "시험·품질보증", executive: "full", team_leader: "full", operator: "full"  },
+                { label: "입찰프로젝트", executive: "full", team_leader: "full", operator: "full"   },
                 { label: "외부정보",   executive: "full", team_leader: "full", operator: "full"     },
                 { label: "인사·면담", executive: "full", team_leader: "full", operator: "none"     },
               ].map(({ label, ...perms }) => {
@@ -702,8 +702,8 @@ export function MainDashboard({ role, userName, userId }: Props) {
                 </h4>
                 <div className="space-y-3 text-xs">
 
-                  {/* 검사 업무 */}
-                  <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest">검사 기록</p>
+                  {/* 입고품질관리 */}
+                  <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest">입고품질관리</p>
                   <div className="space-y-1.5">
                     <Link href="/vendors/incoming" className="flex items-center justify-between p-2.5 bg-sky-50 hover:bg-sky-100 border border-sky-100 hover:border-sky-300 rounded-xl group transition-all">
                       <div className="flex items-center gap-2">
@@ -737,8 +737,8 @@ export function MainDashboard({ role, userName, userId }: Props) {
                     </Link>
                   </div>
 
-                  {/* 품질 이슈 */}
-                  <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest pt-1">품질 이슈</p>
+                  {/* 품질 비용 관리 */}
+                  <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest pt-1">품질 비용 관리</p>
                   <div className="space-y-1.5">
                     <Link href="/claims" className="flex items-center justify-between p-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-100 hover:border-blue-300 rounded-xl group transition-all">
                       <div className="flex items-center gap-2">
@@ -767,17 +767,17 @@ export function MainDashboard({ role, userName, userId }: Props) {
                   <div className="grid grid-cols-2 gap-1.5">
                     <Link href="/dashboard" className="p-2.5 bg-slate-900 text-white rounded-xl flex flex-col gap-1 group hover:bg-slate-700 transition-all">
                       <Briefcase className="w-3.5 h-3.5 text-indigo-400" />
-                      <p className="font-bold leading-tight">입찰 검토 AI</p>
+                      <p className="font-bold leading-tight">입찰 프로젝트</p>
                       <p className="text-[9px] text-slate-400">독소조항 자동 분석</p>
                     </Link>
                     <Link href="/knowledge" className="p-2.5 bg-indigo-50 border border-indigo-100 rounded-xl flex flex-col gap-1 group hover:border-indigo-300 transition-all">
                       <FileSearch className="w-3.5 h-3.5 text-indigo-500" />
-                      <p className="font-bold text-slate-900 leading-tight">규격 RAG 검색</p>
+                      <p className="font-bold text-slate-900 leading-tight">지식 관리</p>
                       <p className="text-[9px] text-slate-400">IEC·KS 판정기준</p>
                     </Link>
                     <Link href="/facilities" className="p-2.5 bg-slate-50 border border-slate-100 rounded-xl flex flex-col gap-1 group hover:border-slate-300 transition-all">
                       <FlaskConical className="w-3.5 h-3.5 text-slate-500" />
-                      <p className="font-bold text-slate-900 leading-tight">시험 장비</p>
+                      <p className="font-bold text-slate-900 leading-tight">시험 및 품질 보증</p>
                       <p className="text-[9px] text-slate-400">시험계획·결과 관리</p>
                     </Link>
                     <Link href="/assets" className="p-2.5 bg-slate-50 border border-slate-100 rounded-xl flex flex-col gap-1 group hover:border-slate-300 transition-all">
