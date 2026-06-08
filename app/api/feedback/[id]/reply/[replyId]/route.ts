@@ -38,6 +38,21 @@ export async function DELETE(_req: Request, { params }: Ctx) {
   if (!isOwner && !isPrivileged)
     return NextResponse.json({ error: "삭제 권한이 없습니다" }, { status: 403 })
 
-  await prisma.feedbackReply.delete({ where: { id: replyId } })
-  return NextResponse.json({ ok: true })
+  // 대댓글 cascade 삭제
+  const allReplies = await prisma.feedbackReply.findMany({
+    where: { feedbackId: reply.feedbackId },
+    select: { id: true, parentId: true },
+  })
+  const toDelete = new Set<string>([replyId])
+  let changed = true
+  while (changed) {
+    changed = false
+    for (const r of allReplies) {
+      if (r.parentId && toDelete.has(r.parentId) && !toDelete.has(r.id)) {
+        toDelete.add(r.id); changed = true
+      }
+    }
+  }
+  await prisma.feedbackReply.deleteMany({ where: { id: { in: [...toDelete] } } })
+  return NextResponse.json({ ok: true, deleted: [...toDelete] })
 }

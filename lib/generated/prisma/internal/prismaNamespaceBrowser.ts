@@ -134,6 +134,7 @@ export const FeedbackReplyScalarFieldEnum = {
   feedbackId: 'feedbackId',
   authorId: 'authorId',
   content: 'content',
+  parentId: 'parentId',
   createdAt: 'createdAt'
 } as const
 

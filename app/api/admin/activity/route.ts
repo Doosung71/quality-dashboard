@@ -20,6 +20,7 @@ export async function GET(req: Request) {
   const [
     users,
     posts, comments,
+    feedbackPosts, feedbackReplies,
     claims, ncrs,
     incoming, source, audits,
   ] = await Promise.all([
@@ -32,6 +33,14 @@ export async function GET(req: Request) {
       _count: { _all: true }, _max: { createdAt: true },
     }),
     prisma.boardComment.groupBy({
+      by: ["authorId"], where: dateFilter,
+      _count: { _all: true }, _max: { createdAt: true },
+    }),
+    prisma.feedback.groupBy({
+      by: ["authorId"], where: dateFilter,
+      _count: { _all: true }, _max: { createdAt: true },
+    }),
+    prisma.feedbackReply.groupBy({
       by: ["authorId"], where: dateFilter,
       _count: { _all: true }, _max: { createdAt: true },
     }),
@@ -63,17 +72,19 @@ export async function GET(req: Request) {
       rows.map(r => [(r as Record<string, unknown>)[key] as string, { count: r._count._all, last: r._max.createdAt }])
     )
 
-  const postMap      = toMap(posts,    "authorId")
-  const commentMap   = toMap(comments, "authorId")
-  const claimMap     = toMap(claims,   "createdById")
-  const ncrMap       = toMap(ncrs,     "createdById")
-  const incomingMap  = toMap(incoming, "createdById")
-  const sourceMap    = toMap(source,   "createdById")
-  const auditMap     = toMap(audits,   "createdById")
+  const postMap         = toMap(posts,          "authorId")
+  const commentMap      = toMap(comments,       "authorId")
+  const feedPostMap     = toMap(feedbackPosts,  "authorId")
+  const feedReplyMap    = toMap(feedbackReplies,"authorId")
+  const claimMap        = toMap(claims,         "createdById")
+  const ncrMap          = toMap(ncrs,           "createdById")
+  const incomingMap     = toMap(incoming,       "createdById")
+  const sourceMap       = toMap(source,         "createdById")
+  const auditMap        = toMap(audits,         "createdById")
 
   const result = users.map(u => {
-    const pc = postMap[u.id]?.count     ?? 0
-    const cc = commentMap[u.id]?.count  ?? 0
+    const pc = (postMap[u.id]?.count      ?? 0) + (feedPostMap[u.id]?.count  ?? 0)
+    const cc = (commentMap[u.id]?.count   ?? 0) + (feedReplyMap[u.id]?.count ?? 0)
     const cl = claimMap[u.id]?.count    ?? 0
     const nc = ncrMap[u.id]?.count      ?? 0
     const ic = incomingMap[u.id]?.count ?? 0
@@ -84,6 +95,8 @@ export async function GET(req: Request) {
     const dates = [
       postMap[u.id]?.last,
       commentMap[u.id]?.last,
+      feedPostMap[u.id]?.last,
+      feedReplyMap[u.id]?.last,
       claimMap[u.id]?.last,
       ncrMap[u.id]?.last,
       incomingMap[u.id]?.last,
