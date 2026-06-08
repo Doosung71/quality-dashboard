@@ -28,7 +28,7 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
     ? (rawPriority as ClaimPriority | "All")
     : "All";
 
-  const [claims] = useState<Claim[]>(data.claims);
+  const claims = data.claims;
 
   // 신규 클레임 등록 폼
   const [showForm, setShowForm] = useState(false);

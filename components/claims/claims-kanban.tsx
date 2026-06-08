@@ -38,7 +38,7 @@ function ClaimCard({ claim }: { claim: Claim }) {
     <Link
       href={`/claims/${claim.id}`}
       className={cn(
-        "block bg-white rounded-lg border border-slate-200 p-3 shadow-sm hover:shadow-md hover:border-blue-300 transition-all",
+        "block bg-white rounded-lg border border-slate-200 p-3 shadow-sm hover:shadow-md hover:border-blue-300 transition-all overflow-hidden",
         overdue && "ring-1 ring-rose-400 border-rose-200 bg-rose-50/5"
       )}
     >
@@ -46,8 +46,8 @@ function ClaimCard({ claim }: { claim: Claim }) {
         <ClaimPriorityBadge priority={claim.priority} />
         <span className="text-[10px] text-slate-400 font-mono">{claim.claimNo}</span>
       </div>
-      <h4 className="text-sm font-bold text-slate-800 leading-tight mb-1 group-hover:text-blue-700">{claim.title}</h4>
-      <p className="text-xs text-slate-500 mb-3">{claim.customer}</p>
+      <h4 className="text-sm font-bold text-slate-800 leading-tight mb-1 group-hover:text-blue-700 wrap-break-word line-clamp-2">{claim.title}</h4>
+      <p className="text-xs text-slate-500 mb-3 truncate">{claim.customer}</p>
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
