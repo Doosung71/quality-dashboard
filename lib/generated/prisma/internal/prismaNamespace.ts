@@ -394,6 +394,7 @@ export const ModelName = {
   TestPlan: 'TestPlan',
   EquipmentRepair: 'EquipmentRepair',
   TestPlanOwnerHistory: 'TestPlanOwnerHistory',
+  InternalStandard: 'InternalStandard',
   Claim: 'Claim',
   Ncr: 'Ncr',
   Tender: 'Tender',
@@ -428,7 +429,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "claim" | "ncr" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "supplierAudit" | "auditFinding" | "incomingInspection" | "sourceInspection"
+    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "internalStandard" | "claim" | "ncr" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "supplierAudit" | "auditFinding" | "incomingInspection" | "sourceInspection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1169,6 +1170,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TestPlanOwnerHistoryCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TestPlanOwnerHistoryCountAggregateOutputType> | number
+        }
+      }
+    }
+    InternalStandard: {
+      payload: Prisma.$InternalStandardPayload<ExtArgs>
+      fields: Prisma.InternalStandardFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.InternalStandardFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InternalStandardPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.InternalStandardFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InternalStandardPayload>
+        }
+        findFirst: {
+          args: Prisma.InternalStandardFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InternalStandardPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.InternalStandardFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InternalStandardPayload>
+        }
+        findMany: {
+          args: Prisma.InternalStandardFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InternalStandardPayload>[]
+        }
+        create: {
+          args: Prisma.InternalStandardCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InternalStandardPayload>
+        }
+        createMany: {
+          args: Prisma.InternalStandardCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.InternalStandardCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InternalStandardPayload>[]
+        }
+        delete: {
+          args: Prisma.InternalStandardDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InternalStandardPayload>
+        }
+        update: {
+          args: Prisma.InternalStandardUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InternalStandardPayload>
+        }
+        deleteMany: {
+          args: Prisma.InternalStandardDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.InternalStandardUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.InternalStandardUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InternalStandardPayload>[]
+        }
+        upsert: {
+          args: Prisma.InternalStandardUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InternalStandardPayload>
+        }
+        aggregate: {
+          args: Prisma.InternalStandardAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateInternalStandard>
+        }
+        groupBy: {
+          args: Prisma.InternalStandardGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InternalStandardGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.InternalStandardCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InternalStandardCountAggregateOutputType> | number
         }
       }
     }
@@ -2790,6 +2865,26 @@ export const TestPlanOwnerHistoryScalarFieldEnum = {
 export type TestPlanOwnerHistoryScalarFieldEnum = (typeof TestPlanOwnerHistoryScalarFieldEnum)[keyof typeof TestPlanOwnerHistoryScalarFieldEnum]
 
 
+export const InternalStandardScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  code: 'code',
+  internalCat: 'internalCat',
+  description: 'description',
+  publisher: 'publisher',
+  publishYear: 'publishYear',
+  fileUrl: 'fileUrl',
+  fileName: 'fileName',
+  fileSize: 'fileSize',
+  keywords: 'keywords',
+  uploadedById: 'uploadedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InternalStandardScalarFieldEnum = (typeof InternalStandardScalarFieldEnum)[keyof typeof InternalStandardScalarFieldEnum]
+
+
 export const ClaimScalarFieldEnum = {
   id: 'id',
   claimNo: 'claimNo',
@@ -3622,6 +3717,7 @@ export type GlobalOmitConfig = {
   testPlan?: Prisma.TestPlanOmit
   equipmentRepair?: Prisma.EquipmentRepairOmit
   testPlanOwnerHistory?: Prisma.TestPlanOwnerHistoryOmit
+  internalStandard?: Prisma.InternalStandardOmit
   claim?: Prisma.ClaimOmit
   ncr?: Prisma.NcrOmit
   tender?: Prisma.TenderOmit

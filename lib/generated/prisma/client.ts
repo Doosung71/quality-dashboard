@@ -92,6 +92,11 @@ export type EquipmentRepair = Prisma.EquipmentRepairModel
  */
 export type TestPlanOwnerHistory = Prisma.TestPlanOwnerHistoryModel
 /**
+ * Model InternalStandard
+ * 
+ */
+export type InternalStandard = Prisma.InternalStandardModel
+/**
  * Model Claim
  * 
  */

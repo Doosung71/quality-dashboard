@@ -1,0 +1,18 @@
+// 사내 재료 규격 및 기술 문서 관리
+model InternalStandard {
+  id           String   @id @default(cuid())
+  title        String
+  code         String?                        // 사내 규격 번호 (예: 산특-2024-001)
+  internalCat  String   @default("재료규격") // 재료규격 | 공정규격 | 설계규격 | 기타
+  description  String   @default("")
+  publisher    String   @default("내부")      // 작성 부서
+  publishYear  String   @default("")
+  fileUrl      String?                        // Vercel Blob URL
+  fileName     String?
+  fileSize     Int?                           // bytes
+  keywords     String[]
+  uploadedById String
+  uploadedBy   User     @relation("InternalStandardUploader", fields: [uploadedById], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

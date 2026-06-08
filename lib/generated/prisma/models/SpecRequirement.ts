@@ -564,14 +564,6 @@ export type SpecRequirementUncheckedUpdateManyWithoutAnalysisNestedInput = {
   deleteMany?: Prisma.SpecRequirementScalarWhereInput | Prisma.SpecRequirementScalarWhereInput[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type NullableEnumComplianceStatusFieldUpdateOperationsInput = {
   set?: $Enums.ComplianceStatus | null
 }

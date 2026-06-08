@@ -27,6 +27,10 @@ import {
   Globe,
   Link2,
   Loader2,
+  Download,
+  Pencil,
+  Trash2,
+  Upload,
 } from "lucide-react";
 
 interface KnowledgeRepositoryProps {
@@ -43,11 +47,13 @@ const CATEGORY_MAP: Record<KnowledgeCategory, { label: string; bg: string; text:
 };
 
 const SUB_CATEGORIES_BY_MAIN: Record<KnowledgeCategory, KnowledgeSubCategory[]> = {
-  "Standards": ["국제규격", "국가규격", "단체규격", "고객규격", "Tender"],
+  "Standards": ["사내규격", "국제규격", "국가규격", "단체규격", "고객규격", "Tender"],
   "TechnicalDocs": ["논문", "특허"],
   "Reports": ["시험성적서", "분석보고서"],
   "Others": ["가이드라인", "매뉴얼", "기타"]
 };
+
+const INTERNAL_CATS = ["재료규격", "공정규격", "설계규격", "기타"] as const;
 
 export function KnowledgeRepository({ data, repoLoading = false, ragSearchElement }: KnowledgeRepositoryProps) {
   const [activeTab, setActiveTab] = useState<"browser" | "rag" | "websearch">("browser");
@@ -111,26 +117,35 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
   // 검색어 필터
   const [searchQuery, setSearchQuery] = useState("");
 
-  // 모의 신규 자산 등록 폼 상태
+  // 신규 자산 등록 폼 상태 (사내규격 전용 실제 저장)
   const [showAddForm, setShowAddForm] = useState(false);
   const [newTitle, setNewTitle] = useState("");
-  const [newCategory, setNewCategory] = useState<KnowledgeCategory>("Standards");
-  const [newSubCategory, setNewSubCategory] = useState<KnowledgeSubCategory>("국제규격");
   const [newCode, setNewCode] = useState("");
-  const [newPublisher, setNewPublisher] = useState("");
-  const [newPublishYear, setNewPublishYear] = useState("2026");
+  const [newInternalCat, setNewInternalCat] = useState("재료규격");
+  const [newPublisher, setNewPublisher] = useState("내부");
+  const [newPublishYear, setNewPublishYear] = useState(String(new Date().getFullYear()));
   const [newSummary, setNewSummary] = useState("");
   const [newKeywords, setNewKeywords] = useState("");
-  const [newFileSize, setNewFileSize] = useState("1.5 MB");
+  const [newFile, setNewFile] = useState<File | null>(null);
+  const [formSaving, setFormSaving] = useState(false);
+  const [formError, setFormError] = useState("");
 
-  // 대분류 선택 시 하위 분류 초기값 설정 방지용 헬퍼
-  const handleCategoryChange = (cat: KnowledgeCategory) => {
-    setNewCategory(cat);
-    const subCats = SUB_CATEGORIES_BY_MAIN[cat];
-    if (subCats && subCats.length > 0) {
-      setNewSubCategory(subCats[0]);
-    }
-  };
+  // 편집 상태
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({ title: "", code: "", internalCat: "재료규격", description: "", publisher: "", publishYear: "", keywords: "" });
+  const [editFile, setEditFile] = useState<File | null>(null);
+  const [editSaving, setEditSaving] = useState(false);
+  const [editError, setEditError] = useState("");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  async function uploadFile(file: File): Promise<{ url: string; name: string; size: number } | null> {
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("context", "internal-standards");
+    const res = await fetch("/api/attachments/upload", { method: "POST", body: fd });
+    if (!res.ok) return null;
+    return res.json();
+  }
 
   // 선택된 자산 상세
   const selectedAsset = useMemo(() => {
@@ -192,41 +207,87 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
     }).sort((a, b) => b.publishYear.localeCompare(a.publishYear)); // 최신 연도순
   }, [assets, selectedTreeCategory, selectedTreeSubCategory, searchQuery]);
 
-  // 모의 신규 자산 저장
-  const handleAddAsset = (e: React.FormEvent) => {
+  const handleAddAsset = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTitle.trim() || !newPublisher.trim() || !newSummary.trim()) return;
+    if (!newTitle.trim()) return;
+    setFormSaving(true);
+    setFormError("");
+    try {
+      let fileUrl: string | undefined, fileName: string | undefined, fileSize: number | undefined;
+      if (newFile) {
+        const uploaded = await uploadFile(newFile);
+        if (!uploaded) { setFormError("파일 업로드에 실패했습니다."); setFormSaving(false); return; }
+        fileUrl = uploaded.url; fileName = uploaded.name; fileSize = uploaded.size;
+      }
+      const keywords = newKeywords.split(",").map(k => k.trim()).filter(Boolean);
+      const res = await fetch("/api/internal-standards", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: newTitle.trim(), code: newCode.trim() || null, internalCat: newInternalCat, description: newSummary.trim(), publisher: newPublisher.trim(), publishYear: newPublishYear, fileUrl, fileName, fileSize, keywords }),
+      });
+      const d = await res.json();
+      if (!res.ok) { setFormError(d.error ?? "저장 실패"); setFormSaving(false); return; }
+      const std = d.standard;
+      const newAsset: KnowledgeAsset = {
+        id: `IS-${std.id}`, category: "Standards", subCategory: "사내규격",
+        title: std.title, code: std.code ?? undefined, publisher: std.publisher,
+        publishYear: std.publishYear || "-", summary: std.description,
+        fileSize: std.fileSize ? `${(std.fileSize / 1024 / 1024).toFixed(1)} MB` : undefined,
+        keywords: std.keywords, linkUrl: std.fileUrl ?? undefined,
+        isInternal: true, internalId: std.id, internalCat: std.internalCat,
+      };
+      setAssets(prev => [newAsset, ...prev]);
+      setSelectedAssetId(newAsset.id);
+      setNewTitle(""); setNewCode(""); setNewPublisher("내부"); setNewPublishYear(String(new Date().getFullYear()));
+      setNewSummary(""); setNewKeywords(""); setNewFile(null); setShowAddForm(false);
+    } finally {
+      setFormSaving(false);
+    }
+  };
 
-    const keywordsArray = newKeywords
-      .split(",")
-      .map(k => k.trim())
-      .filter(k => k.length > 0);
+  const startEdit = (asset: KnowledgeAsset) => {
+    setEditingId(asset.internalId!);
+    setEditForm({ title: asset.title, code: asset.code ?? "", internalCat: asset.internalCat ?? "재료규격", description: asset.summary, publisher: asset.publisher, publishYear: asset.publishYear, keywords: asset.keywords.join(", ") });
+    setEditFile(null); setEditError("");
+  };
 
-    const newAsset: KnowledgeAsset = {
-      id: `KB-2026-0${assets.length + 1}`,
-      category: newCategory,
-      subCategory: newSubCategory,
-      title: newTitle.trim(),
-      code: newCode.trim() || undefined,
-      publisher: newPublisher.trim(),
-      publishYear: newPublishYear,
-      summary: newSummary.trim(),
-      fileSize: newFileSize,
-      keywords: keywordsArray.length > 0 ? keywordsArray : ["QMS 보강"],
-      linkUrl: `/references/uploaded_${newCode || "doc"}.pdf`
-    };
+  const handleEditSave = async (asset: KnowledgeAsset) => {
+    if (!editForm.title.trim()) return;
+    setEditSaving(true); setEditError("");
+    try {
+      let fileUrl: string | undefined, fileName: string | undefined, fileSize: number | undefined;
+      if (editFile) {
+        const uploaded = await uploadFile(editFile);
+        if (!uploaded) { setEditError("파일 업로드 실패"); setEditSaving(false); return; }
+        fileUrl = uploaded.url; fileName = uploaded.name; fileSize = uploaded.size;
+      }
+      const keywords = editForm.keywords.split(",").map(k => k.trim()).filter(Boolean);
+      const body = { title: editForm.title.trim(), code: editForm.code.trim() || null, internalCat: editForm.internalCat, description: editForm.description.trim(), publisher: editForm.publisher.trim(), publishYear: editForm.publishYear.trim(), keywords, ...(editFile ? { fileUrl, fileName, fileSize } : {}) };
+      const res = await fetch(`/api/internal-standards/${asset.internalId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      const d = await res.json();
+      if (!res.ok) { setEditError(d.error ?? "수정 실패"); setEditSaving(false); return; }
+      const std = d.standard;
+      setAssets(prev => prev.map(a => a.internalId === asset.internalId ? {
+        ...a, title: std.title, code: std.code ?? undefined, internalCat: std.internalCat,
+        summary: std.description, publisher: std.publisher, publishYear: std.publishYear || "-",
+        keywords: std.keywords,
+        ...(editFile ? { linkUrl: std.fileUrl ?? undefined, fileSize: std.fileSize ? `${(std.fileSize / 1024 / 1024).toFixed(1)} MB` : undefined } : {}),
+      } : a));
+      setEditingId(null);
+    } finally {
+      setEditSaving(false);
+    }
+  };
 
-    setAssets(prev => [newAsset, ...prev]);
-    setSelectedAssetId(newAsset.id);
-
-    // 폼 클리어
-    setNewTitle("");
-    setNewCode("");
-    setNewPublisher("");
-    setNewPublishYear("2026");
-    setNewSummary("");
-    setNewKeywords("");
-    setShowAddForm(false);
+  const handleDelete = async (asset: KnowledgeAsset) => {
+    setDeletingId(asset.internalId!);
+    const res = await fetch(`/api/internal-standards/${asset.internalId}`, { method: "DELETE" });
+    if (res.ok) {
+      const remaining = assets.filter(a => a.internalId !== asset.internalId);
+      setAssets(remaining);
+      setSelectedAssetId(remaining[0]?.id ?? "");
+    }
+    setDeletingId(null);
   };
 
   const [contentText, setContentText] = useState<string | null>(null);
@@ -582,130 +643,79 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                 </div>
               </div>
 
-              {/* 신규 지식 등록 폼 */}
+              {/* 신규 사내규격 등록 폼 */}
               {showAddForm && (
-                <form onSubmit={handleAddAsset} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-md animate-slide-in space-y-4 text-xs">
-                  <h4 className="text-sm font-bold text-slate-950 flex items-center gap-1.5 pb-2 border-b">
-                    <PlusCircle className="w-4 h-4 text-indigo-500" /> 신규 지식 자산(규격/기술자료) 정보 입력
+                <form onSubmit={handleAddAsset} className="bg-violet-50 p-5 rounded-2xl border border-violet-200 shadow-md space-y-4 text-xs">
+                  <h4 className="text-sm font-bold text-violet-900 flex items-center gap-1.5 pb-2 border-b border-violet-200">
+                    <PlusCircle className="w-4 h-4 text-violet-600" /> 사내 규격 신규 등록
                   </h4>
+                  {formError && <p className="text-rose-600 bg-rose-50 rounded px-3 py-2">{formError}</p>}
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-600">대분류 카테고리</label>
-                      <select
-                        value={newCategory}
-                        onChange={(e) => handleCategoryChange(e.target.value as KnowledgeCategory)}
-                        className="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-950"
-                      >
-                        <option value="Standards">규격 (Standards)</option>
-                        <option value="TechnicalDocs">기술자료 (Docs)</option>
-                        <option value="Reports">보고서 (Reports)</option>
-                        <option value="Others">기타 (Others)</option>
+                      <label className="font-bold text-slate-600">사내 분류</label>
+                      <select value={newInternalCat} onChange={e => setNewInternalCat(e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500">
+                        {INTERNAL_CATS.map(c => <option key={c}>{c}</option>)}
                       </select>
                     </div>
-
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-600">세부 분류</label>
-                      <select
-                        value={newSubCategory}
-                        onChange={(e) => setNewSubCategory(e.target.value as KnowledgeSubCategory)}
-                        className="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-950"
-                      >
-                        {SUB_CATEGORIES_BY_MAIN[newCategory].map(sc => (
-                          <option key={sc} value={sc}>{sc}</option>
-                        ))}
-                      </select>
+                      <label className="font-bold text-slate-600">규격 번호 (선택)</label>
+                      <input type="text" placeholder="예: 산특-2024-001" value={newCode}
+                        onChange={e => setNewCode(e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
                     </div>
-
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-600">규격 번호 / 문서 코드 (선택)</label>
-                      <input
-                        type="text"
-                        placeholder="예: IEC 60840, KS C 3002"
-                        value={newCode}
-                        onChange={(e) => setNewCode(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-950"
-                      />
+                      <label className="font-bold text-slate-600">작성 부서</label>
+                      <input type="text" placeholder="예: 개발부, 품질팀" value={newPublisher}
+                        onChange={e => setNewPublisher(e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div className="space-y-1">
-                      <label className="font-bold text-slate-600">발행처 / 출처</label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="예: CIGRE, KEMA, 특허청"
-                        value={newPublisher}
-                        onChange={(e) => setNewPublisher(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-950"
-                      />
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div className="md:col-span-3 space-y-1">
+                      <label className="font-bold text-slate-600">규격 제목 <span className="text-rose-500">*</span></label>
+                      <input type="text" required placeholder="예: 동선 인장강도 시험 방법 (내부 재료규격)" value={newTitle}
+                        onChange={e => setNewTitle(e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
                     </div>
-
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-600">발행 연도</label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="예: 2026"
-                        value={newPublishYear}
-                        onChange={(e) => setNewPublishYear(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-950"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="font-bold text-slate-600">파일 크기</label>
-                      <input
-                        type="text"
-                        value={newFileSize}
-                        onChange={(e) => setNewFileSize(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-950"
-                      />
+                      <label className="font-bold text-slate-600">작성 연도</label>
+                      <input type="text" placeholder="2026" value={newPublishYear}
+                        onChange={e => setNewPublishYear(e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
                     </div>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-600">지식 명칭 / 규격 제목</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="문서의 공식 제목을 적어주세요..."
-                      value={newTitle}
-                      onChange={(e) => setNewTitle(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-950"
-                    />
+                    <label className="font-bold text-slate-600">내용 요약</label>
+                    <textarea rows={3} placeholder="규격 핵심 내용, 적용 범위, 합격 기준 등을 정리해 주세요." value={newSummary}
+                      onChange={e => setNewSummary(e.target.value)}
+                      className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500 resize-none" />
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="font-bold text-slate-600">내용 요약 및 합격기준 설명</label>
-                    <textarea
-                      required
-                      rows={3}
-                      placeholder="규격 핵심 합격기준이나 기술 논문 요약 등을 정리해 주세요..."
-                      value={newSummary}
-                      onChange={(e) => setNewSummary(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-950"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="font-bold text-slate-600">핵심 검색어 / 키워드 (쉼표구분)</label>
-                    <input
-                      type="text"
-                      placeholder="예: PD측정, 가교폴리에틸렌, 시험규격"
-                      value={newKeywords}
-                      onChange={(e) => setNewKeywords(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-950"
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-bold text-slate-600">키워드 (쉼표 구분)</label>
+                      <input type="text" placeholder="예: 동선, 인장강도, 재료시험" value={newKeywords}
+                        onChange={e => setNewKeywords(e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-bold text-slate-600 flex items-center gap-1"><Upload className="w-3 h-3" /> PDF 파일 첨부 (선택)</label>
+                      <input type="file" accept=".pdf,.docx,.xlsx"
+                        onChange={e => setNewFile(e.target.files?.[0] ?? null)}
+                        className="w-full text-[11px] text-slate-600 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-bold file:bg-violet-100 file:text-violet-700 hover:file:bg-violet-200" />
+                      {newFile && <p className="text-[10px] text-slate-400">{newFile.name} ({(newFile.size / 1024 / 1024).toFixed(1)} MB)</p>}
+                    </div>
                   </div>
 
                   <div className="flex justify-end pt-1">
-                    <button
-                      type="submit"
-                      className="bg-slate-950 hover:bg-slate-800 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow"
-                    >
-                      <PlusCircle className="w-4 h-4" /> 지식자산 저장
+                    <button type="submit" disabled={formSaving}
+                      className="bg-violet-700 hover:bg-violet-800 disabled:opacity-50 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow transition-colors">
+                      {formSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <PlusCircle className="w-4 h-4" />}
+                      {formSaving ? "저장 중…" : "등록"}
                     </button>
                   </div>
                 </form>
@@ -773,15 +783,90 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                     <div className="bg-white py-24 rounded-2xl border text-center text-slate-400 text-xs">
                       선택된 지식이 없습니다. 좌측 목록에서 카드를 선택해 주세요.
                     </div>
+                  ) : editingId === selectedAsset.internalId ? (
+                    /* 사내규격 인라인 편집 폼 */
+                    <div className="bg-violet-50 p-5 rounded-2xl border border-violet-200 shadow-sm space-y-4 text-xs">
+                      <h4 className="text-sm font-bold text-violet-900 flex items-center gap-1.5 pb-2 border-b border-violet-200">
+                        <Pencil className="w-4 h-4 text-violet-600" /> 사내 규격 수정
+                      </h4>
+                      {editError && <p className="text-rose-600 bg-rose-50 rounded px-3 py-2">{editError}</p>}
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="font-bold text-slate-600">사내 분류</label>
+                          <select value={editForm.internalCat} onChange={e => setEditForm(f => ({ ...f, internalCat: e.target.value }))}
+                            className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500">
+                            {INTERNAL_CATS.map(c => <option key={c}>{c}</option>)}
+                          </select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="font-bold text-slate-600">규격 번호</label>
+                          <input type="text" value={editForm.code} onChange={e => setEditForm(f => ({ ...f, code: e.target.value }))}
+                            className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="font-bold text-slate-600">규격 제목 <span className="text-rose-500">*</span></label>
+                        <input type="text" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))}
+                          className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="font-bold text-slate-600">작성 부서</label>
+                          <input type="text" value={editForm.publisher} onChange={e => setEditForm(f => ({ ...f, publisher: e.target.value }))}
+                            className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="font-bold text-slate-600">작성 연도</label>
+                          <input type="text" value={editForm.publishYear} onChange={e => setEditForm(f => ({ ...f, publishYear: e.target.value }))}
+                            className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="font-bold text-slate-600">내용 요약</label>
+                        <textarea rows={3} value={editForm.description} onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
+                          className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500 resize-none" />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="font-bold text-slate-600">키워드 (쉼표 구분)</label>
+                        <input type="text" value={editForm.keywords} onChange={e => setEditForm(f => ({ ...f, keywords: e.target.value }))}
+                          className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="font-bold text-slate-600 flex items-center gap-1"><Upload className="w-3 h-3" /> 파일 교체 (선택)</label>
+                        <input type="file" accept=".pdf,.docx,.xlsx"
+                          onChange={e => setEditFile(e.target.files?.[0] ?? null)}
+                          className="w-full text-[11px] text-slate-600 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-bold file:bg-violet-100 file:text-violet-700 hover:file:bg-violet-200" />
+                        {editFile && <p className="text-[10px] text-slate-400">{editFile.name}</p>}
+                        {!editFile && selectedAsset.linkUrl && <p className="text-[10px] text-slate-400">현재: {selectedAsset.linkUrl.split("/").pop()}</p>}
+                      </div>
+
+                      <div className="flex gap-2 pt-1">
+                        <button onClick={() => handleEditSave(selectedAsset)} disabled={editSaving}
+                          className="flex-1 py-2 bg-violet-700 hover:bg-violet-800 disabled:opacity-50 text-white font-bold rounded-lg flex items-center justify-center gap-1.5 transition-colors">
+                          {editSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Pencil className="w-3.5 h-3.5" />}
+                          {editSaving ? "저장 중…" : "저장"}
+                        </button>
+                        <button onClick={() => setEditingId(null)}
+                          className="px-4 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600 font-bold transition-colors">
+                          취소
+                        </button>
+                      </div>
+                    </div>
                   ) : (
                     <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-5 text-xs">
                       <div className="border-b pb-4 space-y-2.5">
                         <div className="flex items-center justify-between">
                           <span className={`px-2 py-0.5 rounded text-[9px] font-bold border ${CATEGORY_MAP[selectedAsset.category].bg} ${CATEGORY_MAP[selectedAsset.category].text} ${CATEGORY_MAP[selectedAsset.category].border}`}>
-                            {selectedAsset.subCategory}
+                            {selectedAsset.isInternal ? `사내규격 · ${selectedAsset.internalCat}` : selectedAsset.subCategory}
                           </span>
                           {selectedAsset.fileSize && (
-                            <span className="text-[9px] font-mono text-slate-400">PDF ({selectedAsset.fileSize})</span>
+                            <span className="text-[9px] font-mono text-slate-400">파일 ({selectedAsset.fileSize})</span>
                           )}
                         </div>
 
@@ -805,23 +890,47 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                       <div className="space-y-1.5">
                         <span className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">규격 합격기준 및 기술 핵심요약</span>
                         <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-100">
-                          <MarkdownContent content={selectedAsset.summary} className="text-[11px]" />
+                          <MarkdownContent content={selectedAsset.summary || "(요약 없음)"} className="text-[11px]" />
                         </div>
                       </div>
 
                       {/* 태그 */}
-                      <div className="space-y-1.5">
-                        <span className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">태그 / 색인 키워드</span>
-                        <div className="flex flex-wrap gap-1.5">
-                          {selectedAsset.keywords.map(k => (
-                            <span key={k} className="bg-slate-100 text-slate-700 rounded-md px-2 py-0.5 text-[9px] font-bold">
-                              #{k}
-                            </span>
-                          ))}
+                      {selectedAsset.keywords.length > 0 && (
+                        <div className="space-y-1.5">
+                          <span className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">태그 / 색인 키워드</span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {selectedAsset.keywords.map(k => (
+                              <span key={k} className="bg-slate-100 text-slate-700 rounded-md px-2 py-0.5 text-[9px] font-bold">
+                                #{k}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                      </div>
+                      )}
 
-                      {/* 내용 보기 */}
+                      {/* 사내규격 액션 버튼 */}
+                      {selectedAsset.isInternal && (
+                        <div className="pt-3 border-t space-y-2">
+                          <div className="flex gap-2">
+                            {selectedAsset.linkUrl && (
+                              <a href={selectedAsset.linkUrl} target="_blank" rel="noopener noreferrer"
+                                className="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg flex items-center justify-center gap-1.5 transition-colors">
+                                <Download className="w-3.5 h-3.5" /> 파일 다운로드
+                              </a>
+                            )}
+                            <button onClick={() => startEdit(selectedAsset)}
+                              className="flex-1 py-2 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-lg flex items-center justify-center gap-1.5 transition-colors">
+                              <Pencil className="w-3.5 h-3.5" /> 수정
+                            </button>
+                            <button onClick={() => handleDelete(selectedAsset)} disabled={deletingId === selectedAsset.internalId}
+                              className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-lg flex items-center justify-center gap-1 transition-colors disabled:opacity-50">
+                              {deletingId === selectedAsset.internalId ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* 외부 문서 내용 보기 */}
                       {selectedAsset.sourcePath && (
                         <div className="pt-3 border-t space-y-2">
                           <div className="flex gap-2">

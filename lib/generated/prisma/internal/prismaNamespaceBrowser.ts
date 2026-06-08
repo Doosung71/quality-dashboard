@@ -61,6 +61,7 @@ export const ModelName = {
   TestPlan: 'TestPlan',
   EquipmentRepair: 'EquipmentRepair',
   TestPlanOwnerHistory: 'TestPlanOwnerHistory',
+  InternalStandard: 'InternalStandard',
   Claim: 'Claim',
   Ncr: 'Ncr',
   Tender: 'Tender',
@@ -269,6 +270,26 @@ export const TestPlanOwnerHistoryScalarFieldEnum = {
 } as const
 
 export type TestPlanOwnerHistoryScalarFieldEnum = (typeof TestPlanOwnerHistoryScalarFieldEnum)[keyof typeof TestPlanOwnerHistoryScalarFieldEnum]
+
+
+export const InternalStandardScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  code: 'code',
+  internalCat: 'internalCat',
+  description: 'description',
+  publisher: 'publisher',
+  publishYear: 'publishYear',
+  fileUrl: 'fileUrl',
+  fileName: 'fileName',
+  fileSize: 'fileSize',
+  keywords: 'keywords',
+  uploadedById: 'uploadedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InternalStandardScalarFieldEnum = (typeof InternalStandardScalarFieldEnum)[keyof typeof InternalStandardScalarFieldEnum]
 
 
 export const ClaimScalarFieldEnum = {
