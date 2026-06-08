@@ -165,6 +165,8 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
   const handleTreeClick = (category: KnowledgeCategory | "ALL", subCategory: KnowledgeSubCategory | "ALL") => {
     setSelectedTreeCategory(category);
     setSelectedTreeSubCategory(subCategory);
+    setSelectedAssetId("");
+    setContentText(null);
     setShowAddForm(false);
     if (subCategory !== "ALL") setNewSubCategory(subCategory);
     setMobileView("list");
