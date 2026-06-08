@@ -166,7 +166,7 @@ export default function AuditDetailClient({ audit: initial }: { audit: Audit }) 
             {audit.summary && (
               <div className="col-span-3 bg-indigo-50 rounded-lg p-3 border border-indigo-100">
                 <p className="text-xs font-semibold text-indigo-600 mb-1">종합 의견</p>
-                <p className="text-sm text-slate-700 leading-relaxed">{audit.summary}</p>
+                <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{audit.summary}</p>
               </div>
             )}
           </div>
@@ -199,7 +199,7 @@ export default function AuditDetailClient({ audit: initial }: { audit: Audit }) 
               </div>
               <div className="col-span-2">
                 <label className="text-xs font-semibold text-slate-600 block mb-1">지적 내용 *</label>
-                <textarea value={newFinding.description} onChange={e => setNewFinding(f => ({ ...f, description: e.target.value }))} rows={2} className={field} placeholder="지적 내용을 입력하세요..." />
+                <textarea value={newFinding.description} onChange={e => setNewFinding(f => ({ ...f, description: e.target.value }))} rows={3} className={`${field} resize-y`} placeholder="지적 내용을 입력하세요... (Enter로 줄바꿈 가능)" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-600 block mb-1">해당 기준</label>
@@ -237,7 +237,7 @@ export default function AuditDetailClient({ audit: initial }: { audit: Audit }) 
                           {f.status === "CLOSED" && <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-0.5"><CheckCircle2 className="w-3 h-3" />조치 완료</span>}
                           {f.requirement && <span className="text-[10px] text-slate-400">{f.requirement}</span>}
                         </div>
-                        <p className="text-sm text-slate-800 mt-1 leading-relaxed line-clamp-2">{f.description}</p>
+                        <p className="text-sm text-slate-800 mt-1 leading-relaxed line-clamp-2 whitespace-pre-wrap">{f.description}</p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         <button onClick={e => { e.stopPropagation(); deleteFinding(f.id) }} className="p-1 text-slate-300 hover:text-rose-500 transition-colors">
@@ -255,8 +255,8 @@ export default function AuditDetailClient({ audit: initial }: { audit: Audit }) 
                           <textarea
                             value={responseText[f.id] ?? f.response ?? ""}
                             onChange={e => setResponseText(r => ({ ...r, [f.id]: e.target.value }))}
-                            rows={2} className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder="업체 조치 내용을 입력하세요..."
+                            rows={3} className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-y"
+                            placeholder="업체 조치 내용을 입력하세요... (Enter로 줄바꿈 가능)"
                           />
                           <button onClick={() => closeFinding(f.id)} className="text-xs px-3 py-1.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
                             조치 완료 처리
@@ -266,7 +266,7 @@ export default function AuditDetailClient({ audit: initial }: { audit: Audit }) 
                       {f.status === "CLOSED" && f.response && (
                         <div className="bg-emerald-50 rounded-lg p-3 border border-emerald-100">
                           <p className="text-[10px] font-semibold text-emerald-600 mb-1">조치 내용</p>
-                          <p className="text-xs text-slate-700">{f.response}</p>
+                          <p className="text-xs text-slate-700 whitespace-pre-wrap">{f.response}</p>
                         </div>
                       )}
                     </div>
