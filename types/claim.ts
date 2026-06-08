@@ -14,6 +14,13 @@ export interface ClaimTimelineItem {
   action: string;
 }
 
+export interface ClaimAttachment {
+  url: string;
+  name: string;
+  size: number;
+  contentType: string;
+}
+
 export interface Claim {
   id: string;         // cuid — DB primary key, used in URLs
   claimNo: string;    // "CLM-2026-001" — display number
@@ -27,6 +34,7 @@ export interface Claim {
   assignee: string;
   description: string;
   timeline?: ClaimTimelineItem[];
+  attachments?: ClaimAttachment[];
 }
 
 export interface ClaimsData {

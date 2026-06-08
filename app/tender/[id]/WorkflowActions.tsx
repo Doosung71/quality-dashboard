@@ -45,8 +45,8 @@ export default function WorkflowActions({ analysisId, role, status, isSubmitted 
     }
   }
 
-  // 실무자: DRAFT + 미제출 → 메모 + 제출 버튼
-  if (role === "PRACTITIONER" && status === "DRAFT" && !isSubmitted) {
+  // 실무자/관리자: DRAFT + 미제출 → 메모 + 제출 버튼
+  if (["PRACTITIONER", "ADMIN"].includes(role) && status === "DRAFT" && !isSubmitted) {
     return (
       <div className="bg-white border rounded-lg px-4 py-3 space-y-3">
         <p className="text-sm font-medium text-zinc-700">팀장에게 제출</p>
@@ -67,8 +67,8 @@ export default function WorkflowActions({ analysisId, role, status, isSubmitted 
     )
   }
 
-  // 팀장: DRAFT + 제출됨 → 승인/반려
-  if (role === "TEAM_LEAD" && status === "DRAFT" && isSubmitted) {
+  // 팀장/관리자: DRAFT + 제출됨 → 승인/반려
+  if (["TEAM_LEAD", "ADMIN"].includes(role) && status === "DRAFT" && isSubmitted) {
     if (showRejectForm) {
       return (
         <div className="bg-white border rounded-lg px-4 py-3 space-y-2">
@@ -143,8 +143,8 @@ export default function WorkflowActions({ analysisId, role, status, isSubmitted 
     )
   }
 
-  // 부문장: REVIEWED → 최종 승인/반려
-  if (role === "DIRECTOR" && status === "REVIEWED") {
+  // 부문장/관리자: REVIEWED → 최종 승인/반려
+  if (["DIRECTOR", "ADMIN"].includes(role) && status === "REVIEWED") {
     if (showFinalRejectForm) {
       return (
         <div className="bg-white border rounded-lg px-4 py-3 space-y-2">

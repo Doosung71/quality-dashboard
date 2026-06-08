@@ -16,6 +16,13 @@ export interface NCRTimelineItem {
   user: string;
 }
 
+export interface NCRAttachment {
+  url: string;
+  name: string;
+  size: number;
+  contentType: string;
+}
+
 export interface NCR {
   id: string;         // cuid — DB primary key, used in URLs
   ncrNo: string;      // "NCR-2026-001" — display number
@@ -30,6 +37,7 @@ export interface NCR {
   assignee: string;
   description: string;
   timeline?: NCRTimelineItem[];
+  attachments?: NCRAttachment[];
 }
 
 export interface NCRsData {

@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
-  if (session.user.role !== "DIRECTOR") {
+  if (!["DIRECTOR", "ADMIN"].includes(session.user.role ?? "")) {
     return NextResponse.json({ error: "부문장만 수정할 수 있습니다." }, { status: 403 })
   }
 

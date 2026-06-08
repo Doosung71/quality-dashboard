@@ -2801,6 +2801,7 @@ export const ClaimScalarFieldEnum = {
   assignee: 'assignee',
   description: 'description',
   timeline: 'timeline',
+  attachments: 'attachments',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   createdById: 'createdById'
@@ -2823,6 +2824,7 @@ export const NcrScalarFieldEnum = {
   assignee: 'assignee',
   description: 'description',
   timeline: 'timeline',
+  attachments: 'attachments',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   createdById: 'createdById'

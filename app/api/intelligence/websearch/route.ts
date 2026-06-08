@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
   if (rl) return rl
 
   const { role } = session.user
-  if (!["DIRECTOR", "ADMIN", "TEAM_LEAD"].includes(role as string)) {
+  if (!["PRACTITIONER", "TEAM_LEAD", "DIRECTOR", "ADMIN"].includes(role as string)) {
     return NextResponse.json({ error: "접근 권한이 없습니다." }, { status: 403 })
   }
 

@@ -155,21 +155,30 @@ export default function FeedbackBoard({ initial }: { initial: FeedbackItem[] }) 
     setUploading(true)
     setError("")
     const newUrls: string[] = []
-    for (const file of files) {
-      const form = new FormData()
-      form.append("file", file)
-      const res = await fetch("/api/feedback/image", { method: "POST", body: form })
-      if (res.ok) {
-        const { url } = await res.json()
-        newUrls.push(url)
-      } else {
-        const d = await res.json()
-        setError(d.error ?? "이미지 업로드 실패")
-        break
+    try {
+      for (const file of files) {
+        const form = new FormData()
+        form.append("file", file)
+        const res = await fetch("/api/feedback/image", { method: "POST", body: form })
+        if (res.ok) {
+          const { url } = await res.json()
+          newUrls.push(url)
+        } else {
+          let errMsg = "이미지 업로드에 실패했습니다"
+          try {
+            const d = await res.json()
+            errMsg = d.error ?? errMsg
+          } catch { /* non-JSON error body (e.g. 500 HTML page) */ }
+          setError(errMsg)
+          break
+        }
       }
+    } catch {
+      setError("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+    } finally {
+      setUploadedUrls((prev) => [...prev, ...newUrls])
+      setUploading(false)
     }
-    setUploadedUrls((prev) => [...prev, ...newUrls])
-    setUploading(false)
   }
 
   async function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {

@@ -7,18 +7,19 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
 
-  if (session.user.role !== "PRACTITIONER") {
+  if (!["PRACTITIONER", "ADMIN"].includes(session.user.role ?? "")) {
     return NextResponse.json({ error: "실무자만 표준 매칭을 실행할 수 있습니다." }, { status: 403 })
   }
 
   const { id: analysisId } = await params
 
+  const isAdmin = session.user.role === "ADMIN"
   const analysis = await prisma.analysis.findFirst({
     where: {
       id: analysisId,
-      tender: { createdById: session.user.id },
       status: "DRAFT",
       submittedAt: null,
+      ...(isAdmin ? {} : { tender: { createdById: session.user.id } }),
     },
     include: { requirements: { select: { id: true, content: true } } },
   })

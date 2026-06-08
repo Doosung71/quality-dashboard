@@ -21,7 +21,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
   const body = await req.json() as {
     title?: string; customer?: string; priority?: string; assignee?: string
-    description?: string; status?: string; targetDate?: string | null; closedAt?: string | null; timeline?: unknown[]
+    description?: string; status?: string; targetDate?: string | null; closedAt?: string | null
+    timeline?: unknown[]; attachments?: unknown[]
   }
 
   const claim = await prisma.claim.update({
@@ -34,6 +35,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       ...(body.description !== undefined && { description: body.description }),
       ...(body.status      !== undefined && { status:      body.status as never }),
       ...(body.timeline    !== undefined && { timeline:    body.timeline as never }),
+      ...(body.attachments !== undefined && { attachments: body.attachments as never }),
       ...(body.targetDate  !== undefined && { targetDate:  body.targetDate ? new Date(body.targetDate) : null }),
       ...(body.closedAt    !== undefined && { closedAt:    body.closedAt ? new Date(body.closedAt) : null }),
     },

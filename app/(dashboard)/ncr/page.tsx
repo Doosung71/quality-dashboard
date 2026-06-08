@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { NCRView } from "@/components/ncr/ncr-view";
 import { requireActivePageSession } from "@/lib/session-guard";
 import { canWrite } from "@/lib/permissions";
-import type { NCR, NCRTimelineItem } from "@/types/ncr";
+import type { NCR, NCRTimelineItem, NCRAttachment } from "@/types/ncr";
 
 export default async function NCRPage() {
   const session = await requireActivePageSession();
@@ -25,6 +25,7 @@ export default async function NCRPage() {
     assignee:    n.assignee,
     description: n.description,
     timeline:    (n.timeline as unknown as NCRTimelineItem[]) ?? [],
+    attachments: (n.attachments as unknown as NCRAttachment[]) ?? [],
   }));
 
   return (

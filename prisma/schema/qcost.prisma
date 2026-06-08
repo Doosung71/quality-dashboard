@@ -48,6 +48,7 @@ model Claim {
   assignee    String
   description String
   timeline    Json          @default("[]")
+  attachments Json          @default("[]")
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   createdBy   User          @relation("ClaimCreator", fields: [createdById], references: [id])
@@ -68,6 +69,7 @@ model Ncr {
   assignee    String
   description String
   timeline    Json           @default("[]")
+  attachments Json           @default("[]")
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
   createdBy   User           @relation("NcrCreator", fields: [createdById], references: [id])

@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import type { NCR, NCRStatus, NCRSeverity, NCRDispositionType, NCRTimelineItem } from "@/types/ncr";
+import type { NCR, NCRStatus, NCRSeverity, NCRDispositionType, NCRTimelineItem, NCRAttachment } from "@/types/ncr";
 import { NCR_STATUSES } from "@/types/ncr";
 import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
+import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader";
 
 const STATUS_LABELS: Record<NCRStatus, string> = {
   Issued:          "발행",
@@ -70,6 +71,10 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
   });
   const [newEntry, setNewEntry] = useState("");
   const [addingEntry, setAddingEntry] = useState(false);
+  const [attachments, setAttachments] = useState<AttachmentItem[]>(
+    (ncr.attachments ?? []) as AttachmentItem[]
+  );
+  const [savingAttachments, setSavingAttachments] = useState(false);
 
   async function handleSave() {
     setSaving(true);
@@ -130,6 +135,20 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
       router.refresh();
     } finally {
       setAddingEntry(false);
+    }
+  }
+
+  async function handleAttachmentsChange(next: AttachmentItem[]) {
+    setAttachments(next);
+    setSavingAttachments(true);
+    try {
+      await fetch(`/api/ncr/${ncr.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ attachments: next }),
+      });
+    } finally {
+      setSavingAttachments(false);
     }
   }
 
@@ -288,6 +307,20 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
         ) : (
           <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{ncr.description}</p>
         )}
+      </div>
+
+      {/* 파일 첨부 */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+        <h2 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+          첨부파일
+          {savingAttachments && <span className="text-[10px] text-slate-400 font-normal">저장 중...</span>}
+        </h2>
+        <AttachmentUploader
+          attachments={attachments}
+          onChange={handleAttachmentsChange}
+          context="ncr"
+          disabled={!canEdit}
+        />
       </div>
 
       {/* 단계 이동 */}

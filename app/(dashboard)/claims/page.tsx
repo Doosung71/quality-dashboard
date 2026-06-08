@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { ClaimsView } from "@/components/claims/claims-view";
 import { requireActivePageSession } from "@/lib/session-guard";
 import { canWrite } from "@/lib/permissions";
-import type { Claim, ClaimTimelineItem } from "@/types/claim";
+import type { Claim, ClaimTimelineItem, ClaimAttachment } from "@/types/claim";
 
 export default async function ClaimsPage() {
   const session = await requireActivePageSession();
@@ -24,6 +24,7 @@ export default async function ClaimsPage() {
     assignee:    c.assignee,
     description: c.description,
     timeline:    (c.timeline as unknown as ClaimTimelineItem[]) ?? [],
+    attachments: (c.attachments as unknown as ClaimAttachment[]) ?? [],
   }));
 
   return (

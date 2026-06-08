@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
-  if (session.user.role !== "PRACTITIONER") {
+  if (!["PRACTITIONER", "ADMIN"].includes(session.user.role ?? "")) {
     return NextResponse.json({ error: "실무자만 제출할 수 있습니다." }, { status: 403 })
   }
 
@@ -22,13 +22,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     // body 없음 — 정상
   }
 
+  const isAdmin = session.user.role === "ADMIN"
   const result = await prisma.$transaction(async (tx) => {
     const updated = await tx.analysis.updateMany({
       where: {
         id: analysisId,
         status: "DRAFT",
         submittedAt: null,
-        tender: { createdById: session.user.id },
+        ...(isAdmin ? {} : { tender: { createdById: session.user.id } }),
       },
       data: { submittedAt: new Date() },
     })

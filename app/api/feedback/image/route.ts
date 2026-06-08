@@ -19,10 +19,15 @@ export async function POST(req: Request) {
 
   const extMap: Record<string, string> = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp", "image/gif": "gif" }
   const ext = (file.name.split(".").pop() || extMap[file.type]) ?? "png"
-  const blob = await put(`feedback/${Date.now()}-${crypto.randomUUID()}.${ext}`, file, {
-    access: "public",
-    contentType: file.type,
-  })
 
-  return NextResponse.json({ url: blob.url }, { status: 201 })
+  try {
+    const blob = await put(`feedback/${Date.now()}-${crypto.randomUUID()}.${ext}`, file, {
+      access: "public",
+      contentType: file.type,
+    })
+    return NextResponse.json({ url: blob.url }, { status: 201 })
+  } catch (e) {
+    console.error("[feedback/image] blob upload failed:", e)
+    return NextResponse.json({ error: "이미지 저장에 실패했습니다. 잠시 후 다시 시도해주세요." }, { status: 500 })
+  }
 }

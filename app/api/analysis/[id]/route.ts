@@ -8,7 +8,7 @@ const SYS_FIELDS = ["voltage", "bilSil", "shortCircuit", "installCond", "groundC
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
-  if (session.user.role !== "PRACTITIONER") {
+  if (!["PRACTITIONER", "ADMIN"].includes(session.user.role ?? "")) {
     return NextResponse.json({ error: "실무자만 수정할 수 있습니다." }, { status: 403 })
   }
 
@@ -19,8 +19,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "요청 형식이 올바르지 않습니다." }, { status: 400 })
   }
 
+  const isAdmin = session.user.role === "ADMIN"
   const analysis = await prisma.analysis.findFirst({
-    where: { id, status: "DRAFT", submittedAt: null, tender: { createdById: session.user.id } },
+    where: {
+      id,
+      status: "DRAFT",
+      submittedAt: null,
+      ...(isAdmin ? {} : { tender: { createdById: session.user.id } }),
+    },
   })
   if (!analysis) return NextResponse.json({ error: "수정할 수 없는 상태입니다." }, { status: 409 })
 
@@ -40,14 +46,20 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
-  if (session.user.role !== "PRACTITIONER") {
+  if (!["PRACTITIONER", "ADMIN"].includes(session.user.role ?? "")) {
     return NextResponse.json({ error: "실무자만 삭제할 수 있습니다." }, { status: 403 })
   }
 
   const { id } = await params
 
+  const isAdmin = session.user.role === "ADMIN"
   const analysis = await prisma.analysis.findFirst({
-    where: { id, status: "DRAFT", submittedAt: null, tender: { createdById: session.user.id } },
+    where: {
+      id,
+      status: "DRAFT",
+      submittedAt: null,
+      ...(isAdmin ? {} : { tender: { createdById: session.user.id } }),
+    },
     include: { document: { select: { id: true, storagePath: true } } },
   })
   if (!analysis) return NextResponse.json({ error: "삭제할 수 없는 상태입니다." }, { status: 409 })

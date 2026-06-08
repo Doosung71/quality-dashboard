@@ -8,6 +8,7 @@ import {
   ShieldAlert, CheckCircle2, Clock,
   MapPin, FileText, Search, SlidersHorizontal, X, Plus
 } from "lucide-react";
+import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader";
 
 interface NCRViewProps {
   data: NCRsData;
@@ -61,6 +62,7 @@ export function NCRView({ data, canEdit = true, userName }: NCRViewProps) {
   const [formData, setFormData] = useState(getDefaultForm);
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [attachments, setAttachments] = useState<AttachmentItem[]>([]);
 
   const TODAY = getToday();
 
@@ -107,10 +109,10 @@ export function NCRView({ data, canEdit = true, userName }: NCRViewProps) {
     try {
       const res = await fetch("/api/ncr", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, assignee: userName || "등록자" }),
+        body: JSON.stringify({ ...formData, assignee: userName || "등록자", attachments }),
       });
       if (!res.ok) throw new Error("등록 실패");
-      setFormData(getDefaultForm()); setShowForm(false);
+      setFormData(getDefaultForm()); setAttachments([]); setShowForm(false);
       router.refresh();
     } catch {
       setFormError("등록 중 오류가 발생했습니다.");
@@ -241,7 +243,7 @@ export function NCRView({ data, canEdit = true, userName }: NCRViewProps) {
           const ncrItems = columnsData[column.status] || [];
           return (
             <div key={column.status}
-              className={`rounded-2xl border-t-[4px] ${column.color} border-x border-b border-slate-100 shadow-sm p-4 min-w-[220px] min-h-[500px] flex flex-col justify-start gap-4`}>
+              className={`rounded-2xl border-t-4 ${column.color} border-x border-b border-slate-100 shadow-sm p-4 min-w-[220px] min-h-[500px] flex flex-col justify-start gap-4`}>
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <span className="font-bold text-slate-800 text-xs">{column.label}</span>
                 <span className="bg-slate-200/80 text-slate-600 rounded-full px-2 py-0.5 text-[10px] font-bold">{ncrItems.length}</span>
@@ -349,6 +351,15 @@ export function NCRView({ data, canEdit = true, userName }: NCRViewProps) {
                 <textarea rows={4} placeholder="부적합 발생 현상, 추정 원인, 발견 경위 등을 기술하세요." value={formData.description}
                   onChange={e => setFormData(p => ({...p, description: e.target.value}))}
                   className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 text-xs resize-none" />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">첨부파일</label>
+                <AttachmentUploader
+                  attachments={attachments}
+                  onChange={setAttachments}
+                  context="ncr"
+                  disabled={submitting}
+                />
               </div>
             </div>
             <div className="px-6 py-4 border-t border-slate-100 flex gap-2 justify-end shrink-0">

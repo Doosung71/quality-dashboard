@@ -7,6 +7,7 @@ import type { ClaimsData, Claim, ClaimPriority } from "@/types/claim";
 import { ClaimsKpi } from "./claims-kpi";
 import { ClaimsKanban } from "./claims-kanban";
 import { X, Plus } from "lucide-react";
+import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader";
 
 const VALID_PRIORITIES: (ClaimPriority | "All")[] = ["All", "High", "Mid", "Low"];
 
@@ -33,6 +34,7 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
+  const [attachments, setAttachments] = useState<AttachmentItem[]>([]);
   const today = new Date().toISOString().slice(0, 10);
   const [form, setForm] = useState({
     title: "", customer: "", priority: "Mid", assignee: userName ?? "", description: "", receivedAt: today,
@@ -66,11 +68,12 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
     try {
       const res = await fetch("/api/claims", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, attachments }),
       });
       if (!res.ok) throw new Error("등록 실패");
       setShowForm(false);
       setForm({ title: "", customer: "", priority: "Mid", assignee: userName ?? "", description: "", receivedAt: today });
+      setAttachments([]);
       router.refresh();
     } catch {
       setFormError("등록 중 오류가 발생했습니다.");
@@ -178,6 +181,15 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
                 <textarea rows={4} placeholder="클레임 내용, 발생 경위 등을 상세히 기술하세요." value={form.description}
                   onChange={e => setForm(f => ({...f, description: e.target.value}))}
                   className={inputCls + " resize-none"} />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">첨부파일</label>
+                <AttachmentUploader
+                  attachments={attachments}
+                  onChange={setAttachments}
+                  context="claims"
+                  disabled={submitting}
+                />
               </div>
             </div>
             <div className="px-6 py-4 border-t border-slate-100 flex gap-2 justify-end shrink-0">

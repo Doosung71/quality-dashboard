@@ -22,7 +22,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const body = await req.json() as {
     title?: string; source?: string; severity?: string; disposition?: string
     status?: string; targetDate?: string; closedDate?: string | null
-    assignee?: string; description?: string; timeline?: unknown[]
+    assignee?: string; description?: string; timeline?: unknown[]; attachments?: unknown[]
   }
 
   const ncr = await prisma.ncr.update({
@@ -36,6 +36,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       ...(body.assignee    !== undefined && { assignee:    body.assignee }),
       ...(body.description !== undefined && { description: body.description }),
       ...(body.timeline    !== undefined && { timeline:    body.timeline as never }),
+      ...(body.attachments !== undefined && { attachments: body.attachments as never }),
       ...(body.targetDate  !== undefined && { targetDate:  new Date(body.targetDate) }),
       ...(body.closedDate  !== undefined && { closedDate:  body.closedDate ? new Date(body.closedDate) : null }),
     },

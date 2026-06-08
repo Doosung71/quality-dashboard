@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json() as {
     title: string; source: string; severity: string; disposition: string
     targetDate: string; assignee: string; description: string
+    attachments?: { url: string; name: string; size: number; contentType: string }[]
   }
 
   // 채번: NCR-YYYY-NNN
@@ -42,6 +43,7 @@ export async function POST(req: NextRequest) {
       assignee,
       description: body.description,
       timeline:    [{ date: today, action: "부적합 발행 (Issued)", user: assignee }],
+      attachments: Array.isArray(body.attachments) ? body.attachments : [],
       createdById: session.user.id,
     },
   })

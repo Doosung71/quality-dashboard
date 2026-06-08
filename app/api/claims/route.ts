@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json() as {
     title: string; customer: string; priority: string
     assignee: string; description: string; receivedAt?: string
+    attachments?: { url: string; name: string; size: number; contentType: string }[]
   }
 
   // 채번: CLM-YYYY-NNN
@@ -39,6 +40,7 @@ export async function POST(req: NextRequest) {
       description: body.description,
       receivedAt:  body.receivedAt ? new Date(body.receivedAt) : new Date(),
       timeline:    [{ date: today, action: "클레임 접수" }],
+      attachments: Array.isArray(body.attachments) ? body.attachments : [],
       createdById: session.user.id,
     },
   })

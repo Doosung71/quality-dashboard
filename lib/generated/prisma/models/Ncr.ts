@@ -74,6 +74,7 @@ export type NcrCountAggregateOutputType = {
   assignee: number
   description: number
   timeline: number
+  attachments: number
   createdAt: number
   updatedAt: number
   createdById: number
@@ -131,6 +132,7 @@ export type NcrCountAggregateInputType = {
   assignee?: true
   description?: true
   timeline?: true
+  attachments?: true
   createdAt?: true
   updatedAt?: true
   createdById?: true
@@ -223,6 +225,7 @@ export type NcrGroupByOutputType = {
   assignee: string
   description: string
   timeline: runtime.JsonValue
+  attachments: runtime.JsonValue
   createdAt: Date
   updatedAt: Date
   createdById: string
@@ -263,6 +266,7 @@ export type NcrWhereInput = {
   assignee?: Prisma.StringFilter<"Ncr"> | string
   description?: Prisma.StringFilter<"Ncr"> | string
   timeline?: Prisma.JsonFilter<"Ncr">
+  attachments?: Prisma.JsonFilter<"Ncr">
   createdAt?: Prisma.DateTimeFilter<"Ncr"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Ncr"> | Date | string
   createdById?: Prisma.StringFilter<"Ncr"> | string
@@ -283,6 +287,7 @@ export type NcrOrderByWithRelationInput = {
   assignee?: Prisma.SortOrder
   description?: Prisma.SortOrder
   timeline?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -306,6 +311,7 @@ export type NcrWhereUniqueInput = Prisma.AtLeast<{
   assignee?: Prisma.StringFilter<"Ncr"> | string
   description?: Prisma.StringFilter<"Ncr"> | string
   timeline?: Prisma.JsonFilter<"Ncr">
+  attachments?: Prisma.JsonFilter<"Ncr">
   createdAt?: Prisma.DateTimeFilter<"Ncr"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Ncr"> | Date | string
   createdById?: Prisma.StringFilter<"Ncr"> | string
@@ -326,6 +332,7 @@ export type NcrOrderByWithAggregationInput = {
   assignee?: Prisma.SortOrder
   description?: Prisma.SortOrder
   timeline?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -351,6 +358,7 @@ export type NcrScalarWhereWithAggregatesInput = {
   assignee?: Prisma.StringWithAggregatesFilter<"Ncr"> | string
   description?: Prisma.StringWithAggregatesFilter<"Ncr"> | string
   timeline?: Prisma.JsonWithAggregatesFilter<"Ncr">
+  attachments?: Prisma.JsonWithAggregatesFilter<"Ncr">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Ncr"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Ncr"> | Date | string
   createdById?: Prisma.StringWithAggregatesFilter<"Ncr"> | string
@@ -370,6 +378,7 @@ export type NcrCreateInput = {
   assignee: string
   description: string
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutNcrsInput
@@ -389,6 +398,7 @@ export type NcrUncheckedCreateInput = {
   assignee: string
   description: string
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById: string
@@ -408,6 +418,7 @@ export type NcrUpdateInput = {
   assignee?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutNcrsNestedInput
@@ -427,6 +438,7 @@ export type NcrUncheckedUpdateInput = {
   assignee?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -446,6 +458,7 @@ export type NcrCreateManyInput = {
   assignee: string
   description: string
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById: string
@@ -465,6 +478,7 @@ export type NcrUpdateManyMutationInput = {
   assignee?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -483,6 +497,7 @@ export type NcrUncheckedUpdateManyInput = {
   assignee?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -512,6 +527,7 @@ export type NcrCountOrderByAggregateInput = {
   assignee?: Prisma.SortOrder
   description?: Prisma.SortOrder
   timeline?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -621,6 +637,7 @@ export type NcrCreateWithoutCreatedByInput = {
   assignee: string
   description: string
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -639,6 +656,7 @@ export type NcrUncheckedCreateWithoutCreatedByInput = {
   assignee: string
   description: string
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -686,6 +704,7 @@ export type NcrScalarWhereInput = {
   assignee?: Prisma.StringFilter<"Ncr"> | string
   description?: Prisma.StringFilter<"Ncr"> | string
   timeline?: Prisma.JsonFilter<"Ncr">
+  attachments?: Prisma.JsonFilter<"Ncr">
   createdAt?: Prisma.DateTimeFilter<"Ncr"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Ncr"> | Date | string
   createdById?: Prisma.StringFilter<"Ncr"> | string
@@ -705,6 +724,7 @@ export type NcrCreateManyCreatedByInput = {
   assignee: string
   description: string
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -723,6 +743,7 @@ export type NcrUpdateWithoutCreatedByInput = {
   assignee?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -741,6 +762,7 @@ export type NcrUncheckedUpdateWithoutCreatedByInput = {
   assignee?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -759,6 +781,7 @@ export type NcrUncheckedUpdateManyWithoutCreatedByInput = {
   assignee?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -779,6 +802,7 @@ export type NcrSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   assignee?: boolean
   description?: boolean
   timeline?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
@@ -799,6 +823,7 @@ export type NcrSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   assignee?: boolean
   description?: boolean
   timeline?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
@@ -819,6 +844,7 @@ export type NcrSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   assignee?: boolean
   description?: boolean
   timeline?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
@@ -839,12 +865,13 @@ export type NcrSelectScalar = {
   assignee?: boolean
   description?: boolean
   timeline?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
 }
 
-export type NcrOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ncrNo" | "title" | "source" | "severity" | "status" | "disposition" | "issuedDate" | "targetDate" | "closedDate" | "assignee" | "description" | "timeline" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["ncr"]>
+export type NcrOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ncrNo" | "title" | "source" | "severity" | "status" | "disposition" | "issuedDate" | "targetDate" | "closedDate" | "assignee" | "description" | "timeline" | "attachments" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["ncr"]>
 export type NcrInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -874,6 +901,7 @@ export type $NcrPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     assignee: string
     description: string
     timeline: runtime.JsonValue
+    attachments: runtime.JsonValue
     createdAt: Date
     updatedAt: Date
     createdById: string
@@ -1314,6 +1342,7 @@ export interface NcrFieldRefs {
   readonly assignee: Prisma.FieldRef<"Ncr", 'String'>
   readonly description: Prisma.FieldRef<"Ncr", 'String'>
   readonly timeline: Prisma.FieldRef<"Ncr", 'Json'>
+  readonly attachments: Prisma.FieldRef<"Ncr", 'Json'>
   readonly createdAt: Prisma.FieldRef<"Ncr", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Ncr", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"Ncr", 'String'>
