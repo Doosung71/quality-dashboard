@@ -18,16 +18,9 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
     include: {
       author: { select: { id: true, name: true, nickname: true, department: true } },
       comments: {
-        where: { parentId: null },
         orderBy: { createdAt: "asc" },
         include: {
           author: { select: { id: true, name: true, nickname: true, department: true } },
-          replies: {
-            orderBy: { createdAt: "asc" },
-            include: {
-              author: { select: { id: true, name: true, nickname: true, department: true } },
-            },
-          },
         },
       },
     },
@@ -39,13 +32,8 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
     return NextResponse.json({ error: "접근 권한이 없습니다." }, { status: 403 })
   }
 
-  // 댓글·대댓글 visibility 필터링
-  const filteredComments = post.comments
-    .filter(c => canView(c.visibility, role))
-    .map(c => ({
-      ...c,
-      replies: c.replies.filter(r => canView(r.visibility, role)),
-    }))
+  // 댓글 visibility 필터링 (flat 목록, 클라이언트가 트리로 조립)
+  const filteredComments = post.comments.filter(c => canView(c.visibility, role))
 
   return NextResponse.json({ ...post, comments: filteredComments })
 }

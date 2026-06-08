@@ -16,9 +16,7 @@ import type { Visibility } from "@/lib/board-visibility"
 // ─── 타입 ──────────────────────────────────────────────────
 
 type Attachment = { url: string; name: string; size: number; contentType: string }
-
 type Author = { id: string; name: string; nickname: string | null; department: string | null }
-
 type DisplayMode = "REAL" | "NICKNAME" | "ANONYMOUS"
 
 type Comment = {
@@ -26,8 +24,9 @@ type Comment = {
   author: Author; parentId: string | null
   displayMode: DisplayMode
   visibility: Visibility
-  replies: Comment[]
 }
+
+type CommentNode = Comment & { children: CommentNode[] }
 
 type Post = {
   id: string; title: string; content: string
@@ -40,10 +39,38 @@ type Post = {
   comments?: Comment[]
 }
 
+// ─── 트리 빌더 ─────────────────────────────────────────────
+
+function buildTree(comments: Comment[]): CommentNode[] {
+  const map = new Map<string, CommentNode>()
+  const roots: CommentNode[] = []
+  for (const c of comments) map.set(c.id, { ...c, children: [] })
+  for (const c of comments) {
+    const node = map.get(c.id)!
+    if (c.parentId && map.has(c.parentId)) map.get(c.parentId)!.children.push(node)
+    else roots.push(node)
+  }
+  return roots
+}
+
+// ─── 유틸 ──────────────────────────────────────────────────
+
 function resolveDisplayName(author: Author, mode: DisplayMode) {
   if (mode === "ANONYMOUS") return "익명"
   if (mode === "NICKNAME") return author.nickname ?? author.name
   return author.name
+}
+
+function authorLabel(a: Author, mode?: DisplayMode) {
+  return resolveDisplayName(a, mode ?? "REAL")
+}
+
+function timeAgo(iso: string) {
+  const diff = (Date.now() - new Date(iso).getTime()) / 1000
+  if (diff < 60) return "방금 전"
+  if (diff < 3600) return `${Math.floor(diff / 60)}분 전`
+  if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`
+  return new Date(iso).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })
 }
 
 function isImage(ct: string) { return ct.startsWith("image/") }
@@ -53,7 +80,8 @@ function fmtSize(bytes: number) {
   return `${(bytes / 1024 / 1024).toFixed(1)}MB`
 }
 
-// 첨부 파일 표시 컴포넌트
+// ─── 첨부 파일 표시 ────────────────────────────────────────
+
 function AttachmentList({ attachments, preview = false }: { attachments: Attachment[]; preview?: boolean }) {
   const [lightbox, setLightbox] = useState<string | null>(null)
   if (!attachments.length) return null
@@ -63,7 +91,6 @@ function AttachmentList({ attachments, preview = false }: { attachments: Attachm
 
   return (
     <div className="space-y-3">
-      {/* 이미지 그리드 */}
       {images.length > 0 && (
         <div className={cn("grid gap-2", images.length === 1 ? "grid-cols-1" : images.length === 2 ? "grid-cols-2" : "grid-cols-3")}>
           {images.map((img, i) => (
@@ -80,8 +107,6 @@ function AttachmentList({ attachments, preview = false }: { attachments: Attachm
           ))}
         </div>
       )}
-
-      {/* 파일 목록 */}
       {files.length > 0 && (
         <div className="space-y-1.5">
           {files.map((f, i) => (
@@ -95,8 +120,6 @@ function AttachmentList({ attachments, preview = false }: { attachments: Attachm
           ))}
         </div>
       )}
-
-      {/* 라이트박스 */}
       {lightbox && (
         <div className="fixed inset-0 z-100 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={() => setLightbox(null)}>
@@ -114,22 +137,7 @@ function AttachmentList({ attachments, preview = false }: { attachments: Attachm
   )
 }
 
-// ─── 유틸 ──────────────────────────────────────────────────
-
-// 하위 호환 (displayMode 없는 경우 닉네임 우선)
-function authorLabel(a: Author, mode?: DisplayMode) {
-  return resolveDisplayName(a, mode ?? "REAL")
-}
-
-function timeAgo(iso: string) {
-  const diff = (Date.now() - new Date(iso).getTime()) / 1000
-  if (diff < 60)   return "방금 전"
-  if (diff < 3600) return `${Math.floor(diff / 60)}분 전`
-  if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`
-  return new Date(iso).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })
-}
-
-// ─── 작성자 표시 옵션 선택기 ───────────────────────────────
+// ─── 작성자 표시 선택기 ────────────────────────────────────
 
 function DisplayModeSelector({ value, onChange, compact = false }: {
   value: DisplayMode; onChange: (m: DisplayMode) => void; compact?: boolean
@@ -161,96 +169,104 @@ function DisplayModeSelector({ value, onChange, compact = false }: {
   )
 }
 
-// ─── 댓글 단일 컴포넌트 ────────────────────────────────────
+// ─── 댓글 아이템 (재귀 지원) ────────────────────────────────
 
 function CommentItem({
-  comment, postId, currentUserId, isPrivileged,
-  onDelete, onReply, onEdited,
+  node, postId, depth, currentUserId, currentUserName, isPrivileged, onRefresh,
 }: {
-  comment: Comment; postId: string; currentUserId: string; isPrivileged: boolean
-  onDelete: (commentId: string) => void
-  onReply: (parentId: string, parentAuthor: string) => void
-  onEdited: () => void
+  node: CommentNode; postId: string; depth: number
+  currentUserId: string; currentUserName: string; isPrivileged: boolean
+  onRefresh: () => void
 }) {
-  const canAct = (authorId: string) => authorId === currentUserId || isPrivileged
+  const canAct = node.author.id === currentUserId || isPrivileged
+  const [isEditing, setIsEditing] = useState(false)
+  const [editText, setEditText] = useState(node.content)
+  const [editVis, setEditVis] = useState<Visibility>(node.visibility)
+  const [replyOpen, setReplyOpen] = useState(false)
+  const [replyText, setReplyText] = useState("")
+  const [replyMode, setReplyMode] = useState<DisplayMode>("REAL")
+  const [replyVis, setReplyVis] = useState<Visibility>("ALL")
+  const [editSaving, setEditSaving] = useState(false)
+  const [replySubmitting, setReplySubmitting] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
-  // 댓글 인라인 편집 상태
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [editText, setEditText] = useState("")
-  const [editVis, setEditVis] = useState<Visibility>("ALL")
-
-  function startEdit(id: string, content: string, vis: Visibility) {
-    setEditingId(id); setEditText(content); setEditVis(vis)
-  }
-  function cancelEdit() { setEditingId(null); setEditText("") }
-
-  async function submitEdit(commentId: string) {
+  async function submitEdit() {
     if (!editText.trim()) return
-    await fetch(`/api/board/${postId}/comments/${commentId}`, {
+    setEditSaving(true)
+    await fetch(`/api/board/${postId}/comments/${node.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content: editText, visibility: editVis }),
     })
-    cancelEdit(); onEdited()
+    setIsEditing(false)
+    setEditSaving(false)
+    onRefresh()
   }
 
-  function renderActions(id: string, authorId: string, content: string, isReply = false) {
-    if (editingId === id) return null
-    return (
-      <div className="flex items-center gap-3 mt-1">
-        {!isReply && (
-          <button onClick={() => onReply(id, authorLabel(comment.author, comment.displayMode))}
-            className="text-[10px] text-slate-400 hover:text-indigo-600 flex items-center gap-1 transition-colors">
-            <CornerDownRight className="w-3 h-3" /> 답글
-          </button>
-        )}
-        {canAct(authorId) && (
-          <>
-            <button onClick={() => startEdit(id, content, (comment.visibility ?? "ALL") as Visibility)}
-              className="text-[10px] text-slate-400 hover:text-indigo-500 flex items-center gap-1 transition-colors opacity-0 group-hover:opacity-100">
-              <Pencil className="w-3 h-3" /> 수정
-            </button>
-            <button onClick={() => onDelete(id)}
-              className="text-[10px] text-slate-400 hover:text-rose-500 flex items-center gap-1 transition-colors opacity-0 group-hover:opacity-100">
-              <Trash2 className="w-3 h-3" /> 삭제
-            </button>
-          </>
-        )}
-      </div>
-    )
+  async function handleDelete() {
+    if (!confirm("댓글을 삭제하시겠습니까? 달린 대댓글도 모두 삭제됩니다.")) return
+    setDeleting(true)
+    await fetch(`/api/board/${postId}/comments/${node.id}`, { method: "DELETE" })
+    onRefresh()
   }
+
+  async function submitReply() {
+    if (!replyText.trim()) return
+    setReplySubmitting(true)
+    await fetch(`/api/board/${postId}/comments`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: replyText, parentId: node.id, displayMode: replyMode, visibility: replyVis }),
+    })
+    setReplyText("")
+    setReplyOpen(false)
+    setReplySubmitting(false)
+    onRefresh()
+  }
+
+  // 깊이별 아바타 스타일
+  const avatarClass = depth === 0
+    ? "w-7 h-7 bg-slate-700 text-white text-[10px]"
+    : depth === 1
+    ? "w-6 h-6 bg-indigo-100 text-indigo-700 text-[9px]"
+    : "w-6 h-6 bg-emerald-100 text-emerald-700 text-[9px]"
 
   return (
-    <div className="space-y-2">
-      {/* 댓글 본체 */}
+    <div className={deleting ? "opacity-40 pointer-events-none" : ""}>
+      {/* 댓글 본문 */}
       <div className="group flex gap-3">
-        <div className="w-7 h-7 rounded-full bg-slate-700 text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
-          {authorLabel(comment.author, comment.displayMode).slice(0, 1)}
+        <div className={cn("rounded-full font-bold flex items-center justify-center shrink-0 mt-0.5", avatarClass)}>
+          {authorLabel(node.author, node.displayMode).slice(0, 1)}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs font-bold text-slate-900">{authorLabel(comment.author, comment.displayMode)}</span>
-            {comment.displayMode !== "ANONYMOUS" && comment.author.department && <span className="text-[10px] text-slate-400">{comment.author.department}</span>}
-            <span className="text-[10px] text-slate-400">{timeAgo(comment.createdAt)}</span>
+            <span className="text-xs font-bold text-slate-900">{authorLabel(node.author, node.displayMode)}</span>
+            {node.displayMode !== "ANONYMOUS" && node.author.department && (
+              <span className="text-[10px] text-slate-400">{node.author.department}</span>
+            )}
+            <span className="text-[10px] text-slate-400">{timeAgo(node.createdAt)}</span>
           </div>
 
-          {editingId === comment.id ? (
+          {isEditing ? (
             <div className="mt-1 space-y-1.5">
               <textarea
                 autoFocus
                 value={editText}
                 onChange={e => setEditText(e.target.value)}
-                onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitEdit(comment.id) } if (e.key === "Escape") cancelEdit() }}
+                onKeyDown={e => {
+                  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitEdit() }
+                  if (e.key === "Escape") setIsEditing(false)
+                }}
                 rows={3}
                 className="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
               />
               <VisibilitySelector value={editVis} onChange={setEditVis} compact />
               <div className="flex gap-2">
-                <button onClick={() => submitEdit(comment.id)}
-                  className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                  <Check className="w-3 h-3" /> 저장
+                <button onClick={submitEdit} disabled={editSaving}
+                  className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-40 transition-colors">
+                  <Check className="w-3 h-3" /> {editSaving ? "저장 중..." : "저장"}
                 </button>
-                <button onClick={cancelEdit}
+                <button onClick={() => { setIsEditing(false); setEditText(node.content) }}
                   className="text-xs text-slate-400 hover:text-slate-600 px-2.5 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
                   취소
                 </button>
@@ -258,59 +274,112 @@ function CommentItem({
             </div>
           ) : (
             <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-              <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{comment.content}</p>
-              <VisibilityBadge visibility={comment.visibility} />
+              <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{node.content}</p>
+              <VisibilityBadge visibility={node.visibility} />
             </div>
           )}
-          {renderActions(comment.id, comment.author.id, comment.content)}
+
+          {!isEditing && !deleting && (
+            <div className="flex items-center gap-3 mt-1">
+              <button
+                onClick={() => setReplyOpen(v => !v)}
+                className="text-[10px] text-slate-400 hover:text-indigo-600 flex items-center gap-1 transition-colors">
+                <CornerDownRight className="w-3 h-3" /> {replyOpen ? "취소" : "답글"}
+              </button>
+              {canAct && (
+                <>
+                  <button
+                    onClick={() => { setIsEditing(true); setEditText(node.content); setEditVis(node.visibility) }}
+                    className="text-[10px] text-slate-400 hover:text-indigo-500 flex items-center gap-1 transition-colors opacity-0 group-hover:opacity-100">
+                    <Pencil className="w-3 h-3" /> 수정
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    className="text-[10px] text-slate-400 hover:text-rose-500 flex items-center gap-1 transition-colors opacity-0 group-hover:opacity-100">
+                    <Trash2 className="w-3 h-3" /> 삭제
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* 대댓글 */}
-      {comment.replies.length > 0 && (
-        <div className="ml-10 space-y-2 border-l-2 border-slate-100 pl-3">
-          {comment.replies.map(reply => (
-            <div key={reply.id} className="group flex gap-2.5">
-              <div className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 text-[9px] font-bold flex items-center justify-center shrink-0 mt-0.5">
-                {authorLabel(reply.author, reply.displayMode).slice(0, 1)}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs font-bold text-slate-900">{authorLabel(reply.author, reply.displayMode)}</span>
-                  {reply.displayMode !== "ANONYMOUS" && reply.author.department && <span className="text-[10px] text-slate-400">{reply.author.department}</span>}
-                  <span className="text-[10px] text-slate-400">{timeAgo(reply.createdAt)}</span>
-                </div>
-
-                {editingId === reply.id ? (
-                  <div className="mt-1 space-y-1.5">
-                    <textarea
-                      autoFocus
-                      value={editText}
-                      onChange={e => setEditText(e.target.value)}
-                      onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitEdit(reply.id) } if (e.key === "Escape") cancelEdit() }}
-                      rows={2}
-                      className="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
-                    />
-                    <div className="flex gap-2">
-                      <button onClick={() => submitEdit(reply.id)}
-                        className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                        <Check className="w-3 h-3" /> 저장
-                      </button>
-                      <button onClick={cancelEdit}
-                        className="text-xs text-slate-400 hover:text-slate-600 px-2.5 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
-                        취소
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-sm text-slate-700 mt-0.5 leading-relaxed whitespace-pre-wrap">{reply.content}</p>
-                )}
-                {renderActions(reply.id, reply.author.id, reply.content, true)}
-              </div>
+      {/* 인라인 답글 폼 */}
+      {replyOpen && (
+        <div className="ml-10 mt-2 pl-3 border-l-2 border-indigo-100">
+          <div className="flex items-center gap-3 mb-1.5 flex-wrap">
+            <DisplayModeSelector value={replyMode} onChange={setReplyMode} compact />
+            <VisibilitySelector value={replyVis} onChange={setReplyVis} compact />
+          </div>
+          <div className="flex gap-2">
+            <div className="w-6 h-6 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-1">
+              {currentUserName.slice(0, 1)}
             </div>
-          ))}
+            <div className="flex-1 flex gap-2">
+              <textarea
+                autoFocus
+                value={replyText}
+                onChange={e => setReplyText(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); if (replyText.trim()) submitReply() }
+                  if (e.key === "Escape") { setReplyOpen(false); setReplyText("") }
+                }}
+                placeholder={`${authorLabel(node.author, node.displayMode)}님에게 답글 (Enter 전송)`}
+                rows={2}
+                className="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+              />
+              <button
+                onClick={submitReply}
+                disabled={!replyText.trim() || replySubmitting}
+                className="self-end px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl disabled:opacity-40 transition-all">
+                <Send className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
         </div>
       )}
+
+      {/* 하위 댓글 재귀 렌더링 */}
+      {node.children.length > 0 && (
+        <CommentTree
+          nodes={node.children}
+          postId={postId}
+          depth={depth + 1}
+          currentUserId={currentUserId}
+          currentUserName={currentUserName}
+          isPrivileged={isPrivileged}
+          onRefresh={onRefresh}
+        />
+      )}
+    </div>
+  )
+}
+
+// ─── 댓글 트리 (재귀 컨테이너) ─────────────────────────────
+
+function CommentTree({
+  nodes, postId, depth, currentUserId, currentUserName, isPrivileged, onRefresh,
+}: {
+  nodes: CommentNode[]; postId: string; depth: number
+  currentUserId: string; currentUserName: string; isPrivileged: boolean
+  onRefresh: () => void
+}) {
+  const visualDepth = Math.min(depth, 3)
+  return (
+    <div className={cn("mt-3 space-y-4", visualDepth > 0 && "ml-10 border-l-2 border-slate-100 pl-3")}>
+      {nodes.map(node => (
+        <CommentItem
+          key={node.id}
+          node={node}
+          postId={postId}
+          depth={depth}
+          currentUserId={currentUserId}
+          currentUserName={currentUserName}
+          isPrivileged={isPrivileged}
+          onRefresh={onRefresh}
+        />
+      ))}
     </div>
   )
 }
@@ -347,7 +416,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
   const [uploading, setUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // 게시글 인라인 편집 상태
+  // 게시글 인라인 편집
   const [editingPost, setEditingPost] = useState(false)
   const [editTitle, setEditTitle] = useState("")
   const [editContent, setEditContent] = useState("")
@@ -356,15 +425,13 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
   const [postSaving, setPostSaving] = useState(false)
   const editFileRef = useRef<HTMLInputElement>(null)
 
-  // 댓글 입력
+  // 댓글 입력 (최상위 댓글만)
   const [commentText, setCommentText] = useState("")
   const [commentDisplayMode, setCommentDisplayMode] = useState<DisplayMode>("REAL")
   const [commentVisibility, setCommentVisibility] = useState<Visibility>("ALL")
-  const [replyTo, setReplyTo] = useState<{ parentId: string; authorName: string } | null>(null)
   const [commentSubmitting, setCommentSubmitting] = useState(false)
   const commentInputRef = useRef<HTMLTextAreaElement>(null)
 
-  // 목록 로드
   const loadPosts = useCallback(async () => {
     const res = await fetch("/api/board")
     if (res.ok) setPosts(await res.json())
@@ -372,7 +439,6 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
 
   useEffect(() => { loadPosts() }, [loadPosts])
 
-  // 상세 로드
   const loadDetail = useCallback(async (id: string) => {
     setLoadingDetail(true)
     const res = await fetch(`/api/board/${id}`)
@@ -386,7 +452,6 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     setEditingPost(false)
   }, [selectedId, loadDetail])
 
-  // 새 글 제출
   async function handlePostSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!newTitle.trim() || !newContent.trim()) return
@@ -406,7 +471,6 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     setSubmitting(false)
   }
 
-  // 파일 업로드 핸들러
   async function uploadFiles(files: FileList, setter: (a: Attachment[]) => void, current: Attachment[]) {
     setUploading(true)
     const uploaded: Attachment[] = []
@@ -419,7 +483,6 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     setUploading(false)
   }
 
-  // 게시글 편집 시작
   function startEditPost(post: Post) {
     setEditTitle(post.title)
     setEditContent(post.content)
@@ -427,9 +490,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     setEditVisibility(post.visibility ?? "ALL")
     setEditingPost(true)
   }
-  function cancelEditPost() { setEditingPost(false) }
 
-  // 게시글 수정 저장
   async function handleSavePost() {
     if (!selectedId || !editTitle.trim() || !editContent.trim()) return
     setPostSaving(true)
@@ -444,7 +505,6 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     setPostSaving(false)
   }
 
-  // 게시글 삭제
   async function handleDeletePost(id: string) {
     if (!confirm("게시글을 삭제하시겠습니까?")) return
     await fetch(`/api/board/${id}`, { method: "DELETE" })
@@ -452,7 +512,6 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     loadPosts()
   }
 
-  // 핀 토글
   async function handleTogglePin(id: string, pinned: boolean) {
     await fetch(`/api/board/${id}`, {
       method: "PATCH",
@@ -473,7 +532,6 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     if (selectedId === id) loadDetail(id)
   }
 
-  // 댓글 제출
   async function handleCommentSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!commentText.trim() || !selectedId) return
@@ -481,20 +539,12 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     await fetch(`/api/board/${selectedId}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: commentText, parentId: replyTo?.parentId ?? null, displayMode: commentDisplayMode, visibility: commentVisibility }),
+      body: JSON.stringify({ content: commentText, parentId: null, displayMode: commentDisplayMode, visibility: commentVisibility }),
     })
-    setCommentText(""); setReplyTo(null)
+    setCommentText("")
     loadDetail(selectedId)
     loadPosts()
     setCommentSubmitting(false)
-  }
-
-  // 댓글 삭제
-  async function handleDeleteComment(commentId: string) {
-    if (!selectedId) return
-    await fetch(`/api/board/${selectedId}/comments/${commentId}`, { method: "DELETE" })
-    loadDetail(selectedId)
-    loadPosts()
   }
 
   function insertEmoji(emoji: string) {
@@ -507,17 +557,14 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     setTimeout(() => { el.focus(); el.setSelectionRange(start + emoji.length, start + emoji.length) }, 0)
   }
 
-  const commentCount = detail?.comments?.reduce((acc, c) => acc + 1 + (c.replies?.length ?? 0), 0) ?? 0
-
-  // 모바일: 목록↔상세(또는 새 글) 패널 전환
+  const commentCount = detail?.comments?.length ?? 0
   const showRight = !!selectedId || showNewPost
 
   return (
     <div className="flex h-[calc(100vh-56px)] overflow-hidden">
 
-      {/* ── 좌측: 게시글 목록 (모바일: 상세/새글 시 숨김) ── */}
+      {/* ── 좌측: 게시글 목록 ── */}
       <div className={`flex w-full lg:w-72 shrink-0 bg-white border-r border-slate-100 flex-col${showRight ? " max-lg:hidden" : ""}`}>
-        {/* 헤더 */}
         <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
           <h2 className="text-sm font-bold text-slate-800">품질부문 게시판</h2>
           <button
@@ -532,7 +579,6 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
           </button>
         </div>
 
-        {/* 탭: 전체 / 공지 / 일반 */}
         <div className="flex border-b border-slate-100 shrink-0">
           {(["ALL", "NOTICE", "GENERAL"] as const).map(tab => (
             <button key={tab} onClick={() => setListTab(tab)}
@@ -549,12 +595,9 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
           ))}
         </div>
 
-        {/* 글 목록 */}
         <div className="flex-1 overflow-y-auto">
           {(() => {
-            const filtered = posts.filter(p =>
-              listTab === "ALL" ? true : p.category === listTab
-            )
+            const filtered = posts.filter(p => listTab === "ALL" ? true : p.category === listTab)
             if (filtered.length === 0) return (
               <div className="flex flex-col items-center justify-center py-16 text-slate-400">
                 <MessageSquare className="w-8 h-8 mb-2 opacity-30" />
@@ -577,14 +620,10 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                         : "hover:bg-slate-50 border-l-2 border-transparent"
                   )}
                 >
-                  {/* 공지 전용 상단 배너 라인 */}
                   <div className="flex items-center gap-1.5 mb-1">
                     {isNotice && <Megaphone className="w-3 h-3 text-amber-500 shrink-0" />}
                     {post.pinned && <Pin className="w-3 h-3 text-amber-500 shrink-0" />}
-                    <span className={cn(
-                      "text-xs line-clamp-1 flex-1",
-                      isNotice ? "font-bold text-amber-900" : "font-semibold text-slate-800"
-                    )}>{post.title}</span>
+                    <span className={cn("text-xs line-clamp-1 flex-1", isNotice ? "font-bold text-amber-900" : "font-semibold text-slate-800")}>{post.title}</span>
                   </div>
                   <div className="flex items-center justify-between text-[10px] text-slate-400">
                     <div className="flex items-center gap-1.5 flex-wrap">
@@ -607,10 +646,10 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
         </div>
       </div>
 
-      {/* ── 우측: 상세 / 새 글 작성 (모바일: showRight 시에만 표시) ── */}
+      {/* ── 우측: 상세 / 새 글 작성 ── */}
       <div className={`flex flex-1 flex-col bg-slate-50 overflow-hidden${!showRight ? " max-lg:hidden" : ""}`}>
 
-        {/* 모바일 전용 뒤로가기 */}
+        {/* 모바일 뒤로가기 */}
         <div className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border-b border-slate-100 shrink-0">
           <button
             onClick={() => { setSelectedId(null); setShowNewPost(false); setEditingPost(false) }}
@@ -656,7 +695,6 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                 )}
               </div>
 
-              {/* 작성자 표시 + 공개 범위 */}
               <div className="flex flex-wrap gap-4">
                 <DisplayModeSelector value={newDisplayMode} onChange={setNewDisplayMode} />
                 <VisibilitySelector value={newVisibility} onChange={setNewVisibility} compact />
@@ -670,7 +708,6 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                 className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent resize-none"
               />
 
-              {/* 파일 첨부 미리보기 */}
               {pendingFiles.length > 0 && (
                 <div className="border border-slate-200 rounded-xl p-3">
                   <AttachmentList attachments={pendingFiles} preview />
@@ -699,8 +736,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                 </div>
                 <button
                   type="submit" disabled={submitting || uploading}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg flex items-center gap-1.5 disabled:opacity-50 transition-all shadow-sm"
-                >
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg flex items-center gap-1.5 disabled:opacity-50 transition-all shadow-sm">
                   <Send className="w-3.5 h-3.5" /> {submitting ? "등록 중..." : "게시글 등록"}
                 </button>
               </div>
@@ -720,7 +756,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
           </div>
         ) : detail && (
           <div className="flex-1 overflow-y-auto">
-            {/* 공지 전용 앰버 배너 */}
+            {/* 공지 배너 */}
             {detail.category === "NOTICE" && (
               <div className="bg-linear-to-r from-amber-400 to-orange-300 px-6 py-3 flex items-center gap-2.5">
                 <Megaphone className="w-5 h-5 text-white shrink-0" />
@@ -758,9 +794,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                         detail.category === "NOTICE"
                           ? "text-amber-700 bg-amber-100 hover:bg-amber-200"
                           : "text-slate-500 hover:text-amber-700 hover:bg-amber-50 border border-slate-200"
-                      )}
-                      title={detail.category === "NOTICE" ? "일반 글로 변경" : "공지로 변경"}
-                    >
+                      )}>
                       <Megaphone className="w-3.5 h-3.5" />
                       {detail.category === "NOTICE" ? "공지 해제" : "공지로 변경"}
                     </button>
@@ -771,27 +805,21 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                       className={cn(
                         "p-1.5 rounded-lg transition-colors",
                         detail.pinned ? "text-amber-500 bg-amber-50 hover:bg-amber-100" : "text-slate-400 hover:text-amber-500 hover:bg-amber-50"
-                      )}
-                      title={detail.pinned ? "고정 해제" : "상단 고정"}
-                    >
+                      )}>
                       {detail.pinned ? <PinOff className="w-4 h-4" /> : <Pin className="w-4 h-4" />}
                     </button>
                   )}
                   {(detail.author.id === currentUserId || isPrivileged) && !editingPost && (
                     <button
                       onClick={() => startEditPost(detail)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition-colors"
-                      title="게시글 수정"
-                    >
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition-colors">
                       <Pencil className="w-4 h-4" />
                     </button>
                   )}
                   {(detail.author.id === currentUserId || isPrivileged) && !editingPost && (
                     <button
                       onClick={() => handleDeletePost(detail.id)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-colors"
-                      title="게시글 삭제"
-                    >
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-colors">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   )}
@@ -816,7 +844,6 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                     placeholder="내용"
                   />
                   <VisibilitySelector value={editVisibility} onChange={setEditVisibility} compact />
-                  {/* 편집 시 첨부 파일 관리 */}
                   {editAttachments.length > 0 && (
                     <div className="border border-slate-200 rounded-xl p-3 space-y-2">
                       <AttachmentList attachments={editAttachments} preview />
@@ -846,7 +873,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                         className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-all">
                         <Check className="w-4 h-4" /> {postSaving ? "저장 중..." : "저장"}
                       </button>
-                      <button onClick={cancelEditPost}
+                      <button onClick={() => setEditingPost(false)}
                         className="text-sm text-slate-500 hover:text-slate-800 px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
                         취소
                       </button>
@@ -871,43 +898,29 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                 <MessageSquare className="w-3.5 h-3.5" /> 댓글 {commentCount > 0 && `(${commentCount})`}
               </h3>
 
-              {/* 댓글 목록 */}
+              {/* 댓글 트리 */}
               <div className="space-y-5">
                 {(detail.comments ?? []).length === 0 ? (
                   <p className="text-xs text-slate-400 italic">첫 번째 댓글을 남겨보세요.</p>
-                ) : detail.comments!.map(comment => (
-                  <CommentItem
-                    key={comment.id}
-                    comment={comment}
+                ) : (
+                  <CommentTree
+                    nodes={buildTree(detail.comments!)}
                     postId={detail.id}
+                    depth={0}
                     currentUserId={currentUserId}
+                    currentUserName={currentUserName}
                     isPrivileged={isPrivileged}
-                    onDelete={handleDeleteComment}
-                    onReply={(parentId, authorName) => {
-                      setReplyTo({ parentId, authorName })
-                      setCommentText(`@${authorName} `)
-                    }}
-                    onEdited={() => loadDetail(detail.id)}
+                    onRefresh={() => { loadDetail(detail.id); loadPosts() }}
                   />
-                ))}
+                )}
               </div>
 
-              {/* 댓글 입력 */}
+              {/* 최상위 댓글 입력폼 */}
               <form onSubmit={handleCommentSubmit} className="space-y-2 pt-2 border-t border-slate-100">
                 <div className="flex items-center gap-4 flex-wrap">
                   <DisplayModeSelector value={commentDisplayMode} onChange={setCommentDisplayMode} compact />
                   <VisibilitySelector value={commentVisibility} onChange={setCommentVisibility} compact />
                 </div>
-                {replyTo && (
-                  <div className="flex items-center gap-2 bg-indigo-50 px-3 py-1.5 rounded-lg text-xs text-indigo-700">
-                    <CornerDownRight className="w-3.5 h-3.5" />
-                    <span>{replyTo.authorName}님에게 답글 작성 중</span>
-                    <button type="button" onClick={() => { setReplyTo(null); setCommentText("") }}
-                      className="ml-auto text-indigo-400 hover:text-indigo-700">
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                )}
                 <div className="flex gap-2">
                   <div className="w-7 h-7 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-1">
                     {currentUserName.slice(0, 1)}
@@ -924,7 +937,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                             if (commentText.trim()) handleCommentSubmit(e as unknown as React.FormEvent)
                           }
                         }}
-                        placeholder={replyTo ? `@${replyTo.authorName}에게 답글...` : "댓글을 입력하세요 (Enter 전송, Shift+Enter 줄바꿈)"}
+                        placeholder="댓글을 입력하세요 (Enter 전송, Shift+Enter 줄바꿈)"
                         rows={2}
                         className="w-full border border-slate-200 rounded-xl px-3 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent resize-none"
                       />
@@ -934,8 +947,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                     </div>
                     <button
                       type="submit" disabled={!commentText.trim() || commentSubmitting}
-                      className="self-end px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl disabled:opacity-40 transition-all"
-                    >
+                      className="self-end px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl disabled:opacity-40 transition-all">
                       <Send className="w-4 h-4" />
                     </button>
                   </div>
