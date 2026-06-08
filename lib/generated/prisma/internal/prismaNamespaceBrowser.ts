@@ -276,6 +276,7 @@ export const InternalStandardScalarFieldEnum = {
   id: 'id',
   title: 'title',
   code: 'code',
+  subCategory: 'subCategory',
   internalCat: 'internalCat',
   description: 'description',
   publisher: 'publisher',

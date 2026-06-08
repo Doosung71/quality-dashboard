@@ -38,6 +38,7 @@ export type InternalStandardMinAggregateOutputType = {
   id: string | null
   title: string | null
   code: string | null
+  subCategory: string | null
   internalCat: string | null
   description: string | null
   publisher: string | null
@@ -54,6 +55,7 @@ export type InternalStandardMaxAggregateOutputType = {
   id: string | null
   title: string | null
   code: string | null
+  subCategory: string | null
   internalCat: string | null
   description: string | null
   publisher: string | null
@@ -70,6 +72,7 @@ export type InternalStandardCountAggregateOutputType = {
   id: number
   title: number
   code: number
+  subCategory: number
   internalCat: number
   description: number
   publisher: number
@@ -97,6 +100,7 @@ export type InternalStandardMinAggregateInputType = {
   id?: true
   title?: true
   code?: true
+  subCategory?: true
   internalCat?: true
   description?: true
   publisher?: true
@@ -113,6 +117,7 @@ export type InternalStandardMaxAggregateInputType = {
   id?: true
   title?: true
   code?: true
+  subCategory?: true
   internalCat?: true
   description?: true
   publisher?: true
@@ -129,6 +134,7 @@ export type InternalStandardCountAggregateInputType = {
   id?: true
   title?: true
   code?: true
+  subCategory?: true
   internalCat?: true
   description?: true
   publisher?: true
@@ -233,6 +239,7 @@ export type InternalStandardGroupByOutputType = {
   id: string
   title: string
   code: string | null
+  subCategory: string
   internalCat: string
   description: string
   publisher: string
@@ -273,6 +280,7 @@ export type InternalStandardWhereInput = {
   id?: Prisma.StringFilter<"InternalStandard"> | string
   title?: Prisma.StringFilter<"InternalStandard"> | string
   code?: Prisma.StringNullableFilter<"InternalStandard"> | string | null
+  subCategory?: Prisma.StringFilter<"InternalStandard"> | string
   internalCat?: Prisma.StringFilter<"InternalStandard"> | string
   description?: Prisma.StringFilter<"InternalStandard"> | string
   publisher?: Prisma.StringFilter<"InternalStandard"> | string
@@ -291,6 +299,7 @@ export type InternalStandardOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   code?: Prisma.SortOrderInput | Prisma.SortOrder
+  subCategory?: Prisma.SortOrder
   internalCat?: Prisma.SortOrder
   description?: Prisma.SortOrder
   publisher?: Prisma.SortOrder
@@ -312,6 +321,7 @@ export type InternalStandardWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.InternalStandardWhereInput | Prisma.InternalStandardWhereInput[]
   title?: Prisma.StringFilter<"InternalStandard"> | string
   code?: Prisma.StringNullableFilter<"InternalStandard"> | string | null
+  subCategory?: Prisma.StringFilter<"InternalStandard"> | string
   internalCat?: Prisma.StringFilter<"InternalStandard"> | string
   description?: Prisma.StringFilter<"InternalStandard"> | string
   publisher?: Prisma.StringFilter<"InternalStandard"> | string
@@ -330,6 +340,7 @@ export type InternalStandardOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   code?: Prisma.SortOrderInput | Prisma.SortOrder
+  subCategory?: Prisma.SortOrder
   internalCat?: Prisma.SortOrder
   description?: Prisma.SortOrder
   publisher?: Prisma.SortOrder
@@ -355,6 +366,7 @@ export type InternalStandardScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"InternalStandard"> | string
   title?: Prisma.StringWithAggregatesFilter<"InternalStandard"> | string
   code?: Prisma.StringNullableWithAggregatesFilter<"InternalStandard"> | string | null
+  subCategory?: Prisma.StringWithAggregatesFilter<"InternalStandard"> | string
   internalCat?: Prisma.StringWithAggregatesFilter<"InternalStandard"> | string
   description?: Prisma.StringWithAggregatesFilter<"InternalStandard"> | string
   publisher?: Prisma.StringWithAggregatesFilter<"InternalStandard"> | string
@@ -372,6 +384,7 @@ export type InternalStandardCreateInput = {
   id?: string
   title: string
   code?: string | null
+  subCategory?: string
   internalCat?: string
   description?: string
   publisher?: string
@@ -389,6 +402,7 @@ export type InternalStandardUncheckedCreateInput = {
   id?: string
   title: string
   code?: string | null
+  subCategory?: string
   internalCat?: string
   description?: string
   publisher?: string
@@ -406,6 +420,7 @@ export type InternalStandardUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subCategory?: Prisma.StringFieldUpdateOperationsInput | string
   internalCat?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   publisher?: Prisma.StringFieldUpdateOperationsInput | string
@@ -423,6 +438,7 @@ export type InternalStandardUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subCategory?: Prisma.StringFieldUpdateOperationsInput | string
   internalCat?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   publisher?: Prisma.StringFieldUpdateOperationsInput | string
@@ -440,6 +456,7 @@ export type InternalStandardCreateManyInput = {
   id?: string
   title: string
   code?: string | null
+  subCategory?: string
   internalCat?: string
   description?: string
   publisher?: string
@@ -457,6 +474,7 @@ export type InternalStandardUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subCategory?: Prisma.StringFieldUpdateOperationsInput | string
   internalCat?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   publisher?: Prisma.StringFieldUpdateOperationsInput | string
@@ -473,6 +491,7 @@ export type InternalStandardUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subCategory?: Prisma.StringFieldUpdateOperationsInput | string
   internalCat?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   publisher?: Prisma.StringFieldUpdateOperationsInput | string
@@ -508,6 +527,7 @@ export type InternalStandardCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   code?: Prisma.SortOrder
+  subCategory?: Prisma.SortOrder
   internalCat?: Prisma.SortOrder
   description?: Prisma.SortOrder
   publisher?: Prisma.SortOrder
@@ -529,6 +549,7 @@ export type InternalStandardMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   code?: Prisma.SortOrder
+  subCategory?: Prisma.SortOrder
   internalCat?: Prisma.SortOrder
   description?: Prisma.SortOrder
   publisher?: Prisma.SortOrder
@@ -545,6 +566,7 @@ export type InternalStandardMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   code?: Prisma.SortOrder
+  subCategory?: Prisma.SortOrder
   internalCat?: Prisma.SortOrder
   description?: Prisma.SortOrder
   publisher?: Prisma.SortOrder
@@ -624,6 +646,7 @@ export type InternalStandardCreateWithoutUploadedByInput = {
   id?: string
   title: string
   code?: string | null
+  subCategory?: string
   internalCat?: string
   description?: string
   publisher?: string
@@ -640,6 +663,7 @@ export type InternalStandardUncheckedCreateWithoutUploadedByInput = {
   id?: string
   title: string
   code?: string | null
+  subCategory?: string
   internalCat?: string
   description?: string
   publisher?: string
@@ -685,6 +709,7 @@ export type InternalStandardScalarWhereInput = {
   id?: Prisma.StringFilter<"InternalStandard"> | string
   title?: Prisma.StringFilter<"InternalStandard"> | string
   code?: Prisma.StringNullableFilter<"InternalStandard"> | string | null
+  subCategory?: Prisma.StringFilter<"InternalStandard"> | string
   internalCat?: Prisma.StringFilter<"InternalStandard"> | string
   description?: Prisma.StringFilter<"InternalStandard"> | string
   publisher?: Prisma.StringFilter<"InternalStandard"> | string
@@ -702,6 +727,7 @@ export type InternalStandardCreateManyUploadedByInput = {
   id?: string
   title: string
   code?: string | null
+  subCategory?: string
   internalCat?: string
   description?: string
   publisher?: string
@@ -718,6 +744,7 @@ export type InternalStandardUpdateWithoutUploadedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subCategory?: Prisma.StringFieldUpdateOperationsInput | string
   internalCat?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   publisher?: Prisma.StringFieldUpdateOperationsInput | string
@@ -734,6 +761,7 @@ export type InternalStandardUncheckedUpdateWithoutUploadedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subCategory?: Prisma.StringFieldUpdateOperationsInput | string
   internalCat?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   publisher?: Prisma.StringFieldUpdateOperationsInput | string
@@ -750,6 +778,7 @@ export type InternalStandardUncheckedUpdateManyWithoutUploadedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subCategory?: Prisma.StringFieldUpdateOperationsInput | string
   internalCat?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   publisher?: Prisma.StringFieldUpdateOperationsInput | string
@@ -768,6 +797,7 @@ export type InternalStandardSelect<ExtArgs extends runtime.Types.Extensions.Inte
   id?: boolean
   title?: boolean
   code?: boolean
+  subCategory?: boolean
   internalCat?: boolean
   description?: boolean
   publisher?: boolean
@@ -786,6 +816,7 @@ export type InternalStandardSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   id?: boolean
   title?: boolean
   code?: boolean
+  subCategory?: boolean
   internalCat?: boolean
   description?: boolean
   publisher?: boolean
@@ -804,6 +835,7 @@ export type InternalStandardSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   id?: boolean
   title?: boolean
   code?: boolean
+  subCategory?: boolean
   internalCat?: boolean
   description?: boolean
   publisher?: boolean
@@ -822,6 +854,7 @@ export type InternalStandardSelectScalar = {
   id?: boolean
   title?: boolean
   code?: boolean
+  subCategory?: boolean
   internalCat?: boolean
   description?: boolean
   publisher?: boolean
@@ -835,7 +868,7 @@ export type InternalStandardSelectScalar = {
   updatedAt?: boolean
 }
 
-export type InternalStandardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "code" | "internalCat" | "description" | "publisher" | "publishYear" | "fileUrl" | "fileName" | "fileSize" | "keywords" | "uploadedById" | "createdAt" | "updatedAt", ExtArgs["result"]["internalStandard"]>
+export type InternalStandardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "code" | "subCategory" | "internalCat" | "description" | "publisher" | "publishYear" | "fileUrl" | "fileName" | "fileSize" | "keywords" | "uploadedById" | "createdAt" | "updatedAt", ExtArgs["result"]["internalStandard"]>
 export type InternalStandardInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   uploadedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -855,6 +888,7 @@ export type $InternalStandardPayload<ExtArgs extends runtime.Types.Extensions.In
     id: string
     title: string
     code: string | null
+    subCategory: string
     internalCat: string
     description: string
     publisher: string
@@ -1293,6 +1327,7 @@ export interface InternalStandardFieldRefs {
   readonly id: Prisma.FieldRef<"InternalStandard", 'String'>
   readonly title: Prisma.FieldRef<"InternalStandard", 'String'>
   readonly code: Prisma.FieldRef<"InternalStandard", 'String'>
+  readonly subCategory: Prisma.FieldRef<"InternalStandard", 'String'>
   readonly internalCat: Prisma.FieldRef<"InternalStandard", 'String'>
   readonly description: Prisma.FieldRef<"InternalStandard", 'String'>
   readonly publisher: Prisma.FieldRef<"InternalStandard", 'String'>

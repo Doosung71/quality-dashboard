@@ -117,8 +117,9 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
   // 검색어 필터
   const [searchQuery, setSearchQuery] = useState("");
 
-  // 신규 자산 등록 폼 상태 (사내규격 전용 실제 저장)
+  // 신규 자산 등록 폼 상태
   const [showAddForm, setShowAddForm] = useState(false);
+  const [newSubCategory, setNewSubCategory] = useState<string>("사내규격");
   const [newTitle, setNewTitle] = useState("");
   const [newCode, setNewCode] = useState("");
   const [newInternalCat, setNewInternalCat] = useState("재료규격");
@@ -164,6 +165,8 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
   const handleTreeClick = (category: KnowledgeCategory | "ALL", subCategory: KnowledgeSubCategory | "ALL") => {
     setSelectedTreeCategory(category);
     setSelectedTreeSubCategory(subCategory);
+    setShowAddForm(false);
+    if (subCategory !== "ALL") setNewSubCategory(subCategory);
     setMobileView("list");
   };
 
@@ -228,13 +231,13 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
       const res = await fetch("/api/internal-standards", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: newTitle.trim(), code: newCode.trim() || null, internalCat: newInternalCat, description: newSummary.trim(), publisher: newPublisher.trim(), publishYear: newPublishYear, fileUrl, fileName, fileSize, keywords }),
+        body: JSON.stringify({ title: newTitle.trim(), code: newCode.trim() || null, subCategory: newSubCategory, internalCat: newInternalCat, description: newSummary.trim(), publisher: newPublisher.trim(), publishYear: newPublishYear, fileUrl, fileName, fileSize, keywords }),
       });
       const d = await res.json();
       if (!res.ok) { setFormError(d.error ?? "저장 실패"); setFormSaving(false); return; }
       const std = d.standard;
       const newAsset: KnowledgeAsset = {
-        id: `IS-${std.id}`, category: "Standards", subCategory: "사내규격",
+        id: `IS-${std.id}`, category: "Standards", subCategory: (std.subCategory as KnowledgeSubCategory) || "사내규격",
         title: std.title, code: std.code ?? undefined, publisher: std.publisher,
         publishYear: std.publishYear || "-", summary: std.description,
         fileSize: std.fileSize ? `${(std.fileSize / 1024 / 1024).toFixed(1)} MB` : undefined,
@@ -573,15 +576,17 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                     </p>
                   </div>
 
-                  {/* 사내규격 등록 버튼 */}
-                  <button
-                    type="button"
-                    onClick={() => setShowAddForm(prev => !prev)}
-                    className="text-xs font-bold text-violet-600 hover:text-violet-800 flex items-center gap-0.5 bg-violet-50 px-2.5 py-1.5 rounded-lg border border-violet-200 transition-all self-start md:self-auto"
-                  >
-                    {showAddForm ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-                    {showAddForm ? "취소" : "사내 규격 등록"}
-                  </button>
+                  {/* 카테고리별 등록 버튼 — 서브카테고리 선택 시만 표시 */}
+                  {selectedTreeSubCategory !== "ALL" && (
+                    <button
+                      type="button"
+                      onClick={() => { setNewSubCategory(selectedTreeSubCategory); setShowAddForm(prev => !prev); }}
+                      className="text-xs font-bold text-violet-600 hover:text-violet-800 flex items-center gap-0.5 bg-violet-50 px-2.5 py-1.5 rounded-lg border border-violet-200 transition-all self-start md:self-auto"
+                    >
+                      {showAddForm ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                      {showAddForm ? "취소" : `${selectedTreeSubCategory} 등록`}
+                    </button>
+                  )}
                 </div>
 
                 {/* 모바일 카테고리 칩 (md 미만에서만 표시) */}
@@ -656,31 +661,33 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                 </div>
               </div>
 
-              {/* 신규 사내규격 등록 폼 */}
+              {/* 신규 자산 등록 폼 (카테고리별 컨텍스트 적용) */}
               {showAddForm && (
                 <form onSubmit={handleAddAsset} className="bg-violet-50 p-5 rounded-2xl border border-violet-200 shadow-md space-y-4 text-xs">
                   <h4 className="text-sm font-bold text-violet-900 flex items-center gap-1.5 pb-2 border-b border-violet-200">
-                    <PlusCircle className="w-4 h-4 text-violet-600" /> 사내 규격 신규 등록
+                    <PlusCircle className="w-4 h-4 text-violet-600" /> {newSubCategory} 신규 등록
                   </h4>
                   {formError && <p className="text-rose-600 bg-rose-50 rounded px-3 py-2">{formError}</p>}
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div className="space-y-1">
-                      <label className="font-bold text-slate-600">사내 분류</label>
-                      <select value={newInternalCat} onChange={e => setNewInternalCat(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500">
-                        {INTERNAL_CATS.map(c => <option key={c}>{c}</option>)}
-                      </select>
-                    </div>
+                    {newSubCategory === "사내규격" && (
+                      <div className="space-y-1">
+                        <label className="font-bold text-slate-600">사내 분류</label>
+                        <select value={newInternalCat} onChange={e => setNewInternalCat(e.target.value)}
+                          className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500">
+                          {INTERNAL_CATS.map(c => <option key={c}>{c}</option>)}
+                        </select>
+                      </div>
+                    )}
                     <div className="space-y-1">
                       <label className="font-bold text-slate-600">규격 번호 (선택)</label>
-                      <input type="text" placeholder="예: 산특-2024-001" value={newCode}
+                      <input type="text" placeholder={newSubCategory === "사내규격" ? "예: 산특-2024-001" : "예: IEC 60840, KS C 3001"} value={newCode}
                         onChange={e => setNewCode(e.target.value)}
                         className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
                     </div>
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-600">작성 부서</label>
-                      <input type="text" placeholder="예: 개발부, 품질팀" value={newPublisher}
+                      <label className="font-bold text-slate-600">{newSubCategory === "사내규격" ? "작성 부서" : newSubCategory === "Tender" ? "발주처" : "발행 기관"}</label>
+                      <input type="text" placeholder={newSubCategory === "사내규격" ? "예: 개발부, 품질팀" : newSubCategory === "Tender" ? "예: KEPCO, 한전" : "예: IEC, ISO, ASTM"} value={newPublisher}
                         onChange={e => setNewPublisher(e.target.value)}
                         className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
                     </div>

@@ -128,7 +128,7 @@ export async function GET() {
     const internalAssets: KnowledgeAsset[] = internalRows.map((s) => ({
       id: `IS-${s.id}`,
       category: "Standards" as KnowledgeCategory,
-      subCategory: "사내규격" as KnowledgeSubCategory,
+      subCategory: (s.subCategory as KnowledgeSubCategory) || "사내규격",
       title: s.title,
       code: s.code ?? undefined,
       publisher: s.publisher,

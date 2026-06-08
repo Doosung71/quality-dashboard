@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   if (session instanceof NextResponse) return session
 
   const body = await req.json()
-  const { title, code, internalCat, description, publisher, publishYear, fileUrl, fileName, fileSize, keywords } = body
+  const { title, code, subCategory, internalCat, description, publisher, publishYear, fileUrl, fileName, fileSize, keywords } = body
 
   if (!title?.trim()) return NextResponse.json({ error: "제목은 필수입니다." }, { status: 400 })
 
@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
       data: {
         title: title.trim(),
         code: code?.trim() || null,
+        subCategory: subCategory || "사내규격",
         internalCat: internalCat || "재료규격",
         description: description?.trim() || "",
         publisher: publisher?.trim() || "내부",

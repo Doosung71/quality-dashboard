@@ -2,8 +2,9 @@
 model InternalStandard {
   id           String   @id @default(cuid())
   title        String
-  code         String?                        // 사내 규격 번호 (예: 산특-2024-001)
-  internalCat  String   @default("재료규격") // 재료규격 | 공정규격 | 설계규격 | 기타
+  code         String?                        // 규격 번호 (예: 산특-2024-001, IEC 60840)
+  subCategory  String   @default("사내규격") // 사내규격 | 국제규격 | 국가규격 | 단체규격 | 고객규격 | Tender | 논문 | 특허 | 시험성적서 | 분석보고서
+  internalCat  String   @default("재료규격") // 재료규격 | 공정규격 | 설계규격 | 기타 (사내규격 전용)
   description  String   @default("")
   publisher    String   @default("내부")      // 작성 부서
   publishYear  String   @default("")
