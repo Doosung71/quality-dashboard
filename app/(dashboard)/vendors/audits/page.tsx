@@ -111,19 +111,19 @@ export default async function SupplierAuditsPage() {
               const majCnt  = a.findings.filter(f => f.severity === "MAJOR").length
               return (
                 <Link key={a.id} href={`/vendors/audits/${a.id}`}
-                  className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50 transition-colors group">
-                  <div className="flex-1 min-w-0">
+                  className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50 transition-colors group overflow-hidden">
+                  <div className="flex-1 min-w-0 overflow-hidden">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-sm font-semibold text-slate-900 group-hover:text-indigo-700">{a.vendorName}</p>
-                      <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">{auditTypeLabel[a.auditType] ?? a.auditType}</span>
+                      <p className="text-sm font-semibold text-slate-900 group-hover:text-indigo-700 truncate">{a.vendorName}</p>
+                      <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">{auditTypeLabel[a.auditType] ?? a.auditType}</span>
                       {a.overallGrade && (
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${gradeColor[a.overallGrade] ?? ""}`}>{a.overallGrade}등급</span>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${gradeColor[a.overallGrade] ?? ""}`}>{a.overallGrade}등급</span>
                       )}
                     </div>
                     <div className="flex items-center gap-3 mt-1 flex-wrap text-xs text-slate-400">
-                      <span>{new Date(a.auditDate).toLocaleDateString("ko-KR")}</span>
-                      <span>감사자: {a.auditor}</span>
-                      {a.location && <span>{a.location}</span>}
+                      <span className="shrink-0">{new Date(a.auditDate).toLocaleDateString("ko-KR")}</span>
+                      <span className="truncate max-w-56">감사자: {a.auditor}</span>
+                      {a.location && <span className="truncate max-w-56">{a.location}</span>}
                       {a.findings.length > 0 && (
                         <span className="flex items-center gap-1">
                           {critCnt > 0 && <span className="text-rose-600 font-semibold">치명 {critCnt}</span>}
