@@ -30,6 +30,7 @@ const titles: Record<string, string> = {
   "/intelligence": "외부 정보",
   "/hr": "인사·면담",
   "/board": "품질부문 게시판",
+  "/feedback": "피드백 게시판",
   "/help": "사용 가이드",
 }
 
