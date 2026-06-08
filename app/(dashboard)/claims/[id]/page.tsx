@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireActivePageSession } from "@/lib/session-guard";
 import { canWrite } from "@/lib/permissions";
 import { ClaimDetailPage } from "./ClaimDetailPage";
-import type { Claim, ClaimTimelineItem } from "@/types/claim";
+import type { Claim, ClaimTimelineItem, ClaimAttachment } from "@/types/claim";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -30,6 +30,7 @@ export default async function ClaimDetailRoute({ params }: Props) {
     assignee:    raw.assignee,
     description: raw.description,
     timeline:    (raw.timeline as unknown as ClaimTimelineItem[]) ?? [],
+    attachments: (raw.attachments as unknown as ClaimAttachment[]) ?? [],
   };
 
   return (

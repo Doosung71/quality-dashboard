@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireActivePageSession } from "@/lib/session-guard";
 import { canWrite } from "@/lib/permissions";
 import { NCRDetailPage } from "./NCRDetailPage";
-import type { NCR, NCRTimelineItem } from "@/types/ncr";
+import type { NCR, NCRTimelineItem, NCRAttachment } from "@/types/ncr";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -31,6 +31,7 @@ export default async function NCRDetailRoute({ params }: Props) {
     assignee:    raw.assignee,
     description: raw.description,
     timeline:    (raw.timeline as unknown as NCRTimelineItem[]) ?? [],
+    attachments: (raw.attachments as unknown as NCRAttachment[]) ?? [],
   };
 
   return (
