@@ -4,15 +4,15 @@ import { prisma } from "@/lib/prisma"
 import FeedbackBoard from "./FeedbackBoard"
 
 export default async function FeedbackPage() {
-  await requireActivePageSession()
+  const session = await requireActivePageSession()
 
   const raw = await prisma.feedback.findMany({
     orderBy: { createdAt: "desc" },
     include: {
-      author: { select: { name: true, nickname: true, role: true } },
+      author: { select: { id: true, name: true, nickname: true, role: true } },
       replies: {
         orderBy: { createdAt: "asc" },
-        include: { author: { select: { name: true, nickname: true, role: true } } },
+        include: { author: { select: { id: true, name: true, nickname: true, role: true } } },
       },
     },
   })
@@ -42,7 +42,11 @@ export default async function FeedbackPage() {
           </p>
         </div>
 
-        <FeedbackBoard initial={feedbacks} />
+        <FeedbackBoard
+          initial={feedbacks}
+          currentUserId={session.user.id}
+          currentUserRole={session.user.role}
+        />
       </div>
     </div>
   )

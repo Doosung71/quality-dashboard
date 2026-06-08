@@ -17,7 +17,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       authorId: session.user.id,
     },
     include: {
-      author: { select: { name: true, nickname: true, role: true } },
+      author: { select: { id: true, name: true, nickname: true, role: true } },
     },
   })
 

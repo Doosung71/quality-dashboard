@@ -1,7 +1,7 @@
 "use client"
 import { useState, useRef } from "react"
 
-type Author = { name: string; nickname: string | null; role: string }
+type Author = { id: string; name: string; nickname: string | null; role: string }
 type Reply = { id: string; content: string; author: Author; createdAt: string }
 type FeedbackItem = {
   id: string
@@ -16,6 +16,7 @@ const ROLE_LABEL: Record<string, string> = {
   PRACTITIONER: "실무자",
   TEAM_LEAD: "팀장",
   DIRECTOR: "부문장",
+  ADMIN: "관리자",
 }
 
 function authorLabel(a: Author) {
@@ -36,6 +37,14 @@ function timeAgo(iso: string) {
 function parseUrls(raw: string | null): string[] {
   if (!raw) return []
   try { return JSON.parse(raw) } catch { return [] }
+}
+
+function canEdit(authorId: string, currentUserId: string) {
+  return authorId === currentUserId
+}
+
+function canDelete(authorId: string, currentUserId: string, currentUserRole: string) {
+  return authorId === currentUserId || currentUserRole === "DIRECTOR" || currentUserRole === "ADMIN"
 }
 
 function ImageGrid({ urls }: { urls: string[] }) {
@@ -74,7 +83,111 @@ function ImageGrid({ urls }: { urls: string[] }) {
   )
 }
 
-function ReplyThread({ feedbackId, replies: initial }: { feedbackId: string; replies: Reply[] }) {
+function ReplyItem({
+  reply,
+  feedbackId,
+  currentUserId,
+  currentUserRole,
+  onDelete,
+  onUpdate,
+}: {
+  reply: Reply
+  feedbackId: string
+  currentUserId: string
+  currentUserRole: string
+  onDelete: (id: string) => void
+  onUpdate: (id: string, content: string) => void
+}) {
+  const [editing, setEditing] = useState(false)
+  const [editText, setEditText] = useState(reply.content)
+  const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+
+  async function handleSave() {
+    if (!editText.trim()) return
+    if (editText.trim() === reply.content) { setEditing(false); return }
+    setSaving(true)
+    const res = await fetch(`/api/feedback/${feedbackId}/reply/${reply.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: editText }),
+    })
+    if (res.ok) {
+      onUpdate(reply.id, editText.trim())
+      setEditing(false)
+    }
+    setSaving(false)
+  }
+
+  async function handleDelete() {
+    if (!confirm("댓글을 삭제할까요?")) return
+    setDeleting(true)
+    const res = await fetch(`/api/feedback/${feedbackId}/reply/${reply.id}`, { method: "DELETE" })
+    if (res.ok) onDelete(reply.id)
+    else setDeleting(false)
+  }
+
+  return (
+    <div className="text-sm group/reply">
+      <div className="flex items-center gap-2">
+        <span className="font-medium text-zinc-700">{authorLabel(reply.author)}</span>
+        <span className="text-zinc-400 text-xs">{timeAgo(reply.createdAt)}</span>
+        {!editing && (
+          <div className="ml-auto flex gap-2 opacity-0 group-hover/reply:opacity-100 transition-opacity">
+            {canEdit(reply.author.id, currentUserId) && (
+              <button onClick={() => setEditing(true)} className="text-xs text-zinc-400 hover:text-zinc-700">수정</button>
+            )}
+            {canDelete(reply.author.id, currentUserId, currentUserRole) && (
+              <button onClick={handleDelete} disabled={deleting} className="text-xs text-zinc-400 hover:text-rose-500 disabled:opacity-40">
+                {deleting ? "…" : "삭제"}
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+      {editing ? (
+        <div className="flex gap-2 mt-1.5">
+          <textarea
+            className="flex-1 text-sm border rounded px-2 py-1.5 resize-none focus:outline-none focus:ring-1 focus:ring-zinc-400"
+            rows={2}
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            autoFocus
+          />
+          <div className="flex flex-col gap-1 shrink-0">
+            <button
+              onClick={handleSave}
+              disabled={saving || !editText.trim()}
+              className="text-xs px-3 py-1.5 rounded bg-zinc-800 text-white hover:bg-zinc-600 disabled:opacity-40"
+            >
+              {saving ? "…" : "저장"}
+            </button>
+            <button
+              onClick={() => { setEditing(false); setEditText(reply.content) }}
+              className="text-xs px-3 py-1.5 rounded border text-zinc-500 hover:bg-zinc-50"
+            >
+              취소
+            </button>
+          </div>
+        </div>
+      ) : (
+        <p className="text-zinc-600 mt-0.5 leading-relaxed whitespace-pre-wrap">{editText}</p>
+      )}
+    </div>
+  )
+}
+
+function ReplyThread({
+  feedbackId,
+  replies: initial,
+  currentUserId,
+  currentUserRole,
+}: {
+  feedbackId: string
+  replies: Reply[]
+  currentUserId: string
+  currentUserRole: string
+}) {
   const [replies, setReplies] = useState(initial)
   const [open, setOpen] = useState(false)
   const [text, setText] = useState("")
@@ -97,14 +210,26 @@ function ReplyThread({ feedbackId, replies: initial }: { feedbackId: string; rep
     setPosting(false)
   }
 
+  function handleDelete(id: string) {
+    setReplies((prev) => prev.filter((r) => r.id !== id))
+  }
+
+  function handleUpdate(id: string, content: string) {
+    setReplies((prev) => prev.map((r) => (r.id === id ? { ...r, content } : r)))
+  }
+
   return (
     <div className="mt-3 ml-4 border-l-2 border-zinc-100 pl-4 space-y-2">
       {replies.map((r) => (
-        <div key={r.id} className="text-sm">
-          <span className="font-medium text-zinc-700">{authorLabel(r.author)}</span>
-          <span className="text-zinc-400 text-xs ml-2">{timeAgo(r.createdAt)}</span>
-          <p className="text-zinc-600 mt-0.5 leading-relaxed">{r.content}</p>
-        </div>
+        <ReplyItem
+          key={r.id}
+          reply={r}
+          feedbackId={feedbackId}
+          currentUserId={currentUserId}
+          currentUserRole={currentUserRole}
+          onDelete={handleDelete}
+          onUpdate={handleUpdate}
+        />
       ))}
       {open ? (
         <div className="flex gap-2 items-start pt-1">
@@ -114,8 +239,9 @@ function ReplyThread({ feedbackId, replies: initial }: { feedbackId: string; rep
             placeholder="댓글을 입력하세요..."
             value={text}
             onChange={(e) => setText(e.target.value)}
+            autoFocus
           />
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 shrink-0">
             <button
               onClick={submit}
               disabled={posting || !text.trim()}
@@ -123,7 +249,7 @@ function ReplyThread({ feedbackId, replies: initial }: { feedbackId: string; rep
             >
               {posting ? "…" : "등록"}
             </button>
-            <button onClick={() => setOpen(false)} className="text-xs px-3 py-1.5 rounded border text-zinc-500 hover:bg-zinc-50">
+            <button onClick={() => { setOpen(false); setText("") }} className="text-xs px-3 py-1.5 rounded border text-zinc-500 hover:bg-zinc-50">
               취소
             </button>
           </div>
@@ -137,7 +263,116 @@ function ReplyThread({ feedbackId, replies: initial }: { feedbackId: string; rep
   )
 }
 
-export default function FeedbackBoard({ initial }: { initial: FeedbackItem[] }) {
+function FeedbackCard({
+  item,
+  currentUserId,
+  currentUserRole,
+  onDelete,
+  onUpdate,
+}: {
+  item: FeedbackItem
+  currentUserId: string
+  currentUserRole: string
+  onDelete: (id: string) => void
+  onUpdate: (id: string, content: string) => void
+}) {
+  const [editing, setEditing] = useState(false)
+  const [editText, setEditText] = useState(item.content)
+  const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+
+  async function handleSave() {
+    if (!editText.trim()) return
+    if (editText.trim() === item.content) { setEditing(false); return }
+    setSaving(true)
+    const res = await fetch(`/api/feedback/${item.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: editText }),
+    })
+    if (res.ok) {
+      onUpdate(item.id, editText.trim())
+      setEditing(false)
+    }
+    setSaving(false)
+  }
+
+  async function handleDelete() {
+    if (!confirm("피드백을 삭제할까요? 달린 댓글도 모두 삭제됩니다.")) return
+    setDeleting(true)
+    const res = await fetch(`/api/feedback/${item.id}`, { method: "DELETE" })
+    if (res.ok) onDelete(item.id)
+    else setDeleting(false)
+  }
+
+  return (
+    <div className="bg-white border rounded-xl p-5 group/card">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-sm font-medium text-zinc-800">{authorLabel(item.author)}</span>
+        <span className="text-xs text-zinc-400">{timeAgo(item.createdAt)}</span>
+        {!editing && (
+          <div className="ml-auto flex gap-3 opacity-0 group-hover/card:opacity-100 transition-opacity">
+            {canEdit(item.author.id, currentUserId) && (
+              <button onClick={() => setEditing(true)} className="text-xs text-zinc-400 hover:text-zinc-700">수정</button>
+            )}
+            {canDelete(item.author.id, currentUserId, currentUserRole) && (
+              <button onClick={handleDelete} disabled={deleting} className="text-xs text-zinc-400 hover:text-rose-500 disabled:opacity-40">
+                {deleting ? "삭제 중…" : "삭제"}
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {editing ? (
+        <div className="space-y-2">
+          <textarea
+            className="w-full text-sm border rounded-lg px-3 py-2.5 resize-none focus:outline-none focus:ring-1 focus:ring-zinc-400"
+            rows={4}
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            autoFocus
+          />
+          <div className="flex gap-2 justify-end">
+            <button
+              onClick={() => { setEditing(false); setEditText(item.content) }}
+              className="text-xs px-3 py-1.5 rounded border text-zinc-500 hover:bg-zinc-50"
+            >
+              취소
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving || !editText.trim()}
+              className="text-xs px-4 py-1.5 rounded bg-zinc-800 text-white hover:bg-zinc-700 disabled:opacity-40"
+            >
+              {saving ? "저장 중…" : "저장"}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <p className="text-sm text-zinc-700 leading-relaxed whitespace-pre-wrap">{editText}</p>
+      )}
+
+      <ImageGrid urls={parseUrls(item.imageUrls)} />
+      <ReplyThread
+        feedbackId={item.id}
+        replies={item.replies}
+        currentUserId={currentUserId}
+        currentUserRole={currentUserRole}
+      />
+    </div>
+  )
+}
+
+export default function FeedbackBoard({
+  initial,
+  currentUserId,
+  currentUserRole,
+}: {
+  initial: FeedbackItem[]
+  currentUserId: string
+  currentUserRole: string
+}) {
   const [items, setItems] = useState(initial)
   const [text, setText] = useState("")
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([])
@@ -165,10 +400,7 @@ export default function FeedbackBoard({ initial }: { initial: FeedbackItem[] }) 
           newUrls.push(url)
         } else {
           let errMsg = "이미지 업로드에 실패했습니다"
-          try {
-            const d = await res.json()
-            errMsg = d.error ?? errMsg
-          } catch { /* non-JSON error body (e.g. 500 HTML page) */ }
+          try { const d = await res.json(); errMsg = d.error ?? errMsg } catch { /* non-JSON */ }
           setError(errMsg)
           break
         }
@@ -187,9 +419,7 @@ export default function FeedbackBoard({ initial }: { initial: FeedbackItem[] }) 
   }
 
   async function handlePaste(e: React.ClipboardEvent<HTMLTextAreaElement>) {
-    const imageItems = Array.from(e.clipboardData.items).filter((item) =>
-      item.type.startsWith("image/")
-    )
+    const imageItems = Array.from(e.clipboardData.items).filter((item) => item.type.startsWith("image/"))
     if (imageItems.length === 0) return
     e.preventDefault()
     const files = imageItems.map((item) => item.getAsFile()).filter(Boolean) as File[]
@@ -221,8 +451,17 @@ export default function FeedbackBoard({ initial }: { initial: FeedbackItem[] }) 
     setPosting(false)
   }
 
+  function handleDelete(id: string) {
+    setItems((prev) => prev.filter((i) => i.id !== id))
+  }
+
+  function handleUpdate(id: string, content: string) {
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, content } : i)))
+  }
+
   return (
     <div className="space-y-6">
+      {/* 피드백 작성 폼 */}
       <div className="bg-white border rounded-xl p-5 space-y-3">
         <p className="text-sm font-semibold text-zinc-800">피드백 작성</p>
         <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-xs text-blue-800 leading-relaxed">
@@ -241,12 +480,12 @@ export default function FeedbackBoard({ initial }: { initial: FeedbackItem[] }) 
         {uploadedUrls.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {uploadedUrls.map((url, i) => (
-              <div key={i} className="relative group">
+              <div key={i} className="relative group/img">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={url} alt={`첨부 ${i + 1}`} className="h-20 w-auto rounded border object-cover" />
                 <button
                   onClick={() => removeImage(url)}
-                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity"
                 >
                   ✕
                 </button>
@@ -289,6 +528,7 @@ export default function FeedbackBoard({ initial }: { initial: FeedbackItem[] }) 
         {error && <p className="text-xs text-red-500">{error}</p>}
       </div>
 
+      {/* 피드백 목록 */}
       {items.length === 0 ? (
         <p className="text-sm text-zinc-400 text-center py-8">
           아직 피드백이 없습니다. 첫 번째로 의견을 남겨보세요!
@@ -296,15 +536,14 @@ export default function FeedbackBoard({ initial }: { initial: FeedbackItem[] }) 
       ) : (
         <div className="space-y-4">
           {items.map((item) => (
-            <div key={item.id} className="bg-white border rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-sm font-medium text-zinc-800">{authorLabel(item.author)}</span>
-                <span className="text-xs text-zinc-400">{timeAgo(item.createdAt)}</span>
-              </div>
-              <p className="text-sm text-zinc-700 leading-relaxed whitespace-pre-wrap">{item.content}</p>
-              <ImageGrid urls={parseUrls(item.imageUrls)} />
-              <ReplyThread feedbackId={item.id} replies={item.replies} />
-            </div>
+            <FeedbackCard
+              key={item.id}
+              item={item}
+              currentUserId={currentUserId}
+              currentUserRole={currentUserRole}
+              onDelete={handleDelete}
+              onUpdate={handleUpdate}
+            />
           ))}
         </div>
       )}

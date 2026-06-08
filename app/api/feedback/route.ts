@@ -9,10 +9,10 @@ export async function GET() {
   const feedbacks = await prisma.feedback.findMany({
     orderBy: { createdAt: "desc" },
     include: {
-      author: { select: { name: true, nickname: true, role: true } },
+      author: { select: { id: true, name: true, nickname: true, role: true } },
       replies: {
         orderBy: { createdAt: "asc" },
-        include: { author: { select: { name: true, nickname: true, role: true } } },
+        include: { author: { select: { id: true, name: true, nickname: true, role: true } } },
       },
     },
   })
@@ -50,8 +50,8 @@ export async function POST(req: Request) {
       imageUrls: validatedUrls.length > 0 ? JSON.stringify(validatedUrls) : null,
     },
     include: {
-      author: { select: { name: true, nickname: true, role: true } },
-      replies: { include: { author: { select: { name: true, nickname: true, role: true } } } },
+      author: { select: { id: true, name: true, nickname: true, role: true } },
+      replies: { include: { author: { select: { id: true, name: true, nickname: true, role: true } } } },
     },
   })
 
