@@ -103,7 +103,8 @@ export async function GET() {
         WHERE source_type IN ('standards', 'pdf_inbox')
         ORDER BY source_path, created_at ASC
       ` as unknown as Promise<DBRow[]>,
-      prisma.internalStandard.findMany({ orderBy: { createdAt: "desc" } }),
+      // InternalStandard 테이블 미생성 시에도 chunk 자산은 정상 반환되도록 격리
+      prisma.internalStandard.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []),
     ])
 
     const chunkAssets: KnowledgeAsset[] = (rows as DBRow[]).map((r, i) => {
