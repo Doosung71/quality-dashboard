@@ -23,6 +23,8 @@ export const authConfig = {
       const restrictionExpired = status === "RESTRICTED" && !!restrictedUntil && new Date(restrictedUntil) < new Date()
       const isEffectivelyActive = status === "ACTIVE" || restrictionExpired
 
+      if (pathname.startsWith("/review-demo")) return true
+
       if (pathname.startsWith("/login") || pathname.startsWith("/register")) {
         if (!isLoggedIn) return true
         if (isEffectivelyActive || isAdminUser) return Response.redirect(new URL("/", nextUrl))
