@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { requireActivePageSession } from "@/lib/session-guard"
 import { prisma } from "@/lib/prisma"
 import FeedbackBoard from "./FeedbackBoard"
@@ -24,28 +23,33 @@ export default async function FeedbackPage() {
     replies: f.replies.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() })),
   }))
 
+  const currentUserName = session.user.nickname || session.user.name || ""
+
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <header className="bg-white border-b px-6 py-3 flex items-center justify-between">
-        <Link href="/" className="text-sm text-zinc-500 hover:text-zinc-800">← 대시보드</Link>
-        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-zinc-100 text-zinc-600">
-          피드백 게시판
-        </span>
-      </header>
-
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-xl font-bold text-zinc-900">피드백 게시판</h1>
-          <p className="text-sm text-zinc-500 mt-1 leading-relaxed">
-            시스템을 사용하면서 불편한 사항, 개선 요청, 오류 등을 자유롭게 남겨주세요.<br />
-            모든 의견을 검토하여 다음 버전에 반영합니다.
-          </p>
+    <div className="min-h-screen bg-slate-50">
+      {/* 페이지 헤더 */}
+      <div className="bg-white border-b border-slate-100 px-6 py-5">
+        <div className="max-w-2xl mx-auto">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-lg font-bold text-slate-900">피드백 게시판</h1>
+              <p className="text-xs text-slate-500 mt-0.5">
+                불편한 점, 오류, 개선 요청을 남겨주세요. 모든 의견을 다음 업데이트에 반영합니다.
+              </p>
+            </div>
+            <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">
+              💬 피드백
+            </span>
+          </div>
         </div>
+      </div>
 
+      <div className="max-w-2xl mx-auto px-4 py-6">
         <FeedbackBoard
           initial={feedbacks}
           currentUserId={session.user.id}
           currentUserRole={session.user.role}
+          currentUserName={currentUserName}
         />
       </div>
     </div>

@@ -1,5 +1,13 @@
 "use client"
 import { useState, useRef } from "react"
+import {
+  Send, Paperclip, Pencil, Trash2, CornerDownRight,
+  MessageSquare, X, ZoomIn, Smile,
+} from "lucide-react"
+import { EmojiPicker } from "@/components/board/emoji-picker"
+import { cn } from "@/lib/utils"
+
+// ─── 타입 ──────────────────────────────────────────────────
 
 type Author = { id: string; name: string; nickname: string | null; role: string }
 type Reply = {
@@ -12,13 +20,21 @@ type FeedbackItem = {
   author: Author; createdAt: string; replies: Reply[]
 }
 
-const ROLE_LABEL: Record<string, string> = {
-  PRACTITIONER: "실무자", TEAM_LEAD: "팀장", DIRECTOR: "부문장", ADMIN: "관리자",
+// ─── 역할 설정 ─────────────────────────────────────────────
+
+const ROLE_CFG: Record<string, { label: string; bg: string; fg: string; badge: string }> = {
+  PRACTITIONER: { label: "실무자", bg: "bg-indigo-100",  fg: "text-indigo-700",  badge: "bg-indigo-50  text-indigo-600  border border-indigo-100"  },
+  TEAM_LEAD:    { label: "팀장",   bg: "bg-violet-100",  fg: "text-violet-700",  badge: "bg-violet-50  text-violet-600  border border-violet-100"  },
+  DIRECTOR:     { label: "부문장", bg: "bg-emerald-100", fg: "text-emerald-700", badge: "bg-emerald-50 text-emerald-700 border border-emerald-100" },
+  ADMIN:        { label: "관리자", bg: "bg-rose-100",    fg: "text-rose-600",    badge: "bg-rose-50    text-rose-600    border border-rose-100"    },
+}
+function rc(role: string) {
+  return ROLE_CFG[role] ?? { label: role, bg: "bg-slate-100", fg: "text-slate-600", badge: "bg-slate-50 text-slate-500 border border-slate-100" }
 }
 
-function authorLabel(a: Author) {
-  return `${a.nickname || a.name} (${ROLE_LABEL[a.role] ?? a.role})`
-}
+// ─── 유틸 ──────────────────────────────────────────────────
+
+function displayName(a: Author) { return a.nickname || a.name }
 
 function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime()
@@ -27,7 +43,7 @@ function timeAgo(iso: string) {
   if (m < 60) return `${m}분 전`
   const h = Math.floor(m / 60)
   if (h < 24) return `${h}시간 전`
-  return new Date(iso).toLocaleDateString("ko-KR")
+  return new Date(iso).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })
 }
 
 function parseUrls(raw: string | null): string[] {
@@ -66,38 +82,96 @@ function collectDescendants(id: string, replies: Reply[]): Set<string> {
   return result
 }
 
+// ─── 아바타 ────────────────────────────────────────────────
+
+function Avatar({ author, size = "md" }: { author: Author; size?: "sm" | "md" | "lg" }) {
+  const { bg, fg } = rc(author.role)
+  const cls = size === "lg" ? "w-9 h-9 text-sm" : size === "sm" ? "w-6 h-6 text-[10px]" : "w-7 h-7 text-xs"
+  return (
+    <div className={cn("rounded-full font-bold flex items-center justify-center shrink-0", cls, bg, fg)}>
+      {displayName(author).slice(0, 1)}
+    </div>
+  )
+}
+
+// ─── 작성자 정보 줄 ────────────────────────────────────────
+
+function AuthorLine({ author, createdAt, compact = false }: { author: Author; createdAt: string; compact?: boolean }) {
+  const { label, badge } = rc(author.role)
+  return (
+    <div className="flex items-center gap-1.5 flex-wrap">
+      <span className={cn("font-semibold text-slate-900", compact ? "text-xs" : "text-sm")}>
+        {displayName(author)}
+      </span>
+      <span className={cn("rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none", badge)}>
+        {label}
+      </span>
+      <span className="text-[10px] text-slate-400">{timeAgo(createdAt)}</span>
+    </div>
+  )
+}
+
+// ─── 이미지 그리드 ─────────────────────────────────────────
+
 function ImageGrid({ urls }: { urls: string[] }) {
   const [lightbox, setLightbox] = useState<string | null>(null)
   if (urls.length === 0) return null
   return (
     <>
-      <div className="flex flex-wrap gap-2 mt-3">
+      <div className={cn("grid gap-2 mt-3",
+        urls.length === 1 ? "grid-cols-1"
+        : urls.length === 2 ? "grid-cols-2"
+        : "grid-cols-3")}>
         {urls.map((url, i) => (
-          <button key={i} onClick={() => setLightbox(url)} className="focus:outline-none">
+          <button key={i} onClick={() => setLightbox(url)}
+            className="relative rounded-xl overflow-hidden bg-slate-100 group focus:outline-none"
+            style={{ paddingTop: urls.length === 1 ? "45%" : "100%" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={url} alt={`첨부 이미지 ${i + 1}`} className="h-24 w-auto rounded border object-cover hover:opacity-80 transition-opacity cursor-zoom-in" />
+            <img src={url} alt={`첨부 이미지 ${i + 1}`}
+              className="absolute inset-0 w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <ZoomIn className="w-5 h-5 text-white drop-shadow" />
+            </div>
           </button>
         ))}
       </div>
       {lightbox && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setLightbox(null)}>
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setLightbox(null)}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={lightbox} alt="첨부 이미지" className="max-w-full max-h-full rounded shadow-xl" />
-          <button className="absolute top-4 right-4 text-white text-2xl font-bold hover:text-zinc-300" onClick={() => setLightbox(null)}>✕</button>
+          <img src={lightbox} alt="첨부 이미지" className="max-w-full max-h-[90vh] rounded-xl shadow-2xl" />
+          <button
+            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 transition-colors"
+            onClick={() => setLightbox(null)}>
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
     </>
   )
 }
 
+// ─── 댓글 입력 폼 ──────────────────────────────────────────
+
 function ReplyForm({
-  feedbackId, parentId, onAdd, onCancel, autoFocus,
+  feedbackId, parentId, currentUserInitial, onAdd, onCancel, autoFocus,
 }: {
-  feedbackId: string; parentId: string | null
+  feedbackId: string; parentId: string | null; currentUserInitial: string
   onAdd: (r: Reply) => void; onCancel?: () => void; autoFocus?: boolean
 }) {
   const [text, setText] = useState("")
   const [posting, setPosting] = useState(false)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  function insertEmoji(emoji: string) {
+    const el = textareaRef.current
+    if (!el) { setText(t => t + emoji); return }
+    const s = el.selectionStart ?? text.length
+    const e2 = el.selectionEnd ?? text.length
+    const next = text.slice(0, s) + emoji + text.slice(e2)
+    setText(next)
+    setTimeout(() => { el.focus(); el.setSelectionRange(s + emoji.length, s + emoji.length) }, 0)
+  }
 
   async function submit() {
     if (!text.trim()) return
@@ -107,42 +181,57 @@ function ReplyForm({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content: text, parentId }),
     })
-    if (res.ok) {
-      onAdd(await res.json())
-      setText("")
-      onCancel?.()
-    }
+    if (res.ok) { onAdd(await res.json()); setText(""); onCancel?.() }
     setPosting(false)
   }
 
   return (
-    <div className="flex gap-2 items-start">
-      <textarea
-        className="flex-1 text-sm border rounded px-3 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-zinc-400"
-        rows={2}
-        placeholder={parentId ? "답글을 입력하세요..." : "댓글을 입력하세요..."}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        autoFocus={autoFocus}
-      />
-      <div className="flex flex-col gap-1 shrink-0">
-        <button onClick={submit} disabled={posting || !text.trim()} className="text-xs px-3 py-1.5 rounded bg-zinc-800 text-white hover:bg-zinc-600 disabled:opacity-40">
-          {posting ? "…" : "등록"}
-        </button>
-        {onCancel && (
-          <button onClick={onCancel} className="text-xs px-3 py-1.5 rounded border text-zinc-500 hover:bg-zinc-50">취소</button>
-        )}
+    <div className="flex gap-2.5 items-start">
+      <div className="w-6 h-6 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-1.5">
+        {currentUserInitial}
       </div>
+      <div className="flex-1 relative">
+        <textarea
+          ref={textareaRef}
+          className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2 pr-16 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-slate-50 placeholder:text-slate-400"
+          rows={2}
+          placeholder={parentId ? "답글을 입력하세요… (Enter 전송)" : "댓글을 입력하세요… (Enter 전송)"}
+          value={text}
+          onChange={e => setText(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); if (text.trim()) submit() }
+            if (e.key === "Escape") onCancel?.()
+          }}
+          autoFocus={autoFocus}
+        />
+        <div className="absolute right-8 bottom-1.5">
+          <EmojiPicker onSelect={insertEmoji} />
+        </div>
+        <button
+          onClick={submit}
+          disabled={posting || !text.trim()}
+          className="absolute right-2 bottom-1.5 p-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40 disabled:bg-slate-300 transition-all">
+          <Send className="w-3 h-3" />
+        </button>
+      </div>
+      {onCancel && (
+        <button onClick={onCancel}
+          className="mt-1.5 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors shrink-0">
+          <X className="w-4 h-4" />
+        </button>
+      )}
     </div>
   )
 }
 
+// ─── 댓글 아이템 ───────────────────────────────────────────
+
 function ReplyItem({
-  node, feedbackId, depth, uid, role,
+  node, feedbackId, depth, uid, role, currentUserInitial,
   onAdd, onRemove, onUpdate,
 }: {
   node: ReplyNode; feedbackId: string; depth: number
-  uid: string; role: string
+  uid: string; role: string; currentUserInitial: string
   onAdd: (r: Reply) => void
   onRemove: (id: string) => void
   onUpdate: (id: string, content: string) => void
@@ -174,69 +263,84 @@ function ReplyItem({
     } else { setDeleting(false) }
   }
 
-  const indent = depth > 0
-
   return (
-    <div>
-      <div className={`text-sm group/reply ${indent ? "" : ""}`}>
-        <div className="flex items-center gap-2 flex-wrap">
-          {indent && <span className="text-zinc-300 text-xs mr-0.5">↳</span>}
-          <span className="font-medium text-zinc-700">{authorLabel(node.author)}</span>
-          <span className="text-zinc-400 text-xs">{timeAgo(node.createdAt)}</span>
-          {!editing && !deleting && (
-            <div className="ml-auto flex gap-2 opacity-0 group-hover/reply:opacity-100 transition-opacity">
-              <button onClick={() => setReplying(v => !v)} className="text-xs text-zinc-400 hover:text-indigo-600">
-                {replying ? "취소" : "답글"}
-              </button>
-              {canEdit(node.author.id, uid) && (
-                <button onClick={() => setEditing(true)} className="text-xs text-zinc-400 hover:text-zinc-700">수정</button>
-              )}
-              {canDelete(node.author.id, uid, role) && (
-                <button onClick={handleDelete} className="text-xs text-zinc-400 hover:text-rose-500">삭제</button>
-              )}
-            </div>
-          )}
-          {deleting && <span className="ml-auto text-xs text-zinc-300">삭제 중…</span>}
-        </div>
-
-        {editing ? (
-          <div className="flex gap-2 mt-1.5">
-            <textarea
-              className="flex-1 text-sm border rounded px-2 py-1.5 resize-none focus:outline-none focus:ring-1 focus:ring-zinc-400"
-              rows={2} value={editText} onChange={(e) => setEditText(e.target.value)} autoFocus
-            />
-            <div className="flex flex-col gap-1 shrink-0">
-              <button onClick={handleSave} disabled={saving || !editText.trim()} className="text-xs px-3 py-1.5 rounded bg-zinc-800 text-white disabled:opacity-40">
-                {saving ? "…" : "저장"}
-              </button>
-              <button onClick={() => { setEditing(false); setEditText(node.content) }} className="text-xs px-3 py-1.5 rounded border text-zinc-500">취소</button>
-            </div>
+    <div className={cn(deleting && "opacity-40 pointer-events-none")}>
+      <div className="flex gap-2.5 group/reply">
+        <Avatar author={node.author} size="sm" />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-0.5">
+            <AuthorLine author={node.author} createdAt={node.createdAt} compact />
+            {!editing && !deleting && (
+              <div className="ml-auto flex items-center gap-1.5 opacity-0 group-hover/reply:opacity-100 transition-opacity shrink-0">
+                <button onClick={() => setReplying(v => !v)}
+                  className="text-[10px] text-slate-400 hover:text-indigo-600 flex items-center gap-0.5 transition-colors px-1.5 py-0.5 rounded hover:bg-indigo-50">
+                  <CornerDownRight className="w-3 h-3" /> 답글
+                </button>
+                {canEdit(node.author.id, uid) && (
+                  <button onClick={() => setEditing(true)}
+                    className="p-1 rounded text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition-colors">
+                    <Pencil className="w-3 h-3" />
+                  </button>
+                )}
+                {canDelete(node.author.id, uid, role) && (
+                  <button onClick={handleDelete}
+                    className="p-1 rounded text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-colors">
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+            )}
           </div>
-        ) : (
-          <p className="text-zinc-600 mt-0.5 leading-relaxed whitespace-pre-wrap">{editText}</p>
-        )}
+
+          {editing ? (
+            <div className="flex gap-2 mt-1">
+              <textarea
+                className="flex-1 text-sm border border-indigo-200 rounded-xl px-2.5 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white"
+                rows={2} value={editText}
+                onChange={e => setEditText(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSave() }
+                  if (e.key === "Escape") setEditing(false)
+                }}
+                autoFocus
+              />
+              <div className="flex flex-col gap-1 shrink-0">
+                <button onClick={handleSave} disabled={saving || !editText.trim()}
+                  className="text-xs px-2.5 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40 transition-colors">
+                  {saving ? "…" : "저장"}
+                </button>
+                <button onClick={() => { setEditing(false); setEditText(node.content) }}
+                  className="text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">
+                  취소
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{editText}</p>
+          )}
+        </div>
       </div>
 
-      {/* 답글 작성 폼 */}
       {replying && (
-        <div className="mt-2 ml-5 pl-3 border-l-2 border-indigo-100">
+        <div className="mt-2 ml-8 pl-3 border-l-2 border-indigo-100">
           <ReplyForm
             feedbackId={feedbackId}
             parentId={node.id}
-            onAdd={(r) => { onAdd(r); setReplying(false) }}
+            currentUserInitial={currentUserInitial}
+            onAdd={r => { onAdd(r); setReplying(false) }}
             onCancel={() => setReplying(false)}
             autoFocus
           />
         </div>
       )}
 
-      {/* 자식 댓글 */}
       {node.children.length > 0 && (
         <ReplyTree
           nodes={node.children}
           feedbackId={feedbackId}
           depth={depth + 1}
           uid={uid} role={role}
+          currentUserInitial={currentUserInitial}
           onAdd={onAdd} onRemove={onRemove} onUpdate={onUpdate}
         />
       )}
@@ -244,23 +348,25 @@ function ReplyItem({
   )
 }
 
+// ─── 댓글 트리 ─────────────────────────────────────────────
+
 function ReplyTree({
-  nodes, feedbackId, depth, uid, role, onAdd, onRemove, onUpdate,
+  nodes, feedbackId, depth, uid, role, currentUserInitial, onAdd, onRemove, onUpdate,
 }: {
   nodes: ReplyNode[]; feedbackId: string; depth: number
-  uid: string; role: string
+  uid: string; role: string; currentUserInitial: string
   onAdd: (r: Reply) => void
   onRemove: (id: string) => void
   onUpdate: (id: string, content: string) => void
 }) {
-  const visualDepth = Math.min(depth, 3)
+  const vis = Math.min(depth, 3)
   return (
-    <div className={visualDepth > 0 ? "mt-2 ml-4 pl-3 border-l-2 border-zinc-100 space-y-3" : "space-y-3"}>
+    <div className={cn("mt-2 space-y-3", vis > 0 && "ml-8 pl-3 border-l-2 border-slate-100")}>
       {nodes.map(node => (
         <ReplyItem
           key={node.id}
           node={node} feedbackId={feedbackId} depth={depth}
-          uid={uid} role={role}
+          uid={uid} role={role} currentUserInitial={currentUserInitial}
           onAdd={onAdd} onRemove={onRemove} onUpdate={onUpdate}
         />
       ))}
@@ -268,10 +374,12 @@ function ReplyTree({
   )
 }
 
+// ─── 피드백 카드 ───────────────────────────────────────────
+
 function FeedbackCard({
-  item, uid, role, onDelete, onUpdate,
+  item, uid, role, currentUserInitial, onDelete, onUpdate,
 }: {
-  item: FeedbackItem; uid: string; role: string
+  item: FeedbackItem; uid: string; role: string; currentUserInitial: string
   onDelete: (id: string) => void
   onUpdate: (id: string, content: string) => void
 }) {
@@ -283,16 +391,13 @@ function FeedbackCard({
   const [showReplyForm, setShowReplyForm] = useState(false)
 
   const tree = buildTree(allReplies)
-
   function addReply(r: Reply) { setAllReplies(prev => [...prev, r]) }
-
   function removeReply(id: string) {
     setAllReplies(prev => {
       const toRemove = collectDescendants(id, prev)
       return prev.filter(r => !toRemove.has(r.id))
     })
   }
-
   function updateReply(id: string, content: string) {
     setAllReplies(prev => prev.map(r => r.id === id ? { ...r, content } : r))
   }
@@ -317,82 +422,107 @@ function FeedbackCard({
   }
 
   return (
-    <div className="bg-white border rounded-xl p-5 group/card">
+    <div className={cn(
+      "bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow group/card",
+      deleting && "opacity-40 pointer-events-none"
+    )}>
       {/* 헤더 */}
-      <div className="flex items-center gap-2 mb-2">
-        <span className="text-sm font-medium text-zinc-800">{authorLabel(item.author)}</span>
-        <span className="text-xs text-zinc-400">{timeAgo(item.createdAt)}</span>
+      <div className="flex items-start gap-3 px-5 pt-5 pb-0">
+        <Avatar author={item.author} size="lg" />
+        <div className="flex-1 min-w-0 pt-0.5">
+          <AuthorLine author={item.author} createdAt={item.createdAt} />
+        </div>
         {!editing && !deleting && (
-          <div className="ml-auto flex gap-3 opacity-0 group-hover/card:opacity-100 transition-opacity">
+          <div className="flex gap-0.5 opacity-0 group-hover/card:opacity-100 transition-opacity shrink-0">
             {canEdit(item.author.id, uid) && (
-              <button onClick={() => setEditing(true)} className="text-xs text-zinc-400 hover:text-zinc-700">수정</button>
+              <button onClick={() => setEditing(true)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition-colors">
+                <Pencil className="w-3.5 h-3.5" />
+              </button>
             )}
             {canDelete(item.author.id, uid, role) && (
-              <button onClick={handleDelete} className="text-xs text-zinc-400 hover:text-rose-500">삭제</button>
+              <button onClick={handleDelete}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-colors">
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
             )}
           </div>
         )}
-        {deleting && <span className="ml-auto text-xs text-zinc-300">삭제 중…</span>}
       </div>
 
       {/* 본문 */}
-      {editing ? (
-        <div className="space-y-2">
-          <textarea
-            className="w-full text-sm border rounded-lg px-3 py-2.5 resize-none focus:outline-none focus:ring-1 focus:ring-zinc-400"
-            rows={4} value={editText} onChange={(e) => setEditText(e.target.value)} autoFocus
-          />
-          <div className="flex gap-2 justify-end">
-            <button onClick={() => { setEditing(false); setEditText(item.content) }} className="text-xs px-3 py-1.5 rounded border text-zinc-500 hover:bg-zinc-50">취소</button>
-            <button onClick={handleSave} disabled={saving || !editText.trim()} className="text-xs px-4 py-1.5 rounded bg-zinc-800 text-white hover:bg-zinc-700 disabled:opacity-40">
-              {saving ? "저장 중…" : "저장"}
-            </button>
-          </div>
-        </div>
-      ) : (
-        <p className="text-sm text-zinc-700 leading-relaxed whitespace-pre-wrap">{editText}</p>
-      )}
-
-      <ImageGrid urls={parseUrls(item.imageUrls)} />
-
-      {/* 댓글 섹션 */}
-      <div className="mt-4 pt-3 border-t border-zinc-50">
-        {/* 기존 댓글 트리 */}
-        {tree.length > 0 && (
-          <div className="mb-3">
-            <ReplyTree
-              nodes={tree} feedbackId={item.id} depth={0}
-              uid={uid} role={role}
-              onAdd={addReply} onRemove={removeReply} onUpdate={updateReply}
+      <div className="px-5 pt-3 pb-3">
+        {editing ? (
+          <div className="space-y-2">
+            <textarea
+              className="w-full text-sm border border-indigo-200 rounded-xl px-3 py-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent"
+              rows={4} value={editText} onChange={e => setEditText(e.target.value)} autoFocus
             />
-          </div>
-        )}
-
-        {/* 댓글 달기 버튼 / 폼 */}
-        {showReplyForm ? (
-          <div className="mt-2">
-            <ReplyForm
-              feedbackId={item.id}
-              parentId={null}
-              onAdd={(r) => { addReply(r); setShowReplyForm(false) }}
-              onCancel={() => setShowReplyForm(false)}
-              autoFocus
-            />
+            <div className="flex gap-2 justify-end">
+              <button onClick={() => { setEditing(false); setEditText(item.content) }}
+                className="text-xs px-3 py-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">취소</button>
+              <button onClick={handleSave} disabled={saving || !editText.trim()}
+                className="text-xs px-4 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40 transition-colors">
+                {saving ? "저장 중…" : "저장"}
+              </button>
+            </div>
           </div>
         ) : (
-          <button onClick={() => setShowReplyForm(true)} className="text-xs text-zinc-400 hover:text-zinc-700 mt-1">
-            댓글 달기
-          </button>
+          <p className="text-sm text-slate-800 leading-relaxed whitespace-pre-wrap">{editText}</p>
+        )}
+        <ImageGrid urls={parseUrls(item.imageUrls)} />
+      </div>
+
+      {/* 댓글 섹션 */}
+      <div className="border-t border-slate-50 px-5 pt-3 pb-4 space-y-3">
+        {/* 댓글 수 표시 + 달기 버튼 */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5 text-xs text-slate-400">
+            <MessageSquare className="w-3.5 h-3.5" />
+            <span>{allReplies.length > 0 ? `댓글 ${allReplies.length}` : "댓글"}</span>
+          </div>
+          {!showReplyForm && (
+            <button onClick={() => setShowReplyForm(true)}
+              className="text-xs text-slate-400 hover:text-indigo-600 flex items-center gap-1 transition-colors px-2 py-1 rounded-lg hover:bg-indigo-50">
+              <CornerDownRight className="w-3 h-3" /> 댓글 달기
+            </button>
+          )}
+        </div>
+
+        {/* 댓글 트리 */}
+        {tree.length > 0 && (
+          <ReplyTree
+            nodes={tree} feedbackId={item.id} depth={0}
+            uid={uid} role={role} currentUserInitial={currentUserInitial}
+            onAdd={addReply} onRemove={removeReply} onUpdate={updateReply}
+          />
+        )}
+
+        {/* 댓글 입력폼 */}
+        {showReplyForm && (
+          <ReplyForm
+            feedbackId={item.id}
+            parentId={null}
+            currentUserInitial={currentUserInitial}
+            onAdd={r => { addReply(r); setShowReplyForm(false) }}
+            onCancel={() => setShowReplyForm(false)}
+            autoFocus
+          />
         )}
       </div>
     </div>
   )
 }
 
+// ─── 메인 컴포넌트 ─────────────────────────────────────────
+
 export default function FeedbackBoard({
-  initial, currentUserId, currentUserRole,
+  initial, currentUserId, currentUserRole, currentUserName,
 }: {
-  initial: FeedbackItem[]; currentUserId: string; currentUserRole: string
+  initial: FeedbackItem[]
+  currentUserId: string
+  currentUserRole: string
+  currentUserName: string
 }) {
   const [items, setItems] = useState(initial)
   const [text, setText] = useState("")
@@ -401,6 +531,19 @@ export default function FeedbackBoard({
   const [posting, setPosting] = useState(false)
   const [error, setError] = useState("")
   const fileRef = useRef<HTMLInputElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const currentUserInitial = (currentUserName || "나").slice(0, 1)
+
+  function insertEmoji(emoji: string) {
+    const el = textareaRef.current
+    if (!el) { setText(t => t + emoji); return }
+    const s = el.selectionStart ?? text.length
+    const e2 = el.selectionEnd ?? text.length
+    const next = text.slice(0, s) + emoji + text.slice(e2)
+    setText(next)
+    setTimeout(() => { el.focus(); el.setSelectionRange(s + emoji.length, s + emoji.length) }, 0)
+  }
 
   async function uploadFiles(files: File[]) {
     if (files.length === 0) return
@@ -446,7 +589,7 @@ export default function FeedbackBoard({
       setItems(prev => [newItem, ...prev])
       setText(""); setUploadedUrls([])
     } else {
-      const d = await res.json(); setError(d.error ?? "오류가 발생했습니다")
+      try { const d = await res.json(); setError(d.error ?? "오류가 발생했습니다") } catch { setError("오류가 발생했습니다") }
     }
     setPosting(false)
   }
@@ -457,59 +600,97 @@ export default function FeedbackBoard({
   }
 
   return (
-    <div className="space-y-6">
-      {/* 작성 폼 */}
-      <div className="bg-white border rounded-xl p-5 space-y-3">
-        <p className="text-sm font-semibold text-zinc-800">피드백 작성</p>
-        <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-xs text-blue-800 leading-relaxed">
-          불편한 사항이나 오류가 있으면 <strong>화면 캡처를 첨부</strong>해 주세요. 개선에 큰 도움이 됩니다. (PNG·JPG·WebP, 최대 3장)
+    <div className="space-y-5">
+      {/* ── 작성 폼 ── */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 space-y-3">
+        {/* 안내 배너 */}
+        <div className="flex items-start gap-3 bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3">
+          <Smile className="w-4 h-4 text-indigo-500 mt-0.5 shrink-0" />
+          <p className="text-xs text-indigo-700 leading-relaxed">
+            불편한 사항이나 오류가 있으면 <strong>화면 캡처를 첨부</strong>해 주세요.
+            모든 의견을 검토하여 다음 업데이트에 반영합니다. (PNG·JPG·WebP, 최대 3장)
+          </p>
         </div>
-        <textarea
-          className="w-full text-sm border rounded-lg px-3 py-2.5 resize-none focus:outline-none focus:ring-1 focus:ring-zinc-400"
-          rows={3}
-          placeholder="예: ○○ 화면에서 버튼을 눌렀을 때 오류가 발생합니다. 아래 캡처 참고해주세요."
-          value={text} onChange={(e) => setText(e.target.value)} onPaste={handlePaste}
-        />
+
+        {/* 현재 사용자 + 텍스트 영역 */}
+        <div className="flex gap-3">
+          <div className={cn(
+            "rounded-full font-bold flex items-center justify-center shrink-0 mt-1 w-8 h-8 text-xs",
+            rc(currentUserRole).bg, rc(currentUserRole).fg
+          )}>
+            {currentUserInitial}
+          </div>
+          <div className="flex-1 relative">
+            <textarea
+              ref={textareaRef}
+              className="w-full text-sm border border-slate-200 rounded-xl px-3.5 py-3 pr-10 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-slate-50 placeholder:text-slate-400"
+              rows={3}
+              placeholder="시스템을 사용하면서 불편한 점, 오류, 개선 아이디어를 남겨주세요…"
+              value={text}
+              onChange={e => setText(e.target.value)}
+              onPaste={handlePaste}
+            />
+            <div className="absolute right-2.5 bottom-2.5">
+              <EmojiPicker onSelect={insertEmoji} />
+            </div>
+          </div>
+        </div>
+
+        {/* 첨부 이미지 미리보기 */}
         {uploadedUrls.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 ml-11">
             {uploadedUrls.map((url, i) => (
               <div key={i} className="relative group/img">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={url} alt={`첨부 ${i + 1}`} className="h-20 w-auto rounded border object-cover" />
+                <img src={url} alt={`첨부 ${i + 1}`} className="h-20 w-auto rounded-xl border object-cover" />
                 <button onClick={() => setUploadedUrls(prev => prev.filter(u => u !== url))}
-                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity">✕</button>
+                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-rose-500 text-white text-xs flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity shadow-sm">
+                  <X className="w-3 h-3" />
+                </button>
               </div>
             ))}
           </div>
         )}
-        <div className="flex items-center gap-3 flex-wrap">
-          <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading || uploadedUrls.length >= 3}
-            className="text-sm px-4 py-2 rounded-lg border border-zinc-300 text-zinc-600 hover:bg-zinc-50 disabled:opacity-40 flex items-center gap-1.5">
-            {uploading ? "업로드 중…" : "📎 파일로 첨부"}
-            {uploadedUrls.length > 0 && <span className="text-xs text-zinc-400">({uploadedUrls.length}/3)</span>}
+
+        {/* 액션 바 */}
+        <div className="flex items-center gap-2 ml-11">
+          <button type="button" onClick={() => fileRef.current?.click()}
+            disabled={uploading || uploadedUrls.length >= 3}
+            className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-indigo-600 border border-slate-200 hover:border-indigo-300 px-3 py-1.5 rounded-lg transition-all disabled:opacity-40">
+            <Paperclip className="w-3.5 h-3.5" />
+            {uploading ? "업로드 중…" : "파일 첨부"}
+            {uploadedUrls.length > 0 && <span className="text-slate-400">({uploadedUrls.length}/3)</span>}
           </button>
           {!uploading && uploadedUrls.length < 3 && (
-            <span className="text-xs text-zinc-400">
-              또는 위 입력창에 <kbd className="bg-zinc-100 border border-zinc-300 rounded px-1 py-0.5 font-mono text-[11px]">Ctrl+V</kbd> 로 스크린샷 붙여넣기
+            <span className="text-xs text-slate-400 hidden sm:inline">
+              또는 입력창에 <kbd className="bg-slate-100 border border-slate-200 rounded px-1 py-0.5 font-mono text-[10px]">Ctrl+V</kbd> 붙여넣기
             </span>
           )}
-          <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple className="hidden" onChange={handleImageSelect} />
-          <button onClick={submit} disabled={posting || !text.trim()} className="text-sm px-5 py-2 rounded-lg bg-zinc-900 text-white hover:bg-zinc-700 disabled:opacity-40">
-            {posting ? "등록 중…" : "피드백 등록"}
+          <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple className="hidden"
+            onChange={handleImageSelect} />
+          <button onClick={submit} disabled={posting || !text.trim()}
+            className="ml-auto flex items-center gap-1.5 text-sm px-4 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40 transition-colors font-medium">
+            <Send className="w-3.5 h-3.5" />
+            {posting ? "등록 중…" : "등록"}
           </button>
         </div>
-        {error && <p className="text-xs text-red-500">{error}</p>}
+        {error && <p className="text-xs text-rose-500 ml-11">{error}</p>}
       </div>
 
-      {/* 피드백 목록 */}
+      {/* ── 피드백 목록 ── */}
       {items.length === 0 ? (
-        <p className="text-sm text-zinc-400 text-center py-8">아직 피드백이 없습니다. 첫 번째로 의견을 남겨보세요!</p>
+        <div className="text-center py-16 text-slate-400">
+          <MessageSquare className="w-10 h-10 mx-auto mb-3 opacity-20" />
+          <p className="text-sm">아직 피드백이 없습니다.</p>
+          <p className="text-xs mt-1">첫 번째로 의견을 남겨보세요!</p>
+        </div>
       ) : (
         <div className="space-y-4">
           {items.map(item => (
             <FeedbackCard
               key={item.id} item={item}
               uid={currentUserId} role={currentUserRole}
+              currentUserInitial={currentUserInitial}
               onDelete={handleDelete} onUpdate={handleUpdate}
             />
           ))}
