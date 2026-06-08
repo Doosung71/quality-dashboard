@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { Claim, ClaimStatus, ClaimPriority, ClaimTimelineItem } from "@/types/claim";
+import type { Claim, ClaimStatus, ClaimPriority, ClaimTimelineItem, ClaimAttachment } from "@/types/claim";
 import { CLAIM_STATUSES } from "@/types/claim";
-import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTriangle, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTriangle, ShieldAlert, Paperclip } from "lucide-react";
+import { AttachmentUploader } from "@/components/ui/attachment-uploader";
 import Link from "next/link";
 
 const STATUS_LABELS: Record<ClaimStatus, string> = {
@@ -60,8 +61,23 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
     description: claim.description,
     targetDate:  claim.targetDate ?? "",
   });
+  const [attachments, setAttachments] = useState<ClaimAttachment[]>(initial.attachments ?? []);
+  const [savingAttachments, setSavingAttachments] = useState(false);
   const [newEntry, setNewEntry] = useState("");
   const [addingEntry, setAddingEntry] = useState(false);
+
+  async function handleAttachmentsChange(next: ClaimAttachment[]) {
+    setAttachments(next);
+    setSavingAttachments(true);
+    try {
+      await fetch(`/api/claims/${claim.id}`, {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ attachments: next }),
+      });
+    } finally {
+      setSavingAttachments(false);
+    }
+  }
 
   async function handleSave() {
     setSaving(true);
@@ -271,6 +287,20 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
         ) : (
           <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{claim.description}</p>
         )}
+      </div>
+
+      {/* 파일 첨부 */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+        <h2 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+          <Paperclip className="w-4 h-4 text-slate-400" />
+          파일 첨부
+          {savingAttachments && <span className="text-[10px] text-slate-400 font-normal">저장 중...</span>}
+        </h2>
+        <AttachmentUploader
+          attachments={attachments}
+          onChange={handleAttachmentsChange}
+          context="claims"
+        />
       </div>
 
       {/* 단계 이동 */}
