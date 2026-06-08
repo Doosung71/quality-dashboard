@@ -55,6 +55,99 @@ const SUB_CATEGORIES_BY_MAIN: Record<KnowledgeCategory, KnowledgeSubCategory[]> 
 
 const INTERNAL_CATS = ["재료규격", "공정규격", "설계규격", "기타"] as const;
 
+type FormConfig = {
+  codeLabel: string;
+  codePlaceholder: string;
+  publisherLabel: string;
+  publisherPlaceholder: string;
+  titleLabel: string;
+  titlePlaceholder: string;
+  yearLabel: string;
+  summaryPlaceholder: string;
+  keywordsPlaceholder: string;
+  fileLabel: string;
+};
+
+const FORM_CONFIG: Record<string, FormConfig> = {
+  "사내규격": {
+    codeLabel: "규격 번호 (선택)", codePlaceholder: "예: 산특-2024-001",
+    publisherLabel: "작성 부서", publisherPlaceholder: "예: 개발부, 품질팀",
+    titleLabel: "규격 제목", titlePlaceholder: "예: 동선 인장강도 시험 방법",
+    yearLabel: "작성 연도", summaryPlaceholder: "규격 핵심 내용, 적용 범위, 합격 기준 등을 정리해 주세요.",
+    keywordsPlaceholder: "예: 동선, 인장강도, 재료시험", fileLabel: "PDF / 문서 첨부 (선택)",
+  },
+  "국제규격": {
+    codeLabel: "규격 번호", codePlaceholder: "예: IEC 60840, ISO 11801",
+    publisherLabel: "발행 기관", publisherPlaceholder: "예: IEC, ISO, IEEE, CIGRE",
+    titleLabel: "규격 제목", titlePlaceholder: "예: IEC 60840 Power cables with extruded insulation",
+    yearLabel: "발행 연도", summaryPlaceholder: "규격의 적용 범위, 핵심 기술 요건, 합격 기준 등을 요약해 주세요.",
+    keywordsPlaceholder: "예: 케이블, 절연, 초고압", fileLabel: "PDF 파일 첨부 (선택)",
+  },
+  "국가규격": {
+    codeLabel: "규격 번호", codePlaceholder: "예: KS C 3301, ANSI/NEMA WC 71",
+    publisherLabel: "발행 기관", publisherPlaceholder: "예: 국가기술표준원, ANSI, DIN",
+    titleLabel: "규격 제목", titlePlaceholder: "예: KS C 3301 전력 케이블 일반 요구사항",
+    yearLabel: "발행 연도", summaryPlaceholder: "규격의 적용 범위, 주요 기술 요건 등을 요약해 주세요.",
+    keywordsPlaceholder: "예: KS, 전력케이블, 국가규격", fileLabel: "PDF 파일 첨부 (선택)",
+  },
+  "단체규격": {
+    codeLabel: "규격 번호", codePlaceholder: "예: ASTM B179, NFPA 70, API 5L",
+    publisherLabel: "발행 기관", publisherPlaceholder: "예: ASTM, NFPA, API, SAE, UL",
+    titleLabel: "규격 제목", titlePlaceholder: "예: ASTM B179 알루미늄 합금 주물용 주괴",
+    yearLabel: "발행 연도", summaryPlaceholder: "규격의 적용 범위, 주요 요구사항 등을 요약해 주세요.",
+    keywordsPlaceholder: "예: ASTM, 알루미늄, 주물", fileLabel: "PDF 파일 첨부 (선택)",
+  },
+  "고객규격": {
+    codeLabel: "사양서 번호 (선택)", codePlaceholder: "예: KEPCO-SPS-2024-001",
+    publisherLabel: "고객 / 발주처", publisherPlaceholder: "예: KEPCO, 한전, LS전선 고객사",
+    titleLabel: "사양서 제목", titlePlaceholder: "예: KEPCO 345kV 케이블 기술 사양서",
+    yearLabel: "발행 연도", summaryPlaceholder: "고객 요구사항, 적용 범위, 핵심 기술 조건 등을 요약해 주세요.",
+    keywordsPlaceholder: "예: KEPCO, 345kV, 고객규격", fileLabel: "PDF / 사양서 첨부 (선택)",
+  },
+  "Tender": {
+    codeLabel: "입찰 번호 (선택)", codePlaceholder: "예: KEPCO-2026-T-001",
+    publisherLabel: "발주처", publisherPlaceholder: "예: KEPCO, 한국전력, 해외 발주처",
+    titleLabel: "입찰 건명", titlePlaceholder: "예: 345kV 초고압 케이블 공급 입찰",
+    yearLabel: "입찰 연도", summaryPlaceholder: "입찰 개요, 납품 범위, 주요 기술 요건 등을 요약해 주세요.",
+    keywordsPlaceholder: "예: KEPCO, 345kV, 입찰, Tender", fileLabel: "입찰 서류 첨부 (선택)",
+  },
+  "논문": {
+    codeLabel: "DOI / 논문 ID (선택)", codePlaceholder: "예: 10.1109/TPWRD.2024.000001",
+    publisherLabel: "학회 / 저널명", publisherPlaceholder: "예: IEEE TPWRD, CIGRE, 대한전기학회",
+    titleLabel: "논문 제목", titlePlaceholder: "예: 고압 케이블 절연 열화 특성 분석 연구",
+    yearLabel: "발표 연도", summaryPlaceholder: "연구 목적, 주요 연구 방법, 핵심 결론 등을 요약해 주세요.",
+    keywordsPlaceholder: "예: 케이블 절연, 열화 분석, XLPE", fileLabel: "논문 PDF 첨부 (선택)",
+  },
+  "특허": {
+    codeLabel: "특허 번호", codePlaceholder: "예: KR10-2024-0012345, US11234567",
+    publisherLabel: "출원인 / 발명자", publisherPlaceholder: "예: LS전선 (주), 홍길동",
+    titleLabel: "특허 명칭", titlePlaceholder: "예: 케이블 절연 피복 제조 방법 및 그 장치",
+    yearLabel: "출원 연도", summaryPlaceholder: "발명의 목적, 주요 기술 특징, 적용 분야 등을 요약해 주세요.",
+    keywordsPlaceholder: "예: 절연피복, 제조방법, 케이블특허", fileLabel: "특허 문서 첨부 (선택)",
+  },
+  "시험성적서": {
+    codeLabel: "성적서 번호", codePlaceholder: "예: TR-2026-001",
+    publisherLabel: "시험 기관", publisherPlaceholder: "예: KERI, UL, TÜV, 내부 품질팀",
+    titleLabel: "성적서 제목", titlePlaceholder: "예: IEC 60840 케이블 절연 내압 시험 성적서",
+    yearLabel: "시험 연도", summaryPlaceholder: "시험 품목, 적용 규격, 시험 결과 및 합격 여부를 요약해 주세요.",
+    keywordsPlaceholder: "예: 내압시험, IEC60840, 합격", fileLabel: "성적서 PDF 첨부",
+  },
+  "분석보고서": {
+    codeLabel: "보고서 번호 (선택)", codePlaceholder: "예: AR-2026-Q1-001",
+    publisherLabel: "작성 부서 / 기관", publisherPlaceholder: "예: 품질팀, 연구소, 외부 기관",
+    titleLabel: "보고서 제목", titlePlaceholder: "예: 2026년 1분기 케이블 부적합품 원인 분석",
+    yearLabel: "작성 연도", summaryPlaceholder: "분석 배경, 조사 범위, 핵심 원인 및 개선 방안을 요약해 주세요.",
+    keywordsPlaceholder: "예: 원인분석, 부적합품, 개선조치", fileLabel: "보고서 PDF 첨부 (선택)",
+  },
+  "_default": {
+    codeLabel: "문서 번호 (선택)", codePlaceholder: "예: DOC-2026-001",
+    publisherLabel: "출처 / 작성자", publisherPlaceholder: "예: 내부, 외부 기관",
+    titleLabel: "문서 제목", titlePlaceholder: "문서 제목을 입력해 주세요.",
+    yearLabel: "작성 연도", summaryPlaceholder: "문서의 주요 내용을 요약해 주세요.",
+    keywordsPlaceholder: "예: 키워드1, 키워드2", fileLabel: "파일 첨부 (선택)",
+  },
+};
+
 export function KnowledgeRepository({ data, repoLoading = false, ragSearchElement }: KnowledgeRepositoryProps) {
   const [activeTab, setActiveTab] = useState<"browser" | "rag" | "websearch">("browser");
 
@@ -664,7 +757,9 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
               </div>
 
               {/* 신규 자산 등록 폼 (카테고리별 컨텍스트 적용) */}
-              {showAddForm && (
+              {showAddForm && (() => {
+                const fc = FORM_CONFIG[newSubCategory] ?? FORM_CONFIG["_default"];
+                return (
                 <form onSubmit={handleAddAsset} className="bg-violet-50 p-5 rounded-2xl border border-violet-200 shadow-md space-y-4 text-xs">
                   <h4 className="text-sm font-bold text-violet-900 flex items-center gap-1.5 pb-2 border-b border-violet-200">
                     <PlusCircle className="w-4 h-4 text-violet-600" /> {newSubCategory} 신규 등록
@@ -682,14 +777,14 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                       </div>
                     )}
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-600">규격 번호 (선택)</label>
-                      <input type="text" placeholder={newSubCategory === "사내규격" ? "예: 산특-2024-001" : "예: IEC 60840, KS C 3001"} value={newCode}
+                      <label className="font-bold text-slate-600">{fc.codeLabel}</label>
+                      <input type="text" placeholder={fc.codePlaceholder} value={newCode}
                         onChange={e => setNewCode(e.target.value)}
                         className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
                     </div>
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-600">{newSubCategory === "사내규격" ? "작성 부서" : newSubCategory === "Tender" ? "발주처" : "발행 기관"}</label>
-                      <input type="text" placeholder={newSubCategory === "사내규격" ? "예: 개발부, 품질팀" : newSubCategory === "Tender" ? "예: KEPCO, 한전" : "예: IEC, ISO, ASTM"} value={newPublisher}
+                      <label className="font-bold text-slate-600">{fc.publisherLabel}</label>
+                      <input type="text" placeholder={fc.publisherPlaceholder} value={newPublisher}
                         onChange={e => setNewPublisher(e.target.value)}
                         className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
                     </div>
@@ -697,13 +792,13 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
 
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <div className="md:col-span-3 space-y-1">
-                      <label className="font-bold text-slate-600">규격 제목 <span className="text-rose-500">*</span></label>
-                      <input type="text" required placeholder="예: 동선 인장강도 시험 방법 (내부 재료규격)" value={newTitle}
+                      <label className="font-bold text-slate-600">{fc.titleLabel} <span className="text-rose-500">*</span></label>
+                      <input type="text" required placeholder={fc.titlePlaceholder} value={newTitle}
                         onChange={e => setNewTitle(e.target.value)}
                         className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
                     </div>
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-600">작성 연도</label>
+                      <label className="font-bold text-slate-600">{fc.yearLabel}</label>
                       <input type="text" placeholder="2026" value={newPublishYear}
                         onChange={e => setNewPublishYear(e.target.value)}
                         className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
@@ -712,7 +807,7 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
 
                   <div className="space-y-1">
                     <label className="font-bold text-slate-600">내용 요약</label>
-                    <textarea rows={3} placeholder="규격 핵심 내용, 적용 범위, 합격 기준 등을 정리해 주세요." value={newSummary}
+                    <textarea rows={3} placeholder={fc.summaryPlaceholder} value={newSummary}
                       onChange={e => setNewSummary(e.target.value)}
                       className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500 resize-none" />
                   </div>
@@ -720,12 +815,12 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="space-y-1">
                       <label className="font-bold text-slate-600">키워드 (쉼표 구분)</label>
-                      <input type="text" placeholder="예: 동선, 인장강도, 재료시험" value={newKeywords}
+                      <input type="text" placeholder={fc.keywordsPlaceholder} value={newKeywords}
                         onChange={e => setNewKeywords(e.target.value)}
                         className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500" />
                     </div>
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-600 flex items-center gap-1"><Upload className="w-3 h-3" /> PDF 파일 첨부 (선택)</label>
+                      <label className="font-bold text-slate-600 flex items-center gap-1"><Upload className="w-3 h-3" /> {fc.fileLabel}</label>
                       <input type="file" accept=".pdf,.docx,.xlsx"
                         onChange={e => setNewFile(e.target.files?.[0] ?? null)}
                         className="w-full text-[11px] text-slate-600 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-bold file:bg-violet-100 file:text-violet-700 hover:file:bg-violet-200" />
@@ -741,7 +836,8 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                     </button>
                   </div>
                 </form>
-              )}
+                );
+              })()}
 
               {/* 지식 리스트 Split layout: 좌측 리스트 / 우측 세부사항 */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
