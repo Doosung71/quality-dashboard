@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader"
+import { Paperclip } from "lucide-react"
 
 type Vendor = { id: string; name: string }
 
@@ -9,6 +11,7 @@ export default function IncomingForm({ vendors, defaultInspector }: { vendors: V
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [attachments, setAttachments] = useState<AttachmentItem[]>([])
 
   const today = new Date().toISOString().slice(0, 10)
   const [form, setForm] = useState({
@@ -63,6 +66,12 @@ export default function IncomingForm({ vendors, defaultInspector }: { vendors: V
       })
       if (!res.ok) { const j = await res.json() as { error?: string }; throw new Error(j.error ?? "등록 실패") }
       const { id } = await res.json() as { id: string }
+      if (attachments.length > 0) {
+        await fetch(`/api/incoming-inspections/${id}`, {
+          method: "PUT", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ attachments }),
+        })
+      }
       router.push(`/vendors/incoming/${id}`)
     } catch (err) {
       setError((err as Error).message)
@@ -145,6 +154,11 @@ export default function IncomingForm({ vendors, defaultInspector }: { vendors: V
           <textarea value={form.notes} onChange={e => set("notes", e.target.value)} rows={3} className={field}
             placeholder="검사 중 특이사항, 조건부 합격 조건, 반품 지시 내용 등을 입력하세요..." />
         </div>
+      </div>
+
+      <div className="border-t border-slate-100 pt-4">
+        <label className={label + " flex items-center gap-1.5 mb-2"}><Paperclip className="w-3.5 h-3.5 text-slate-400" /> 첨부파일</label>
+        <AttachmentUploader attachments={attachments} onChange={setAttachments} context="incoming-inspection" disabled={loading} />
       </div>
 
       {error && <p className="text-xs text-rose-600">{error}</p>}
