@@ -184,27 +184,32 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
 
   // 필터링된 자산 목록
   const filteredAssets = useMemo(() => {
-    return assets.filter(a => {
-      // 1. 대분류 필터
+    const q = searchQuery.trim().toLowerCase();
+    const filtered = assets.filter(a => {
       if (selectedTreeCategory !== "ALL" && a.category !== selectedTreeCategory) return false;
-      
-      // 2. 소분류 필터
       if (selectedTreeSubCategory !== "ALL" && a.subCategory !== selectedTreeSubCategory) return false;
-
-      // 3. 검색어 필터
-      if (searchQuery.trim() !== "") {
-        const query = searchQuery.toLowerCase();
-        const matchesTitle = a.title.toLowerCase().includes(query);
-        const matchesSummary = a.summary.toLowerCase().includes(query);
-        const matchesCode = a.code?.toLowerCase().includes(query) ?? false;
-        const matchesPublisher = a.publisher.toLowerCase().includes(query);
-        const matchesKeywords = a.keywords.some(k => k.toLowerCase().includes(query));
-        
-        if (!matchesTitle && !matchesSummary && !matchesCode && !matchesPublisher && !matchesKeywords) return false;
+      if (q) {
+        const matchesTitle = a.title.toLowerCase().includes(q);
+        const matchesCode = a.code?.toLowerCase().includes(q) ?? false;
+        const matchesPublisher = a.publisher.toLowerCase().includes(q);
+        const matchesKeywords = a.keywords.some(k => k.toLowerCase().includes(q));
+        const matchesSummary = a.summary.toLowerCase().includes(q);
+        if (!matchesTitle && !matchesCode && !matchesPublisher && !matchesKeywords && !matchesSummary) return false;
       }
-
       return true;
-    }).sort((a, b) => b.publishYear.localeCompare(a.publishYear)); // 최신 연도순
+    });
+
+    // 검색어 있으면 제목·코드 직접 매칭 우선, 없으면 연도 내림차순
+    if (q) {
+      filtered.sort((a, b) => {
+        const aExact = (a.title.toLowerCase().includes(q) || (a.code?.toLowerCase().includes(q) ?? false)) ? 0 : 1;
+        const bExact = (b.title.toLowerCase().includes(q) || (b.code?.toLowerCase().includes(q) ?? false)) ? 0 : 1;
+        return aExact - bExact;
+      });
+    } else {
+      filtered.sort((a, b) => b.publishYear.localeCompare(a.publishYear));
+    }
+    return filtered;
   }, [assets, selectedTreeCategory, selectedTreeSubCategory, searchQuery]);
 
   const handleAddAsset = async (e: React.FormEvent) => {
@@ -568,13 +573,14 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                     </p>
                   </div>
 
-                  {/* 새 지식 추가 버튼 */}
+                  {/* 사내규격 등록 버튼 */}
                   <button
+                    type="button"
                     onClick={() => setShowAddForm(prev => !prev)}
-                    className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-0.5 bg-indigo-50 px-2.5 py-1.5 rounded-lg border border-indigo-100 transition-all self-start md:self-auto"
+                    className="text-xs font-bold text-violet-600 hover:text-violet-800 flex items-center gap-0.5 bg-violet-50 px-2.5 py-1.5 rounded-lg border border-violet-200 transition-all self-start md:self-auto"
                   >
                     {showAddForm ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-                    {showAddForm ? "취소" : "신규 규격/지식 등록"}
+                    {showAddForm ? "취소" : "사내 규격 등록"}
                   </button>
                 </div>
 
@@ -635,9 +641,16 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="text"
-                    placeholder="규격명, 번호(예: IEC), 키워드 실시간 검색..."
+                    placeholder="규격명, 번호(예: IEC 60840), 키워드 입력 후 Enter..."
                     value={searchQuery}
                     onChange={(e) => { setSearchQuery(e.target.value); setMobileView("list"); }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        const first = filteredAssets[0];
+                        if (first) { setSelectedAssetId(first.id); setMobileView("detail"); }
+                      }
+                    }}
                     className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-950 text-xs transition-all"
                   />
                 </div>
