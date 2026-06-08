@@ -27,7 +27,8 @@ export async function POST(req: Request) {
     })
     return NextResponse.json({ url: blob.url }, { status: 201 })
   } catch (e) {
-    console.error("[feedback/image] blob upload failed:", e)
-    return NextResponse.json({ error: "이미지 저장에 실패했습니다. 잠시 후 다시 시도해주세요." }, { status: 500 })
+    const msg = e instanceof Error ? e.message : String(e)
+    console.error("[feedback/image] blob upload failed:", msg)
+    return NextResponse.json({ error: `이미지 저장 실패: ${msg}` }, { status: 500 })
   }
 }
