@@ -44,7 +44,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   const ALLOWED_BASE = [
     "hallId","yardId","siteId","category","name","type","spec",
     "maker","makerCountry","yearIntroduced","quantity","status",
-    "replacedById","replacesId","notes",
+    "replacedById","replacesId","notes","attachments",
   ] as const;
 
   const OWNER_FIELDS = ["managingTeam","ownerId","ownerName","ownerChangeNote"] as const;

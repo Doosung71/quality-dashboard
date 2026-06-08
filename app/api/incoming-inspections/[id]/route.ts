@@ -23,6 +23,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const body = await req.json() as {
     result?: string; defectCount?: number | null; defectRate?: number | null
     notes?: string | null; status?: string
+    attachments?: unknown[]
   }
 
   const item = await prisma.incomingInspection.update({
@@ -33,6 +34,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       ...(body.defectRate  !== undefined && { defectRate:  body.defectRate }),
       ...(body.notes       !== undefined && { notes:       body.notes }),
       ...(body.status      !== undefined && { status:      body.status }),
+      ...(body.attachments !== undefined && { attachments: body.attachments as never }),
     },
   })
   return NextResponse.json(item)

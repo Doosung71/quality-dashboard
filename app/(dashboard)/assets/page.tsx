@@ -39,6 +39,7 @@ export default async function AssetsPage() {
       managingTeam:   eq.managingTeam ?? null,
       ownerId:        eq.ownerId      ?? null,
       ownerName:      eq.ownerName    ?? null,
+      attachments:    (eq.attachments as { url: string; name: string; size: number; contentType: string }[]) ?? [],
     })),
   };
 

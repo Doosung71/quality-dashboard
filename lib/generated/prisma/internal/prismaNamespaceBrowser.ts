@@ -190,6 +190,7 @@ export const EquipmentScalarFieldEnum = {
   managingTeam: 'managingTeam',
   ownerId: 'ownerId',
   ownerName: 'ownerName',
+  attachments: 'attachments',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -247,6 +248,7 @@ export const EquipmentRepairScalarFieldEnum = {
   cost: 'cost',
   vendor: 'vendor',
   result: 'result',
+  attachments: 'attachments',
   reportedById: 'reportedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -516,6 +518,7 @@ export const SupplierAuditScalarFieldEnum = {
   totalScore: 'totalScore',
   status: 'status',
   summary: 'summary',
+  attachments: 'attachments',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   createdById: 'createdById'
@@ -557,6 +560,7 @@ export const IncomingInspectionScalarFieldEnum = {
   defectRate: 'defectRate',
   inspector: 'inspector',
   notes: 'notes',
+  attachments: 'attachments',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -581,6 +585,7 @@ export const SourceInspectionScalarFieldEnum = {
   defectRate: 'defectRate',
   inspector: 'inspector',
   notes: 'notes',
+  attachments: 'attachments',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',

@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Plus, Trash2, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react"
+import { Plus, Trash2, CheckCircle2, ChevronDown, ChevronUp, Paperclip } from "lucide-react"
+import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader"
 
 type Finding = {
   id: string; category: string; description: string; severity: string
@@ -12,7 +13,8 @@ type Finding = {
 
 type Audit = {
   id: string; status: string; overallGrade: string | null
-  totalScore: number | null; summary: string | null; findings: Finding[]
+  totalScore: number | null; summary: string | null
+  attachments: AttachmentItem[]; findings: Finding[]
 }
 
 const severityLabel: Record<string, { label: string; cls: string }> = {
@@ -28,6 +30,19 @@ export default function AuditDetailClient({ audit: initial }: { audit: Audit }) 
   const [editMode, setEditMode] = useState(false)
   const [editData, setEditData] = useState({ overallGrade: initial.overallGrade ?? "", totalScore: initial.totalScore?.toString() ?? "", summary: initial.summary ?? "", status: initial.status })
   const [saving, setSaving] = useState(false)
+  const [attachments, setAttachments] = useState<AttachmentItem[]>(initial.attachments ?? [])
+  const [savingAttachments, setSavingAttachments] = useState(false)
+
+  async function handleAttachmentsChange(next: AttachmentItem[]) {
+    setAttachments(next)
+    setSavingAttachments(true)
+    try {
+      await fetch(`/api/supplier-audits/${audit.id}`, {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ attachments: next }),
+      })
+    } finally { setSavingAttachments(false) }
+  }
 
   // 지적사항 추가 폼 상태
   const [showAddFinding, setShowAddFinding] = useState(false)
@@ -261,6 +276,15 @@ export default function AuditDetailClient({ audit: initial }: { audit: Audit }) 
             })}
           </div>
         )}
+      </section>
+
+      <section className="bg-white rounded-xl border border-slate-200 p-5">
+        <h2 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
+          <Paperclip className="w-4 h-4 text-slate-400" />
+          첨부파일
+          {savingAttachments && <span className="text-[10px] text-slate-400 font-normal">저장 중...</span>}
+        </h2>
+        <AttachmentUploader attachments={attachments} onChange={handleAttachmentsChange} context="supplier-audit" />
       </section>
     </div>
   )

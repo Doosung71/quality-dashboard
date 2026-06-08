@@ -42,6 +42,7 @@ model SupplierAudit {
   totalScore   Int?
   status       AuditStatus  @default(PLANNED)
   summary      String?      // 종합 의견
+  attachments  Json         @default("[]")
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   createdBy    User         @relation("SupplierAuditCreator", fields: [createdById], references: [id])
@@ -80,6 +81,7 @@ model IncomingInspection {
   defectRate     Float?
   inspector      String           // 검사원
   notes          String?
+  attachments    Json             @default("[]")
   status         String           @default("DRAFT")
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
@@ -102,6 +104,7 @@ model SourceInspection {
   defectRate     Float?
   inspector      String           // 출장 검사원
   notes          String?
+  attachments    Json             @default("[]")
   status         String           @default("DRAFT")
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt

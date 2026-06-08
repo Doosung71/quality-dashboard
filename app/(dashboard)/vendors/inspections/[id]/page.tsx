@@ -64,6 +64,7 @@ export default async function InspectionDetailPage({ params }: { params: Promise
           inspector:      inspection.inspector,
           notes:          inspection.notes,
           status:         inspection.status,
+          attachments:    (inspection.attachments as { url: string; name: string; size: number; contentType: string }[]) ?? [],
         }}
       />
     </div>

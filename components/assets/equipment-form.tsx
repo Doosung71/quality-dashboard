@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { FacilitiesData } from "@/types/facility";
+import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader";
 
 const CATEGORIES = ["시험설비", "계측설비", "보조설비"] as const;
 const STATUSES   = ["normal", "new", "aging", "planned"] as const;
@@ -34,6 +35,7 @@ export function EquipmentForm({
   onCancel: () => void;
 }) {
   const [form, setForm] = useState<EquipmentFormData>(EMPTY);
+  const [attachments, setAttachments] = useState<AttachmentItem[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -70,7 +72,7 @@ export function EquipmentForm({
       notes:          form.notes,
     };
 
-    const res = await fetch("/api/assets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const res = await fetch("/api/assets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...body, attachments }) });
     if (res.ok) {
       onSuccess();
     } else {
@@ -168,6 +170,12 @@ export function EquipmentForm({
           <label className="block text-xs font-medium text-slate-600 mb-1">비고</label>
           <input value={form.notes} onChange={set("notes")} placeholder="메모" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
         </div>
+      </div>
+
+      {/* 첨부파일 */}
+      <div>
+        <label className="block text-xs font-medium text-slate-600 mb-1">첨부파일 (선택)</label>
+        <AttachmentUploader attachments={attachments} onChange={setAttachments} context="equipment" disabled={saving} />
       </div>
 
       {/* 버튼 */}

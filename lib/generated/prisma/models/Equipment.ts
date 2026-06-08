@@ -102,6 +102,7 @@ export type EquipmentCountAggregateOutputType = {
   managingTeam: number
   ownerId: number
   ownerName: number
+  attachments: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -184,6 +185,7 @@ export type EquipmentCountAggregateInputType = {
   managingTeam?: true
   ownerId?: true
   ownerName?: true
+  attachments?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -295,6 +297,7 @@ export type EquipmentGroupByOutputType = {
   managingTeam: string | null
   ownerId: string | null
   ownerName: string | null
+  attachments: runtime.JsonValue
   createdAt: Date
   updatedAt: Date
   _count: EquipmentCountAggregateOutputType | null
@@ -342,6 +345,7 @@ export type EquipmentWhereInput = {
   managingTeam?: Prisma.StringNullableFilter<"Equipment"> | string | null
   ownerId?: Prisma.StringNullableFilter<"Equipment"> | string | null
   ownerName?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  attachments?: Prisma.JsonFilter<"Equipment">
   createdAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string
   owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -370,6 +374,7 @@ export type EquipmentOrderByWithRelationInput = {
   managingTeam?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerName?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   owner?: Prisma.UserOrderByWithRelationInput
@@ -401,6 +406,7 @@ export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
   managingTeam?: Prisma.StringNullableFilter<"Equipment"> | string | null
   ownerId?: Prisma.StringNullableFilter<"Equipment"> | string | null
   ownerName?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  attachments?: Prisma.JsonFilter<"Equipment">
   createdAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string
   owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -429,6 +435,7 @@ export type EquipmentOrderByWithAggregationInput = {
   managingTeam?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerName?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.EquipmentCountOrderByAggregateInput
@@ -461,6 +468,7 @@ export type EquipmentScalarWhereWithAggregatesInput = {
   managingTeam?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
   ownerId?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
   ownerName?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
+  attachments?: Prisma.JsonWithAggregatesFilter<"Equipment">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Equipment"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Equipment"> | Date | string
 }
@@ -484,6 +492,7 @@ export type EquipmentCreateInput = {
   notes?: string
   managingTeam?: string | null
   ownerName?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedEquipmentInput
@@ -512,6 +521,7 @@ export type EquipmentUncheckedCreateInput = {
   managingTeam?: string | null
   ownerId?: string | null
   ownerName?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   testPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutEquipmentInput
@@ -538,6 +548,7 @@ export type EquipmentUpdateInput = {
   notes?: Prisma.StringFieldUpdateOperationsInput | string
   managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedEquipmentNestedInput
@@ -566,6 +577,7 @@ export type EquipmentUncheckedUpdateInput = {
   managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   testPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutEquipmentNestedInput
@@ -593,6 +605,7 @@ export type EquipmentCreateManyInput = {
   managingTeam?: string | null
   ownerId?: string | null
   ownerName?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -616,6 +629,7 @@ export type EquipmentUpdateManyMutationInput = {
   notes?: Prisma.StringFieldUpdateOperationsInput | string
   managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -640,6 +654,7 @@ export type EquipmentUncheckedUpdateManyInput = {
   managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -674,6 +689,7 @@ export type EquipmentCountOrderByAggregateInput = {
   managingTeam?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   ownerName?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -850,6 +866,7 @@ export type EquipmentCreateWithoutOwnerInput = {
   notes?: string
   managingTeam?: string | null
   ownerName?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   testPlans?: Prisma.TestPlanCreateNestedManyWithoutEquipmentInput
@@ -876,6 +893,7 @@ export type EquipmentUncheckedCreateWithoutOwnerInput = {
   notes?: string
   managingTeam?: string | null
   ownerName?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   testPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutEquipmentInput
@@ -932,6 +950,7 @@ export type EquipmentScalarWhereInput = {
   managingTeam?: Prisma.StringNullableFilter<"Equipment"> | string | null
   ownerId?: Prisma.StringNullableFilter<"Equipment"> | string | null
   ownerName?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  attachments?: Prisma.JsonFilter<"Equipment">
   createdAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string
 }
@@ -955,6 +974,7 @@ export type EquipmentCreateWithoutOwnerHistoryInput = {
   notes?: string
   managingTeam?: string | null
   ownerName?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedEquipmentInput
@@ -982,6 +1002,7 @@ export type EquipmentUncheckedCreateWithoutOwnerHistoryInput = {
   managingTeam?: string | null
   ownerId?: string | null
   ownerName?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   testPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutEquipmentInput
@@ -1023,6 +1044,7 @@ export type EquipmentUpdateWithoutOwnerHistoryInput = {
   notes?: Prisma.StringFieldUpdateOperationsInput | string
   managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedEquipmentNestedInput
@@ -1050,6 +1072,7 @@ export type EquipmentUncheckedUpdateWithoutOwnerHistoryInput = {
   managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   testPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutEquipmentNestedInput
@@ -1075,6 +1098,7 @@ export type EquipmentCreateWithoutTestPlansInput = {
   notes?: string
   managingTeam?: string | null
   ownerName?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedEquipmentInput
@@ -1102,6 +1126,7 @@ export type EquipmentUncheckedCreateWithoutTestPlansInput = {
   managingTeam?: string | null
   ownerId?: string | null
   ownerName?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   ownerHistory?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutEquipmentInput
@@ -1143,6 +1168,7 @@ export type EquipmentUpdateWithoutTestPlansInput = {
   notes?: Prisma.StringFieldUpdateOperationsInput | string
   managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedEquipmentNestedInput
@@ -1170,6 +1196,7 @@ export type EquipmentUncheckedUpdateWithoutTestPlansInput = {
   managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownerHistory?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutEquipmentNestedInput
@@ -1195,6 +1222,7 @@ export type EquipmentCreateWithoutRepairsInput = {
   notes?: string
   managingTeam?: string | null
   ownerName?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedEquipmentInput
@@ -1222,6 +1250,7 @@ export type EquipmentUncheckedCreateWithoutRepairsInput = {
   managingTeam?: string | null
   ownerId?: string | null
   ownerName?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   testPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutEquipmentInput
@@ -1263,6 +1292,7 @@ export type EquipmentUpdateWithoutRepairsInput = {
   notes?: Prisma.StringFieldUpdateOperationsInput | string
   managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedEquipmentNestedInput
@@ -1290,6 +1320,7 @@ export type EquipmentUncheckedUpdateWithoutRepairsInput = {
   managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   testPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutEquipmentNestedInput
@@ -1315,6 +1346,7 @@ export type EquipmentCreateManyOwnerInput = {
   notes?: string
   managingTeam?: string | null
   ownerName?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1338,6 +1370,7 @@ export type EquipmentUpdateWithoutOwnerInput = {
   notes?: Prisma.StringFieldUpdateOperationsInput | string
   managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   testPlans?: Prisma.TestPlanUpdateManyWithoutEquipmentNestedInput
@@ -1364,6 +1397,7 @@ export type EquipmentUncheckedUpdateWithoutOwnerInput = {
   notes?: Prisma.StringFieldUpdateOperationsInput | string
   managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   testPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutEquipmentNestedInput
@@ -1390,6 +1424,7 @@ export type EquipmentUncheckedUpdateManyWithoutOwnerInput = {
   notes?: Prisma.StringFieldUpdateOperationsInput | string
   managingTeam?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1463,6 +1498,7 @@ export type EquipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   managingTeam?: boolean
   ownerId?: boolean
   ownerName?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.Equipment$ownerArgs<ExtArgs>
@@ -1492,6 +1528,7 @@ export type EquipmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   managingTeam?: boolean
   ownerId?: boolean
   ownerName?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.Equipment$ownerArgs<ExtArgs>
@@ -1517,6 +1554,7 @@ export type EquipmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   managingTeam?: boolean
   ownerId?: boolean
   ownerName?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.Equipment$ownerArgs<ExtArgs>
@@ -1542,11 +1580,12 @@ export type EquipmentSelectScalar = {
   managingTeam?: boolean
   ownerId?: boolean
   ownerName?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EquipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "hallId" | "yardId" | "siteId" | "category" | "name" | "type" | "spec" | "maker" | "makerCountry" | "yearIntroduced" | "quantity" | "status" | "replacedById" | "replacesId" | "notes" | "managingTeam" | "ownerId" | "ownerName" | "createdAt" | "updatedAt", ExtArgs["result"]["equipment"]>
+export type EquipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "hallId" | "yardId" | "siteId" | "category" | "name" | "type" | "spec" | "maker" | "makerCountry" | "yearIntroduced" | "quantity" | "status" | "replacedById" | "replacesId" | "notes" | "managingTeam" | "ownerId" | "ownerName" | "attachments" | "createdAt" | "updatedAt", ExtArgs["result"]["equipment"]>
 export type EquipmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.Equipment$ownerArgs<ExtArgs>
   testPlans?: boolean | Prisma.Equipment$testPlansArgs<ExtArgs>
@@ -1589,6 +1628,7 @@ export type $EquipmentPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     managingTeam: string | null
     ownerId: string | null
     ownerName: string | null
+    attachments: runtime.JsonValue
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["equipment"]>
@@ -2037,6 +2077,7 @@ export interface EquipmentFieldRefs {
   readonly managingTeam: Prisma.FieldRef<"Equipment", 'String'>
   readonly ownerId: Prisma.FieldRef<"Equipment", 'String'>
   readonly ownerName: Prisma.FieldRef<"Equipment", 'String'>
+  readonly attachments: Prisma.FieldRef<"Equipment", 'Json'>
   readonly createdAt: Prisma.FieldRef<"Equipment", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Equipment", 'DateTime'>
 }

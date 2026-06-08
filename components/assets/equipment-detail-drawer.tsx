@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import type { Equipment, EquipmentOwnerHistory, EquipmentRepair, RepairStatus } from "@/types/asset";
 import { RepairForm } from "./repair-form";
+import { AttachmentUploader, AttachmentList, type AttachmentItem } from "@/components/ui/attachment-uploader";
+import { Paperclip } from "lucide-react";
 
 const SITE_LABEL: Record<string, string> = {
   gumi: "구미", donghae: "동해", indon: "인동", external: "외부",
@@ -68,6 +70,23 @@ export function EquipmentDetailDrawer({ equipment, userRole, onClose, onSaved }:
   const [ownerNote, setOwnerNote]           = useState("");
   const [ownerSaving, setOwnerSaving]       = useState(false);
   const [ownerErr, setOwnerErr]             = useState("");
+
+  // ── 첨부파일 ──
+  const [attachments, setAttachments] = useState<AttachmentItem[]>(
+    (equipment.attachments ?? []) as AttachmentItem[]
+  );
+  const [savingAttachments, setSavingAttachments] = useState(false);
+
+  async function handleAttachmentsChange(next: AttachmentItem[]) {
+    setAttachments(next);
+    setSavingAttachments(true);
+    try {
+      await fetch(`/api/assets/${equipment.id}`, {
+        method: "PATCH", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ attachments: next }),
+      });
+    } finally { setSavingAttachments(false); }
+  }
 
   // ── 수선 이력 ──
   const [repairs, setRepairs]               = useState<EquipmentRepair[]>([]);
@@ -395,6 +414,9 @@ export function EquipmentDetailDrawer({ equipment, userRole, onClose, onSaved }:
                         <p className="text-xs text-emerald-700"><span className="font-medium">결과:</span> {r.result}</p>
                       </div>
                     )}
+                    {r.attachments && r.attachments.length > 0 && (
+                      <AttachmentList attachments={r.attachments as AttachmentItem[]} />
+                    )}
                   </div>
                 ))}
               </div>
@@ -402,6 +424,20 @@ export function EquipmentDetailDrawer({ equipment, userRole, onClose, onSaved }:
 
             {/* 하단 여백 */}
             <div className="h-6" />
+          </section>
+
+          {/* 첨부파일 */}
+          <section className="px-6 py-5 border-t border-slate-100">
+            <h3 className="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+              <Paperclip className="w-4 h-4 text-slate-400" />
+              첨부파일
+              {savingAttachments && <span className="text-[10px] text-slate-400 font-normal">저장 중...</span>}
+            </h3>
+            {canEdit ? (
+              <AttachmentUploader attachments={attachments} onChange={handleAttachmentsChange} context="equipment" />
+            ) : (
+              <AttachmentList attachments={attachments} />
+            )}
           </section>
         </div>
       </div>

@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
   const {
     id, hallId, yardId, siteId, category, name, type,
     spec, maker, makerCountry, yearIntroduced, quantity,
-    status, replacedById, replacesId, notes,
+    status, replacedById, replacesId, notes, attachments,
   } = body;
 
   if (!siteId || !name?.trim() || !type?.trim() || !yearIntroduced) {
@@ -74,6 +74,7 @@ export async function POST(req: NextRequest) {
       replacedById:   replacedById || null,
       replacesId:     replacesId   || null,
       notes:          notes        || "",
+      attachments:    Array.isArray(attachments) ? attachments : [],
     },
   });
 

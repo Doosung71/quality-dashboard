@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader"
+import { Paperclip } from "lucide-react"
 
 type Inspection = {
   id: string
@@ -18,6 +20,7 @@ type Inspection = {
   defectRate: number | null
   inspector: string
   notes: string | null
+  attachments: AttachmentItem[]
 }
 
 const resultConfig: Record<string, { label: string; badge: string }> = {
@@ -36,6 +39,19 @@ export default function IncomingDetailClient({ inspection: initial }: { inspecti
     defectCount: initial.defectCount?.toString() ?? "",
     notes:       initial.notes ?? "",
   })
+  const [attachments, setAttachments] = useState<AttachmentItem[]>(initial.attachments ?? [])
+  const [savingAttachments, setSavingAttachments] = useState(false)
+
+  async function handleAttachmentsChange(next: AttachmentItem[]) {
+    setAttachments(next)
+    setSavingAttachments(true)
+    try {
+      await fetch(`/api/incoming-inspections/${insp.id}`, {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ attachments: next }),
+      })
+    } finally { setSavingAttachments(false) }
+  }
 
   async function saveInspection() {
     setSaving(true)
@@ -176,6 +192,15 @@ export default function IncomingDetailClient({ inspection: initial }: { inspecti
             )}
           </div>
         )}
+      </section>
+
+      <section className="bg-white rounded-xl border border-slate-200 p-5">
+        <h2 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
+          <Paperclip className="w-4 h-4 text-slate-400" />
+          첨부파일
+          {savingAttachments && <span className="text-[10px] text-slate-400 font-normal">저장 중...</span>}
+        </h2>
+        <AttachmentUploader attachments={attachments} onChange={handleAttachmentsChange} context="incoming-inspection" />
       </section>
     </div>
   )

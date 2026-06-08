@@ -67,6 +67,7 @@ export default async function IncomingDetailPage({ params }: { params: Promise<{
           defectRate:     item.defectRate,
           inspector:      item.inspector,
           notes:          item.notes,
+          attachments:    (item.attachments as { url: string; name: string; size: number; contentType: string }[]) ?? [],
         }}
       />
     </div>

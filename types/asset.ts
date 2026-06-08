@@ -23,6 +23,7 @@ export interface Equipment {
   managingTeam: string | null;
   ownerId: string | null;
   ownerName: string | null;
+  attachments: { url: string; name: string; size: number; contentType: string }[];
 }
 
 export interface EquipmentOwnerHistory {
@@ -54,6 +55,7 @@ export interface EquipmentRepair {
   result: string;
   reportedById: string;
   reportedByName: string;
+  attachments: { url: string; name: string; size: number; contentType: string }[];
   createdAt: string;
 }
 

@@ -97,6 +97,7 @@ export type SourceInspectionCountAggregateOutputType = {
   defectRate: number
   inspector: number
   notes: number
+  attachments: number
   status: number
   createdAt: number
   updatedAt: number
@@ -176,6 +177,7 @@ export type SourceInspectionCountAggregateInputType = {
   defectRate?: true
   inspector?: true
   notes?: true
+  attachments?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -284,6 +286,7 @@ export type SourceInspectionGroupByOutputType = {
   defectRate: number | null
   inspector: string
   notes: string | null
+  attachments: runtime.JsonValue
   status: string
   createdAt: Date
   updatedAt: Date
@@ -328,6 +331,7 @@ export type SourceInspectionWhereInput = {
   defectRate?: Prisma.FloatNullableFilter<"SourceInspection"> | number | null
   inspector?: Prisma.StringFilter<"SourceInspection"> | string
   notes?: Prisma.StringNullableFilter<"SourceInspection"> | string | null
+  attachments?: Prisma.JsonFilter<"SourceInspection">
   status?: Prisma.StringFilter<"SourceInspection"> | string
   createdAt?: Prisma.DateTimeFilter<"SourceInspection"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SourceInspection"> | Date | string
@@ -350,6 +354,7 @@ export type SourceInspectionOrderByWithRelationInput = {
   defectRate?: Prisma.SortOrderInput | Prisma.SortOrder
   inspector?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -375,6 +380,7 @@ export type SourceInspectionWhereUniqueInput = Prisma.AtLeast<{
   defectRate?: Prisma.FloatNullableFilter<"SourceInspection"> | number | null
   inspector?: Prisma.StringFilter<"SourceInspection"> | string
   notes?: Prisma.StringNullableFilter<"SourceInspection"> | string | null
+  attachments?: Prisma.JsonFilter<"SourceInspection">
   status?: Prisma.StringFilter<"SourceInspection"> | string
   createdAt?: Prisma.DateTimeFilter<"SourceInspection"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SourceInspection"> | Date | string
@@ -397,6 +403,7 @@ export type SourceInspectionOrderByWithAggregationInput = {
   defectRate?: Prisma.SortOrderInput | Prisma.SortOrder
   inspector?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -426,6 +433,7 @@ export type SourceInspectionScalarWhereWithAggregatesInput = {
   defectRate?: Prisma.FloatNullableWithAggregatesFilter<"SourceInspection"> | number | null
   inspector?: Prisma.StringWithAggregatesFilter<"SourceInspection"> | string
   notes?: Prisma.StringNullableWithAggregatesFilter<"SourceInspection"> | string | null
+  attachments?: Prisma.JsonWithAggregatesFilter<"SourceInspection">
   status?: Prisma.StringWithAggregatesFilter<"SourceInspection"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"SourceInspection"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"SourceInspection"> | Date | string
@@ -447,6 +455,7 @@ export type SourceInspectionCreateInput = {
   defectRate?: number | null
   inspector: string
   notes?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -468,6 +477,7 @@ export type SourceInspectionUncheckedCreateInput = {
   defectRate?: number | null
   inspector: string
   notes?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -489,6 +499,7 @@ export type SourceInspectionUpdateInput = {
   defectRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   inspector?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -510,6 +521,7 @@ export type SourceInspectionUncheckedUpdateInput = {
   defectRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   inspector?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -531,6 +543,7 @@ export type SourceInspectionCreateManyInput = {
   defectRate?: number | null
   inspector: string
   notes?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -552,6 +565,7 @@ export type SourceInspectionUpdateManyMutationInput = {
   defectRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   inspector?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -572,6 +586,7 @@ export type SourceInspectionUncheckedUpdateManyInput = {
   defectRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   inspector?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -603,6 +618,7 @@ export type SourceInspectionCountOrderByAggregateInput = {
   defectRate?: Prisma.SortOrder
   inspector?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -722,6 +738,7 @@ export type SourceInspectionCreateWithoutCreatedByInput = {
   defectRate?: number | null
   inspector: string
   notes?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -742,6 +759,7 @@ export type SourceInspectionUncheckedCreateWithoutCreatedByInput = {
   defectRate?: number | null
   inspector: string
   notes?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -791,6 +809,7 @@ export type SourceInspectionScalarWhereInput = {
   defectRate?: Prisma.FloatNullableFilter<"SourceInspection"> | number | null
   inspector?: Prisma.StringFilter<"SourceInspection"> | string
   notes?: Prisma.StringNullableFilter<"SourceInspection"> | string | null
+  attachments?: Prisma.JsonFilter<"SourceInspection">
   status?: Prisma.StringFilter<"SourceInspection"> | string
   createdAt?: Prisma.DateTimeFilter<"SourceInspection"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SourceInspection"> | Date | string
@@ -812,6 +831,7 @@ export type SourceInspectionCreateManyCreatedByInput = {
   defectRate?: number | null
   inspector: string
   notes?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -832,6 +852,7 @@ export type SourceInspectionUpdateWithoutCreatedByInput = {
   defectRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   inspector?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -852,6 +873,7 @@ export type SourceInspectionUncheckedUpdateWithoutCreatedByInput = {
   defectRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   inspector?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -872,6 +894,7 @@ export type SourceInspectionUncheckedUpdateManyWithoutCreatedByInput = {
   defectRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   inspector?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -894,6 +917,7 @@ export type SourceInspectionSelect<ExtArgs extends runtime.Types.Extensions.Inte
   defectRate?: boolean
   inspector?: boolean
   notes?: boolean
+  attachments?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -916,6 +940,7 @@ export type SourceInspectionSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   defectRate?: boolean
   inspector?: boolean
   notes?: boolean
+  attachments?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -938,6 +963,7 @@ export type SourceInspectionSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   defectRate?: boolean
   inspector?: boolean
   notes?: boolean
+  attachments?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -960,13 +986,14 @@ export type SourceInspectionSelectScalar = {
   defectRate?: boolean
   inspector?: boolean
   notes?: boolean
+  attachments?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
 }
 
-export type SourceInspectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vendorId" | "vendorName" | "inspectionDate" | "location" | "itemName" | "itemCode" | "quantity" | "sampleSize" | "result" | "defectCount" | "defectRate" | "inspector" | "notes" | "status" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["sourceInspection"]>
+export type SourceInspectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vendorId" | "vendorName" | "inspectionDate" | "location" | "itemName" | "itemCode" | "quantity" | "sampleSize" | "result" | "defectCount" | "defectRate" | "inspector" | "notes" | "attachments" | "status" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["sourceInspection"]>
 export type SourceInspectionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -997,6 +1024,7 @@ export type $SourceInspectionPayload<ExtArgs extends runtime.Types.Extensions.In
     defectRate: number | null
     inspector: string
     notes: string | null
+    attachments: runtime.JsonValue
     status: string
     createdAt: Date
     updatedAt: Date
@@ -1439,6 +1467,7 @@ export interface SourceInspectionFieldRefs {
   readonly defectRate: Prisma.FieldRef<"SourceInspection", 'Float'>
   readonly inspector: Prisma.FieldRef<"SourceInspection", 'String'>
   readonly notes: Prisma.FieldRef<"SourceInspection", 'String'>
+  readonly attachments: Prisma.FieldRef<"SourceInspection", 'Json'>
   readonly status: Prisma.FieldRef<"SourceInspection", 'String'>
   readonly createdAt: Prisma.FieldRef<"SourceInspection", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"SourceInspection", 'DateTime'>

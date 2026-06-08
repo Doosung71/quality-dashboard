@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { RepairType, Equipment } from "@/types/asset";
+import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader";
 
 const TYPES: RepairType[] = ["고장", "예방점검", "수선", "교정"];
 const TYPE_COLOR: Record<RepairType, string> = {
@@ -52,6 +53,7 @@ export function RepairForm({ equipmentId, equipmentName, equipmentList, onClose,
 
   // 수선 폼
   const [form, setForm] = useState<FormData>(EMPTY);
+  const [attachments, setAttachments] = useState<AttachmentItem[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError]   = useState("");
 
@@ -87,6 +89,7 @@ export function RepairForm({ equipmentId, equipmentName, equipmentList, onClose,
         cost:        form.cost           ? Number(form.cost) : null,
         reportedAt:  form.reportedAt,
         status:      "접수",
+        attachments,
       }),
     });
 
@@ -271,6 +274,12 @@ export function RepairForm({ equipmentId, equipmentName, equipmentList, onClose,
               <label className="block text-xs font-medium text-slate-600 mb-1">예상 수선 비용 (원, 선택)</label>
               <input type="number" value={form.cost} onChange={set("cost")} placeholder="0" min="0"
                 className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+            </div>
+
+            {/* 첨부파일 */}
+            <div>
+              <label className="block text-xs font-medium text-slate-600 mb-1">첨부파일 (선택)</label>
+              <AttachmentUploader attachments={attachments} onChange={setAttachments} context="repair" disabled={saving} />
             </div>
           </div>
         </form>

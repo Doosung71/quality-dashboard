@@ -80,6 +80,7 @@ export type EquipmentRepairCountAggregateOutputType = {
   cost: number
   vendor: number
   result: number
+  attachments: number
   reportedById: number
   createdAt: number
   updatedAt: number
@@ -141,6 +142,7 @@ export type EquipmentRepairCountAggregateInputType = {
   cost?: true
   vendor?: true
   result?: true
+  attachments?: true
   reportedById?: true
   createdAt?: true
   updatedAt?: true
@@ -245,6 +247,7 @@ export type EquipmentRepairGroupByOutputType = {
   cost: number | null
   vendor: string | null
   result: string
+  attachments: runtime.JsonValue
   reportedById: string
   createdAt: Date
   updatedAt: Date
@@ -285,6 +288,7 @@ export type EquipmentRepairWhereInput = {
   cost?: Prisma.FloatNullableFilter<"EquipmentRepair"> | number | null
   vendor?: Prisma.StringNullableFilter<"EquipmentRepair"> | string | null
   result?: Prisma.StringFilter<"EquipmentRepair"> | string
+  attachments?: Prisma.JsonFilter<"EquipmentRepair">
   reportedById?: Prisma.StringFilter<"EquipmentRepair"> | string
   createdAt?: Prisma.DateTimeFilter<"EquipmentRepair"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EquipmentRepair"> | Date | string
@@ -304,6 +308,7 @@ export type EquipmentRepairOrderByWithRelationInput = {
   cost?: Prisma.SortOrderInput | Prisma.SortOrder
   vendor?: Prisma.SortOrderInput | Prisma.SortOrder
   result?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   reportedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -326,6 +331,7 @@ export type EquipmentRepairWhereUniqueInput = Prisma.AtLeast<{
   cost?: Prisma.FloatNullableFilter<"EquipmentRepair"> | number | null
   vendor?: Prisma.StringNullableFilter<"EquipmentRepair"> | string | null
   result?: Prisma.StringFilter<"EquipmentRepair"> | string
+  attachments?: Prisma.JsonFilter<"EquipmentRepair">
   reportedById?: Prisma.StringFilter<"EquipmentRepair"> | string
   createdAt?: Prisma.DateTimeFilter<"EquipmentRepair"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EquipmentRepair"> | Date | string
@@ -345,6 +351,7 @@ export type EquipmentRepairOrderByWithAggregationInput = {
   cost?: Prisma.SortOrderInput | Prisma.SortOrder
   vendor?: Prisma.SortOrderInput | Prisma.SortOrder
   result?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   reportedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -370,6 +377,7 @@ export type EquipmentRepairScalarWhereWithAggregatesInput = {
   cost?: Prisma.FloatNullableWithAggregatesFilter<"EquipmentRepair"> | number | null
   vendor?: Prisma.StringNullableWithAggregatesFilter<"EquipmentRepair"> | string | null
   result?: Prisma.StringWithAggregatesFilter<"EquipmentRepair"> | string
+  attachments?: Prisma.JsonWithAggregatesFilter<"EquipmentRepair">
   reportedById?: Prisma.StringWithAggregatesFilter<"EquipmentRepair"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"EquipmentRepair"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"EquipmentRepair"> | Date | string
@@ -386,6 +394,7 @@ export type EquipmentRepairCreateInput = {
   cost?: number | null
   vendor?: string | null
   result?: string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   equipment: Prisma.EquipmentCreateNestedOneWithoutRepairsInput
@@ -404,6 +413,7 @@ export type EquipmentRepairUncheckedCreateInput = {
   cost?: number | null
   vendor?: string | null
   result?: string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   reportedById: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -420,6 +430,7 @@ export type EquipmentRepairUpdateInput = {
   cost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   vendor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   result?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   equipment?: Prisma.EquipmentUpdateOneRequiredWithoutRepairsNestedInput
@@ -438,6 +449,7 @@ export type EquipmentRepairUncheckedUpdateInput = {
   cost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   vendor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   result?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   reportedById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -455,6 +467,7 @@ export type EquipmentRepairCreateManyInput = {
   cost?: number | null
   vendor?: string | null
   result?: string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   reportedById: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -471,6 +484,7 @@ export type EquipmentRepairUpdateManyMutationInput = {
   cost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   vendor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   result?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -487,6 +501,7 @@ export type EquipmentRepairUncheckedUpdateManyInput = {
   cost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   vendor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   result?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   reportedById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -514,6 +529,7 @@ export type EquipmentRepairCountOrderByAggregateInput = {
   cost?: Prisma.SortOrder
   vendor?: Prisma.SortOrder
   result?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   reportedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -664,6 +680,7 @@ export type EquipmentRepairCreateWithoutReportedByInput = {
   cost?: number | null
   vendor?: string | null
   result?: string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   equipment: Prisma.EquipmentCreateNestedOneWithoutRepairsInput
@@ -681,6 +698,7 @@ export type EquipmentRepairUncheckedCreateWithoutReportedByInput = {
   cost?: number | null
   vendor?: string | null
   result?: string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -726,6 +744,7 @@ export type EquipmentRepairScalarWhereInput = {
   cost?: Prisma.FloatNullableFilter<"EquipmentRepair"> | number | null
   vendor?: Prisma.StringNullableFilter<"EquipmentRepair"> | string | null
   result?: Prisma.StringFilter<"EquipmentRepair"> | string
+  attachments?: Prisma.JsonFilter<"EquipmentRepair">
   reportedById?: Prisma.StringFilter<"EquipmentRepair"> | string
   createdAt?: Prisma.DateTimeFilter<"EquipmentRepair"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EquipmentRepair"> | Date | string
@@ -742,6 +761,7 @@ export type EquipmentRepairCreateWithoutEquipmentInput = {
   cost?: number | null
   vendor?: string | null
   result?: string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   reportedBy: Prisma.UserCreateNestedOneWithoutReportedRepairsInput
@@ -758,6 +778,7 @@ export type EquipmentRepairUncheckedCreateWithoutEquipmentInput = {
   cost?: number | null
   vendor?: string | null
   result?: string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   reportedById: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -801,6 +822,7 @@ export type EquipmentRepairCreateManyReportedByInput = {
   cost?: number | null
   vendor?: string | null
   result?: string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -816,6 +838,7 @@ export type EquipmentRepairUpdateWithoutReportedByInput = {
   cost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   vendor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   result?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   equipment?: Prisma.EquipmentUpdateOneRequiredWithoutRepairsNestedInput
@@ -833,6 +856,7 @@ export type EquipmentRepairUncheckedUpdateWithoutReportedByInput = {
   cost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   vendor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   result?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -849,6 +873,7 @@ export type EquipmentRepairUncheckedUpdateManyWithoutReportedByInput = {
   cost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   vendor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   result?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -864,6 +889,7 @@ export type EquipmentRepairCreateManyEquipmentInput = {
   cost?: number | null
   vendor?: string | null
   result?: string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   reportedById: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -880,6 +906,7 @@ export type EquipmentRepairUpdateWithoutEquipmentInput = {
   cost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   vendor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   result?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reportedBy?: Prisma.UserUpdateOneRequiredWithoutReportedRepairsNestedInput
@@ -896,6 +923,7 @@ export type EquipmentRepairUncheckedUpdateWithoutEquipmentInput = {
   cost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   vendor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   result?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   reportedById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -912,6 +940,7 @@ export type EquipmentRepairUncheckedUpdateManyWithoutEquipmentInput = {
   cost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   vendor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   result?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   reportedById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -931,6 +960,7 @@ export type EquipmentRepairSelect<ExtArgs extends runtime.Types.Extensions.Inter
   cost?: boolean
   vendor?: boolean
   result?: boolean
+  attachments?: boolean
   reportedById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -950,6 +980,7 @@ export type EquipmentRepairSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   cost?: boolean
   vendor?: boolean
   result?: boolean
+  attachments?: boolean
   reportedById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -969,6 +1000,7 @@ export type EquipmentRepairSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   cost?: boolean
   vendor?: boolean
   result?: boolean
+  attachments?: boolean
   reportedById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -988,12 +1020,13 @@ export type EquipmentRepairSelectScalar = {
   cost?: boolean
   vendor?: boolean
   result?: boolean
+  attachments?: boolean
   reportedById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EquipmentRepairOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "equipmentId" | "type" | "title" | "description" | "status" | "reportedAt" | "completedAt" | "cost" | "vendor" | "result" | "reportedById" | "createdAt" | "updatedAt", ExtArgs["result"]["equipmentRepair"]>
+export type EquipmentRepairOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "equipmentId" | "type" | "title" | "description" | "status" | "reportedAt" | "completedAt" | "cost" | "vendor" | "result" | "attachments" | "reportedById" | "createdAt" | "updatedAt", ExtArgs["result"]["equipmentRepair"]>
 export type EquipmentRepairInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   equipment?: boolean | Prisma.EquipmentDefaultArgs<ExtArgs>
   reportedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1025,6 +1058,7 @@ export type $EquipmentRepairPayload<ExtArgs extends runtime.Types.Extensions.Int
     cost: number | null
     vendor: string | null
     result: string
+    attachments: runtime.JsonValue
     reportedById: string
     createdAt: Date
     updatedAt: Date
@@ -1464,6 +1498,7 @@ export interface EquipmentRepairFieldRefs {
   readonly cost: Prisma.FieldRef<"EquipmentRepair", 'Float'>
   readonly vendor: Prisma.FieldRef<"EquipmentRepair", 'String'>
   readonly result: Prisma.FieldRef<"EquipmentRepair", 'String'>
+  readonly attachments: Prisma.FieldRef<"EquipmentRepair", 'Json'>
   readonly reportedById: Prisma.FieldRef<"EquipmentRepair", 'String'>
   readonly createdAt: Prisma.FieldRef<"EquipmentRepair", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"EquipmentRepair", 'DateTime'>

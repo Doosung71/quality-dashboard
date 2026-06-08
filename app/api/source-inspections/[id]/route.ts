@@ -36,6 +36,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       defectRate:     body.defectRate  as number ?? undefined,
       inspector:      body.inspector   as string ?? undefined,
       notes:          body.notes       as string ?? undefined,
+      ...(body.attachments !== undefined && { attachments: body.attachments as never }),
     },
   })
   return NextResponse.json({ id: inspection.id })

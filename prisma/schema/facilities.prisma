@@ -23,6 +23,7 @@ model Equipment {
   ownerId        String?                  // 담당자 User.id (nullable)
   owner          User?     @relation("EquipmentOwner", fields: [ownerId], references: [id], onDelete: SetNull)
   ownerName      String?                  // 시스템 외 담당자명 fallback
+  attachments    Json      @default("[]")
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
@@ -85,6 +86,7 @@ model EquipmentRepair {
   cost          Float?                    // 수선 비용 (선택)
   vendor        String?                   // 수선 업체 (선택)
   result        String    @default("")    // 수선 결과
+  attachments   Json      @default("[]")
   reportedById  String
   reportedBy    User      @relation("RepairReportedBy", fields: [reportedById], references: [id])
   createdAt     DateTime  @default(now())

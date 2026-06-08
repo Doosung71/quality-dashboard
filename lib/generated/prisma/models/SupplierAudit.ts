@@ -80,6 +80,7 @@ export type SupplierAuditCountAggregateOutputType = {
   totalScore: number
   status: number
   summary: number
+  attachments: number
   createdAt: number
   updatedAt: number
   createdById: number
@@ -141,6 +142,7 @@ export type SupplierAuditCountAggregateInputType = {
   totalScore?: true
   status?: true
   summary?: true
+  attachments?: true
   createdAt?: true
   updatedAt?: true
   createdById?: true
@@ -245,6 +247,7 @@ export type SupplierAuditGroupByOutputType = {
   totalScore: number | null
   status: $Enums.AuditStatus
   summary: string | null
+  attachments: runtime.JsonValue
   createdAt: Date
   updatedAt: Date
   createdById: string
@@ -285,6 +288,7 @@ export type SupplierAuditWhereInput = {
   totalScore?: Prisma.IntNullableFilter<"SupplierAudit"> | number | null
   status?: Prisma.EnumAuditStatusFilter<"SupplierAudit"> | $Enums.AuditStatus
   summary?: Prisma.StringNullableFilter<"SupplierAudit"> | string | null
+  attachments?: Prisma.JsonFilter<"SupplierAudit">
   createdAt?: Prisma.DateTimeFilter<"SupplierAudit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SupplierAudit"> | Date | string
   createdById?: Prisma.StringFilter<"SupplierAudit"> | string
@@ -304,6 +308,7 @@ export type SupplierAuditOrderByWithRelationInput = {
   totalScore?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   summary?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -326,6 +331,7 @@ export type SupplierAuditWhereUniqueInput = Prisma.AtLeast<{
   totalScore?: Prisma.IntNullableFilter<"SupplierAudit"> | number | null
   status?: Prisma.EnumAuditStatusFilter<"SupplierAudit"> | $Enums.AuditStatus
   summary?: Prisma.StringNullableFilter<"SupplierAudit"> | string | null
+  attachments?: Prisma.JsonFilter<"SupplierAudit">
   createdAt?: Prisma.DateTimeFilter<"SupplierAudit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SupplierAudit"> | Date | string
   createdById?: Prisma.StringFilter<"SupplierAudit"> | string
@@ -345,6 +351,7 @@ export type SupplierAuditOrderByWithAggregationInput = {
   totalScore?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   summary?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -370,6 +377,7 @@ export type SupplierAuditScalarWhereWithAggregatesInput = {
   totalScore?: Prisma.IntNullableWithAggregatesFilter<"SupplierAudit"> | number | null
   status?: Prisma.EnumAuditStatusWithAggregatesFilter<"SupplierAudit"> | $Enums.AuditStatus
   summary?: Prisma.StringNullableWithAggregatesFilter<"SupplierAudit"> | string | null
+  attachments?: Prisma.JsonWithAggregatesFilter<"SupplierAudit">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"SupplierAudit"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"SupplierAudit"> | Date | string
   createdById?: Prisma.StringWithAggregatesFilter<"SupplierAudit"> | string
@@ -387,6 +395,7 @@ export type SupplierAuditCreateInput = {
   totalScore?: number | null
   status?: $Enums.AuditStatus
   summary?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutSupplierAuditsInput
@@ -405,6 +414,7 @@ export type SupplierAuditUncheckedCreateInput = {
   totalScore?: number | null
   status?: $Enums.AuditStatus
   summary?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById: string
@@ -423,6 +433,7 @@ export type SupplierAuditUpdateInput = {
   totalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutSupplierAuditsNestedInput
@@ -441,6 +452,7 @@ export type SupplierAuditUncheckedUpdateInput = {
   totalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -459,6 +471,7 @@ export type SupplierAuditCreateManyInput = {
   totalScore?: number | null
   status?: $Enums.AuditStatus
   summary?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById: string
@@ -476,6 +489,7 @@ export type SupplierAuditUpdateManyMutationInput = {
   totalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -492,6 +506,7 @@ export type SupplierAuditUncheckedUpdateManyInput = {
   totalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -519,6 +534,7 @@ export type SupplierAuditCountOrderByAggregateInput = {
   totalScore?: Prisma.SortOrder
   status?: Prisma.SortOrder
   summary?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -647,6 +663,7 @@ export type SupplierAuditCreateWithoutCreatedByInput = {
   totalScore?: number | null
   status?: $Enums.AuditStatus
   summary?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   findings?: Prisma.AuditFindingCreateNestedManyWithoutAuditInput
@@ -664,6 +681,7 @@ export type SupplierAuditUncheckedCreateWithoutCreatedByInput = {
   totalScore?: number | null
   status?: $Enums.AuditStatus
   summary?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   findings?: Prisma.AuditFindingUncheckedCreateNestedManyWithoutAuditInput
@@ -710,6 +728,7 @@ export type SupplierAuditScalarWhereInput = {
   totalScore?: Prisma.IntNullableFilter<"SupplierAudit"> | number | null
   status?: Prisma.EnumAuditStatusFilter<"SupplierAudit"> | $Enums.AuditStatus
   summary?: Prisma.StringNullableFilter<"SupplierAudit"> | string | null
+  attachments?: Prisma.JsonFilter<"SupplierAudit">
   createdAt?: Prisma.DateTimeFilter<"SupplierAudit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SupplierAudit"> | Date | string
   createdById?: Prisma.StringFilter<"SupplierAudit"> | string
@@ -727,6 +746,7 @@ export type SupplierAuditCreateWithoutFindingsInput = {
   totalScore?: number | null
   status?: $Enums.AuditStatus
   summary?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutSupplierAuditsInput
@@ -744,6 +764,7 @@ export type SupplierAuditUncheckedCreateWithoutFindingsInput = {
   totalScore?: number | null
   status?: $Enums.AuditStatus
   summary?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById: string
@@ -777,6 +798,7 @@ export type SupplierAuditUpdateWithoutFindingsInput = {
   totalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutSupplierAuditsNestedInput
@@ -794,6 +816,7 @@ export type SupplierAuditUncheckedUpdateWithoutFindingsInput = {
   totalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -811,6 +834,7 @@ export type SupplierAuditCreateManyCreatedByInput = {
   totalScore?: number | null
   status?: $Enums.AuditStatus
   summary?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -827,6 +851,7 @@ export type SupplierAuditUpdateWithoutCreatedByInput = {
   totalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   findings?: Prisma.AuditFindingUpdateManyWithoutAuditNestedInput
@@ -844,6 +869,7 @@ export type SupplierAuditUncheckedUpdateWithoutCreatedByInput = {
   totalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   findings?: Prisma.AuditFindingUncheckedUpdateManyWithoutAuditNestedInput
@@ -861,6 +887,7 @@ export type SupplierAuditUncheckedUpdateManyWithoutCreatedByInput = {
   totalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -908,6 +935,7 @@ export type SupplierAuditSelect<ExtArgs extends runtime.Types.Extensions.Interna
   totalScore?: boolean
   status?: boolean
   summary?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
@@ -928,6 +956,7 @@ export type SupplierAuditSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   totalScore?: boolean
   status?: boolean
   summary?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
@@ -946,6 +975,7 @@ export type SupplierAuditSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   totalScore?: boolean
   status?: boolean
   summary?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
@@ -964,12 +994,13 @@ export type SupplierAuditSelectScalar = {
   totalScore?: boolean
   status?: boolean
   summary?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
 }
 
-export type SupplierAuditOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vendorId" | "vendorName" | "auditDate" | "auditType" | "auditor" | "location" | "overallGrade" | "totalScore" | "status" | "summary" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["supplierAudit"]>
+export type SupplierAuditOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vendorId" | "vendorName" | "auditDate" | "auditType" | "auditor" | "location" | "overallGrade" | "totalScore" | "status" | "summary" | "attachments" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["supplierAudit"]>
 export type SupplierAuditInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   findings?: boolean | Prisma.SupplierAudit$findingsArgs<ExtArgs>
@@ -1000,6 +1031,7 @@ export type $SupplierAuditPayload<ExtArgs extends runtime.Types.Extensions.Inter
     totalScore: number | null
     status: $Enums.AuditStatus
     summary: string | null
+    attachments: runtime.JsonValue
     createdAt: Date
     updatedAt: Date
     createdById: string
@@ -1439,6 +1471,7 @@ export interface SupplierAuditFieldRefs {
   readonly totalScore: Prisma.FieldRef<"SupplierAudit", 'Int'>
   readonly status: Prisma.FieldRef<"SupplierAudit", 'AuditStatus'>
   readonly summary: Prisma.FieldRef<"SupplierAudit", 'String'>
+  readonly attachments: Prisma.FieldRef<"SupplierAudit", 'Json'>
   readonly createdAt: Prisma.FieldRef<"SupplierAudit", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"SupplierAudit", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"SupplierAudit", 'String'>

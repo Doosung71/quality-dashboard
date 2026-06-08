@@ -33,6 +33,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
       cost:           r.cost,
       vendor:         r.vendor,
       result:         r.result,
+      attachments:    r.attachments ?? [],
       reportedById:   r.reportedById,
       reportedByName: r.reportedBy.name,
       createdAt:      r.createdAt.toISOString(),
@@ -58,7 +59,7 @@ export async function POST(req: NextRequest, { params }: Params) {
   const { id } = await params;
   const body = await req.json();
 
-  const { type, title, description, status, vendor, cost, result, reportedAt, completedAt } = body;
+  const { type, title, description, status, vendor, cost, result, reportedAt, completedAt, attachments } = body;
 
   if (!type || !title) {
     return NextResponse.json({ error: "유형과 제목은 필수입니다." }, { status: 400 });
@@ -74,6 +75,7 @@ export async function POST(req: NextRequest, { params }: Params) {
       vendor:      vendor      ?? null,
       cost:        cost        != null ? Number(cost) : null,
       result:      result      ?? "",
+      attachments: Array.isArray(attachments) ? attachments : [],
       reportedAt:  reportedAt  ? new Date(reportedAt) : new Date(),
       completedAt: completedAt ? new Date(completedAt) : null,
       reportedById: reporterId,
@@ -94,6 +96,7 @@ export async function POST(req: NextRequest, { params }: Params) {
       cost:           repair.cost,
       vendor:         repair.vendor,
       result:         repair.result,
+      attachments:    repair.attachments ?? [],
       reportedById:   repair.reportedById,
       reportedByName: repair.reportedBy.name,
       createdAt:      repair.createdAt.toISOString(),
