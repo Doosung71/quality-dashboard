@@ -160,12 +160,12 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
     <div className="max-w-4xl mx-auto space-y-6">
       {/* 헤더 */}
       <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Link href="/claims" className="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition-all">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link href="/claims" className="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition-all shrink-0">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="font-mono text-xs text-slate-400 font-bold">{claim.claimNo}</span>
               <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${STATUS_COLORS[claim.status]}`}>
                 {STATUS_LABELS[claim.status]}
@@ -178,7 +178,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
               <input value={editForm.title} onChange={e => setEditForm(f => ({...f, title: e.target.value}))}
                 className="mt-1 text-xl font-bold text-slate-900 w-full border-b-2 border-blue-500 focus:outline-none" />
             ) : (
-              <h1 className="mt-1 text-xl font-bold text-slate-900">{claim.title}</h1>
+              <h1 className="mt-1 text-xl font-bold text-slate-900 break-all">{claim.title}</h1>
             )}
           </div>
         </div>
@@ -220,7 +220,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
             <input value={editForm.customer} onChange={e => setEditForm(f => ({...f, customer: e.target.value}))}
               className="w-full text-sm font-semibold text-slate-800 border-b border-slate-300 focus:outline-none focus:border-blue-500" />
           ) : (
-            <p className="text-sm font-semibold text-slate-800">{claim.customer}</p>
+            <p className="text-sm font-semibold text-slate-800 wrap-break-word">{claim.customer}</p>
           )}
         </div>
         <div>
@@ -233,7 +233,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
               <option value="Low">낮음 (Low)</option>
             </select>
           ) : (
-            <p className="text-sm font-semibold text-slate-800">{PRIORITY_LABELS[claim.priority]}</p>
+            <p className="text-sm font-semibold text-slate-800 wrap-break-word">{PRIORITY_LABELS[claim.priority]}</p>
           )}
         </div>
         <div>
@@ -242,12 +242,12 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
             <input value={editForm.assignee} onChange={e => setEditForm(f => ({...f, assignee: e.target.value}))}
               className="w-full text-sm font-semibold text-slate-800 border-b border-slate-300 focus:outline-none focus:border-blue-500" />
           ) : (
-            <p className="text-sm font-semibold text-slate-800">{claim.assignee}</p>
+            <p className="text-sm font-semibold text-slate-800 wrap-break-word">{claim.assignee}</p>
           )}
         </div>
         <div>
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">접수일</p>
-          <p className="text-sm font-semibold text-slate-800">{claim.receivedAt}</p>
+          <p className="text-sm font-semibold text-slate-800 wrap-break-word">{claim.receivedAt}</p>
           {claim.closedAt && (
             <p className="text-[10px] text-emerald-600 mt-0.5">종결: {claim.closedAt}</p>
           )}
@@ -259,7 +259,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
                 className="text-sm font-semibold text-slate-800 border-b border-slate-300 focus:outline-none focus:border-blue-500 bg-transparent w-full" />
             ) : claim.targetDate ? (
               <div className="flex items-center gap-1.5">
-                <p className="text-sm font-semibold text-slate-800">{claim.targetDate}</p>
+                <p className="text-sm font-semibold text-slate-800 wrap-break-word">{claim.targetDate}</p>
                 {(() => {
                   if (claim.status === "Closed") return null;
                   const today = getToday();

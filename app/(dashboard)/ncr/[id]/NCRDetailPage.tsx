@@ -173,11 +173,11 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
     <div className="max-w-4xl mx-auto space-y-6">
       {/* 헤더 */}
       <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Link href="/ncr" className="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition-all">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link href="/ncr" className="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition-all shrink-0">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-mono text-xs text-slate-400 font-bold">{ncr.ncrNo}</span>
               <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${STATUS_COLORS[ncr.status]}`}>
@@ -196,7 +196,7 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
               <input value={editForm.title} onChange={e => setEditForm(f => ({...f, title: e.target.value}))}
                 className="mt-1 text-xl font-bold text-slate-900 w-full border-b-2 border-slate-900 focus:outline-none" />
             ) : (
-              <h1 className="mt-1 text-xl font-bold text-slate-900">{ncr.title}</h1>
+              <h1 className="mt-1 text-xl font-bold text-slate-900 break-all">{ncr.title}</h1>
             )}
           </div>
         </div>
@@ -238,7 +238,7 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
             <input value={editForm.source} onChange={e => setEditForm(f => ({...f, source: e.target.value}))}
               className="w-full text-sm font-semibold text-slate-800 border-b border-slate-300 focus:outline-none focus:border-slate-900" />
           ) : (
-            <p className="text-sm font-semibold text-slate-800">{ncr.source}</p>
+            <p className="text-sm font-semibold text-slate-800 wrap-break-word">{ncr.source}</p>
           )}
         </div>
         <div>
@@ -251,7 +251,7 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
               <option value="Minor">Minor (경미)</option>
             </select>
           ) : (
-            <p className="text-sm font-semibold text-slate-800">{SEVERITY_LABELS[ncr.severity]}</p>
+            <p className="text-sm font-semibold text-slate-800 wrap-break-word">{SEVERITY_LABELS[ncr.severity]}</p>
           )}
         </div>
         <div>
@@ -265,7 +265,7 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
               <option value="Scrap">폐기 (Scrap)</option>
             </select>
           ) : (
-            <p className="text-sm font-semibold text-slate-800">{DISPOSITION_LABELS[ncr.disposition]}</p>
+            <p className="text-sm font-semibold text-slate-800 wrap-break-word">{DISPOSITION_LABELS[ncr.disposition]}</p>
           )}
         </div>
         <div>
@@ -274,12 +274,12 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
             <input value={editForm.assignee} onChange={e => setEditForm(f => ({...f, assignee: e.target.value}))}
               className="w-full text-sm font-semibold text-slate-800 border-b border-slate-300 focus:outline-none focus:border-slate-900" />
           ) : (
-            <p className="text-sm font-semibold text-slate-800">{ncr.assignee}</p>
+            <p className="text-sm font-semibold text-slate-800 wrap-break-word">{ncr.assignee}</p>
           )}
         </div>
         <div>
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">발행일</p>
-          <p className="text-sm font-semibold text-slate-800">{ncr.issuedDate}</p>
+          <p className="text-sm font-semibold text-slate-800 wrap-break-word">{ncr.issuedDate}</p>
         </div>
         <div>
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">완료 예정일</p>
@@ -287,7 +287,7 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
             <input type="date" value={editForm.targetDate} onChange={e => setEditForm(f => ({...f, targetDate: e.target.value}))}
               className="text-sm font-semibold text-slate-800 border-b border-slate-300 focus:outline-none bg-white" />
           ) : (
-            <p className={`text-sm font-semibold ${isOverdue ? "text-rose-600 animate-pulse" : "text-slate-800"}`}>{ncr.targetDate}</p>
+            <p className={`text-sm font-semibold wrap-break-word ${isOverdue ? "text-rose-600 animate-pulse" : "text-slate-800"}`}>{ncr.targetDate}</p>
           )}
         </div>
         {ncr.closedDate && (
