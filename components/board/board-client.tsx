@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils"
 import type { Role } from "@/lib/generated/prisma/client"
 import { EmojiPicker } from "./emoji-picker"
 import { VisibilitySelector, VisibilityBadge } from "./visibility-selector"
+import { MarkdownContent } from "@/components/ui/markdown-content"
 import type { Visibility } from "@/lib/board-visibility"
 
 // ─── 타입 ──────────────────────────────────────────────────
@@ -882,8 +883,8 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
                 </div>
               ) : (
                 <div className="space-y-3 mt-2">
-                  <div className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap bg-slate-50/50 rounded-xl px-4 py-4 border border-slate-100">
-                    {detail.content}
+                  <div className="bg-slate-50/50 rounded-xl px-4 py-4 border border-slate-100 [&_p]:!text-sm [&_p]:!text-slate-700 [&_li]:!text-sm [&_li]:!text-slate-700 [&_td]:!text-sm [&_td]:!text-slate-700 [&_th]:!text-sm [&_blockquote]:!border-amber-300 [&_blockquote]:!bg-amber-50 [&_blockquote]:!rounded-r-lg [&_blockquote]:!py-2 [&_blockquote]:!not-italic [&_blockquote_p]:!text-amber-800 [&_h2]:!text-sm [&_h2]:!text-slate-800 [&_h3]:!text-sm [&_h3]:!text-slate-700">
+                    <MarkdownContent content={detail.content} />
                   </div>
                   {(detail.attachments?.length ?? 0) > 0 && (
                     <AttachmentList attachments={detail.attachments} />

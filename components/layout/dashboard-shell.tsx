@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Header } from "@/components/layout/header"
+import { NoticeBanner } from "@/components/board/notice-banner"
 import type { Session } from "next-auth"
 
 export function DashboardShell({
@@ -32,6 +33,7 @@ export function DashboardShell({
           onMenuOpen={() => setIsMobileMenuOpen(true)}
           session={session}
         />
+        <NoticeBanner />
         <main className="flex-1 p-4 lg:p-6">{children}</main>
       </div>
     </div>
