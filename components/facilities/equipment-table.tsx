@@ -4,6 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { Equipment } from "@/types/asset";
 import type { Test } from "@/types/test";
+import type { FacilitiesData } from "@/types/facility";
 import { computeStatus, CURRENT_YEAR } from "@/lib/facilities-utils";
 import { TypeChip, EquipStatusBadge } from "./badges";
 
@@ -16,31 +17,47 @@ function formatSpec(spec: Record<string, string>): string {
 }
 
 function isInUse(tests: Test[], equipmentId: string): boolean {
-  return tests.some((t) => t.equipmentId === equipmentId && (t.status === "시험중" || t.status === "준비중"));
+  return tests.some(
+    (t) => t.equipmentId === equipmentId && (t.status === "시험중" || t.status === "준비중")
+  );
 }
 
-type ColKey = "maker" | "quantity" | "notes" | "owner";
+const SITE_LABEL: Record<string, string> = {
+  gumi: "구미", indon: "인동", donghae: "동해", external: "외부",
+};
+
+type ColKey =
+  | "type" | "spec" | "owner" | "year" | "age"
+  | "status" | "inUse" | "maker" | "quantity" | "notes";
 
 const TOGGLEABLE_COLS: { key: ColKey; label: string }[] = [
-  { key: "owner",    label: "담당자" },
+  { key: "type",     label: "유형" },
+  { key: "spec",     label: "규격" },
+  { key: "owner",    label: "관리팀·담당자" },
+  { key: "year",     label: "도입년도" },
+  { key: "age",      label: "사용연수" },
+  { key: "status",   label: "상태" },
+  { key: "inUse",    label: "가동" },
   { key: "maker",    label: "제조사" },
   { key: "quantity", label: "대수" },
   { key: "notes",    label: "비고" },
 ];
 
+// 기본 숨김: 제조사·대수·비고
+const DEFAULT_HIDDEN = new Set<ColKey>(["maker", "quantity", "notes"]);
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function EquipmentTable({
-  equipment, tests, onOwnerClick, onRowClick,
+  equipment, tests, facilitiesData, onOwnerClick, onRowClick,
 }: {
   equipment: Equipment[];
   tests: Test[];
+  facilitiesData: FacilitiesData;
   onOwnerClick?: (eq: Equipment) => void;
   onRowClick?:   (eq: Equipment) => void;
 }) {
-  const [hiddenCols, setHiddenCols] = useState<Set<ColKey>>(
-    new Set<ColKey>(["maker", "quantity", "notes"])
-  );
+  const [hiddenCols, setHiddenCols] = useState<Set<ColKey>>(new Set(DEFAULT_HIDDEN));
   const [showColMenu, setShowColMenu] = useState(false);
 
   const toggleCol = (key: ColKey) => {
@@ -53,6 +70,18 @@ export function EquipmentTable({
   };
 
   const shown = (key: ColKey) => !hiddenCols.has(key);
+
+  const getHallName = (eq: Equipment): string => {
+    if (eq.hallId) {
+      const hall = facilitiesData.testHalls.find((h) => h.id === eq.hallId);
+      return hall?.name ?? eq.hallId;
+    }
+    if (eq.yardId) {
+      const yard = facilitiesData.testYards.find((y) => y.id === eq.yardId);
+      return yard?.name ?? eq.yardId;
+    }
+    return "—";
+  };
 
   return (
     <div>
@@ -67,6 +96,7 @@ export function EquipmentTable({
           const inUse = isInUse(tests, eq.id);
           const status = computeStatus(eq);
           const isAging = status === "aging";
+          const hallName = getHallName(eq);
           return (
             <div
               key={eq.id}
@@ -81,11 +111,21 @@ export function EquipmentTable({
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
+                    <span className="font-medium">{SITE_LABEL[eq.siteId] ?? eq.siteId}</span>
+                    {hallName !== "—" && (
+                      <><span className="text-slate-300">·</span><span>{hallName}</span></>
+                    )}
+                  </div>
                   <p className="text-sm font-semibold text-slate-800">{eq.name}</p>
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <TypeChip type={eq.type} />
                     <EquipStatusBadge status={status} />
-                    {inUse && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-700">사용중</span>}
+                    {inUse && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-700">
+                        사용중
+                      </span>
+                    )}
                   </div>
                   <p className="text-[10px] text-slate-400 font-mono">{formatSpec(eq.spec)}</p>
                 </div>
@@ -106,7 +146,6 @@ export function EquipmentTable({
                   )}
                 </div>
               </div>
-              {/* R-04: 보조 정보 (제조사·대수·비고) — quantity는 number 타입이므로 > 0 체크 */}
               {(eq.maker || eq.quantity > 0 || eq.notes) && (
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1 pt-2 border-t border-slate-100 text-[10px]">
                   {eq.maker && (
@@ -137,7 +176,6 @@ export function EquipmentTable({
       </div>
 
       {/* 데스크톱 테이블 뷰 (md 이상) */}
-      {/* 컬럼 가시성 토글 */}
       <div className="hidden md:flex justify-end px-4 pt-3 pb-1 relative">
         <button
           onClick={() => setShowColMenu((v) => !v)}
@@ -152,7 +190,7 @@ export function EquipmentTable({
         {showColMenu && (
           <>
             <div className="fixed inset-0 z-10" onClick={() => setShowColMenu(false)} />
-            <div className="absolute right-4 top-10 z-20 bg-white border border-slate-200 rounded-lg shadow-lg py-1 min-w-[120px]">
+            <div className="absolute right-4 top-10 z-20 bg-white border border-slate-200 rounded-lg shadow-lg py-1 min-w-[150px]">
               {TOGGLEABLE_COLS.map(({ key, label }) => (
                 <button
                   key={key}
@@ -178,23 +216,32 @@ export function EquipmentTable({
       </div>
 
       <div className="hidden md:block overflow-x-auto">
-        <table className="w-full text-sm min-w-[620px]">
+        <table className="w-full text-sm min-w-[700px]">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200">
+              <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">사이트</th>
+              <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">시험장</th>
               <th className="sticky left-0 z-20 bg-slate-50 text-left px-4 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">설비명</th>
-              <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">유형</th>
-              <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">규격</th>
-              {shown("owner") && <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">관리팀·담당자</th>}
-              {shown("maker") && <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">제조사</th>}
-              <th className="text-right px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">도입</th>
-              <th className="text-right px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">사용연수</th>
+              {shown("type")     && <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">유형</th>}
+              {shown("spec")     && <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">규격</th>}
+              {shown("owner")    && <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">관리팀·담당자</th>}
+              {shown("maker")    && <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">제조사</th>}
+              {shown("year")     && <th className="text-right px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">도입</th>}
+              {shown("age")      && <th className="text-right px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">사용연수</th>}
               {shown("quantity") && <th className="text-right px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">대수</th>}
-              <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">상태</th>
-              <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">가동</th>
-              {shown("notes") && <th className="text-left px-4 py-2.5 text-xs font-medium text-slate-500">비고</th>}
+              {shown("status")   && <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">상태</th>}
+              {shown("inUse")    && <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">가동</th>}
+              {shown("notes")    && <th className="text-left px-4 py-2.5 text-xs font-medium text-slate-500">비고</th>}
             </tr>
           </thead>
           <tbody>
+            {equipment.length === 0 && (
+              <tr>
+                <td colSpan={20} className="py-12 text-center text-xs text-slate-400">
+                  등록된 설비가 없습니다.
+                </td>
+              </tr>
+            )}
             {equipment.map((eq) => {
               const inUse = isInUse(tests, eq.id);
               const status = computeStatus(eq);
@@ -203,20 +250,41 @@ export function EquipmentTable({
                 ? "bg-linear-to-r from-rose-500/5 via-rose-50/20 to-transparent border-l-2 animate-neon-alert"
                 : "hover:bg-slate-50/70";
               const stickyBg = isAging ? "bg-rose-50/60" : "bg-white";
+              const hallName = getHallName(eq);
               return (
-                <tr key={eq.id} className={cn("border-b border-slate-100 last:border-0 transition-all", rowBg, onRowClick ? "cursor-pointer" : "")}>
+                <tr
+                  key={eq.id}
+                  className={cn(
+                    "border-b border-slate-100 last:border-0 transition-all",
+                    rowBg,
+                    onRowClick ? "cursor-pointer" : ""
+                  )}
+                >
+                  <td className="px-3 py-2.5 text-xs text-slate-500 whitespace-nowrap">
+                    {SITE_LABEL[eq.siteId] ?? eq.siteId}
+                  </td>
+                  <td className="px-3 py-2.5 text-xs text-slate-500 whitespace-nowrap">
+                    {hallName}
+                  </td>
                   <td
-                    className={cn("sticky left-0 z-10 px-4 py-2.5 font-medium text-slate-700 whitespace-nowrap transition-colors hover:text-blue-600 hover:underline", stickyBg)}
+                    className={cn(
+                      "sticky left-0 z-10 px-4 py-2.5 font-medium text-slate-700 whitespace-nowrap transition-colors hover:text-blue-600 hover:underline",
+                      stickyBg
+                    )}
                     onClick={() => onRowClick?.(eq)}
                   >
                     {eq.name}
                   </td>
-                  <td className="px-3 py-2.5">
-                    <TypeChip type={eq.type} />
-                  </td>
-                  <td className="px-3 py-2.5 text-slate-600 whitespace-nowrap font-mono text-xs">
-                    {formatSpec(eq.spec)}
-                  </td>
+                  {shown("type") && (
+                    <td className="px-3 py-2.5">
+                      <TypeChip type={eq.type} />
+                    </td>
+                  )}
+                  {shown("spec") && (
+                    <td className="px-3 py-2.5 text-slate-600 whitespace-nowrap font-mono text-xs">
+                      {formatSpec(eq.spec)}
+                    </td>
+                  )}
                   {shown("owner") && (
                     <td className="px-3 py-2.5 whitespace-nowrap">
                       {onOwnerClick ? (
@@ -257,30 +325,46 @@ export function EquipmentTable({
                       )}
                     </td>
                   )}
-                  <td className="px-3 py-2.5 text-slate-500 text-right whitespace-nowrap">{eq.yearIntroduced}</td>
-                  <td className="px-3 py-2.5 text-right whitespace-nowrap">
-                    {(() => {
-                      if (status === "planned") return <span className="text-slate-300">—</span>;
-                      const colorMap: Record<string, string> = {
-                        new:    "text-blue-600",
-                        normal: "text-emerald-600",
-                        aging:  "text-red-600",
-                      };
-                      return <span className={cn("font-medium", colorMap[status])}>{CURRENT_YEAR - eq.yearIntroduced}년</span>;
-                    })()}
-                  </td>
-                  {shown("quantity") && (
-                    <td className="px-3 py-2.5 text-slate-700 text-right font-medium">{eq.quantity}</td>
+                  {shown("year") && (
+                    <td className="px-3 py-2.5 text-slate-500 text-right whitespace-nowrap">
+                      {eq.yearIntroduced}
+                    </td>
                   )}
-                  <td className="px-3 py-2.5">
-                    <EquipStatusBadge status={status} />
-                  </td>
-                  <td className="px-3 py-2.5">
-                    {inUse
-                      ? <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-700">사용중</span>
-                      : <span className="text-slate-300 text-xs">—</span>
-                    }
-                  </td>
+                  {shown("age") && (
+                    <td className="px-3 py-2.5 text-right whitespace-nowrap">
+                      {(() => {
+                        if (status === "planned") return <span className="text-slate-300">—</span>;
+                        const colorMap: Record<string, string> = {
+                          new:    "text-blue-600",
+                          normal: "text-emerald-600",
+                          aging:  "text-red-600",
+                        };
+                        return (
+                          <span className={cn("font-medium", colorMap[status])}>
+                            {CURRENT_YEAR - eq.yearIntroduced}년
+                          </span>
+                        );
+                      })()}
+                    </td>
+                  )}
+                  {shown("quantity") && (
+                    <td className="px-3 py-2.5 text-slate-700 text-right font-medium">
+                      {eq.quantity}
+                    </td>
+                  )}
+                  {shown("status") && (
+                    <td className="px-3 py-2.5">
+                      <EquipStatusBadge status={status} />
+                    </td>
+                  )}
+                  {shown("inUse") && (
+                    <td className="px-3 py-2.5">
+                      {inUse
+                        ? <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-700">사용중</span>
+                        : <span className="text-slate-300 text-xs">—</span>
+                      }
+                    </td>
+                  )}
                   {shown("notes") && (
                     <td className="px-4 py-2.5 text-slate-400 text-xs max-w-[200px] truncate" title={eq.notes}>
                       {eq.notes || "—"}

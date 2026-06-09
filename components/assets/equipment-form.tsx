@@ -92,6 +92,7 @@ export function EquipmentForm({
           <label className="block text-xs font-medium text-slate-600 mb-1">사이트 *</label>
           <select value={form.siteId} onChange={set("siteId")} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">
             <option value="gumi">구미</option>
+            <option value="indon">인동</option>
             <option value="donghae">동해</option>
           </select>
         </div>

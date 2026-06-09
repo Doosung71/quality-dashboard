@@ -222,6 +222,7 @@ export function AssetsView({
         <EquipmentTable
           equipment={filtered}
           tests={tests}
+          facilitiesData={facilitiesData}
           onRowClick={(eq) => setDetailTarget(eq)}
           onOwnerClick={(eq) => setOwnerTarget({
             id:           eq.id,
