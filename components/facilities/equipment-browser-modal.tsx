@@ -70,6 +70,7 @@ interface Props {
   selectedId: string;
   plannedStart: string;
   plannedEnd: string;
+  defaultSiteId?: string;  // 시험 계획 폼에서 선택한 사이트 전달
   onSelect: (eq: Equipment, conflict: ConflictInfo | null) => void;
   onClose: () => void;
 }
@@ -77,9 +78,10 @@ interface Props {
 export function EquipmentBrowserModal({
   facilitiesData, equipment, tests,
   selectedId, plannedStart, plannedEnd,
+  defaultSiteId,
   onSelect, onClose,
 }: Props) {
-  const [filterSite, setFilterSite] = useState<string>("all");
+  const [filterSite, setFilterSite] = useState<string>(defaultSiteId ?? "all");
   const [filterType, setFilterType] = useState<string>("all");
   const [showUnavailable, setShowUnavailable] = useState(true);
   const [pending, setPending] = useState<{ eq: Equipment; conflict: ConflictInfo } | null>(null);

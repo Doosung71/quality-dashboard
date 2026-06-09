@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireActiveSession } from "@/lib/session-guard";
 import { prisma } from "@/lib/prisma";
 import { canWrite } from "@/lib/permissions";
-import { validateDateRange, OCCUPIED_TEST_STATUSES } from "@/lib/facilities-utils";
+import {
+  validateDateRange,
+  OCCUPIED_TEST_STATUSES,
+  parseLogs,
+  getTodayLocalStr,
+} from "@/lib/facilities-utils";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -56,24 +61,30 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     if (key in body) { data[key] = body[key]; ownerChanged = true; }
   }
 
-  if (Object.keys(data).length === 0) {
+  if (Object.keys(data).length === 0 && !ownerChanged) {
     return NextResponse.json({ error: "변경할 항목이 없습니다." }, { status: 400 });
   }
 
+  // 현재 플랜을 항상 조회 (충돌 검사 + 자동 이력 감지 공용)
+  const current = await prisma.testPlan.findUnique({
+    where: { id },
+    select: {
+      plannedStart: true, plannedEnd: true, equipmentId: true,
+      status: true, progress: true, logs: true,
+    },
+  });
+  if (!current) {
+    return NextResponse.json({ error: "시험 계획을 찾을 수 없습니다." }, { status: 404 });
+  }
+
   // H-2/H-3: equipmentId 또는 날짜 변경 시 충돌 검사 + 날짜 검증
-  // equipmentId 단독 변경도 트리거 (재재검수 반영)
   if (
     data.plannedStart !== undefined ||
     data.plannedEnd   !== undefined ||
     data.equipmentId  !== undefined
   ) {
-    // 현재 값을 한 번만 조회하여 병합
-    const current = await prisma.testPlan.findUnique({
-      where: { id },
-      select: { plannedStart: true, plannedEnd: true, equipmentId: true },
-    });
-    const newStart = (data.plannedStart as string | undefined) ?? current?.plannedStart;
-    const newEnd   = (data.plannedEnd   as string | undefined) ?? current?.plannedEnd;
+    const newStart = (data.plannedStart as string | undefined) ?? current.plannedStart;
+    const newEnd   = (data.plannedEnd   as string | undefined) ?? current.plannedEnd;
 
     // H-3: 날짜 검증 (날짜가 변경된 경우에만)
     if (data.plannedStart !== undefined || data.plannedEnd !== undefined) {
@@ -84,7 +95,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     }
 
     // H-2: 충돌 검사 — 공통 상수 OCCUPIED_TEST_STATUSES 사용
-    const eqId = (data.equipmentId as string | undefined) ?? current?.equipmentId;
+    const eqId = (data.equipmentId as string | undefined) ?? current.equipmentId;
 
     if (eqId && newStart && newEnd) {
       const conflicting = await prisma.testPlan.findFirst({
@@ -119,6 +130,38 @@ export async function PATCH(req: NextRequest, { params }: Params) {
           { status: 409 }
         );
       }
+    }
+  }
+
+  // 핵심 필드 변경 감지 → logs 자동 추가
+  // "logs" 직접 전달은 허용하지 않음 — 서버가 계산한 값으로만 업데이트
+  delete data.logs;
+  {
+    const changesDesc: string[] = [];
+    if (data.plannedStart !== undefined && data.plannedStart !== current.plannedStart) {
+      changesDesc.push(`계획 시작: ${current.plannedStart} → ${data.plannedStart}`);
+    }
+    if (data.plannedEnd !== undefined && data.plannedEnd !== current.plannedEnd) {
+      changesDesc.push(`계획 종료: ${current.plannedEnd} → ${data.plannedEnd}`);
+    }
+    if (data.equipmentId !== undefined && data.equipmentId !== current.equipmentId) {
+      changesDesc.push("설비 변경");
+    }
+    if (data.status !== undefined && data.status !== current.status) {
+      changesDesc.push(`상태: ${current.status} → ${data.status}`);
+    }
+
+    if (changesDesc.length > 0) {
+      const existingLogs = parseLogs(current.logs);
+      const newProgress = typeof data.progress === "number" ? data.progress : current.progress;
+      const newLog = {
+        date:      getTodayLocalStr(),
+        note:      (body.changeNote as string | undefined) ?? "계획 변경",
+        progress:  newProgress,
+        changedBy: session.user.name ?? "관리자",
+        changes:   changesDesc.join(" / "),
+      };
+      data.logs = [...existingLogs, newLog];
     }
   }
 

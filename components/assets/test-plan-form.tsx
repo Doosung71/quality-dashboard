@@ -38,6 +38,14 @@ const SITE_LABEL: Record<string, string> = {
   gumi: "구미", indon: "인동", donghae: "동해", external: "기타(사외)",
 };
 
+const SITE_OPTIONS = [
+  { id: "all",      label: "전체" },
+  { id: "gumi",     label: "구미" },
+  { id: "indon",    label: "인동" },
+  { id: "donghae",  label: "동해" },
+  { id: "external", label: "사외" },
+] as const;
+
 export function TestPlanForm({
   equipment,
   tests,
@@ -53,6 +61,8 @@ export function TestPlanForm({
   onSuccess: () => void;
   onCancel: () => void;
 }) {
+  const [filterSiteId, setFilterSiteId]       = useState<string>("all");
+  const [filterSpaceId, setFilterSpaceId]     = useState<string>("all");
   const [equipmentId, setEquipmentId]         = useState(initialEquipmentId ?? "");
   const [conflict, setConflict]               = useState<ConflictInfo | null>(null);
   const [showBrowser, setShowBrowser]         = useState(false);
@@ -68,6 +78,12 @@ export function TestPlanForm({
   const [users, setUsers]                     = useState<UserOption[]>([]);
   const [saving, setSaving]                   = useState(false);
   const [error, setError]                     = useState("");
+
+  // 사이트별 시험장 목록
+  const spacesForSite = [
+    ...facilitiesData.testHalls.filter((h) => filterSiteId === "all" || h.siteId === filterSiteId),
+    ...facilitiesData.testYards.filter((y) => filterSiteId === "all" || y.siteId === filterSiteId),
+  ];
 
   useEffect(() => {
     fetch("/api/admin/users")
@@ -114,6 +130,34 @@ export function TestPlanForm({
     <>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>}
+
+        {/* 사이트 + 시험장 필터 */}
+        <div className="rounded-lg bg-slate-50 border border-slate-200 px-4 py-3 space-y-3">
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">위치 선택</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-slate-600 mb-1">사이트</label>
+              <select
+                value={filterSiteId}
+                onChange={(e) => { setFilterSiteId(e.target.value); setFilterSpaceId("all"); setEquipmentId(""); setConflict(null); }}
+                className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+              >
+                {SITE_OPTIONS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-600 mb-1">시험장 (선택)</label>
+              <select
+                value={filterSpaceId}
+                onChange={(e) => { setFilterSpaceId(e.target.value); setEquipmentId(""); setConflict(null); }}
+                className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+              >
+                <option value="all">전체</option>
+                {spacesForSite.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+              </select>
+            </div>
+          </div>
+        </div>
 
         {/* 설비 선택 */}
         <div>
@@ -237,6 +281,7 @@ export function TestPlanForm({
           selectedId={equipmentId}
           plannedStart={plannedStart}
           plannedEnd={plannedEnd}
+          defaultSiteId={filterSiteId !== "all" ? filterSiteId : undefined}
           onSelect={handleSelectEquipment}
           onClose={() => setShowBrowser(false)}
         />

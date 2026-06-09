@@ -6,6 +6,8 @@ export interface TestLog {
   date: string
   note: string
   progress: number
+  changedBy?: string  // 변경자 이름
+  changes?: string    // 변경 내용 요약 (예: "계획 기간: ...→...")
 }
 
 export interface Test {
