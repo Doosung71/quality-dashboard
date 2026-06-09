@@ -579,10 +579,10 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
           </div>
 
           {/* 2. 트리 브라우징 & 메인 패널 */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-            
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:h-[calc(100vh-440px)] lg:min-h-[360px]">
+
             {/* 좌측: 카테고리 트리 네비게이션 (데스크탑만) */}
-            <div className="hidden md:block lg:col-span-1 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+            <div className="hidden md:block lg:col-span-1 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-4 overflow-y-auto">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <span className="text-[10px] font-extrabold text-slate-400 tracking-wider uppercase">지식 분류 트리</span>
                 <button 
@@ -657,10 +657,10 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
             </div>
 
             {/* 우측 메인 패널: 리스트 및 세부사항 */}
-            <div className="lg:col-span-3 space-y-6">
-              
+            <div className="lg:col-span-3 flex flex-col gap-6 min-h-0">
+
               {/* 상단 검색 및 필터 설명 & 추가 버튼 */}
-              <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+              <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4 shrink-0">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="space-y-1">
                     <h4 className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
@@ -760,7 +760,7 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
               {showAddForm && (() => {
                 const fc = FORM_CONFIG[newSubCategory] ?? FORM_CONFIG["_default"];
                 return (
-                <form onSubmit={handleAddAsset} className="bg-violet-50 p-5 rounded-2xl border border-violet-200 shadow-md space-y-4 text-xs">
+                <form onSubmit={handleAddAsset} className="bg-violet-50 p-5 rounded-2xl border border-violet-200 shadow-md space-y-4 text-xs shrink-0">
                   <h4 className="text-sm font-bold text-violet-900 flex items-center gap-1.5 pb-2 border-b border-violet-200">
                     <PlusCircle className="w-4 h-4 text-violet-600" /> {newSubCategory} 신규 등록
                   </h4>
@@ -840,10 +840,10 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
               })()}
 
               {/* 지식 리스트 Split layout: 좌측 리스트 / 우측 세부사항 */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-                
+              <div className="flex gap-4 flex-1 min-h-0">
+
                 {/* 1) 매칭 문서 카드 목록 */}
-                <div className={`space-y-3 overflow-y-auto max-h-[580px] pr-1 ${mobileView === "detail" ? "hidden md:block" : ""}`}>
+                <div className={`md:flex-1 min-h-0 space-y-3 overflow-y-auto pr-1 ${mobileView === "detail" ? "hidden md:block" : ""}`}>
                   {filteredAssets.length === 0 ? (
                     <div className="bg-white py-12 rounded-2xl border text-center text-slate-400 text-xs">
                       매칭되는 지식 자산이 없습니다.
@@ -890,7 +890,7 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                 </div>
 
                 {/* 2) 선택된 지식 자산의 정밀 요약 및 행동 유효성 검사 */}
-                <div className={`space-y-4 ${mobileView === "list" ? "hidden md:block" : ""}`}>
+                <div className={`md:flex-1 min-h-0 space-y-4 overflow-y-auto ${mobileView === "list" ? "hidden md:block" : ""}`}>
                   <button
                     onClick={() => setMobileView("list")}
                     className="md:hidden flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors"
@@ -1080,7 +1080,7 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
                             )}
                           </div>
                           {contentText && (
-                            <div className="max-h-80 overflow-y-auto rounded-lg border border-slate-100 bg-white p-4">
+                            <div className="rounded-lg border border-slate-100 bg-white p-4">
                               <MarkdownContent content={contentText} className="text-[11px]" />
                             </div>
                           )}
