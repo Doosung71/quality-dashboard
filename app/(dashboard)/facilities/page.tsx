@@ -54,12 +54,5 @@ export default async function FacilitiesPage() {
     ownerName:        t.ownerName     ?? null,
   }));
 
-  return (
-    <div className="space-y-1">
-      <p className="text-xs text-slate-400 mb-4">
-        사이트 · 시험장별 시험 계획 진행 현황 — 사이트/시험장 클릭으로 접기·펼치기
-      </p>
-      <FacilitiesGantt data={facilitiesData} assets={assets} tests={tests} />
-    </div>
-  );
+  return <FacilitiesGantt data={facilitiesData} assets={assets} tests={tests} />;
 }

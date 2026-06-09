@@ -212,10 +212,11 @@ export function FacilitiesGantt({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
+    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col"
+      style={{ height: "calc(100dvh - 8.5rem)" }}>
 
       {/* ── 네비게이션 바 ─────────────────────────────────── */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50 flex-wrap gap-2 shrink-0">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-100 bg-slate-50 flex-wrap gap-2 shrink-0">
         <div className="flex items-center gap-1.5">
           <button onClick={() => setWStart(s => monthStart(s, -1))}
             className="p-1.5 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors">
@@ -248,8 +249,7 @@ export function FacilitiesGantt({
       </div>
 
       {/* ── 간트 본문 ─────────────────────────────────────── */}
-      {/* overflow-y-auto만 사용, 가로는 꽉 채움 */}
-      <div className="overflow-y-auto flex-1" style={{ maxHeight: "calc(100vh - 280px)" }}>
+      <div className="flex-1 min-h-0 overflow-y-auto">
 
         {/* 월 헤더 — sticky top */}
         <div className="flex sticky top-0 z-20 bg-white border-b border-slate-200">
