@@ -13,6 +13,7 @@ import { Edit2, Trash2, Plus, X, Save } from "lucide-react";
 type FilterValue = TestStatus | "전체";
 
 interface EditForm {
+  equipmentId:  string;
   status:       TestStatus;
   progress:     number;
   actualStart:  string;
@@ -53,6 +54,7 @@ export function FacilitiesView({
   const [editTarget,   setEditTarget]   = useState<Test | null>(null);
   const [editForm,     setEditForm]     = useState<EditForm | null>(null);
   const [saving,       setSaving]       = useState(false);
+  const [saveError,    setSaveError]    = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [deleting,     setDeleting]     = useState(false);
 
@@ -69,6 +71,7 @@ export function FacilitiesView({
   function openEdit(test: Test) {
     setEditTarget(test);
     setEditForm({
+      equipmentId:  test.equipmentId ?? "",
       status:       test.status,
       progress:     test.progress,
       actualStart:  test.actualStart  ?? "",
@@ -81,11 +84,13 @@ export function FacilitiesView({
   async function handleSave() {
     if (!editTarget || !editForm) return;
     setSaving(true);
+    setSaveError(null);
     try {
       const res = await fetch(`/api/test-plans/${editTarget.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          equipmentId:  editForm.equipmentId  || null,
           status:       editForm.status,
           progress:     editForm.progress,
           actualStart:  editForm.actualStart  || null,
@@ -94,9 +99,14 @@ export function FacilitiesView({
           managingTeam: editForm.managingTeam || null,
         }),
       });
-      if (!res.ok) throw new Error("저장 실패");
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}));
+        setSaveError(json.error ?? "저장 실패");
+        return;
+      }
       setEditTarget(null);
       setEditForm(null);
+      setSaveError(null);
       router.refresh();
     } finally {
       setSaving(false);
@@ -175,11 +185,24 @@ export function FacilitiesView({
                 <h2 className="text-base font-semibold text-slate-800">시험 계획 수정</h2>
                 <p className="text-xs text-slate-400 mt-0.5 truncate max-w-xs">{editTarget.projectName}</p>
               </div>
-              <button onClick={() => { setEditTarget(null); setEditForm(null); }} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => { setEditTarget(null); setEditForm(null); setSaveError(null); }} className="text-slate-400 hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="px-6 py-5 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5">시험 설비</label>
+                <select value={editForm.equipmentId}
+                  onChange={e => setEditForm(f => f ? {...f, equipmentId: e.target.value} : f)}
+                  className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white">
+                  <option value="">설비 미지정</option>
+                  {assets.map(eq => (
+                    <option key={eq.id} value={eq.id}>
+                      {eq.name}{eq.category ? ` (${eq.category})` : ""}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-500 mb-1.5">상태</label>
@@ -227,8 +250,11 @@ export function FacilitiesView({
                     className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500" />
                 </div>
               </div>
+              {saveError && (
+                <p className="text-xs text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-3 py-2">{saveError}</p>
+              )}
               <div className="flex gap-2 justify-end pt-2 border-t border-slate-100">
-                <button onClick={() => { setEditTarget(null); setEditForm(null); }}
+                <button onClick={() => { setEditTarget(null); setEditForm(null); setSaveError(null); }}
                   className="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">취소</button>
                 <button onClick={handleSave} disabled={saving}
                   className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 rounded-xl disabled:opacity-50">
@@ -271,8 +297,20 @@ export function FacilitiesView({
                         <span>설비: <span className="font-medium text-slate-600">{eq.name}</span></span>
                       )}
                       <span>{test.plannedStart} ~ {test.plannedEnd}</span>
-                      {test.ownerName    && <span>담당: {test.ownerName}</span>}
-                      {test.managingTeam && <span>관리팀: {test.managingTeam}</span>}
+                    </div>
+                    <div className="flex items-center gap-4 mt-1.5 text-xs">
+                      <span className="text-slate-400">
+                        담당:{" "}
+                        <span className={test.ownerName ? "font-medium text-slate-700" : "text-slate-300"}>
+                          {test.ownerName ?? "미지정"}
+                        </span>
+                      </span>
+                      <span className="text-slate-400">
+                        관리팀:{" "}
+                        <span className={test.managingTeam ? "font-medium text-slate-700" : "text-slate-300"}>
+                          {test.managingTeam ?? "미지정"}
+                        </span>
+                      </span>
                     </div>
                   </div>
 
