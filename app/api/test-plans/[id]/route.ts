@@ -50,21 +50,35 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   if (body.addLog) {
     const currentPlan = await prisma.testPlan.findUnique({
       where: { id },
-      select: { logs: true, progress: true },
+      select: { logs: true, progress: true, status: true },
     });
     if (!currentPlan) return NextResponse.json({ error: "시험 계획을 찾을 수 없습니다." }, { status: 404 });
 
     const existing = parseLogs(currentPlan.logs);
     const entry = {
-      date:      getTodayLocalStr(),
-      note:      (body.addLog.note as string | undefined) ?? "",
-      progress:  currentPlan.progress,
-      logType:   body.addLog.logType,
-      issueId:   body.addLog.issueId  ?? undefined,
-      severity:  body.addLog.severity ?? undefined,
-      changedBy: session.user.name ?? "관리자",
+      date:          getTodayLocalStr(),
+      note:          (body.addLog.note as string | undefined) ?? "",
+      progress:      currentPlan.progress,
+      logType:       body.addLog.logType,
+      issueId:       body.addLog.issueId       ?? undefined,
+      severity:      body.addLog.severity      ?? undefined,
+      changedBy:     session.user.name ?? "관리자",
+      issueDate:     body.addLog.issueDate     ?? undefined,
+      suspendedFrom: body.addLog.suspendedFrom ?? undefined,
+      resumedFrom:   body.addLog.resumedFrom   ?? undefined,
     };
     const logData: Record<string, unknown> = { logs: [...existing, entry] };
+
+    // 시험 중단 등록 → 상태 자동 '지연' 전환
+    if (body.addLog.logType === "issue" && body.addLog.suspendedFrom) {
+      logData.status = "지연";
+    }
+    // 재개일 등록 → 상태 자동 '시험중' 복원 (현재 지연 상태인 경우)
+    if (body.addLog.logType === "action" && body.addLog.resumedFrom
+        && currentPlan.status === "지연") {
+      logData.status = "시험중";
+    }
+
     const updated = await prisma.testPlan.update({
       where: { id },
       data:  logData as Parameters<typeof prisma.testPlan.update>[0]["data"],

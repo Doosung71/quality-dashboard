@@ -12,8 +12,11 @@ export interface TestLog {
   changedBy?: string
   changes?: string
   logType?: TestLogType
-  issueId?: string      // issue 로그의 UUID, action 로그는 대응 issue의 UUID를 참조
+  issueId?: string        // issue 로그의 UUID, action 로그는 대응 issue의 UUID를 참조
   severity?: IssueSeverity
+  issueDate?: string      // 이슈 실제 발생일 (사용자 입력)
+  suspendedFrom?: string  // 시험 중단 시작일 (issue 로그에만)
+  resumedFrom?: string    // 시험 재개일 (action 로그에만)
 }
 
 export interface Test {

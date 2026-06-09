@@ -11,7 +11,7 @@ import type { FacilitiesData } from "@/types/facility";
 const LEFT_W = 260;
 const MONTHS  = 4;     // 표시 월 수
 
-const ROW_H  = 36;  // px — 시험 계획 행
+const ROW_H  = 48;  // px — 시험 계획 행 (2중 바 표시)
 const SITE_H = 30;  // px — 사이트 헤더 행
 const HALL_H = 28;  // px — 시험장 헤더 행
 
@@ -58,8 +58,33 @@ function unresolvedIssueCount(logs: TestLog[]): number {
   return logs.filter(l => l.logType === "issue" && l.issueId && !resolvedIds.has(l.issueId!)).length;
 }
 
+// ── 중단·재개 계산 ──────────────────────────────────────────────────────────
+
+interface Suspension { from: Date; to: Date | null }
+
+function getSuspensions(logs: TestLog[], today: Date): Suspension[] {
+  const resumeMap = new Map(
+    logs.filter(l => l.logType === "action" && l.issueId && l.resumedFrom)
+        .map(l => [l.issueId!, parseDate(l.resumedFrom!)])
+  );
+  return logs
+    .filter(l => l.logType === "issue" && l.suspendedFrom)
+    .map(l => ({
+      from: parseDate(l.suspendedFrom!),
+      to:   l.issueId ? (resumeMap.get(l.issueId) ?? null) : null,
+    }));
+}
+
+function calcTotalSuspDays(suspensions: Suspension[], today: Date): number {
+  return suspensions.reduce((acc, s) => {
+    const to = s.to ?? today;
+    return acc + Math.max(0, daysBetween(s.from, to));
+  }, 0);
+}
+
 // ── 막대 위치 계산 (퍼센트) ───────────────────────────────────────────────────
 
+// 원래 계획 바
 function calcBar(
   test: Test,
   wStart: Date,
@@ -74,6 +99,57 @@ function calcBar(
   const leftPct  = daysBetween(wStart, cs) / totalDays * 100;
   const widthPct = Math.max(0.4, daysBetween(cs, ce) / totalDays * 100);
   return { leftPct, widthPct };
+}
+
+// 조정 타임라인 바 (중단일 만큼 종료일 밀림)
+function calcAdjustedBar(
+  test: Test,
+  wStart: Date,
+  totalDays: number,
+  today: Date,
+): { leftPct: number; widthPct: number; extPct: number } | null {
+  const suspensions = getSuspensions(test.logs, today);
+  const extraDays   = calcTotalSuspDays(suspensions, today);
+  if (extraDays === 0) return null; // 중단 없으면 조정 바 불필요
+
+  const wEnd   = new Date(wStart.getTime() + totalDays * 864e5);
+  const s      = parseDate(test.plannedStart);
+  const adjEnd = new Date(parseDate(test.plannedEnd).getTime() + extraDays * 864e5);
+
+  if (adjEnd <= wStart || s >= wEnd) return null;
+  const cs = s < wStart     ? wStart : s;
+  const ce = adjEnd > wEnd  ? wEnd   : adjEnd;
+  const leftPct  = daysBetween(wStart, cs) / totalDays * 100;
+  const widthPct = Math.max(0.4, daysBetween(cs, ce) / totalDays * 100);
+
+  // 원래 계획 종료 이후 연장 구간
+  const origEnd = parseDate(test.plannedEnd);
+  const extStart = origEnd > wStart ? origEnd : wStart;
+  const extEnd   = adjEnd  > wEnd   ? wEnd    : adjEnd;
+  const extPct   = extStart < extEnd
+    ? daysBetween(extStart, extEnd) / totalDays * 100
+    : 0;
+
+  return { leftPct, widthPct, extPct };
+}
+
+// 중단 구간 오버레이 (퍼센트)
+function calcSuspBars(
+  suspensions: Suspension[],
+  wStart: Date,
+  totalDays: number,
+  today: Date,
+): Array<{ leftPct: number; widthPct: number }> {
+  const wEnd = new Date(wStart.getTime() + totalDays * 864e5);
+  return suspensions.flatMap(s => {
+    const from = s.from < wStart ? wStart : s.from;
+    const to   = (s.to ?? today) > wEnd ? wEnd : (s.to ?? today);
+    if (from >= to) return [];
+    return [{
+      leftPct:  daysBetween(wStart, from) / totalDays * 100,
+      widthPct: Math.max(0.4, daysBetween(from, to) / totalDays * 100),
+    }];
+  });
 }
 
 // ── 행 타입 ───────────────────────────────────────────────────────────────────
@@ -321,9 +397,24 @@ export function FacilitiesGantt({
 
           /* 시험 계획 행 */
           if (row.kind === "test") {
-            const bar = calcBar(row.test, wStart, totalDays);
-            const issues = unresolvedIssueCount(row.test.logs);
-            const isHovered = hoverId === row.test.id;
+            const bar         = calcBar(row.test, wStart, totalDays);
+            const adjBar      = calcAdjustedBar(row.test, wStart, totalDays, today);
+            const suspensions = getSuspensions(row.test.logs, today);
+            const suspBars    = calcSuspBars(suspensions, wStart, totalDays, today);
+            const issues      = unresolvedIssueCount(row.test.logs);
+            const isHovered   = hoverId === row.test.id;
+            const extraDays   = calcTotalSuspDays(suspensions, today);
+
+            // 조정 종료일 문자열 (툴팁용)
+            const adjEndDate = extraDays > 0
+              ? (() => {
+                  const d = new Date(parseDate(row.test.plannedEnd).getTime() + extraDays * 864e5);
+                  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+                })()
+              : null;
+
+            // 툴팁 anchor: adjBar가 있으면 그 기준, 없으면 bar
+            const tooltipAnchor = adjBar ?? bar;
 
             return (
               <div key={`test-${row.test.id}`} style={{ height: ROW_H }}
@@ -341,58 +432,102 @@ export function FacilitiesGantt({
                   </div>
                 </div>
 
-                {/* 막대 영역 — flex-1로 꽉 채움 */}
+                {/* 막대 영역 */}
                 <div className="flex-1 relative h-full"
                   onMouseEnter={() => setHoverId(row.test.id)}
                   onMouseLeave={() => setHoverId(null)}>
                   <GridLines />
 
+                  {/* ① 원래 계획 바 (하단, 얇은 윤곽선) */}
                   {bar && (
                     <div
-                      className={cn(
-                        "absolute top-1/2 -translate-y-1/2 h-5 rounded-md flex items-center overflow-hidden z-10 select-none min-w-[6px]",
-                        STATUS_BAR[row.test.status] ?? "bg-slate-300"
-                      )}
-                      style={{ left: `${bar.leftPct}%`, width: `${bar.widthPct}%` }}
-                    >
-                      {/* 진행률 오버레이 */}
-                      {row.test.progress > 0 && (
-                        <div className="absolute inset-0 bg-white/20 origin-left"
-                          style={{ width: `${row.test.progress}%` }} />
-                      )}
-                      {/* 카테고리 레이블 */}
-                      {bar.widthPct > 5 && (
-                        <span className={cn(
-                          "relative z-10 text-[10px] font-bold px-1.5 truncate",
-                          STATUS_TEXT[row.test.status] ?? "text-slate-600"
-                        )}>
-                          {row.test.testCategory}
-                        </span>
-                      )}
-                      {/* 이슈 경고 */}
-                      {issues > 0 && (
-                        <div className="absolute right-1 flex items-center">
-                          <AlertTriangle className="w-3 h-3 text-yellow-300 drop-shadow" />
-                        </div>
-                      )}
-                    </div>
+                      className="absolute rounded-sm border border-slate-300/70 bg-slate-100/50 z-10"
+                      style={{
+                        left:   `${bar.leftPct}%`,
+                        width:  `${bar.widthPct}%`,
+                        height: 6,
+                        bottom: 8,
+                      }}
+                    />
                   )}
 
+                  {/* ② 조정 타임라인 바 (상단, 메인) */}
+                  {(adjBar ?? bar) && (() => {
+                    const b = adjBar ?? bar!;
+                    return (
+                      <div
+                        className={cn(
+                          "absolute rounded-md flex items-center overflow-hidden z-10 select-none",
+                          STATUS_BAR[row.test.status] ?? "bg-slate-300"
+                        )}
+                        style={{
+                          left:   `${b.leftPct}%`,
+                          width:  `${b.widthPct}%`,
+                          height: 20,
+                          top:    10,
+                        }}
+                      >
+                        {/* 진행률 */}
+                        {row.test.progress > 0 && (
+                          <div className="absolute inset-0 bg-white/20 origin-left"
+                            style={{ width: `${row.test.progress}%` }} />
+                        )}
+                        {/* 카테고리 */}
+                        {b.widthPct > 5 && (
+                          <span className={cn(
+                            "relative z-10 text-[10px] font-bold px-1.5 truncate",
+                            STATUS_TEXT[row.test.status] ?? "text-slate-600"
+                          )}>
+                            {row.test.testCategory}
+                          </span>
+                        )}
+                        {/* 이슈 경고 */}
+                        {issues > 0 && (
+                          <div className="absolute right-1 flex items-center">
+                            <AlertTriangle className="w-3 h-3 text-yellow-300 drop-shadow" />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+
+                  {/* ③ 중단 구간 오버레이 (주황 해칭) */}
+                  {suspBars.map((sb, i) => (
+                    <div
+                      key={i}
+                      className="absolute rounded-sm z-20 pointer-events-none"
+                      style={{
+                        left:    `${sb.leftPct}%`,
+                        width:   `${sb.widthPct}%`,
+                        height:  20,
+                        top:     10,
+                        background: "repeating-linear-gradient(45deg,#f97316 0px,#f97316 3px,#fed7aa 3px,#fed7aa 8px)",
+                        opacity: 0.85,
+                      }}
+                    />
+                  ))}
+
                   {/* 호버 툴팁 */}
-                  {isHovered && bar && (
+                  {isHovered && tooltipAnchor && (
                     <div
                       className="absolute bottom-full mb-2 z-50 bg-slate-800 text-white rounded-xl px-3 py-2.5 text-xs shadow-2xl pointer-events-none whitespace-nowrap"
                       style={{
-                        left: `clamp(0px, calc(${bar.leftPct + bar.widthPct / 2}% - 90px), calc(100% - 200px))`,
+                        left: `clamp(0px, calc(${tooltipAnchor.leftPct + tooltipAnchor.widthPct / 2}% - 110px), calc(100% - 230px))`,
                       }}
                     >
-                      <p className="font-bold truncate max-w-[220px]">{row.test.projectName}</p>
+                      <p className="font-bold truncate max-w-[240px]">{row.test.projectName}</p>
                       <p className="text-slate-300 mt-0.5 text-[10px]">
                         {row.test.testCategory} · {row.test.status} · {row.test.progress}%
                       </p>
                       <p className="text-slate-400 text-[10px]">
-                        {row.test.plannedStart} ~ {row.test.plannedEnd}
+                        계획: {row.test.plannedStart} ~ {row.test.plannedEnd}
                       </p>
+                      {adjEndDate && (
+                        <p className="text-orange-300 text-[10px]">
+                          조정: {row.test.plannedStart} ~ {adjEndDate}
+                          <span className="ml-1 text-orange-400">(+{extraDays}일 지연)</span>
+                        </p>
+                      )}
                       {row.eq && <p className="text-slate-400 text-[10px]">{row.eq.name}</p>}
                       {issues > 0 && (
                         <p className="text-yellow-300 text-[10px] mt-1">⚠ 미해결 이슈 {issues}건</p>

@@ -120,12 +120,18 @@ function IssueModal({
   onClose: () => void;
   onRefresh: () => void;
 }) {
+  const todayStr = new Date().toLocaleDateString("sv-SE"); // YYYY-MM-DD
+
   const groups = groupIssues(test.logs);
   const [showResolved, setShowResolved] = useState(false);
   const [severity, setSeverity] = useState<IssueSeverity>("medium");
   const [issueNote, setIssueNote] = useState("");
+  const [issueDate, setIssueDate] = useState(todayStr);
+  const [suspendEnabled, setSuspendEnabled] = useState(false);
+  const [suspendedFrom, setSuspendedFrom] = useState(todayStr);
   const [addingActionFor, setAddingActionFor] = useState<string | null>(null);
   const [actionNote, setActionNote] = useState("");
+  const [resumedFrom, setResumedFrom] = useState(todayStr);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -141,20 +147,22 @@ function IssueModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           addLog: {
-            logType: "issue",
-            issueId: crypto.randomUUID(),
+            logType:       "issue",
+            issueId:       crypto.randomUUID(),
             severity,
-            note: issueNote.trim(),
+            note:          issueNote.trim(),
+            issueDate,
+            suspendedFrom: suspendEnabled ? suspendedFrom : undefined,
           },
         }),
       });
       if (!res.ok) { setError("이슈 등록 실패"); return; }
-      setIssueNote(""); setSeverity("medium");
+      setIssueNote(""); setSeverity("medium"); setSuspendEnabled(false);
       onRefresh();
     } finally { setSaving(false); }
   }
 
-  async function submitAction(issueId: string) {
+  async function submitAction(issueId: string, hasSuspension: boolean) {
     if (!actionNote.trim()) return;
     setSaving(true); setError("");
     try {
@@ -163,9 +171,10 @@ function IssueModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           addLog: {
-            logType: "action",
+            logType:    "action",
             issueId,
-            note: actionNote.trim(),
+            note:       actionNote.trim(),
+            resumedFrom: hasSuspension ? resumedFrom : undefined,
           },
         }),
       });
@@ -210,7 +219,14 @@ function IssueModal({
                         )}>
                           {SEVERITY_LABEL[issue.severity ?? "medium"]}
                         </span>
-                        <span className="text-[10px] text-slate-400">{issue.date} · {issue.changedBy}</span>
+                        <span className="text-[10px] text-slate-400">
+                          발생: {issue.issueDate ?? issue.date}
+                          {issue.suspendedFrom && (
+                            <span className="text-orange-500 font-semibold ml-1">
+                              · 중단: {issue.suspendedFrom}
+                            </span>
+                          )}
+                        </span>
                       </div>
                       <p className="text-sm text-slate-700 font-medium">{issue.note}</p>
                     </div>
@@ -226,10 +242,26 @@ function IssueModal({
                         rows={2}
                         className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-400"
                       />
+                      {issue.suspendedFrom && (
+                        <div>
+                          <label className="block text-xs font-semibold text-slate-500 mb-1">
+                            시험 재개일
+                          </label>
+                          <input
+                            type="date"
+                            value={resumedFrom}
+                            onChange={(e) => setResumedFrom(e.target.value)}
+                            className="w-full text-sm border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                          />
+                          <p className="text-[10px] text-slate-400 mt-1">
+                            재개일 등록 시 시험 상태가 &apos;시험중&apos;으로 자동 변경됩니다.
+                          </p>
+                        </div>
+                      )}
                       <div className="flex gap-2 justify-end">
                         <button onClick={() => { setAddingActionFor(null); setActionNote(""); }}
                           className="px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg">취소</button>
-                        <button onClick={() => submitAction(issue.issueId!)} disabled={saving}
+                        <button onClick={() => submitAction(issue.issueId!, !!issue.suspendedFrom)} disabled={saving}
                           className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg disabled:opacity-50">
                           <CheckCircle2 className="w-3.5 h-3.5" /> 조치 완료
                         </button>
@@ -237,7 +269,7 @@ function IssueModal({
                     </div>
                   ) : (
                     <button
-                      onClick={() => { setAddingActionFor(issue.issueId!); setActionNote(""); }}
+                      onClick={() => { setAddingActionFor(issue.issueId!); setActionNote(""); setResumedFrom(todayStr); }}
                       className="text-xs font-semibold text-emerald-700 hover:text-emerald-900 flex items-center gap-1"
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" /> 조치 추가
@@ -277,6 +309,12 @@ function IssueModal({
                         <CheckCircle2 className="w-3 h-3 text-emerald-500 ml-auto" />
                       </div>
                       <p className="text-xs text-slate-600">{issue.note}</p>
+                      {issue.suspendedFrom && (
+                        <p className="text-[10px] text-orange-600">
+                          중단: {issue.suspendedFrom}
+                          {action?.resumedFrom && ` → 재개: ${action.resumedFrom}`}
+                        </p>
+                      )}
                       {action && (
                         <p className="text-xs text-emerald-700 font-medium flex items-center gap-1">
                           <CheckCircle2 className="w-3 h-3" /> {action.note}
@@ -306,6 +344,48 @@ function IssueModal({
                     {SEVERITY_LABEL[sv]}
                   </button>
                 ))}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1">이슈 발생일</label>
+                <input
+                  type="date"
+                  value={issueDate}
+                  onChange={(e) => setIssueDate(e.target.value)}
+                  className="w-full text-sm border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1">
+                  시험 중단일
+                  <span className="ml-1 text-[10px] font-normal text-slate-400">(선택)</span>
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="suspend-toggle"
+                    checked={suspendEnabled}
+                    onChange={(e) => {
+                      setSuspendEnabled(e.target.checked);
+                      if (e.target.checked) setSuspendedFrom(issueDate);
+                    }}
+                    className="rounded accent-orange-500"
+                  />
+                  {suspendEnabled ? (
+                    <input
+                      type="date"
+                      value={suspendedFrom}
+                      onChange={(e) => setSuspendedFrom(e.target.value)}
+                      className="flex-1 text-sm border border-orange-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    />
+                  ) : (
+                    <label htmlFor="suspend-toggle" className="text-xs text-slate-400 cursor-pointer">중단 없음</label>
+                  )}
+                </div>
+                {suspendEnabled && (
+                  <p className="text-[10px] text-orange-600 mt-1">상태가 &apos;지연&apos;으로 자동 변경됩니다.</p>
+                )}
               </div>
             </div>
             <div>
