@@ -413,7 +413,10 @@ export const ModelName = {
   SupplierAudit: 'SupplierAudit',
   AuditFinding: 'AuditFinding',
   IncomingInspection: 'IncomingInspection',
-  SourceInspection: 'SourceInspection'
+  SourceInspection: 'SourceInspection',
+  QpaAudit: 'QpaAudit',
+  QpaAuditItem: 'QpaAuditItem',
+  QpaFinding: 'QpaFinding'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -429,7 +432,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "internalStandard" | "claim" | "ncr" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "supplierAudit" | "auditFinding" | "incomingInspection" | "sourceInspection"
+    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "internalStandard" | "claim" | "ncr" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "supplierAudit" | "auditFinding" | "incomingInspection" | "sourceInspection" | "qpaAudit" | "qpaAuditItem" | "qpaFinding"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2653,6 +2656,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    QpaAudit: {
+      payload: Prisma.$QpaAuditPayload<ExtArgs>
+      fields: Prisma.QpaAuditFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.QpaAuditFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.QpaAuditFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditPayload>
+        }
+        findFirst: {
+          args: Prisma.QpaAuditFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.QpaAuditFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditPayload>
+        }
+        findMany: {
+          args: Prisma.QpaAuditFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditPayload>[]
+        }
+        create: {
+          args: Prisma.QpaAuditCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditPayload>
+        }
+        createMany: {
+          args: Prisma.QpaAuditCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.QpaAuditCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditPayload>[]
+        }
+        delete: {
+          args: Prisma.QpaAuditDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditPayload>
+        }
+        update: {
+          args: Prisma.QpaAuditUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditPayload>
+        }
+        deleteMany: {
+          args: Prisma.QpaAuditDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.QpaAuditUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.QpaAuditUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditPayload>[]
+        }
+        upsert: {
+          args: Prisma.QpaAuditUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditPayload>
+        }
+        aggregate: {
+          args: Prisma.QpaAuditAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateQpaAudit>
+        }
+        groupBy: {
+          args: Prisma.QpaAuditGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.QpaAuditGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.QpaAuditCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.QpaAuditCountAggregateOutputType> | number
+        }
+      }
+    }
+    QpaAuditItem: {
+      payload: Prisma.$QpaAuditItemPayload<ExtArgs>
+      fields: Prisma.QpaAuditItemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.QpaAuditItemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditItemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.QpaAuditItemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditItemPayload>
+        }
+        findFirst: {
+          args: Prisma.QpaAuditItemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditItemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.QpaAuditItemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditItemPayload>
+        }
+        findMany: {
+          args: Prisma.QpaAuditItemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditItemPayload>[]
+        }
+        create: {
+          args: Prisma.QpaAuditItemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditItemPayload>
+        }
+        createMany: {
+          args: Prisma.QpaAuditItemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.QpaAuditItemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditItemPayload>[]
+        }
+        delete: {
+          args: Prisma.QpaAuditItemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditItemPayload>
+        }
+        update: {
+          args: Prisma.QpaAuditItemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditItemPayload>
+        }
+        deleteMany: {
+          args: Prisma.QpaAuditItemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.QpaAuditItemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.QpaAuditItemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditItemPayload>[]
+        }
+        upsert: {
+          args: Prisma.QpaAuditItemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaAuditItemPayload>
+        }
+        aggregate: {
+          args: Prisma.QpaAuditItemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateQpaAuditItem>
+        }
+        groupBy: {
+          args: Prisma.QpaAuditItemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.QpaAuditItemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.QpaAuditItemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.QpaAuditItemCountAggregateOutputType> | number
+        }
+      }
+    }
+    QpaFinding: {
+      payload: Prisma.$QpaFindingPayload<ExtArgs>
+      fields: Prisma.QpaFindingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.QpaFindingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaFindingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.QpaFindingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaFindingPayload>
+        }
+        findFirst: {
+          args: Prisma.QpaFindingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaFindingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.QpaFindingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaFindingPayload>
+        }
+        findMany: {
+          args: Prisma.QpaFindingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaFindingPayload>[]
+        }
+        create: {
+          args: Prisma.QpaFindingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaFindingPayload>
+        }
+        createMany: {
+          args: Prisma.QpaFindingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.QpaFindingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaFindingPayload>[]
+        }
+        delete: {
+          args: Prisma.QpaFindingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaFindingPayload>
+        }
+        update: {
+          args: Prisma.QpaFindingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaFindingPayload>
+        }
+        deleteMany: {
+          args: Prisma.QpaFindingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.QpaFindingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.QpaFindingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaFindingPayload>[]
+        }
+        upsert: {
+          args: Prisma.QpaFindingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QpaFindingPayload>
+        }
+        aggregate: {
+          args: Prisma.QpaFindingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateQpaFinding>
+        }
+        groupBy: {
+          args: Prisma.QpaFindingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.QpaFindingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.QpaFindingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.QpaFindingCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3211,6 +3436,68 @@ export const SourceInspectionScalarFieldEnum = {
 export type SourceInspectionScalarFieldEnum = (typeof SourceInspectionScalarFieldEnum)[keyof typeof SourceInspectionScalarFieldEnum]
 
 
+export const QpaAuditScalarFieldEnum = {
+  id: 'id',
+  qpaNo: 'qpaNo',
+  vendorId: 'vendorId',
+  vendorName: 'vendorName',
+  location: 'location',
+  partName: 'partName',
+  auditDate: 'auditDate',
+  auditorNames: 'auditorNames',
+  templateVersion: 'templateVersion',
+  totalPotential: 'totalPotential',
+  totalScore: 'totalScore',
+  totalPercent: 'totalPercent',
+  level: 'level',
+  result: 'result',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type QpaAuditScalarFieldEnum = (typeof QpaAuditScalarFieldEnum)[keyof typeof QpaAuditScalarFieldEnum]
+
+
+export const QpaAuditItemScalarFieldEnum = {
+  id: 'id',
+  auditId: 'auditId',
+  itemNo: 'itemNo',
+  category: 'category',
+  subCategory: 'subCategory',
+  isKey: 'isKey',
+  checkItem: 'checkItem',
+  criteria: 'criteria',
+  potential: 'potential',
+  score: 'score',
+  isNA: 'isNA',
+  comment: 'comment',
+  evidence: 'evidence',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type QpaAuditItemScalarFieldEnum = (typeof QpaAuditItemScalarFieldEnum)[keyof typeof QpaAuditItemScalarFieldEnum]
+
+
+export const QpaFindingScalarFieldEnum = {
+  id: 'id',
+  auditId: 'auditId',
+  seq: 'seq',
+  category: 'category',
+  finding: 'finding',
+  action: 'action',
+  responsible: 'responsible',
+  dueDate: 'dueDate',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type QpaFindingScalarFieldEnum = (typeof QpaFindingScalarFieldEnum)[keyof typeof QpaFindingScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3739,6 +4026,9 @@ export type GlobalOmitConfig = {
   auditFinding?: Prisma.AuditFindingOmit
   incomingInspection?: Prisma.IncomingInspectionOmit
   sourceInspection?: Prisma.SourceInspectionOmit
+  qpaAudit?: Prisma.QpaAuditOmit
+  qpaAuditItem?: Prisma.QpaAuditItemOmit
+  qpaFinding?: Prisma.QpaFindingOmit
 }
 
 /* Types for Logging */

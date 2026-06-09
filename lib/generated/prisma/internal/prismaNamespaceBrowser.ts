@@ -80,7 +80,10 @@ export const ModelName = {
   SupplierAudit: 'SupplierAudit',
   AuditFinding: 'AuditFinding',
   IncomingInspection: 'IncomingInspection',
-  SourceInspection: 'SourceInspection'
+  SourceInspection: 'SourceInspection',
+  QpaAudit: 'QpaAudit',
+  QpaAuditItem: 'QpaAuditItem',
+  QpaFinding: 'QpaFinding'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -616,6 +619,68 @@ export const SourceInspectionScalarFieldEnum = {
 } as const
 
 export type SourceInspectionScalarFieldEnum = (typeof SourceInspectionScalarFieldEnum)[keyof typeof SourceInspectionScalarFieldEnum]
+
+
+export const QpaAuditScalarFieldEnum = {
+  id: 'id',
+  qpaNo: 'qpaNo',
+  vendorId: 'vendorId',
+  vendorName: 'vendorName',
+  location: 'location',
+  partName: 'partName',
+  auditDate: 'auditDate',
+  auditorNames: 'auditorNames',
+  templateVersion: 'templateVersion',
+  totalPotential: 'totalPotential',
+  totalScore: 'totalScore',
+  totalPercent: 'totalPercent',
+  level: 'level',
+  result: 'result',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type QpaAuditScalarFieldEnum = (typeof QpaAuditScalarFieldEnum)[keyof typeof QpaAuditScalarFieldEnum]
+
+
+export const QpaAuditItemScalarFieldEnum = {
+  id: 'id',
+  auditId: 'auditId',
+  itemNo: 'itemNo',
+  category: 'category',
+  subCategory: 'subCategory',
+  isKey: 'isKey',
+  checkItem: 'checkItem',
+  criteria: 'criteria',
+  potential: 'potential',
+  score: 'score',
+  isNA: 'isNA',
+  comment: 'comment',
+  evidence: 'evidence',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type QpaAuditItemScalarFieldEnum = (typeof QpaAuditItemScalarFieldEnum)[keyof typeof QpaAuditItemScalarFieldEnum]
+
+
+export const QpaFindingScalarFieldEnum = {
+  id: 'id',
+  auditId: 'auditId',
+  seq: 'seq',
+  category: 'category',
+  finding: 'finding',
+  action: 'action',
+  responsible: 'responsible',
+  dueDate: 'dueDate',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type QpaFindingScalarFieldEnum = (typeof QpaFindingScalarFieldEnum)[keyof typeof QpaFindingScalarFieldEnum]
 
 
 export const SortOrder = {

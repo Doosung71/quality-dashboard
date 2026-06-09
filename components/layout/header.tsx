@@ -21,6 +21,8 @@ const titles: Record<string, string> = {
   "/vendors/inspections/new": "출장검사 등록",
   "/vendors/audits": "협력업체 감사",
   "/vendors/audits/new": "협력업체 감사 등록",
+  "/vendors/qpa": "공정감사 (QPA)",
+  "/vendors/qpa/new": "공정감사 신규 등록",
   "/knowledge": "지식 관리",
   "/facilities": "시험 및 품질 보증",
   "/assets": "시험설비/계측기 관리",

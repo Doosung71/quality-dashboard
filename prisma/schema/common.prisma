@@ -64,6 +64,9 @@ model User {
 
   // 사내 규격 관리
   internalStandards       InternalStandard[]      @relation("InternalStandardUploader")
+
+  // QPA 공정감사
+  qpaAudits               QpaAudit[]              @relation("QpaAuditCreator")
 }
 
 model Feedback {

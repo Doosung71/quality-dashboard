@@ -111,3 +111,65 @@ model SourceInspection {
   createdBy      User             @relation("SourceInspectionCreator", fields: [createdById], references: [id])
   createdById    String
 }
+
+// ─── QPA 공정감사 체크리스트 ────────────────────────────────────
+
+model QpaAudit {
+  id              String         @id @default(cuid())
+  qpaNo           String         @unique              // QPA-YYYY-NNN
+  vendorId        String                              // vendors.json id
+  vendorName      String
+  location        String         @default("")
+  partName        String         @default("")
+  auditDate       DateTime
+  auditorNames    String         @default("")         // "조득희 팀장, 김원호 부장"
+  templateVersion String         @default("March 2026")
+  totalPotential  Int            @default(138)
+  totalScore      Int            @default(0)
+  totalPercent    Float          @default(0)
+  level           String         @default("")        // A/B/C/D
+  result          String         @default("TBD")     // PASS/FAIL/TBD
+  status          String         @default("InProgress") // InProgress/Completed
+  items           QpaAuditItem[]
+  findings        QpaFinding[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  createdById     String
+  createdBy       User           @relation("QpaAuditCreator", fields: [createdById], references: [id])
+}
+
+model QpaAuditItem {
+  id          String      @id @default(cuid())
+  auditId     String
+  audit       QpaAudit    @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  itemNo      Int
+  category    String
+  subCategory String
+  isKey       Boolean     @default(false)
+  checkItem   String
+  criteria    String
+  potential   Int
+  score       Int         @default(0)
+  isNA        Boolean     @default(false)
+  comment     String      @default("")
+  evidence    String      @default("")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([auditId, itemNo])
+}
+
+model QpaFinding {
+  id          String    @id @default(cuid())
+  auditId     String
+  audit       QpaAudit  @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  seq         Int
+  category    String
+  finding     String
+  action      String    @default("")
+  responsible String    @default("")
+  dueDate     DateTime?
+  status      String    @default("OPEN")   // OPEN/IN_PROGRESS/CLOSED
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}

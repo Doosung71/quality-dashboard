@@ -50,9 +50,9 @@ const ALL_NAV: NavItem[] = [
     href: "/vendors", label: "입고 품질 관리", icon: ClipboardList,
     roles: ALL, readonlyFor: [],
     children: [
-      { href: "/vendors/audits",      label: "협력업체 감사", roles: ALL, readonlyFor: [] },
-      { href: "/vendors/inspections", label: "출장 검사",     roles: ALL, readonlyFor: [] },
-      { href: "/vendors/incoming",    label: "수입 검사",     roles: ALL, readonlyFor: [] },
+      { href: "/vendors/qpa",         label: "공정감사 (QPA)", roles: ALL, readonlyFor: [] },
+      { href: "/vendors/inspections", label: "출장 검사",      roles: ALL, readonlyFor: [] },
+      { href: "/vendors/incoming",    label: "수입 검사",      roles: ALL, readonlyFor: [] },
     ],
   },
 

@@ -167,3 +167,18 @@ export type IncomingInspection = Prisma.IncomingInspectionModel
  * 
  */
 export type SourceInspection = Prisma.SourceInspectionModel
+/**
+ * Model QpaAudit
+ * 
+ */
+export type QpaAudit = Prisma.QpaAuditModel
+/**
+ * Model QpaAuditItem
+ * 
+ */
+export type QpaAuditItem = Prisma.QpaAuditItemModel
+/**
+ * Model QpaFinding
+ * 
+ */
+export type QpaFinding = Prisma.QpaFindingModel
