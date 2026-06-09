@@ -1,9 +1,23 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { KnowledgeSuggest } from "@/components/ui/knowledge-suggest";
 import Image from "next/image";
+import Link from "next/link";
 import type { Vendor, VendorsData, VendorCategory, VendorGrade, VendorStatus, QualityIssueItem } from "@/types/vendor";
+
+interface QpaAuditSummary {
+  id: string
+  qpaNo: string
+  auditDate: string
+  partName: string
+  auditorNames: string
+  totalPercent: number
+  level: string
+  result: string
+  status: string
+  _count: { findings: number }
+}
 import {
   Building2,
   Search,
@@ -29,6 +43,7 @@ import {
   Phone,
   Landmark,
   GitBranch,
+  ExternalLink,
 } from "lucide-react";
 
 interface VendorsViewProps {
@@ -125,10 +140,23 @@ type DetailTabId = (typeof DETAIL_TABS)[number]["id"];
 
 function VendorDrawer({ vendor, onClose }: { vendor: Vendor; onClose: () => void }) {
   const [activeTab, setActiveTab] = useState<DetailTabId>("overview");
+  const [qpaAudits, setQpaAudits] = useState<QpaAuditSummary[]>([]);
   const style = gradeStyles[vendor.grade];
   const statusInfo = statusBadges[vendor.status];
   const StatusIcon = statusInfo.icon;
   const d = vendor.details;
+
+  useEffect(() => {
+    setQpaAudits([]);
+    fetch(`/api/vendors/${vendor.id}/qpa-summary`)
+      .then(r => r.json())
+      .then((data: { audits: QpaAuditSummary[] }) => setQpaAudits(data.audits ?? []))
+      .catch(() => {});
+  }, [vendor.id]);
+
+  const latestQpaDate = qpaAudits[0]
+    ? new Date(qpaAudits[0].auditDate).toLocaleDateString("ko-KR")
+    : null;
 
   return (
     <>
@@ -175,7 +203,7 @@ function VendorDrawer({ vendor, onClose }: { vendor: Vendor; onClose: () => void
             {DETAIL_TABS.map((tab, idx) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
-              const isDisabled = !d && tab.id !== "overview";
+              const isDisabled = !d && tab.id !== "overview" && tab.id !== "process";
               return (
                 <button
                   key={tab.id}
@@ -212,7 +240,7 @@ function VendorDrawer({ vendor, onClose }: { vendor: Vendor; onClose: () => void
                 {[
                   { label: "주요 품목", value: vendor.mainItem },
                   { label: "공장 소재지", value: vendor.location },
-                  { label: "최근 품질 심사일", value: vendor.lastAuditDate },
+                  { label: "최근 품질 심사일 (QPA)", value: latestQpaDate ?? vendor.lastAuditDate },
                   { label: "수입검사 불량률", value: `${vendor.defectRate}%` },
                   ...(d ? [
                     { label: "설립일", value: d.establishedDate },
@@ -345,35 +373,104 @@ function VendorDrawer({ vendor, onClose }: { vendor: Vendor; onClose: () => void
           )}
 
           {/* ── 탭 3: 공정 및 설비 현황 ── */}
-          {activeTab === "process" && d && (
-            <div className="space-y-4">
-              <p className="text-xs text-slate-500">10단계 생산 공정별 설비 운영 현황.</p>
-              <div className="grid grid-cols-1 gap-4">
-                {d.processFacilities.map(pf => (
-                  <div key={pf.seq} className="border border-slate-100 rounded-xl overflow-hidden flex gap-0">
-                    {pf.imageUrl && (
-                      <div className="relative w-28 shrink-0">
-                        <Image
-                          src={pf.imageUrl}
-                          alt={pf.processName}
-                          fill
-                          className="object-cover"
-                          sizes="112px"
-                        />
-                      </div>
-                    )}
-                    <div className="p-3 flex-1 bg-white">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="w-6 h-6 rounded-full bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center shrink-0">
-                          {pf.seq}
-                        </span>
-                        <p className="text-sm font-bold text-slate-900">{pf.processName}</p>
-                      </div>
-                      <p className="text-xs text-slate-500 leading-relaxed pl-8">{pf.status}</p>
-                    </div>
+          {activeTab === "process" && (
+            <div className="space-y-6">
+              {/* QPA 공정감사 이력 */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                  <ClipboardList className="w-3.5 h-3.5" /> 공정감사 (QPA) 이력
+                </h4>
+                {qpaAudits.length === 0 ? (
+                  <div className="bg-slate-50 rounded-xl p-4 text-center text-xs text-slate-400">
+                    등록된 QPA 감사 이력이 없습니다.
                   </div>
-                ))}
+                ) : (
+                  <div className="space-y-2">
+                    {qpaAudits.map(a => {
+                      const resultStyle =
+                        a.result === "PASS" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
+                        a.result === "FAIL" ? "bg-rose-50 text-rose-700 border-rose-200" :
+                        "bg-slate-50 text-slate-500 border-slate-200"
+                      const levelStyle =
+                        a.level === "A" ? "bg-emerald-100 text-emerald-800" :
+                        a.level === "B" ? "bg-amber-100 text-amber-800" :
+                        a.level === "C" ? "bg-orange-100 text-orange-800" :
+                        "bg-rose-100 text-rose-800"
+                      return (
+                        <div key={a.id} className="border border-slate-100 rounded-xl p-3 bg-white flex items-center gap-3">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-[10px] font-mono text-slate-400">{a.qpaNo}</span>
+                              <span className="text-xs font-semibold text-slate-700">
+                                {new Date(a.auditDate).toLocaleDateString("ko-KR")}
+                              </span>
+                              {a.partName && (
+                                <span className="text-[10px] text-slate-400 truncate max-w-[120px]">{a.partName}</span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2 mt-1 flex-wrap">
+                              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${resultStyle}`}>
+                                {a.result}
+                              </span>
+                              {a.level && (
+                                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${levelStyle}`}>
+                                  {a.level}등급
+                                </span>
+                              )}
+                              <span className="text-[10px] text-slate-500">{a.totalPercent.toFixed(1)}%</span>
+                              {a._count.findings > 0 && (
+                                <span className="text-[10px] text-amber-600 font-semibold">지적 {a._count.findings}건</span>
+                              )}
+                            </div>
+                          </div>
+                          <Link
+                            href={`/vendors/qpa/${a.id}`}
+                            className="shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                            title="QPA 상세 보기"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </Link>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
               </div>
+
+              {/* 정적 공정 설비 현황 (데이터가 있을 때만) */}
+              {d && d.processFacilities.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                    <Factory className="w-3.5 h-3.5" /> 생산 공정 및 설비
+                  </h4>
+                  <div className="grid grid-cols-1 gap-3">
+                    {d.processFacilities.map(pf => (
+                      <div key={pf.seq} className="border border-slate-100 rounded-xl overflow-hidden flex gap-0">
+                        {pf.imageUrl && (
+                          <div className="relative w-28 shrink-0">
+                            <Image
+                              src={pf.imageUrl}
+                              alt={pf.processName}
+                              fill
+                              className="object-cover"
+                              sizes="112px"
+                            />
+                          </div>
+                        )}
+                        <div className="p-3 flex-1 bg-white">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="w-6 h-6 rounded-full bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+                              {pf.seq}
+                            </span>
+                            <p className="text-sm font-bold text-slate-900">{pf.processName}</p>
+                          </div>
+                          <p className="text-xs text-slate-500 leading-relaxed pl-8">{pf.status}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
