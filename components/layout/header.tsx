@@ -23,7 +23,7 @@ const titles: Record<string, string> = {
   "/vendors/audits/new": "협력업체 감사 등록",
   "/knowledge": "지식 관리",
   "/facilities": "시험 및 품질 보증",
-  "/assets": "자산 관리",
+  "/assets": "시험설비/계측기 관리",
   "/projects": "프로젝트 관리",
   "/projects/awarded": "수주 프로젝트",
   "/dashboard": "입찰 프로젝트",

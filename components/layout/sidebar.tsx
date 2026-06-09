@@ -81,7 +81,7 @@ const ALL_NAV: NavItem[] = [
     label: "기준 정보 및 지원", icon: Layers,
     roles: ALL, readonlyFor: [],
     children: [
-      { href: "/assets",       label: "자산 관리", roles: ALL,                        readonlyFor: ["PRACTITIONER"] },
+      { href: "/assets",       label: "시험설비/계측기 관리", roles: ALL,                        readonlyFor: ["PRACTITIONER"] },
       { href: "/knowledge",    label: "지식 관리", roles: ALL,                        readonlyFor: [] },
       { href: "/intelligence", label: "외부 정보", roles: ALL,                        readonlyFor: [] },
       { href: "/hr",           label: "인사·면담", roles: ["DIRECTOR", "ADMIN"],      readonlyFor: [] },
