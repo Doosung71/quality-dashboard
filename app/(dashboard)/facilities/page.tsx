@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { facilitiesData } from "@/data/facilities.data";
-import { FacilitiesOverview } from "@/components/facilities/facilities-overview";
+import { FacilitiesGantt } from "@/components/facilities/facilities-gantt";
 import { parseSpec, parseLogs } from "@/lib/facilities-utils";
 import type { Equipment } from "@/types/asset";
 import type { Test } from "@/types/test";
@@ -56,8 +56,10 @@ export default async function FacilitiesPage() {
 
   return (
     <div className="space-y-1">
-      <p className="text-xs text-slate-400 mb-4">시험장 가동 현황 및 진행 중인 시험 계획 현황</p>
-      <FacilitiesOverview data={facilitiesData} assets={assets} tests={tests} />
+      <p className="text-xs text-slate-400 mb-4">
+        사이트 · 시험장별 시험 계획 진행 현황 — 사이트/시험장 클릭으로 접기·펼치기
+      </p>
+      <FacilitiesGantt data={facilitiesData} assets={assets} tests={tests} />
     </div>
   );
 }

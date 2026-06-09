@@ -46,6 +46,32 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   const { id } = await params;
   const body = await req.json();
 
+  // ── addLog: 이슈/조치 로그 직접 추가 (필드 업데이트 없음) ────────────────
+  if (body.addLog) {
+    const currentPlan = await prisma.testPlan.findUnique({
+      where: { id },
+      select: { logs: true, progress: true },
+    });
+    if (!currentPlan) return NextResponse.json({ error: "시험 계획을 찾을 수 없습니다." }, { status: 404 });
+
+    const existing = parseLogs(currentPlan.logs);
+    const entry = {
+      date:      getTodayLocalStr(),
+      note:      (body.addLog.note as string | undefined) ?? "",
+      progress:  currentPlan.progress,
+      logType:   body.addLog.logType,
+      issueId:   body.addLog.issueId  ?? undefined,
+      severity:  body.addLog.severity ?? undefined,
+      changedBy: session.user.name ?? "관리자",
+    };
+    const logData: Record<string, unknown> = { logs: [...existing, entry] };
+    const updated = await prisma.testPlan.update({
+      where: { id },
+      data:  logData as Parameters<typeof prisma.testPlan.update>[0]["data"],
+    });
+    return NextResponse.json(updated);
+  }
+
   const ALLOWED_BASE = [
     "equipmentId","testCategory","projectName","sampleType","sampleDescription",
     "plannedStart","plannedEnd","actualStart","actualEnd","status","progress","logs",
