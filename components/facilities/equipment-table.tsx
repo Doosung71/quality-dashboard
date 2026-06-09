@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import type { Equipment } from "@/types/asset";
 import type { Test } from "@/types/test";
 import { computeStatus, CURRENT_YEAR } from "@/lib/facilities-utils";
-import { TypeChip, EquipStatusBadge, TestStatusBadge, TestCategoryChip } from "./badges";
+import { TypeChip, EquipStatusBadge } from "./badges";
 
 function formatSpec(spec: Record<string, string>): string {
   const parts: string[] = [];
@@ -15,8 +15,8 @@ function formatSpec(spec: Record<string, string>): string {
   return parts.join(" / ");
 }
 
-function getEquipmentTests(tests: Test[], equipmentId: string): Test[] {
-  return tests.filter((t) => t.equipmentId === equipmentId);
+function isInUse(tests: Test[], equipmentId: string): boolean {
+  return tests.some((t) => t.equipmentId === equipmentId && (t.status === "시험중" || t.status === "준비중"));
 }
 
 type ColKey = "maker" | "quantity" | "notes" | "owner";
@@ -64,7 +64,7 @@ export function EquipmentTable({
           </div>
         )}
         {equipment.map((eq) => {
-          const eqTests = getEquipmentTests(tests, eq.id);
+          const inUse = isInUse(tests, eq.id);
           const status = computeStatus(eq);
           const isAging = status === "aging";
           return (
@@ -85,6 +85,7 @@ export function EquipmentTable({
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <TypeChip type={eq.type} />
                     <EquipStatusBadge status={status} />
+                    {inUse && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-700">사용중</span>}
                   </div>
                   <p className="text-[10px] text-slate-400 font-mono">{formatSpec(eq.spec)}</p>
                 </div>
@@ -128,34 +129,6 @@ export function EquipmentTable({
                       <span className="font-medium text-slate-500">{eq.notes}</span>
                     </div>
                   )}
-                </div>
-              )}
-              {eqTests.length > 0 && (
-                <div className="space-y-1.5 pt-2 border-t border-slate-100">
-                  {eqTests.map((t) => (
-                    <div key={t.id} className="flex items-center gap-1.5 flex-wrap">
-                      <TestStatusBadge status={t.status} />
-                      <TestCategoryChip category={t.testCategory} />
-                      <div
-                        className="w-10 h-1.5 rounded-full bg-slate-100 overflow-hidden shrink-0"
-                        role="img"
-                        aria-label={`진행률 ${t.progress}%`}
-                      >
-                        <div
-                          className={cn("h-full rounded-full", {
-                            "bg-blue-400":    t.status === "시험중",
-                            "bg-emerald-400": t.status === "완료",
-                            "bg-red-400":     t.status === "지연",
-                            "bg-slate-300":   t.status === "준비중",
-                          })}
-                          style={{ width: `${t.progress}%` }}
-                        />
-                      </div>
-                      <span className="text-[10px] text-slate-500 truncate max-w-[140px]" title={t.projectName}>
-                        {t.projectName}
-                      </span>
-                    </div>
-                  ))}
                 </div>
               )}
             </div>
@@ -205,7 +178,7 @@ export function EquipmentTable({
       </div>
 
       <div className="hidden md:block overflow-x-auto">
-        <table className="w-full text-sm min-w-[900px]">
+        <table className="w-full text-sm min-w-[620px]">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200">
               <th className="sticky left-0 z-20 bg-slate-50 text-left px-4 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">설비명</th>
@@ -217,13 +190,13 @@ export function EquipmentTable({
               <th className="text-right px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">사용연수</th>
               {shown("quantity") && <th className="text-right px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">대수</th>}
               <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">상태</th>
-              <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">시험 현황</th>
+              <th className="text-left px-3 py-2.5 text-xs font-medium text-slate-500 whitespace-nowrap">가동</th>
               {shown("notes") && <th className="text-left px-4 py-2.5 text-xs font-medium text-slate-500">비고</th>}
             </tr>
           </thead>
           <tbody>
             {equipment.map((eq) => {
-              const eqTests = getEquipmentTests(tests, eq.id);
+              const inUse = isInUse(tests, eq.id);
               const status = computeStatus(eq);
               const isAging = status === "aging";
               const rowBg = isAging
@@ -303,39 +276,10 @@ export function EquipmentTable({
                     <EquipStatusBadge status={status} />
                   </td>
                   <td className="px-3 py-2.5">
-                    {eqTests.length === 0 ? (
-                      <span className="text-slate-300 text-xs">—</span>
-                    ) : (
-                      <div className="space-y-1.5">
-                        {eqTests.map((t) => (
-                          <div key={t.id} className="flex items-center gap-1.5 min-w-[240px]">
-                            <TestStatusBadge status={t.status} />
-                            <TestCategoryChip category={t.testCategory} />
-                            <div
-                              className="w-14 h-1.5 rounded-full bg-slate-100 overflow-hidden shrink-0"
-                              role="img"
-                              aria-label={`진행률 ${t.progress}%`}
-                            >
-                              <div
-                                className={cn("h-full rounded-full", {
-                                  "bg-blue-400":    t.status === "시험중",
-                                  "bg-emerald-400": t.status === "완료",
-                                  "bg-red-400":     t.status === "지연",
-                                  "bg-slate-300":   t.status === "준비중",
-                                })}
-                                style={{ width: `${t.progress}%` }}
-                              />
-                            </div>
-                            <span className="text-xs text-slate-500 truncate max-w-[110px]" title={t.projectName}>
-                              {t.projectName}
-                            </span>
-                          </div>
-                        ))}
-                        {eqTests.length > 1 && (
-                          <span className="text-xs text-slate-400">병렬 {eqTests.length}건</span>
-                        )}
-                      </div>
-                    )}
+                    {inUse
+                      ? <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-700">사용중</span>
+                      : <span className="text-slate-300 text-xs">—</span>
+                    }
                   </td>
                   {shown("notes") && (
                     <td className="px-4 py-2.5 text-slate-400 text-xs max-w-[200px] truncate" title={eq.notes}>
