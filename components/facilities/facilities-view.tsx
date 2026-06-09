@@ -9,7 +9,6 @@ import type { FacilitiesData } from "@/types/facility";
 import { TestCategoryChip, TestStatusBadge } from "./badges";
 import { TestPlanForm } from "@/components/assets/test-plan-form";
 import { Edit2, Trash2, Plus, X, Save, ChevronDown, Clock } from "lucide-react";
-import { OCCUPIED_TEST_STATUSES } from "@/lib/facilities-utils";
 
 const SITE_LABEL: Record<string, string> = {
   gumi: "구미", indon: "인동", donghae: "동해", external: "사외",
@@ -44,116 +43,6 @@ const PROGRESS_COLOR: Record<TestStatus, string> = {
   "지연":   "bg-red-400",
   "준비중": "bg-slate-300",
 };
-
-// ─── 시험장 카드 ───────────────────────────────────────────────────────────────
-
-function HallOverview({
-  data, assets, tests,
-}: {
-  data: FacilitiesData;
-  assets: Equipment[];
-  tests: Test[];
-}) {
-  const [open, setOpen] = useState(true);
-
-  const allSpaces = [
-    ...data.testHalls.map((h) => ({ ...h, spaceType: "홀" as const })),
-    ...data.testYards.map((y) => ({ ...y, spaceType: "야드" as const })),
-  ];
-
-  const unassigned = assets.filter((e) => !e.hallId && !e.yardId);
-
-  return (
-    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition-colors"
-      >
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-slate-700">시험장 현황</span>
-          <span className="text-xs text-slate-400">
-            ({allSpaces.length}개 · 설비 {assets.length}대)
-          </span>
-        </div>
-        <ChevronDown className={cn("w-4 h-4 text-slate-400 transition-transform", open ? "rotate-180" : "")} />
-      </button>
-
-      {open && (
-        <div className="px-5 pb-5 border-t border-slate-100">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 pt-4">
-            {allSpaces.map((space) => {
-              const hallEquip = assets.filter(
-                (e) => e.hallId === space.id || e.yardId === space.id
-              );
-              const equipIds = new Set(hallEquip.map((e) => e.id));
-              const activeTests = tests.filter(
-                (t) =>
-                  equipIds.has(t.equipmentId) &&
-                  (OCCUPIED_TEST_STATUSES as readonly string[]).includes(t.status)
-              );
-              const delayedTests = tests.filter(
-                (t) => equipIds.has(t.equipmentId) && t.status === "지연"
-              );
-              return (
-                <div key={space.id} className="rounded-xl border border-slate-100 p-3.5 space-y-2.5">
-                  <div className="flex items-start justify-between gap-1">
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-slate-800 leading-snug truncate" title={space.name}>
-                        {space.name}
-                      </p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">
-                        {SITE_LABEL[space.siteId] ?? space.siteId} · {space.type}
-                      </p>
-                    </div>
-                    <span className={cn(
-                      "shrink-0 px-1.5 py-0.5 rounded-full text-[10px] font-medium",
-                      space.status === "가동중"
-                        ? "bg-emerald-100 text-emerald-700"
-                        : "bg-amber-100 text-amber-700"
-                    )}>
-                      {space.status}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3 text-xs flex-wrap">
-                    <span className="text-slate-500">
-                      설비 <span className="font-semibold text-slate-700">{hallEquip.length}</span>대
-                    </span>
-                    {activeTests.length > 0 && (
-                      <span className="text-blue-600 font-medium">
-                        시험중 {activeTests.length}
-                      </span>
-                    )}
-                    {delayedTests.length > 0 && (
-                      <span className="text-red-500 font-medium">
-                        지연 {delayedTests.length}
-                      </span>
-                    )}
-                    {hallEquip.length === 0 && (
-                      <span className="text-slate-300">설비 없음</span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-
-            {/* 미배정 설비 */}
-            {unassigned.length > 0 && (
-              <div className="rounded-xl border border-dashed border-slate-200 p-3.5 space-y-2.5">
-                <div>
-                  <p className="text-sm font-semibold text-slate-400">미배정</p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">시험장 미지정 설비</p>
-                </div>
-                <p className="text-xs text-slate-500">
-                  설비 <span className="font-semibold">{unassigned.length}</span>대
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 // ─── 이력 타임라인 ─────────────────────────────────────────────────────────────
 
@@ -220,7 +109,6 @@ export function FacilitiesView({
 
   const filtered = filter === "전체" ? tests : tests.filter((t) => t.status === filter);
 
-  // 수정 모달 — 핵심 필드 변경 감지
   const hasKeyChange = editTarget && editForm && (
     editForm.plannedStart !== editTarget.plannedStart ||
     editForm.plannedEnd   !== editTarget.plannedEnd   ||
@@ -296,9 +184,6 @@ export function FacilitiesView({
 
   return (
     <div className="space-y-5">
-
-      {/* ── 시험장 현황 ──────────────────────────────────────── */}
-      <HallOverview data={data} assets={assets} tests={tests} />
 
       {/* ── 시험 계획 헤더 ─────────────────────────────────── */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -405,7 +290,7 @@ export function FacilitiesView({
                 </div>
               </div>
 
-              {/* 변경 사유 (계획 기간·설비 변경 시 표시) */}
+              {/* 변경 사유 */}
               {hasKeyChange && (
                 <div className="rounded-xl bg-amber-50 border border-amber-100 px-4 py-3">
                   <label className="block text-xs font-bold text-amber-700 mb-1.5">

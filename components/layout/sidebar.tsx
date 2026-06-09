@@ -58,10 +58,10 @@ const ALL_NAV: NavItem[] = [
 
   // ── 시험 및 품질 보증 ─────────────────────────────────────
   {
-    label: "시험 및 품질 보증", icon: FlaskConical,
+    href: "/facilities", label: "시험 및 품질 보증", icon: FlaskConical,
     roles: ALL, readonlyFor: [],
     children: [
-      { href: "/facilities", label: "시험/분석 관리", roles: ALL, readonlyFor: [] },
+      { href: "/facilities/analysis", label: "시험/분석 관리", roles: ALL, readonlyFor: [] },
     ],
   },
 

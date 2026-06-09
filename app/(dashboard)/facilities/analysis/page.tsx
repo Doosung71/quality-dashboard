@@ -1,12 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { facilitiesData } from "@/data/facilities.data";
-import { FacilitiesOverview } from "@/components/facilities/facilities-overview";
+import { FacilitiesView } from "@/components/facilities/facilities-view";
 import { parseSpec, parseLogs } from "@/lib/facilities-utils";
+import type { TestsData } from "@/types/test";
 import type { Equipment } from "@/types/asset";
-import type { Test } from "@/types/test";
 import type { SiteId } from "@/types/facility";
 
-export default async function FacilitiesPage() {
+export default async function FacilitiesAnalysisPage() {
   const [equipmentRaw, testPlansRaw] = await Promise.all([
     prisma.equipment.findMany({ orderBy: [{ siteId: "asc" }, { yearIntroduced: "asc" }] }),
     prisma.testPlan.findMany({ orderBy: { plannedStart: "asc" } }),
@@ -35,29 +35,32 @@ export default async function FacilitiesPage() {
     attachments:    (eq.attachments as { url: string; name: string; size: number; contentType: string }[]) ?? [],
   }));
 
-  const tests: Test[] = testPlansRaw.map((t) => ({
-    id:               t.id,
-    equipmentId:      t.equipmentId,
-    testCategory:     t.testCategory as "Type" | "EQ" | "PQ" | "양산" | "개발",
-    projectName:      t.projectName,
-    sampleType:       t.sampleType as "cable" | "accessory",
-    sampleDescription: t.sampleDescription,
-    plannedStart:     t.plannedStart,
-    plannedEnd:       t.plannedEnd,
-    actualStart:      t.actualStart  ?? null,
-    actualEnd:        t.actualEnd    ?? null,
-    status:           t.status as "준비중" | "시험중" | "완료" | "지연",
-    progress:         t.progress,
-    logs:             parseLogs(t.logs),
-    managingTeam:     t.managingTeam  ?? null,
-    ownerId:          t.ownerId       ?? null,
-    ownerName:        t.ownerName     ?? null,
-  }));
+  const testsData: TestsData = {
+    _meta: { version: "db", lastUpdated: new Date().toISOString().slice(0, 10), note: "DB 직접 조회" },
+    tests: testPlansRaw.map((t) => ({
+      id:               t.id,
+      equipmentId:      t.equipmentId,
+      testCategory:     t.testCategory as "Type" | "EQ" | "PQ" | "양산" | "개발",
+      projectName:      t.projectName,
+      sampleType:       t.sampleType as "cable" | "accessory",
+      sampleDescription: t.sampleDescription,
+      plannedStart:     t.plannedStart,
+      plannedEnd:       t.plannedEnd,
+      actualStart:      t.actualStart  ?? null,
+      actualEnd:        t.actualEnd    ?? null,
+      status:           t.status as "준비중" | "시험중" | "완료" | "지연",
+      progress:         t.progress,
+      logs:             parseLogs(t.logs),
+      managingTeam:     t.managingTeam  ?? null,
+      ownerId:          t.ownerId       ?? null,
+      ownerName:        t.ownerName     ?? null,
+    })),
+  };
 
   return (
     <div className="space-y-1">
-      <p className="text-xs text-slate-400 mb-4">시험장 가동 현황 및 진행 중인 시험 계획 현황</p>
-      <FacilitiesOverview data={facilitiesData} assets={assets} tests={tests} />
+      <p className="text-xs text-slate-400 mb-4">인증·양산·개발 시험 계획 등록 및 진행 현황 관리</p>
+      <FacilitiesView data={facilitiesData} assets={assets} testsData={testsData} />
     </div>
   );
 }
