@@ -4,9 +4,9 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
-  LayoutDashboard, FlaskConical, Users, Globe,
-  X, MessageSquare, BookOpen, Newspaper, Wrench,
-  ClipboardList, ShieldAlert, Briefcase,
+  LayoutDashboard, FlaskConical,
+  X, MessageSquare, Newspaper,
+  ClipboardList, ShieldAlert, Briefcase, Layers,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { Role } from "@/lib/generated/prisma/client"
@@ -19,7 +19,7 @@ type NavChild = {
 }
 
 type NavItem = {
-  href: string
+  href?: string          // 없으면 비링크 그룹 헤더
   label: string
   icon: LucideIcon
   roles: string[]
@@ -27,70 +27,65 @@ type NavItem = {
   children?: NavChild[]
 }
 
-// 역할별 접근 가능한 메뉴
+const ALL = ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"]
+
 const ALL_NAV: NavItem[] = [
   {
     href: "/", label: "대시보드", icon: LayoutDashboard,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
+    roles: ALL, readonlyFor: [],
   },
 
-  // ── 품질 이슈 ─────────────────────────────────────────
-  {
-    href: "/qcost", label: "품질 비용 관리", icon: ShieldAlert,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
-    children: [
-      { href: "/claims", label: "고객 클레임",    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-      { href: "/ncr",    label: "부적합품 (NCR)", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-    ],
-  },
-
-  // ── 자산 관리 ─────────────────────────────────────────
-  {
-    href: "/assets", label: "자산 관리", icon: Wrench,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: ["PRACTITIONER"],
-  },
-
-  // ── 입고품질관리 ──────────────────────────────────────
-  {
-    href: "/vendors", label: "입고품질관리", icon: ClipboardList,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
-    children: [
-      { href: "/vendors/incoming",    label: "수입검사",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-      { href: "/vendors/inspections", label: "출장검사",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-      { href: "/vendors/audits",      label: "협력업체 감사", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-    ],
-  },
-
-  // ── 프로젝트 관리 ─────────────────────────────────────
+  // ── 프로젝트 관리 ─────────────────────────────────────────
   {
     href: "/projects", label: "프로젝트 관리", icon: Briefcase,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
+    roles: ALL, readonlyFor: [],
     children: [
-      { href: "/dashboard",        label: "입찰 프로젝트", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
-      { href: "/projects/awarded", label: "수주 프로젝트", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [] },
+      { href: "/dashboard",        label: "입찰 프로젝트", roles: ALL, readonlyFor: [] },
+      { href: "/projects/awarded", label: "수주 프로젝트", roles: ALL, readonlyFor: [] },
     ],
   },
 
-  // ── 시험 및 품질 보증 ─────────────────────────────────
+  // ── 입고 품질 관리 ────────────────────────────────────────
   {
-    href: "/facilities", label: "시험 및 품질 보증", icon: FlaskConical,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
+    href: "/vendors", label: "입고 품질 관리", icon: ClipboardList,
+    roles: ALL, readonlyFor: [],
+    children: [
+      { href: "/vendors/audits",      label: "협력업체 감사", roles: ALL, readonlyFor: [] },
+      { href: "/vendors/inspections", label: "출장 검사",     roles: ALL, readonlyFor: [] },
+      { href: "/vendors/incoming",    label: "수입 검사",     roles: ALL, readonlyFor: [] },
+    ],
   },
 
-  // ── 품질 지식 ─────────────────────────────────────────
+  // ── 시험 및 품질 보증 ─────────────────────────────────────
   {
-    href: "/knowledge", label: "지식 관리", icon: BookOpen,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
+    label: "시험 및 품질 보증", icon: FlaskConical,
+    roles: ALL, readonlyFor: [],
+    children: [
+      { href: "/facilities", label: "시험/분석 관리", roles: ALL, readonlyFor: [] },
+    ],
   },
 
-  // ── 정보·조직 ─────────────────────────────────────────
+  // ── 품질 이상/사후 관리 ───────────────────────────────────
   {
-    href: "/intelligence", label: "외부 정보", icon: Globe,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD", "PRACTITIONER"], readonlyFor: [],
+    label: "품질 이상/사후 관리", icon: ShieldAlert,
+    roles: ALL, readonlyFor: [],
+    children: [
+      { href: "/ncr",    label: "부적합품 (NCR)", roles: ALL, readonlyFor: [] },
+      { href: "/claims", label: "고객 클레임",    roles: ALL, readonlyFor: [] },
+      { href: "/qcost",  label: "품질 비용 관리", roles: ALL, readonlyFor: ["PRACTITIONER"] },
+    ],
   },
+
+  // ── 기준 정보 및 지원 ─────────────────────────────────────
   {
-    href: "/hr", label: "인사·면담", icon: Users,
-    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD"], readonlyFor: [],
+    label: "기준 정보 및 지원", icon: Layers,
+    roles: ALL, readonlyFor: [],
+    children: [
+      { href: "/assets",       label: "자산 관리", roles: ALL,                        readonlyFor: ["PRACTITIONER"] },
+      { href: "/knowledge",    label: "지식 관리", roles: ALL,                        readonlyFor: [] },
+      { href: "/intelligence", label: "외부 정보", roles: ALL,                        readonlyFor: [] },
+      { href: "/hr",           label: "인사·면담", roles: ["DIRECTOR", "ADMIN"],      readonlyFor: [] },
+    ],
   },
 ]
 
@@ -112,6 +107,7 @@ export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
         ?.filter(child => child.roles.includes(role))
         .map(child => ({ ...child, isReadonly: child.readonlyFor.includes(role) })),
     }))
+    .filter(item => item.href !== undefined || (item.children && item.children.length > 0))
 
   return (
     <aside className={cn(
@@ -128,31 +124,49 @@ export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
           <X className="w-5 h-5" />
         </button>
       </div>
+
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {navItems.map(({ href, label, icon: Icon, isReadonly, children }) => {
-          const selfActive = href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/")
           const hasActiveChild = children?.some(c => pathname === c.href || pathname.startsWith(c.href + "/")) ?? false
+          const selfActive = href
+            ? (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/"))
+            : false
           const parentActive = selfActive || hasActiveChild
 
+          const innerContent = (
+            <>
+              <Icon className="w-4 h-4 shrink-0" />
+              <span className="flex-1">{label}</span>
+              {isReadonly && (
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 leading-tight">조회</span>
+              )}
+            </>
+          )
+
           return (
-            <div key={href}>
-              <Link href={href} onClick={onClose}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-                  parentActive ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
+            <div key={href ?? label}>
+              {href ? (
+                <Link href={href} onClick={onClose}
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                    parentActive ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                  )}>
+                  {innerContent}
+                </Link>
+              ) : (
+                <div className={cn(
+                  "flex items-center gap-3 px-3 py-2 text-sm cursor-default",
+                  parentActive ? "text-slate-300" : "text-slate-500"
                 )}>
-                <Icon className="w-4 h-4 shrink-0" />
-                <span className="flex-1">{label}</span>
-                {isReadonly && (
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 leading-tight">조회</span>
-                )}
-              </Link>
+                  {innerContent}
+                </div>
+              )}
               {children && children.length > 0 && (
                 <div className="mt-0.5 ml-4 pl-3 space-y-0.5 border-l border-slate-700">
                   {children.map(({ href: childHref, label: childLabel, isReadonly: childReadonly }) => {
                     const childActive = pathname === childHref || pathname.startsWith(childHref + "/")
                     return (
-                      <Link key={`${href}>${childHref}`} href={childHref} onClick={onClose}
+                      <Link key={`${href ?? label}>${childHref}`} href={childHref} onClick={onClose}
                         className={cn(
                           "flex items-center px-2 py-1.5 rounded-md text-xs transition-colors",
                           childActive ? "bg-slate-600 text-white" : "text-slate-500 hover:bg-slate-800 hover:text-slate-300"
@@ -170,7 +184,9 @@ export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
           )
         })}
       </nav>
+
       <div className="px-3 py-3 border-t border-slate-700 space-y-1">
+        <p className="px-3 pb-0.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">소통 채널</p>
         <Link href="/board" onClick={onClose}
           className={cn(
             "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
