@@ -59,8 +59,7 @@ export default async function FacilitiesPage() {
 
   return (
     <div className="space-y-1">
-      <h1 className="text-lg font-semibold text-slate-800">시험장·시험 관리</h1>
-      <p className="text-xs text-slate-400 mb-4">시험장 현황 및 인증·양산 시험 계획 등록·관리</p>
+      <p className="text-xs text-slate-400 mb-4">인증·양산·개발 시험 계획 등록 및 진행 현황 관리</p>
       <FacilitiesView
         data={facilitiesData}
         assets={assets}
