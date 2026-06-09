@@ -5,7 +5,8 @@ import Image from "next/image"
 import {
   Pin, PinOff, Plus, X, Trash2, MessageSquare,
   ChevronRight, Megaphone, Send, CornerDownRight, Pencil, Check,
-  Paperclip, FileText, Download, ZoomIn,
+  Paperclip, FileText, Download, ZoomIn, ChevronUp, ChevronDown,
+  Maximize2, Minimize2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { Role } from "@/lib/generated/prisma/client"
@@ -225,7 +226,6 @@ function CommentItem({
     onRefresh()
   }
 
-  // 깊이별 아바타 스타일
   const avatarClass = depth === 0
     ? "w-7 h-7 bg-slate-700 text-white text-[10px]"
     : depth === 1
@@ -234,7 +234,6 @@ function CommentItem({
 
   return (
     <div className={deleting ? "opacity-40 pointer-events-none" : ""}>
-      {/* 댓글 본문 */}
       <div className="group flex gap-3">
         <div className={cn("rounded-full font-bold flex items-center justify-center shrink-0 mt-0.5", avatarClass)}>
           {authorLabel(node.author, node.displayMode).slice(0, 1)}
@@ -251,9 +250,7 @@ function CommentItem({
           {isEditing ? (
             <div className="mt-1 space-y-1.5">
               <textarea
-                autoFocus
-                value={editText}
-                onChange={e => setEditText(e.target.value)}
+                autoFocus value={editText} onChange={e => setEditText(e.target.value)}
                 onKeyDown={e => {
                   if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitEdit() }
                   if (e.key === "Escape") setIsEditing(false)
@@ -282,20 +279,17 @@ function CommentItem({
 
           {!isEditing && !deleting && (
             <div className="flex items-center gap-3 mt-1">
-              <button
-                onClick={() => setReplyOpen(v => !v)}
+              <button onClick={() => setReplyOpen(v => !v)}
                 className="text-[10px] text-slate-400 hover:text-indigo-600 flex items-center gap-1 transition-colors">
                 <CornerDownRight className="w-3 h-3" /> {replyOpen ? "취소" : "답글"}
               </button>
               {canAct && (
                 <>
-                  <button
-                    onClick={() => { setIsEditing(true); setEditText(node.content); setEditVis(node.visibility) }}
+                  <button onClick={() => { setIsEditing(true); setEditText(node.content); setEditVis(node.visibility) }}
                     className="text-[10px] text-slate-400 hover:text-indigo-500 flex items-center gap-1 transition-colors opacity-0 group-hover:opacity-100">
                     <Pencil className="w-3 h-3" /> 수정
                   </button>
-                  <button
-                    onClick={handleDelete}
+                  <button onClick={handleDelete}
                     className="text-[10px] text-slate-400 hover:text-rose-500 flex items-center gap-1 transition-colors opacity-0 group-hover:opacity-100">
                     <Trash2 className="w-3 h-3" /> 삭제
                   </button>
@@ -306,7 +300,6 @@ function CommentItem({
         </div>
       </div>
 
-      {/* 인라인 답글 폼 */}
       {replyOpen && (
         <div className="ml-10 mt-2 pl-3 border-l-2 border-indigo-100">
           <div className="flex items-center gap-3 mb-1.5 flex-wrap">
@@ -319,9 +312,7 @@ function CommentItem({
             </div>
             <div className="flex-1 flex gap-2">
               <textarea
-                autoFocus
-                value={replyText}
-                onChange={e => setReplyText(e.target.value)}
+                autoFocus value={replyText} onChange={e => setReplyText(e.target.value)}
                 onKeyDown={e => {
                   if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); if (replyText.trim()) submitReply() }
                   if (e.key === "Escape") { setReplyOpen(false); setReplyText("") }
@@ -330,9 +321,7 @@ function CommentItem({
                 rows={2}
                 className="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
               />
-              <button
-                onClick={submitReply}
-                disabled={!replyText.trim() || replySubmitting}
+              <button onClick={submitReply} disabled={!replyText.trim() || replySubmitting}
                 className="self-end px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl disabled:opacity-40 transition-all">
                 <Send className="w-3.5 h-3.5" />
               </button>
@@ -341,23 +330,18 @@ function CommentItem({
         </div>
       )}
 
-      {/* 하위 댓글 재귀 렌더링 */}
       {node.children.length > 0 && (
         <CommentTree
-          nodes={node.children}
-          postId={postId}
-          depth={depth + 1}
-          currentUserId={currentUserId}
-          currentUserName={currentUserName}
-          isPrivileged={isPrivileged}
-          onRefresh={onRefresh}
+          nodes={node.children} postId={postId} depth={depth + 1}
+          currentUserId={currentUserId} currentUserName={currentUserName}
+          isPrivileged={isPrivileged} onRefresh={onRefresh}
         />
       )}
     </div>
   )
 }
 
-// ─── 댓글 트리 (재귀 컨테이너) ─────────────────────────────
+// ─── 댓글 트리 ─────────────────────────────────────────────
 
 function CommentTree({
   nodes, postId, depth, currentUserId, currentUserName, isPrivileged, onRefresh,
@@ -370,17 +354,232 @@ function CommentTree({
   return (
     <div className={cn("mt-3 space-y-4", visualDepth > 0 && "ml-10 border-l-2 border-slate-100 pl-3")}>
       {nodes.map(node => (
-        <CommentItem
-          key={node.id}
-          node={node}
-          postId={postId}
-          depth={depth}
-          currentUserId={currentUserId}
-          currentUserName={currentUserName}
-          isPrivileged={isPrivileged}
-          onRefresh={onRefresh}
+        <CommentItem key={node.id} node={node} postId={postId} depth={depth}
+          currentUserId={currentUserId} currentUserName={currentUserName}
+          isPrivileged={isPrivileged} onRefresh={onRefresh}
         />
       ))}
+    </div>
+  )
+}
+
+// ─── 게시글 상세 본문 (일반 / 전체 보기 공용) ────────────────
+
+function PostDetail({
+  detail, editingPost, editTitle, editContent, editAttachments, editVisibility,
+  setEditTitle, setEditContent, setEditVisibility, setEditAttachments,
+  handleSavePost, setEditingPost, handleDeletePost, handleTogglePin, handleToggleCategory,
+  postSaving, uploading, isPrivileged, currentUserId, currentUserName,
+  uploadFiles, editFileRef, loadDetail, loadPosts,
+  commentText, setCommentText, commentDisplayMode, setCommentDisplayMode,
+  commentVisibility, setCommentVisibility, commentSubmitting, handleCommentSubmit,
+  commentInputRef, insertEmoji, isFullPage, onToggleFullPage,
+}: {
+  detail: Post; editingPost: boolean; editTitle: string; editContent: string
+  editAttachments: Attachment[]; editVisibility: Visibility
+  setEditTitle: (v: string) => void; setEditContent: (v: string) => void
+  setEditVisibility: (v: Visibility) => void; setEditAttachments: (v: Attachment[]) => void
+  handleSavePost: () => void; setEditingPost: (v: boolean) => void
+  handleDeletePost: (id: string) => void; handleTogglePin: (id: string, p: boolean) => void
+  handleToggleCategory: (id: string, c: "NOTICE" | "GENERAL") => void
+  postSaving: boolean; uploading: boolean; isPrivileged: boolean
+  currentUserId: string; currentUserName: string
+  uploadFiles: (files: FileList, setter: (a: Attachment[]) => void, current: Attachment[]) => void
+  editFileRef: React.RefObject<HTMLInputElement | null>
+  loadDetail: (id: string) => void; loadPosts: () => void
+  commentText: string; setCommentText: (v: string) => void
+  commentDisplayMode: DisplayMode; setCommentDisplayMode: (v: DisplayMode) => void
+  commentVisibility: Visibility; setCommentVisibility: (v: Visibility) => void
+  commentSubmitting: boolean; handleCommentSubmit: (e: React.FormEvent) => void
+  commentInputRef: React.RefObject<HTMLTextAreaElement | null>
+  insertEmoji: (e: string) => void
+  isFullPage: boolean; onToggleFullPage: () => void
+}) {
+  const commentCount = detail.comments?.length ?? 0
+
+  return (
+    <div>
+      {/* 공지 배너 */}
+      {detail.category === "NOTICE" && (
+        <div className="bg-linear-to-r from-amber-400 to-orange-300 px-6 py-3 flex items-center gap-2.5 shrink-0">
+          <Megaphone className="w-5 h-5 text-white shrink-0" />
+          <div className="flex-1 min-w-0">
+            <span className="text-xs font-black text-white/80 uppercase tracking-widest">공지사항</span>
+            <p className="text-sm font-bold text-white leading-tight mt-0.5 truncate">{detail.title}</p>
+          </div>
+          {detail.pinned && <Pin className="w-4 h-4 text-white/70 shrink-0" />}
+        </div>
+      )}
+
+      {/* 게시글 본문 */}
+      <div className={cn("border-b border-slate-100 px-6 py-5 shrink-0", detail.category === "NOTICE" ? "bg-amber-50/30" : "bg-white")}>
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="space-y-1.5 flex-1 min-w-0">
+            {detail.category !== "NOTICE" && (
+              <h2 className="text-lg font-bold text-slate-900 leading-tight">{detail.title}</h2>
+            )}
+            <div className="flex items-center gap-3 text-xs text-slate-400 flex-wrap">
+              <span className="font-medium text-slate-600">{authorLabel(detail.author, detail.displayMode as DisplayMode)}</span>
+              {detail.displayMode !== "ANONYMOUS" && detail.author.department && <span>{detail.author.department}</span>}
+              <VisibilityBadge visibility={detail.visibility} />
+              <span>{new Date(detail.createdAt).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}</span>
+              <span className="flex items-center gap-1"><MessageSquare className="w-3 h-3" />{commentCount}개</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1 shrink-0">
+            {/* 전체 보기 토글 */}
+            <button
+              onClick={onToggleFullPage}
+              title={isFullPage ? "원래 크기로" : "전체 페이지 보기"}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition-colors">
+              {isFullPage ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            </button>
+            {isPrivileged && !editingPost && (
+              <button
+                onClick={() => handleToggleCategory(detail.id, detail.category)}
+                className={cn(
+                  "flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-semibold transition-colors",
+                  detail.category === "NOTICE"
+                    ? "text-amber-700 bg-amber-100 hover:bg-amber-200"
+                    : "text-slate-500 hover:text-amber-700 hover:bg-amber-50 border border-slate-200"
+                )}>
+                <Megaphone className="w-3.5 h-3.5" />
+                {detail.category === "NOTICE" ? "공지 해제" : "공지로"}
+              </button>
+            )}
+            {isPrivileged && !editingPost && (
+              <button
+                onClick={() => handleTogglePin(detail.id, detail.pinned)}
+                className={cn("p-1.5 rounded-lg transition-colors",
+                  detail.pinned ? "text-amber-500 bg-amber-50 hover:bg-amber-100" : "text-slate-400 hover:text-amber-500 hover:bg-amber-50")}>
+                {detail.pinned ? <PinOff className="w-4 h-4" /> : <Pin className="w-4 h-4" />}
+              </button>
+            )}
+            {(detail.author.id === currentUserId || isPrivileged) && !editingPost && (
+              <button onClick={() => { setEditTitle(detail.title); setEditContent(detail.content); setEditAttachments(detail.attachments ?? []); setEditVisibility(detail.visibility ?? "ALL"); setEditingPost(true) }}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition-colors">
+                <Pencil className="w-4 h-4" />
+              </button>
+            )}
+            {(detail.author.id === currentUserId || isPrivileged) && !editingPost && (
+              <button onClick={() => handleDeletePost(detail.id)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-colors">
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {editingPost ? (
+          <div className="space-y-3 mt-2">
+            <input autoFocus value={editTitle} onChange={e => setEditTitle(e.target.value)}
+              className="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              placeholder="제목" />
+            <textarea value={editContent} onChange={e => setEditContent(e.target.value)}
+              rows={8} className="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+              placeholder="내용" />
+            <VisibilitySelector value={editVisibility} onChange={setEditVisibility} compact />
+            {editAttachments.length > 0 && (
+              <div className="border border-slate-200 rounded-xl p-3 space-y-2">
+                <AttachmentList attachments={editAttachments} preview />
+                <div className="flex flex-wrap gap-1">
+                  {editAttachments.map((f, i) => (
+                    <span key={i} className="flex items-center gap-1 text-[10px] bg-slate-100 px-2 py-0.5 rounded-full text-slate-600">
+                      {f.name}
+                      <button type="button" onClick={() => setEditAttachments(editAttachments.filter((_, j) => j !== i))}>
+                        <X className="w-3 h-3 hover:text-rose-500" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <input ref={editFileRef} type="file" multiple accept="image/*,.pdf,.docx,.xlsx,.pptx,.txt" className="hidden"
+                  onChange={e => e.target.files && uploadFiles(e.target.files, setEditAttachments, editAttachments)} />
+                <button type="button" onClick={() => editFileRef.current?.click()} disabled={uploading}
+                  className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-indigo-600 border border-slate-200 px-3 py-1.5 rounded-lg transition-all disabled:opacity-50">
+                  <Paperclip className="w-3.5 h-3.5" /> 파일 추가
+                </button>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={handleSavePost} disabled={postSaving || uploading}
+                  className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-all">
+                  <Check className="w-4 h-4" /> {postSaving ? "저장 중..." : "저장"}
+                </button>
+                <button onClick={() => setEditingPost(false)}
+                  className="text-sm text-slate-500 hover:text-slate-800 px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
+                  취소
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-3 mt-2">
+            <div className="bg-slate-50/50 rounded-xl px-4 py-4 border border-slate-100 [&_p]:text-sm! [&_p]:text-slate-700! [&_li]:text-sm! [&_li]:text-slate-700! [&_td]:text-sm! [&_td]:text-slate-700! [&_th]:text-sm! [&_blockquote]:border-amber-300! [&_blockquote]:bg-amber-50! [&_blockquote]:rounded-r-lg! [&_blockquote]:py-2! [&_blockquote]:not-italic! [&_blockquote_p]:text-amber-800! [&_h2]:text-sm! [&_h2]:text-slate-800! [&_h3]:text-sm! [&_h3]:text-slate-700!">
+              <MarkdownContent content={detail.content} />
+            </div>
+            {(detail.attachments?.length ?? 0) > 0 && <AttachmentList attachments={detail.attachments} />}
+          </div>
+        )}
+      </div>
+
+      {/* 댓글 섹션 */}
+      <div className="px-6 py-5 space-y-5 bg-white border-t border-slate-100">
+        <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+          <MessageSquare className="w-3.5 h-3.5" /> 댓글 {commentCount > 0 && `(${commentCount})`}
+        </h3>
+
+        <div className="space-y-5">
+          {(detail.comments ?? []).length === 0 ? (
+            <p className="text-xs text-slate-400 italic">첫 번째 댓글을 남겨보세요.</p>
+          ) : (
+            <CommentTree
+              nodes={buildTree(detail.comments!)} postId={detail.id} depth={0}
+              currentUserId={currentUserId} currentUserName={currentUserName}
+              isPrivileged={isPrivileged}
+              onRefresh={() => { loadDetail(detail.id); loadPosts() }}
+            />
+          )}
+        </div>
+
+        <form onSubmit={handleCommentSubmit} className="space-y-2 pt-2 border-t border-slate-100">
+          <div className="flex items-center gap-4 flex-wrap">
+            <DisplayModeSelector value={commentDisplayMode} onChange={setCommentDisplayMode} compact />
+            <VisibilitySelector value={commentVisibility} onChange={setCommentVisibility} compact />
+          </div>
+          <div className="flex gap-2">
+            <div className="w-7 h-7 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-1">
+              {currentUserName.slice(0, 1)}
+            </div>
+            <div className="flex-1 flex gap-2">
+              <div className="flex-1 relative">
+                <textarea
+                  ref={commentInputRef} value={commentText} onChange={e => setCommentText(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault()
+                      if (commentText.trim()) handleCommentSubmit(e as unknown as React.FormEvent)
+                    }
+                  }}
+                  placeholder="댓글을 입력하세요 (Enter 전송, Shift+Enter 줄바꿈)"
+                  rows={2}
+                  className="w-full border border-slate-200 rounded-xl px-3 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent resize-none"
+                />
+                <div className="absolute right-2 bottom-2">
+                  <EmojiPicker onSelect={insertEmoji} />
+                </div>
+              </div>
+              <button type="submit" disabled={!commentText.trim() || commentSubmitting}
+                className="self-end px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl disabled:opacity-40 transition-all">
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }
@@ -401,6 +600,8 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
   const [detail, setDetail] = useState<Post | null>(null)
   const [loadingDetail, setLoadingDetail] = useState(false)
   const [listTab, setListTab] = useState<"ALL" | "NOTICE" | "GENERAL">("ALL")
+  const [listCollapsed, setListCollapsed] = useState(false)
+  const [fullPage, setFullPage] = useState(false)
 
   // 새 글 작성 폼
   const [showNewPost, setShowNewPost] = useState(false)
@@ -411,8 +612,6 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
   const [newDisplayMode, setNewDisplayMode] = useState<DisplayMode>("REAL")
   const [newVisibility, setNewVisibility] = useState<Visibility>("ALL")
   const [submitting, setSubmitting] = useState(false)
-
-  // 파일 첨부 (새 글)
   const [pendingFiles, setPendingFiles] = useState<Attachment[]>([])
   const [uploading, setUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -426,7 +625,7 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
   const [postSaving, setPostSaving] = useState(false)
   const editFileRef = useRef<HTMLInputElement>(null)
 
-  // 댓글 입력 (최상위 댓글만)
+  // 댓글
   const [commentText, setCommentText] = useState("")
   const [commentDisplayMode, setCommentDisplayMode] = useState<DisplayMode>("REAL")
   const [commentVisibility, setCommentVisibility] = useState<Visibility>("ALL")
@@ -484,14 +683,6 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     setUploading(false)
   }
 
-  function startEditPost(post: Post) {
-    setEditTitle(post.title)
-    setEditContent(post.content)
-    setEditAttachments(post.attachments ?? [])
-    setEditVisibility(post.visibility ?? "ALL")
-    setEditingPost(true)
-  }
-
   async function handleSavePost() {
     if (!selectedId || !editTitle.trim() || !editContent.trim()) return
     setPostSaving(true)
@@ -510,25 +701,18 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     if (!confirm("게시글을 삭제하시겠습니까?")) return
     await fetch(`/api/board/${id}`, { method: "DELETE" })
     setSelectedId(null)
+    setFullPage(false)
     loadPosts()
   }
 
   async function handleTogglePin(id: string, pinned: boolean) {
-    await fetch(`/api/board/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pinned: !pinned }),
-    })
+    await fetch(`/api/board/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pinned: !pinned }) })
     loadPosts()
     if (selectedId === id) loadDetail(id)
   }
 
   async function handleToggleCategory(id: string, category: "NOTICE" | "GENERAL") {
-    await fetch(`/api/board/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ category: category === "NOTICE" ? "GENERAL" : "NOTICE" }),
-    })
+    await fetch(`/api/board/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ category: category === "NOTICE" ? "GENERAL" : "NOTICE" }) })
     loadPosts()
     if (selectedId === id) loadDetail(id)
   }
@@ -558,406 +742,227 @@ export function BoardClient({ currentUserId, currentUserRole, currentUserName }:
     setTimeout(() => { el.focus(); el.setSelectionRange(start + emoji.length, start + emoji.length) }, 0)
   }
 
-  const commentCount = detail?.comments?.length ?? 0
-  const showRight = !!selectedId || showNewPost
+  const filteredPosts = posts.filter(p => listTab === "ALL" ? true : p.category === listTab)
+
+  // 상세 props 공용
+  const detailProps = {
+    editingPost, editTitle, editContent, editAttachments, editVisibility,
+    setEditTitle, setEditContent, setEditVisibility, setEditAttachments,
+    handleSavePost, setEditingPost, handleDeletePost, handleTogglePin, handleToggleCategory,
+    postSaving, uploading, isPrivileged, currentUserId, currentUserName,
+    uploadFiles, editFileRef, loadDetail, loadPosts,
+    commentText, setCommentText, commentDisplayMode, setCommentDisplayMode,
+    commentVisibility, setCommentVisibility, commentSubmitting, handleCommentSubmit,
+    commentInputRef, insertEmoji,
+  }
 
   return (
-    <div className="flex h-[calc(100vh-56px)] overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-56px)] overflow-hidden">
 
-      {/* ── 좌측: 게시글 목록 ── */}
-      <div className={`flex w-full lg:w-72 shrink-0 bg-white border-r border-slate-100 flex-col${showRight ? " max-lg:hidden" : ""}`}>
-        <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
-          <h2 className="text-sm font-bold text-slate-800">품질부문 게시판</h2>
-          <button
-            onClick={() => setShowNewPost(v => !v)}
-            className={cn(
-              "flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-all",
-              showNewPost ? "bg-slate-100 text-slate-600" : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm"
-            )}
-          >
-            {showNewPost ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-            {showNewPost ? "취소" : "새 글"}
-          </button>
-        </div>
+      {/* ── 헤더: 탭 + 새글 + 접기 ── */}
+      <div className="bg-white border-b border-slate-200 shrink-0 px-4 py-3 flex items-center gap-3 flex-wrap">
+        <h2 className="text-sm font-bold text-slate-800 shrink-0">품질부문 게시판</h2>
 
-        <div className="flex border-b border-slate-100 shrink-0">
+        {/* 탭 */}
+        <div className="flex gap-1 bg-slate-100 rounded-lg p-1">
           {(["ALL", "NOTICE", "GENERAL"] as const).map(tab => (
             <button key={tab} onClick={() => setListTab(tab)}
               className={cn(
-                "flex-1 py-2 text-xs font-semibold transition-all",
+                "px-3 py-1 rounded-md text-xs font-semibold transition-all",
                 listTab === tab
                   ? tab === "NOTICE"
-                    ? "text-amber-700 border-b-2 border-amber-500 bg-amber-50/50"
-                    : "text-indigo-700 border-b-2 border-indigo-500"
-                  : "text-slate-400 hover:text-slate-700"
+                    ? "bg-amber-100 text-amber-800 shadow-sm"
+                    : "bg-white text-indigo-700 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
               )}>
               {tab === "ALL" ? "전체" : tab === "NOTICE" ? "📢 공지" : "💬 일반"}
             </button>
           ))}
         </div>
 
-        <div className="flex-1 overflow-y-auto">
-          {(() => {
-            const filtered = posts.filter(p => listTab === "ALL" ? true : p.category === listTab)
-            if (filtered.length === 0) return (
-              <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-                <MessageSquare className="w-8 h-8 mb-2 opacity-30" />
-                <p className="text-xs">{listTab === "NOTICE" ? "등록된 공지가 없습니다." : "아직 게시글이 없습니다."}</p>
-              </div>
-            )
-            return filtered.map(post => {
-              const isActive = post.id === selectedId
-              const isNotice = post.category === "NOTICE"
-              return (
-                <button
-                  key={post.id}
-                  onClick={() => setSelectedId(post.id)}
-                  className={cn(
-                    "w-full text-left px-4 py-3 transition-all border-b border-slate-50",
-                    isActive
-                      ? isNotice ? "bg-amber-50 border-l-2 border-amber-500" : "bg-indigo-50 border-l-2 border-indigo-500"
-                      : isNotice
-                        ? "bg-amber-50/30 hover:bg-amber-50 border-l-2 border-amber-200"
-                        : "hover:bg-slate-50 border-l-2 border-transparent"
-                  )}
-                >
-                  <div className="flex items-center gap-1.5 mb-1">
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            onClick={() => { setShowNewPost(v => !v); setSelectedId(null) }}
+            className={cn(
+              "flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-all",
+              showNewPost ? "bg-slate-100 text-slate-600" : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm"
+            )}>
+            {showNewPost ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+            {showNewPost ? "취소" : "새 글"}
+          </button>
+          <button
+            onClick={() => setListCollapsed(v => !v)}
+            title={listCollapsed ? "목록 펼치기" : "목록 접기"}
+            className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-800 px-2 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition-all">
+            {listCollapsed
+              ? <><ChevronDown className="w-3.5 h-3.5" /><span className="hidden sm:inline">목록 ({filteredPosts.length})</span></>
+              : <><ChevronUp className="w-3.5 h-3.5" /><span className="hidden sm:inline">접기</span></>}
+          </button>
+        </div>
+      </div>
+
+      {/* ── 글 목록 (접기 가능) ── */}
+      <div className={cn(
+        "bg-white border-b border-slate-100 overflow-hidden transition-all duration-300",
+        listCollapsed ? "max-h-0" : "max-h-56"
+      )}>
+        <div className="overflow-y-auto max-h-56 divide-y divide-slate-50">
+          {filteredPosts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8 text-slate-400">
+              <MessageSquare className="w-6 h-6 mb-1.5 opacity-30" />
+              <p className="text-xs">{listTab === "NOTICE" ? "등록된 공지가 없습니다." : "아직 게시글이 없습니다."}</p>
+            </div>
+          ) : filteredPosts.map(post => {
+            const isActive = post.id === selectedId
+            const isNotice = post.category === "NOTICE"
+            return (
+              <button
+                key={post.id}
+                onClick={() => { setSelectedId(post.id); setShowNewPost(false) }}
+                className={cn(
+                  "w-full text-left px-4 py-2.5 transition-all flex items-center gap-3",
+                  isActive
+                    ? isNotice ? "bg-amber-50 border-l-2 border-amber-500" : "bg-indigo-50 border-l-2 border-indigo-500"
+                    : isNotice
+                      ? "bg-amber-50/30 hover:bg-amber-50 border-l-2 border-amber-200"
+                      : "hover:bg-slate-50 border-l-2 border-transparent"
+                )}>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
                     {isNotice && <Megaphone className="w-3 h-3 text-amber-500 shrink-0" />}
                     {post.pinned && <Pin className="w-3 h-3 text-amber-500 shrink-0" />}
-                    <span className={cn("text-xs line-clamp-1 flex-1", isNotice ? "font-bold text-amber-900" : "font-semibold text-slate-800")}>{post.title}</span>
+                    <span className={cn("text-xs truncate", isNotice ? "font-bold text-amber-900" : "font-semibold text-slate-800")}>{post.title}</span>
                   </div>
-                  <div className="flex items-center justify-between text-[10px] text-slate-400">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <span>{authorLabel(post.author, post.displayMode as DisplayMode)}</span>
-                      <VisibilityBadge visibility={post.visibility} />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {(post._count?.comments ?? 0) > 0 && (
-                        <span className="flex items-center gap-0.5">
-                          <MessageSquare className="w-3 h-3" />{post._count?.comments}
-                        </span>
-                      )}
-                      <span>{timeAgo(post.createdAt)}</span>
-                    </div>
+                  <div className="flex items-center gap-2 mt-0.5 text-[10px] text-slate-400">
+                    <span>{authorLabel(post.author, post.displayMode as DisplayMode)}</span>
+                    <span>·</span>
+                    <span>{timeAgo(post.createdAt)}</span>
+                    {(post._count?.comments ?? 0) > 0 && (
+                      <span className="flex items-center gap-0.5"><MessageSquare className="w-2.5 h-2.5" />{post._count?.comments}</span>
+                    )}
                   </div>
-                </button>
-              )
-            })
-          })()}
+                </div>
+                {isActive && <ChevronRight className="w-3.5 h-3.5 text-indigo-400 shrink-0" />}
+              </button>
+            )
+          })}
         </div>
       </div>
 
-      {/* ── 우측: 상세 / 새 글 작성 ── */}
-      <div className={`flex flex-1 flex-col bg-slate-50 overflow-hidden${!showRight ? " max-lg:hidden" : ""}`}>
-
-        {/* 모바일 뒤로가기 */}
-        <div className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border-b border-slate-100 shrink-0">
-          <button
-            onClick={() => { setSelectedId(null); setShowNewPost(false); setEditingPost(false) }}
-            className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors">
-            <ChevronRight className="w-4 h-4 rotate-180" /> 목록으로
-          </button>
-          {showNewPost && <span className="text-xs text-slate-400">새 게시글 작성</span>}
-        </div>
-
-        {/* 새 글 작성 폼 */}
-        {showNewPost && (
-          <div className="shrink-0 bg-white border-b border-slate-200 px-6 py-5 shadow-sm">
-            <h3 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <Plus className="w-4 h-4 text-indigo-500" /> 새 게시글 작성
-            </h3>
-            <form onSubmit={handlePostSubmit} className="space-y-3">
-              <div className="flex gap-3 items-center">
-                <input
-                  type="text"
-                  placeholder="제목을 입력하세요"
-                  value={newTitle}
-                  onChange={e => setNewTitle(e.target.value)}
-                  required
-                  className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
-                />
-                {isPrivileged && (
-                  <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 cursor-pointer">
-                    <input type="checkbox" checked={newCategory === "NOTICE"}
-                      onChange={e => setNewCategory(e.target.checked ? "NOTICE" : "GENERAL")}
-                      className="rounded border-slate-300 text-amber-500 focus:ring-amber-400"
-                    />
-                    <Megaphone className="w-3.5 h-3.5 text-amber-500" /> 공지
-                  </label>
-                )}
-                {isPrivileged && (
-                  <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 cursor-pointer">
-                    <input type="checkbox" checked={newPinned}
-                      onChange={e => setNewPinned(e.target.checked)}
-                      className="rounded border-slate-300 text-amber-500 focus:ring-amber-400"
-                    />
-                    <Pin className="w-3.5 h-3.5 text-amber-500" /> 고정
-                  </label>
-                )}
-              </div>
-
-              <div className="flex flex-wrap gap-4">
-                <DisplayModeSelector value={newDisplayMode} onChange={setNewDisplayMode} />
-                <VisibilitySelector value={newVisibility} onChange={setNewVisibility} compact />
-              </div>
-              <textarea
-                placeholder="내용을 입력하세요..."
-                value={newContent}
-                onChange={e => setNewContent(e.target.value)}
-                required
-                rows={4}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent resize-none"
-              />
-
-              {pendingFiles.length > 0 && (
-                <div className="border border-slate-200 rounded-xl p-3">
-                  <AttachmentList attachments={pendingFiles} preview />
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {pendingFiles.map((f, i) => (
-                      <span key={i} className="flex items-center gap-1 text-[10px] bg-slate-100 px-2 py-0.5 rounded-full text-slate-600">
-                        {f.name}
-                        <button type="button" onClick={() => setPendingFiles(prev => prev.filter((_, j) => j !== i))}>
-                          <X className="w-3 h-3 hover:text-rose-500" />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                </div>
+      {/* ── 새 글 작성 폼 ── */}
+      {showNewPost && (
+        <div className="shrink-0 bg-white border-b border-slate-200 px-6 py-4 overflow-y-auto max-h-80 shadow-sm">
+          <h3 className="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+            <Plus className="w-4 h-4 text-indigo-500" /> 새 게시글 작성
+          </h3>
+          <form onSubmit={handlePostSubmit} className="space-y-3">
+            <div className="flex gap-3 items-center flex-wrap">
+              <input type="text" placeholder="제목을 입력하세요" value={newTitle} onChange={e => setNewTitle(e.target.value)} required
+                className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent min-w-0" />
+              {isPrivileged && (
+                <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 cursor-pointer shrink-0">
+                  <input type="checkbox" checked={newCategory === "NOTICE"} onChange={e => setNewCategory(e.target.checked ? "NOTICE" : "GENERAL")}
+                    className="rounded border-slate-300 text-amber-500 focus:ring-amber-400" />
+                  <Megaphone className="w-3.5 h-3.5 text-amber-500" /> 공지
+                </label>
               )}
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <input ref={fileInputRef} type="file" multiple accept="image/*,.pdf,.docx,.xlsx,.pptx,.txt" className="hidden"
-                    onChange={e => e.target.files && uploadFiles(e.target.files, setPendingFiles, pendingFiles)} />
-                  <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading}
-                    className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-indigo-600 border border-slate-200 hover:border-indigo-300 px-3 py-1.5 rounded-lg transition-all disabled:opacity-50">
-                    <Paperclip className="w-3.5 h-3.5" /> {uploading ? "업로드 중..." : "파일 첨부"}
-                  </button>
-                  <span className="text-[10px] text-slate-400">이미지·PDF·Office (최대 10MB)</span>
+              {isPrivileged && (
+                <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 cursor-pointer shrink-0">
+                  <input type="checkbox" checked={newPinned} onChange={e => setNewPinned(e.target.checked)}
+                    className="rounded border-slate-300 text-amber-500 focus:ring-amber-400" />
+                  <Pin className="w-3.5 h-3.5 text-amber-500" /> 고정
+                </label>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-4">
+              <DisplayModeSelector value={newDisplayMode} onChange={setNewDisplayMode} />
+              <VisibilitySelector value={newVisibility} onChange={setNewVisibility} compact />
+            </div>
+            <textarea placeholder="내용을 입력하세요..." value={newContent} onChange={e => setNewContent(e.target.value)} required rows={4}
+              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent resize-none" />
+            {pendingFiles.length > 0 && (
+              <div className="border border-slate-200 rounded-xl p-3">
+                <AttachmentList attachments={pendingFiles} preview />
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {pendingFiles.map((f, i) => (
+                    <span key={i} className="flex items-center gap-1 text-[10px] bg-slate-100 px-2 py-0.5 rounded-full text-slate-600">
+                      {f.name}
+                      <button type="button" onClick={() => setPendingFiles(prev => prev.filter((_, j) => j !== i))}><X className="w-3 h-3 hover:text-rose-500" /></button>
+                    </span>
+                  ))}
                 </div>
-                <button
-                  type="submit" disabled={submitting || uploading}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg flex items-center gap-1.5 disabled:opacity-50 transition-all shadow-sm">
-                  <Send className="w-3.5 h-3.5" /> {submitting ? "등록 중..." : "게시글 등록"}
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {/* 게시글 상세 */}
-        {!selectedId ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-slate-400 gap-3">
-            <ChevronRight className="w-10 h-10 opacity-20" />
-            <p className="text-sm">좌측에서 게시글을 선택하세요.</p>
-          </div>
-        ) : loadingDetail ? (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="w-6 h-6 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : detail && (
-          <div className="flex-1 overflow-y-auto">
-            {/* 공지 배너 */}
-            {detail.category === "NOTICE" && (
-              <div className="bg-linear-to-r from-amber-400 to-orange-300 px-6 py-3 flex items-center gap-2.5">
-                <Megaphone className="w-5 h-5 text-white shrink-0" />
-                <div>
-                  <span className="text-xs font-black text-white/80 uppercase tracking-widest">공지사항</span>
-                  <p className="text-sm font-bold text-white leading-tight mt-0.5">{detail.title}</p>
-                </div>
-                {detail.pinned && <Pin className="w-4 h-4 text-white/70 ml-auto shrink-0" />}
               </div>
             )}
-
-            {/* 게시글 본문 */}
-            <div className={cn("border-b border-slate-100 px-6 py-6", detail.category === "NOTICE" ? "bg-amber-50/30" : "bg-white")}>
-              <div className="flex items-start justify-between gap-4 mb-4">
-                <div className="space-y-1.5 flex-1 min-w-0">
-                  {detail.category !== "NOTICE" && (
-                    <h2 className="text-lg font-bold text-slate-900 leading-tight">{detail.title}</h2>
-                  )}
-                  <div className="flex items-center gap-3 text-xs text-slate-400 flex-wrap">
-                    <span className="font-medium text-slate-600">{authorLabel(detail.author, detail.displayMode as DisplayMode)}</span>
-                    {detail.displayMode !== "ANONYMOUS" && detail.author.department && <span>{detail.author.department}</span>}
-                    <VisibilityBadge visibility={detail.visibility} />
-                    <span>{new Date(detail.createdAt).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}</span>
-                    <span className="flex items-center gap-1"><MessageSquare className="w-3 h-3" />{commentCount}개</span>
-                  </div>
-                </div>
-
-                {/* 액션 버튼 */}
-                <div className="flex items-center gap-1.5 shrink-0">
-                  {isPrivileged && !editingPost && (
-                    <button
-                      onClick={() => handleToggleCategory(detail.id, detail.category)}
-                      className={cn(
-                        "flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-semibold transition-colors",
-                        detail.category === "NOTICE"
-                          ? "text-amber-700 bg-amber-100 hover:bg-amber-200"
-                          : "text-slate-500 hover:text-amber-700 hover:bg-amber-50 border border-slate-200"
-                      )}>
-                      <Megaphone className="w-3.5 h-3.5" />
-                      {detail.category === "NOTICE" ? "공지 해제" : "공지로 변경"}
-                    </button>
-                  )}
-                  {isPrivileged && !editingPost && (
-                    <button
-                      onClick={() => handleTogglePin(detail.id, detail.pinned)}
-                      className={cn(
-                        "p-1.5 rounded-lg transition-colors",
-                        detail.pinned ? "text-amber-500 bg-amber-50 hover:bg-amber-100" : "text-slate-400 hover:text-amber-500 hover:bg-amber-50"
-                      )}>
-                      {detail.pinned ? <PinOff className="w-4 h-4" /> : <Pin className="w-4 h-4" />}
-                    </button>
-                  )}
-                  {(detail.author.id === currentUserId || isPrivileged) && !editingPost && (
-                    <button
-                      onClick={() => startEditPost(detail)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition-colors">
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                  )}
-                  {(detail.author.id === currentUserId || isPrivileged) && !editingPost && (
-                    <button
-                      onClick={() => handleDeletePost(detail.id)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <input ref={fileInputRef} type="file" multiple accept="image/*,.pdf,.docx,.xlsx,.pptx,.txt" className="hidden"
+                  onChange={e => e.target.files && uploadFiles(e.target.files, setPendingFiles, pendingFiles)} />
+                <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading}
+                  className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-indigo-600 border border-slate-200 hover:border-indigo-300 px-3 py-1.5 rounded-lg transition-all disabled:opacity-50">
+                  <Paperclip className="w-3.5 h-3.5" /> {uploading ? "업로드 중..." : "파일 첨부"}
+                </button>
+                <span className="text-[10px] text-slate-400">이미지·PDF·Office (최대 10MB)</span>
               </div>
-
-              {/* 본문 — 일반 뷰 또는 인라인 편집 */}
-              {editingPost ? (
-                <div className="space-y-3 mt-2">
-                  <input
-                    autoFocus
-                    value={editTitle}
-                    onChange={e => setEditTitle(e.target.value)}
-                    className="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                    placeholder="제목"
-                  />
-                  <textarea
-                    value={editContent}
-                    onChange={e => setEditContent(e.target.value)}
-                    rows={6}
-                    className="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
-                    placeholder="내용"
-                  />
-                  <VisibilitySelector value={editVisibility} onChange={setEditVisibility} compact />
-                  {editAttachments.length > 0 && (
-                    <div className="border border-slate-200 rounded-xl p-3 space-y-2">
-                      <AttachmentList attachments={editAttachments} preview />
-                      <div className="flex flex-wrap gap-1">
-                        {editAttachments.map((f, i) => (
-                          <span key={i} className="flex items-center gap-1 text-[10px] bg-slate-100 px-2 py-0.5 rounded-full text-slate-600">
-                            {f.name}
-                            <button type="button" onClick={() => setEditAttachments(prev => prev.filter((_, j) => j !== i))}>
-                              <X className="w-3 h-3 hover:text-rose-500" />
-                            </button>
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <input ref={editFileRef} type="file" multiple accept="image/*,.pdf,.docx,.xlsx,.pptx,.txt" className="hidden"
-                        onChange={e => e.target.files && uploadFiles(e.target.files, setEditAttachments, editAttachments)} />
-                      <button type="button" onClick={() => editFileRef.current?.click()} disabled={uploading}
-                        className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-indigo-600 border border-slate-200 px-3 py-1.5 rounded-lg transition-all disabled:opacity-50">
-                        <Paperclip className="w-3.5 h-3.5" /> 파일 추가
-                      </button>
-                    </div>
-                    <div className="flex gap-2">
-                      <button onClick={handleSavePost} disabled={postSaving || uploading}
-                        className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-all">
-                        <Check className="w-4 h-4" /> {postSaving ? "저장 중..." : "저장"}
-                      </button>
-                      <button onClick={() => setEditingPost(false)}
-                        className="text-sm text-slate-500 hover:text-slate-800 px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
-                        취소
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-3 mt-2">
-                  <div className="bg-slate-50/50 rounded-xl px-4 py-4 border border-slate-100 [&_p]:!text-sm [&_p]:!text-slate-700 [&_li]:!text-sm [&_li]:!text-slate-700 [&_td]:!text-sm [&_td]:!text-slate-700 [&_th]:!text-sm [&_blockquote]:!border-amber-300 [&_blockquote]:!bg-amber-50 [&_blockquote]:!rounded-r-lg [&_blockquote]:!py-2 [&_blockquote]:!not-italic [&_blockquote_p]:!text-amber-800 [&_h2]:!text-sm [&_h2]:!text-slate-800 [&_h3]:!text-sm [&_h3]:!text-slate-700">
-                    <MarkdownContent content={detail.content} />
-                  </div>
-                  {(detail.attachments?.length ?? 0) > 0 && (
-                    <AttachmentList attachments={detail.attachments} />
-                  )}
-                </div>
-              )}
+              <button type="submit" disabled={submitting || uploading}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg flex items-center gap-1.5 disabled:opacity-50 transition-all shadow-sm">
+                <Send className="w-3.5 h-3.5" /> {submitting ? "등록 중..." : "게시글 등록"}
+              </button>
             </div>
+          </form>
+        </div>
+      )}
 
-            {/* 댓글 섹션 */}
-            <div className="px-6 py-5 space-y-5">
-              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-                <MessageSquare className="w-3.5 h-3.5" /> 댓글 {commentCount > 0 && `(${commentCount})`}
-              </h3>
-
-              {/* 댓글 트리 */}
-              <div className="space-y-5">
-                {(detail.comments ?? []).length === 0 ? (
-                  <p className="text-xs text-slate-400 italic">첫 번째 댓글을 남겨보세요.</p>
-                ) : (
-                  <CommentTree
-                    nodes={buildTree(detail.comments!)}
-                    postId={detail.id}
-                    depth={0}
-                    currentUserId={currentUserId}
-                    currentUserName={currentUserName}
-                    isPrivileged={isPrivileged}
-                    onRefresh={() => { loadDetail(detail.id); loadPosts() }}
-                  />
-                )}
-              </div>
-
-              {/* 최상위 댓글 입력폼 */}
-              <form onSubmit={handleCommentSubmit} className="space-y-2 pt-2 border-t border-slate-100">
-                <div className="flex items-center gap-4 flex-wrap">
-                  <DisplayModeSelector value={commentDisplayMode} onChange={setCommentDisplayMode} compact />
-                  <VisibilitySelector value={commentVisibility} onChange={setCommentVisibility} compact />
-                </div>
-                <div className="flex gap-2">
-                  <div className="w-7 h-7 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-1">
-                    {currentUserName.slice(0, 1)}
-                  </div>
-                  <div className="flex-1 flex gap-2">
-                    <div className="flex-1 relative">
-                      <textarea
-                        ref={commentInputRef}
-                        value={commentText}
-                        onChange={e => setCommentText(e.target.value)}
-                        onKeyDown={e => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault()
-                            if (commentText.trim()) handleCommentSubmit(e as unknown as React.FormEvent)
-                          }
-                        }}
-                        placeholder="댓글을 입력하세요 (Enter 전송, Shift+Enter 줄바꿈)"
-                        rows={2}
-                        className="w-full border border-slate-200 rounded-xl px-3 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent resize-none"
-                      />
-                      <div className="absolute right-2 bottom-2">
-                        <EmojiPicker onSelect={insertEmoji} />
-                      </div>
-                    </div>
-                    <button
-                      type="submit" disabled={!commentText.trim() || commentSubmitting}
-                      className="self-end px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl disabled:opacity-40 transition-all">
-                      <Send className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
+      {/* ── 게시글 상세 ── */}
+      <div className="flex-1 overflow-y-auto bg-slate-50">
+        {!selectedId ? (
+          <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-3">
+            <MessageSquare className="w-10 h-10 opacity-20" />
+            <p className="text-sm">위 목록에서 게시글을 선택하세요.</p>
+            {filteredPosts.length === 0 && (
+              <button onClick={() => setShowNewPost(true)}
+                className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors mt-1">
+                <Plus className="w-3.5 h-3.5" /> 첫 글 작성하기
+              </button>
+            )}
           </div>
-        )}
+        ) : loadingDetail ? (
+          <div className="h-full flex items-center justify-center">
+            <div className="w-6 h-6 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : detail ? (
+          <PostDetail
+            {...detailProps}
+            detail={detail}
+            isFullPage={false}
+            onToggleFullPage={() => setFullPage(true)}
+          />
+        ) : null}
       </div>
+
+      {/* ── 전체 페이지 보기 오버레이 ── */}
+      {fullPage && detail && (
+        <div className="fixed inset-0 z-50 bg-white flex flex-col">
+          <div className="shrink-0 bg-white border-b border-slate-200 px-6 py-3 flex items-center gap-3">
+            <button onClick={() => setFullPage(false)}
+              className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
+              <Minimize2 className="w-3.5 h-3.5" /> 원래 크기로
+            </button>
+            <span className="text-sm font-semibold text-slate-700 truncate flex-1 min-w-0">{detail.title}</span>
+            <button onClick={() => setFullPage(false)}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors shrink-0">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto max-w-5xl w-full mx-auto">
+            <PostDetail
+              {...detailProps}
+              detail={detail}
+              isFullPage={true}
+              onToggleFullPage={() => setFullPage(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
