@@ -63,10 +63,13 @@ function unresolvedIssueCount(logs: TestLog[]): number {
 interface Suspension { from: Date; to: Date | null }
 
 function getSuspensions(logs: TestLog[], today: Date): Suspension[] {
-  const resumeMap = new Map(
-    logs.filter(l => l.logType === "action" && l.issueId && l.resumedFrom)
-        .map(l => [l.issueId!, parseDate(l.resumedFrom!)])
-  );
+  // 동일 issueId에 action 로그가 여럿이면 첫 번째(가장 이른) 재개일만 사용
+  const resumeMap = new Map<string, Date>()
+  for (const l of logs) {
+    if (l.logType === "action" && l.issueId && l.resumedFrom && !resumeMap.has(l.issueId)) {
+      resumeMap.set(l.issueId, parseDate(l.resumedFrom))
+    }
+  }
   return logs
     .filter(l => l.logType === "issue" && l.suspendedFrom)
     .map(l => ({

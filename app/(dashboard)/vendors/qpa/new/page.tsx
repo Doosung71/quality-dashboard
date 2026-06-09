@@ -1,11 +1,9 @@
-import { auth } from "@/auth"
-import { redirect } from "next/navigation"
+import { requireActivePageSession } from "@/lib/session-guard"
 import vendorsData from "@/data/vendors.json"
 import QpaNewForm from "./QpaNewForm"
 
 export default async function QpaNewPage() {
-  const session = await auth()
-  if (!session) redirect("/login")
+  const session = await requireActivePageSession()
 
   const vendors = vendorsData.vendors.map(v => ({
     id:       v.id,

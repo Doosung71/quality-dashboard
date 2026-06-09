@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/auth";
+import { requireActivePageSession } from "@/lib/session-guard";
 import { redirect } from "next/navigation";
 import { parseSpec } from "@/lib/facilities-utils";
 import type { AssetData } from "@/types/asset";
@@ -7,8 +7,7 @@ import type { SiteId } from "@/types/facility";
 import { RepairRegisterPage } from "@/components/assets/repair-register-page";
 
 export default async function AssetsRepairsPage() {
-  const session = await auth();
-  if (!session) redirect("/login");
+  const session = await requireActivePageSession();
 
   const role = session.user.role ?? "PRACTITIONER";
   if (!["DIRECTOR", "ADMIN", "TEAM_LEAD"].includes(role)) redirect("/assets");

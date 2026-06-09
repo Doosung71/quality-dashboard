@@ -1,4 +1,4 @@
-import { auth } from "@/auth"
+import { requireActivePageSession } from "@/lib/session-guard"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"
@@ -6,8 +6,7 @@ import { ArrowLeft, ClipboardList } from "lucide-react"
 import QpaDetailClient from "./QpaDetailClient"
 
 export default async function QpaDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const session = await auth()
-  if (!session) redirect("/login")
+  const session = await requireActivePageSession()
   const { id } = await params
 
   const audit = await prisma.qpaAudit.findUnique({

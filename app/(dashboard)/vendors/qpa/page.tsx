@@ -1,5 +1,4 @@
-import { auth } from "@/auth"
-import { redirect } from "next/navigation"
+import { requireActivePageSession } from "@/lib/session-guard"
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"
 import { ClipboardList, Plus, ChevronRight, CheckCircle2, Clock, BarChart2, Star } from "lucide-react"
@@ -18,8 +17,7 @@ const levelColor = {
 } as const
 
 export default async function QpaAuditsPage() {
-  const session = await auth()
-  if (!session) redirect("/login")
+  await requireActivePageSession()
 
   const audits = await prisma.qpaAudit.findMany({
     orderBy: { auditDate: "desc" },
