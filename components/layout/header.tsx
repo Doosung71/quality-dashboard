@@ -26,6 +26,8 @@ const titles: Record<string, string> = {
   "/knowledge": "지식 관리",
   "/facilities": "시험 및 품질 보증",
   "/assets": "시험설비/계측기 관리",
+  "/assets/new": "설비 등록",
+  "/assets/repairs": "설비 수선 등록",
   "/projects": "프로젝트 관리",
   "/projects/awarded": "수주 프로젝트",
   "/dashboard": "입찰 프로젝트",

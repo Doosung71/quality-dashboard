@@ -67,7 +67,7 @@ export default async function AssetsPage() {
 
   return (
     <div className="space-y-1">
-      <h1 className="text-lg font-semibold text-slate-800">자산관리</h1>
+      <h1 className="text-lg font-semibold text-slate-800">전체 설비 현황</h1>
       <p className="text-xs text-slate-400 mb-4">시험설비·계측설비 자산 현황 및 노후도 관리</p>
       <AssetsView
         assetData={assetData}

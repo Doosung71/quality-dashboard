@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import {
   LayoutDashboard, FlaskConical,
   X, MessageSquare, Newspaper,
-  ClipboardList, ShieldAlert, Briefcase, Layers,
+  ClipboardList, ShieldAlert, Briefcase, Layers, Wrench,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { Role } from "@/lib/generated/prisma/client"
@@ -65,6 +65,17 @@ const ALL_NAV: NavItem[] = [
     ],
   },
 
+  // ── 시험설비/계측기 관리 ──────────────────────────────────
+  {
+    href: "/assets", label: "시험설비/계측기 관리", icon: Wrench,
+    roles: ALL, readonlyFor: [],
+    children: [
+      { href: "/assets",          label: "전체 설비 현황", roles: ALL, readonlyFor: [] },
+      { href: "/assets/new",      label: "설비 등록",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD"], readonlyFor: [] },
+      { href: "/assets/repairs",  label: "설비 수선",      roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD"], readonlyFor: [] },
+    ],
+  },
+
   // ── 품질 이상/사후 관리 ───────────────────────────────────
   {
     label: "품질 이상/사후 관리", icon: ShieldAlert,
@@ -81,10 +92,9 @@ const ALL_NAV: NavItem[] = [
     label: "기준 정보 및 지원", icon: Layers,
     roles: ALL, readonlyFor: [],
     children: [
-      { href: "/assets",       label: "시험설비/계측기 관리", roles: ALL,                        readonlyFor: ["PRACTITIONER"] },
-      { href: "/knowledge",    label: "지식 관리", roles: ALL,                        readonlyFor: [] },
-      { href: "/intelligence", label: "외부 정보", roles: ALL,                        readonlyFor: [] },
-      { href: "/hr",           label: "인사·면담", roles: ["DIRECTOR", "ADMIN"],      readonlyFor: [] },
+      { href: "/knowledge",    label: "지식 관리", roles: ALL,                   readonlyFor: [] },
+      { href: "/intelligence", label: "외부 정보", roles: ALL,                   readonlyFor: [] },
+      { href: "/hr",           label: "인사·면담", roles: ["DIRECTOR", "ADMIN"], readonlyFor: [] },
     ],
   },
 ]

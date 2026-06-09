@@ -8,10 +8,8 @@ import type { SiteId, FacilitiesData } from "@/types/facility";
 import type { TestsData } from "@/types/test";
 import { EquipmentTable } from "@/components/facilities/equipment-table";
 import { computeStatus } from "@/lib/facilities-utils";
-import { EquipmentForm } from "./equipment-form";
 import { OwnerModal } from "./owner-modal";
 import { EquipmentDetailDrawer } from "./equipment-detail-drawer";
-import { RepairForm } from "./repair-form";
 
 const CATEGORIES: { key: AssetCategory | "전체"; label: string }[] = [
   { key: "전체",    label: "전체" },
@@ -76,7 +74,6 @@ function AgingCard({ equipment }: { equipment: Equipment[] }) {
   );
 }
 
-type ModalType = "equipment" | "repair" | null;
 type OwnerTarget = { id: string; name: string; managingTeam: string | null; ownerId: string | null; ownerName: string | null } | null;
 
 export function AssetsView({
@@ -90,13 +87,10 @@ export function AssetsView({
   const router = useRouter();
   const [activeSite, setActiveSite] = useState<SiteId | "전체">("전체");
   const [activeCategory, setActiveCategory] = useState<AssetCategory | "전체">("전체");
-  const [modal, setModal] = useState<ModalType>(null);
   const [ownerTarget, setOwnerTarget] = useState<OwnerTarget>(null);
   const [detailTarget, setDetailTarget] = useState<Equipment | null>(null);
-  const [repairTarget, setRepairTarget] = useState<Equipment | null>(null);
 
-  const onFormSuccess  = () => { setModal(null); router.refresh(); };
-  const onOwnerSaved   = () => { setOwnerTarget(null); router.refresh(); };
+  const onOwnerSaved = () => { setOwnerTarget(null); router.refresh(); };
 
   const siteOptions: { key: SiteId | "전체"; label: string }[] = [
     { key: "전체",    label: "전체" },
@@ -182,45 +176,6 @@ export function AssetsView({
         <AgingCard equipment={equipment} />
       )}
 
-      {/* 등록 버튼 */}
-      <div className="flex gap-2 justify-end">
-        <button
-          onClick={() => setModal("equipment")}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-          설비 등록
-        </button>
-        <button
-          onClick={() => setModal("repair")}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-          설비 수선
-        </button>
-      </div>
-
-      {/* 설비 등록 모달 */}
-      {modal === "equipment" && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-              <h2 className="text-base font-semibold text-slate-800">설비 등록</h2>
-              <button onClick={() => setModal(null)} className="text-slate-400 hover:text-slate-600">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
-            </div>
-            <div className="px-6 py-4">
-              <EquipmentForm
-                facilitiesData={facilitiesData}
-                onSuccess={onFormSuccess}
-                onCancel={() => setModal(null)}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* 필터 바 */}
       <div className="flex flex-wrap gap-3 items-center">
         {/* 사이트 필터 */}
@@ -261,17 +216,6 @@ export function AssetsView({
           {filtered.length}개 설비
         </span>
       </div>
-
-      {/* 설비 수선 등록 모달 */}
-      {modal === "repair" && (
-        <RepairForm
-          equipmentId={repairTarget?.id}
-          equipmentName={repairTarget?.name}
-          equipmentList={repairTarget ? undefined : equipment}
-          onClose={() => { setModal(null); setRepairTarget(null); }}
-          onSaved={() => { setModal(null); setRepairTarget(null); router.refresh(); }}
-        />
-      )}
 
       {/* 설비 테이블 */}
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
