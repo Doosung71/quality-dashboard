@@ -1,8 +1,14 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
+import { requireActivePageSession } from "@/lib/session-guard";
 import { hrData } from "@/data/hr.data";
 import { HRView } from "@/components/hr/hr-view";
 
-export default function HRPage() {
+export default async function HRPage() {
+  const session = await requireActivePageSession();
+  const role = session.user.role;
+  if (role !== "DIRECTOR" && role !== "ADMIN") redirect("/");
+
   return (
     <div className="flex flex-col gap-6">
       <div>
