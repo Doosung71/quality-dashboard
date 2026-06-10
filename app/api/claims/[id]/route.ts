@@ -1,6 +1,8 @@
+import { after } from "next/server"
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireActiveSession } from "@/lib/session-guard"
+import { ingestClosedClaim } from "@/lib/ingest-qms"
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
@@ -40,6 +42,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       ...(body.closedAt    !== undefined && { closedAt:    body.closedAt ? new Date(body.closedAt) : null }),
     },
   })
+
+  if (body.status === "Closed") {
+    after(async () => { await ingestClosedClaim(id) })
+  }
+
   return NextResponse.json(claim)
 }
 

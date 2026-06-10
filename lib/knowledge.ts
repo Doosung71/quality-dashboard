@@ -26,7 +26,7 @@ export interface KnowledgeSearchOptions {
   sourceTypes?: string[]
 }
 
-const DEFAULT_SOURCE_TYPES = ['obsidian', 'standards', 'pdf_inbox']
+const DEFAULT_SOURCE_TYPES = ['obsidian', 'standards', 'pdf_inbox', 'ncr_closed', 'claim_closed']
 // tra_approved는 TRA 전용 RAG 경로에서만 사용. 일반 검색에서 항상 차단.
 const BLOCKED_SOURCE_TYPES = new Set(['tra_approved'])
 
