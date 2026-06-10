@@ -76,7 +76,7 @@ describe('POST /api/ai/suggest', () => {
     expect((await res.json()).error).toContain('2000자')
   })
 
-  it('type이 claim/ncr 외 값이면 400', async () => {
+  it('허용되지 않은 type 값이면 400', async () => {
     const res = await callPost({ title: '제목', type: 'invalid' })
     expect(res.status).toBe(400)
     expect((await res.json()).error).toContain('type')
@@ -112,5 +112,83 @@ describe('POST /api/ai/suggest', () => {
     const b = await res.json()
     expect(b.draft).toBeNull()
     expect(b.draftError).toBeTruthy()
+  })
+
+  describe('검사 3종 신규 타입', () => {
+    it('수입검사(incoming_inspection) 정상 요청 — 200 + draft + 검사 포인트 시스템 프롬프트', async () => {
+      mockMessagesCreate.mockResolvedValueOnce({
+        content: [{ type: 'text', text: '## 핵심 검사 포인트\n- 외경 측정 필수' }],
+      })
+      const res = await callPost({
+        title: 'PVC 시스 두께 미달',
+        type: 'incoming_inspection',
+        description: '협력업체 A 납품분',
+      })
+      expect(res.status).toBe(200)
+      const b = await res.json()
+      expect(b.draft).toBeTruthy()
+      expect(b.chunks).toBeInstanceOf(Array)
+      expect(mockMessagesCreate).toHaveBeenCalledWith(
+        expect.objectContaining({ system: expect.stringContaining('검사 포인트') })
+      )
+    })
+
+    it('출장검사(source_inspection) 정상 요청 — 200 + draft + 현장 확인 시스템 프롬프트', async () => {
+      mockMessagesCreate.mockResolvedValueOnce({
+        content: [{ type: 'text', text: '## 현장 확인 체크포인트\n- 설비 교정 이력 확인' }],
+      })
+      const res = await callPost({ title: '절연 저항 측정 편차', type: 'source_inspection' })
+      expect(res.status).toBe(200)
+      const b = await res.json()
+      expect(b.draft).toBeTruthy()
+      expect(b.chunks).toBeInstanceOf(Array)
+      expect(mockMessagesCreate).toHaveBeenCalledWith(
+        expect.objectContaining({ system: expect.stringContaining('현장 확인') })
+      )
+    })
+
+    it('협력업체 감사(supplier_audit) 정상 요청 — 200 + draft + 개선 권고 시스템 프롬프트', async () => {
+      mockMessagesCreate.mockResolvedValueOnce({
+        content: [{ type: 'text', text: '## 주요 확인 항목\n- QMS 문서 최신화 여부' }],
+      })
+      const res = await callPost({
+        title: '협력사 B 정기 감사',
+        type: 'supplier_audit',
+        description: '2026년 1차 정기 심사',
+      })
+      expect(res.status).toBe(200)
+      const b = await res.json()
+      expect(b.draft).toBeTruthy()
+      expect(b.chunks).toBeInstanceOf(Array)
+      expect(mockMessagesCreate).toHaveBeenCalledWith(
+        expect.objectContaining({ system: expect.stringContaining('개선 권고') })
+      )
+    })
+
+    it('검사 타입에서 RAG 실패해도 Claude draft 반환', async () => {
+      mockSearchKnowledge.mockRejectedValue(new Error('DB 오류'))
+      const res = await callPost({ title: '불량 수입품', type: 'incoming_inspection' })
+      expect(res.status).toBe(200)
+      const b = await res.json()
+      expect(b.chunks).toHaveLength(0)
+      expect(b.draft).toBeTruthy()
+    })
+
+    it('RAG 유사 사례 있을 때 검사 타입 프롬프트에 반영', async () => {
+      mockSearchKnowledge.mockResolvedValue([
+        { title: '과거 외경 초과 불량', content: '외경 초과로 불합격 처리됨', source_path: 'kb/01', score: 0.9 },
+      ])
+      const res = await callPost({ title: '전선 외경 초과', type: 'source_inspection' })
+      expect(res.status).toBe(200)
+      const b = await res.json()
+      expect(b.chunks).toHaveLength(1)
+      expect(mockMessagesCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          messages: expect.arrayContaining([
+            expect.objectContaining({ content: expect.stringContaining('유사사례') }),
+          ]),
+        })
+      )
+    })
   })
 })
