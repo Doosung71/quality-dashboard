@@ -25,6 +25,7 @@ export function AiSuggestionPanel({ title, description, type }: Props) {
   const [draft, setDraft] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [draftError, setDraftError] = useState<string | null>(null)
   const [fetched, setFetched] = useState(false)
 
   async function handleOpen() {
@@ -33,6 +34,7 @@ export function AiSuggestionPanel({ title, description, type }: Props) {
     if (next && !fetched) {
       setLoading(true)
       setError(null)
+      setDraftError(null)
       try {
         const res = await fetch("/api/ai/suggest", {
           method: "POST",
@@ -43,6 +45,7 @@ export function AiSuggestionPanel({ title, description, type }: Props) {
         const data = await res.json()
         setChunks(data.chunks ?? [])
         setDraft(data.draft ?? null)
+        setDraftError(data.draftError ?? null)
         setFetched(true)
       } catch (e) {
         setError(e instanceof Error ? e.message : "AI 분석 중 오류가 발생했습니다.")
@@ -126,6 +129,11 @@ export function AiSuggestionPanel({ title, description, type }: Props) {
 
               {chunks.length === 0 && (
                 <p className="text-xs text-slate-400 mt-3">지식 베이스에 유사 사례가 없습니다.</p>
+              )}
+
+              {/* AI 초안 생성 실패 */}
+              {draftError && (
+                <p className="text-xs text-amber-600 bg-amber-50 rounded-xl px-3 py-2">{draftError}</p>
               )}
 
               {/* AI 초안 */}

@@ -27,6 +27,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     timeline?: unknown[]; attachments?: unknown[]
   }
 
+  const existing = body.status === "Closed"
+    ? await prisma.claim.findUnique({ where: { id }, select: { status: true } })
+    : null
+
   const claim = await prisma.claim.update({
     where: { id },
     data: {
@@ -43,7 +47,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     },
   })
 
-  if (body.status === "Closed") {
+  if (body.status === "Closed" && existing?.status !== "Closed") {
     after(async () => { await ingestClosedClaim(id) })
   }
 

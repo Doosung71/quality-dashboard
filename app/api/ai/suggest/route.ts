@@ -73,13 +73,26 @@ export async function POST(req: NextRequest) {
   }
 
   const b = body as Record<string, unknown>
-  const title = typeof b.title === "string" && b.title.trim() ? b.title.trim() : null
-  const description = typeof b.description === "string" ? b.description.trim() : undefined
-  const type = b.type === "ncr" ? "ncr" : "claim"
+  const rawTitle = typeof b.title === "string" ? b.title.trim() : ""
+  const rawDescription = typeof b.description === "string" ? b.description.trim() : ""
+  const rawType = b.type
 
-  if (!title) {
+  if (!rawTitle) {
     return NextResponse.json({ error: "title이 필요합니다." }, { status: 400 })
   }
+  if (rawTitle.length > 200) {
+    return NextResponse.json({ error: "title은 200자 이하로 입력해 주세요." }, { status: 400 })
+  }
+  if (rawDescription.length > 2000) {
+    return NextResponse.json({ error: "description은 2000자 이하로 입력해 주세요." }, { status: 400 })
+  }
+  if (rawType !== "claim" && rawType !== "ncr") {
+    return NextResponse.json({ error: "type은 'claim' 또는 'ncr'이어야 합니다." }, { status: 400 })
+  }
+
+  const title = rawTitle
+  const description = rawDescription || undefined
+  const type = rawType
 
   // 1. RAG 유사 사례 검색
   let chunks: KnowledgeChunk[] = []
@@ -95,6 +108,7 @@ export async function POST(req: NextRequest) {
   }
 
   let draft: string | null = null
+  let draftError: string | null = null
   try {
     const response = await client.messages.create({
       model: "claude-sonnet-4-6",
@@ -109,7 +123,8 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     const msg = e instanceof Error ? e.message : "알 수 없는 오류"
     console.error("[ai/suggest] Claude 호출 실패:", msg)
+    draftError = "AI 초안 생성 중 오류가 발생했습니다."
   }
 
-  return NextResponse.json({ chunks, draft })
+  return NextResponse.json({ chunks, draft, draftError })
 }

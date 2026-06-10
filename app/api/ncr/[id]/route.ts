@@ -27,6 +27,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     assignee?: string; description?: string; timeline?: unknown[]; attachments?: unknown[]
   }
 
+  const existing = body.status === "Closed"
+    ? await prisma.ncr.findUnique({ where: { id }, select: { status: true } })
+    : null
+
   const ncr = await prisma.ncr.update({
     where: { id },
     data: {
@@ -44,7 +48,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     },
   })
 
-  if (body.status === "Closed") {
+  if (body.status === "Closed" && existing?.status !== "Closed") {
     after(async () => { await ingestClosedNcr(id) })
   }
 
