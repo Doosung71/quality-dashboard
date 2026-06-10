@@ -20,12 +20,9 @@ import {
   Calendar,
   BookOpen,
   Layers,
-  Sparkles,
   Award,
   BookMarked,
   ChevronLeft,
-  Globe,
-  Link2,
   Loader2,
   Download,
   Pencil,
@@ -36,7 +33,6 @@ import {
 interface KnowledgeRepositoryProps {
   data: { assets: KnowledgeAsset[] };
   repoLoading?: boolean;
-  ragSearchElement: React.ReactNode;
 }
 
 const CATEGORY_MAP: Record<KnowledgeCategory, { label: string; bg: string; text: string; border: string }> = {
@@ -148,38 +144,7 @@ const FORM_CONFIG: Record<string, FormConfig> = {
   },
 };
 
-export function KnowledgeRepository({ data, repoLoading = false, ragSearchElement }: KnowledgeRepositoryProps) {
-  const [activeTab, setActiveTab] = useState<"browser" | "rag" | "websearch">("browser");
-
-  // 외부 웹검색 탭 상태
-  const [wsQuery, setWsQuery] = useState("");
-  const [wsResults, setWsResults] = useState<{ title: string; snippet: string; url: string }[]>([]);
-  const [wsLoading, setWsLoading] = useState(false);
-  const [wsError, setWsError] = useState("");
-  const [wsSearched, setWsSearched] = useState(false);
-
-  async function handleWebSearch(e: React.FormEvent) {
-    e.preventDefault();
-    if (!wsQuery.trim()) return;
-    setWsLoading(true);
-    setWsError("");
-    setWsSearched(true);
-    setWsResults([]);
-    try {
-      const res = await fetch("/api/intelligence/websearch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: wsQuery.trim() }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "검색 실패");
-      setWsResults(data.results ?? []);
-    } catch (err) {
-      setWsError(err instanceof Error ? err.message : "검색 중 오류가 발생했습니다.");
-    } finally {
-      setWsLoading(false);
-    }
-  }
+export function KnowledgeRepository({ data, repoLoading = false }: KnowledgeRepositoryProps) {
   const [assets, setAssets] = useState<KnowledgeAsset[]>(data.assets);
   const [selectedAssetId, setSelectedAssetId] = useState<string>(data.assets[0]?.id || "");
 
@@ -436,103 +401,6 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
       </div>
     )}
     <div className="space-y-6">
-      {/* 상단 탭 메뉴 */}
-      <div className="flex border-b border-slate-200">
-        <button
-          onClick={() => setActiveTab("browser")}
-          className={`px-5 py-3 text-sm font-extrabold border-b-2 transition-all flex items-center gap-2 ${activeTab === "browser" ? "border-slate-950 text-slate-950" : "border-transparent text-slate-400 hover:text-slate-600"}`}
-        >
-          <BookMarked className="w-4 h-4" /> 지식저장소 분류 브라우저
-        </button>
-        <button
-          onClick={() => setActiveTab("rag")}
-          className={`px-5 py-3 text-sm font-extrabold border-b-2 transition-all flex items-center gap-2 ${activeTab === "rag" ? "border-slate-950 text-slate-950" : "border-transparent text-slate-400 hover:text-slate-600"}`}
-        >
-          <Sparkles className="w-4 h-4 text-indigo-500 animate-pulse" /> AI 자연어 RAG 검색
-        </button>
-        <button
-          onClick={() => setActiveTab("websearch")}
-          className={`px-5 py-3 text-sm font-extrabold border-b-2 transition-all flex items-center gap-2 ${activeTab === "websearch" ? "border-slate-950 text-slate-950" : "border-transparent text-slate-400 hover:text-slate-600"}`}
-        >
-          <Globe className="w-4 h-4 text-emerald-500" /> 외부 웹검색
-        </button>
-      </div>
-
-      {activeTab === "websearch" ? (
-        // 외부 웹검색 탭
-        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-6 text-xs">
-          <div className="space-y-1">
-            <h3 className="text-sm font-extrabold text-slate-800 flex items-center gap-1.5">
-              <Globe className="w-4 h-4 text-emerald-500" /> 실시간 외부 웹검색
-            </h3>
-            <p className="text-[10px] text-slate-400">
-              네이버 뉴스·웹 검색으로 최신 기술동향·규격 정보·산업 뉴스를 즉시 조회합니다.
-            </p>
-          </div>
-
-          <form onSubmit={handleWebSearch} className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                type="text"
-                value={wsQuery}
-                onChange={(e) => setWsQuery(e.target.value)}
-                placeholder="예: IEC 62067 초고압 케이블 규격, CIGRE 해저케이블 기술동향"
-                disabled={wsLoading}
-                className="w-full pl-9 pr-3 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={wsLoading || !wsQuery.trim()}
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
-            >
-              {wsLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4" />}
-              {wsLoading ? "검색 중…" : "검색"}
-            </button>
-          </form>
-
-          {wsError && <p className="text-rose-600 font-bold">{wsError}</p>}
-
-          {wsResults.length > 0 && (
-            <div className="space-y-3">
-              <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wide flex items-center gap-1">
-                <Globe className="w-3.5 h-3.5" /> 검색 결과 ({wsResults.length}건)
-              </p>
-              <div className="grid grid-cols-1 gap-2.5">
-                {wsResults.map((item, i) => (
-                  <div key={i} className="p-3.5 rounded-xl border border-slate-100 bg-white shadow-sm hover:border-emerald-200 hover:shadow-md transition-all space-y-1.5">
-                    <div className="flex items-start justify-between gap-2">
-                      <h5 className="font-extrabold text-slate-900 leading-snug">{item.title}</h5>
-                      <a
-                        href={item.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="shrink-0 text-[9px] font-bold text-emerald-600 hover:underline flex items-center gap-0.5 mt-0.5"
-                      >
-                        <Link2 className="w-3 h-3" /> 출처
-                      </a>
-                    </div>
-                    <p className="text-[10px] text-slate-500 leading-relaxed">{item.snippet}</p>
-                    <p className="text-[9px] text-slate-300 font-mono truncate">{item.url}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {!wsLoading && wsSearched && wsResults.length === 0 && !wsError && (
-            <p className="text-slate-400 text-center py-12">검색 결과가 없습니다. 다른 검색어를 시도해 보세요.</p>
-          )}
-        </div>
-      ) : activeTab === "rag" ? (
-        // RAG 검색 화면 (기존 콤포넌트 이식)
-        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-          {ragSearchElement}
-        </div>
-      ) : (
-        // 지식저장소 분류 브라우저 메인 화면
-        <div className="space-y-6">
           {/* 1. 지식자산 요약 KPI */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-white p-4.5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
@@ -1095,8 +963,6 @@ export function KnowledgeRepository({ data, repoLoading = false, ragSearchElemen
             </div>
 
           </div>
-        </div>
-      )}
     </div>
     </>
   );
