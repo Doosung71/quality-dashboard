@@ -33,6 +33,7 @@ import {
 interface KnowledgeRepositoryProps {
   data: { assets: KnowledgeAsset[] };
   repoLoading?: boolean;
+  readOnly?: boolean;
 }
 
 const CATEGORY_MAP: Record<KnowledgeCategory, { label: string; bg: string; text: string; border: string }> = {
@@ -144,7 +145,7 @@ const FORM_CONFIG: Record<string, FormConfig> = {
   },
 };
 
-export function KnowledgeRepository({ data, repoLoading = false }: KnowledgeRepositoryProps) {
+export function KnowledgeRepository({ data, repoLoading = false, readOnly = false }: KnowledgeRepositoryProps) {
   const [assets, setAssets] = useState<KnowledgeAsset[]>(data.assets);
   const [selectedAssetId, setSelectedAssetId] = useState<string>(data.assets[0]?.id || "");
 
@@ -539,8 +540,8 @@ export function KnowledgeRepository({ data, repoLoading = false }: KnowledgeRepo
                     </p>
                   </div>
 
-                  {/* 카테고리별 등록 버튼 — 서브카테고리 선택 시만 표시 */}
-                  {selectedTreeSubCategory !== "ALL" && (
+                  {/* 카테고리별 등록 버튼 — 서브카테고리 선택 시만 표시, 현황 조회 모드 제외 */}
+                  {!readOnly && selectedTreeSubCategory !== "ALL" && (
                     <button
                       type="button"
                       onClick={() => { setNewSubCategory(selectedTreeSubCategory); setShowAddForm(prev => !prev); }}
@@ -625,7 +626,7 @@ export function KnowledgeRepository({ data, repoLoading = false }: KnowledgeRepo
               </div>
 
               {/* 신규 자산 등록 폼 (카테고리별 컨텍스트 적용) */}
-              {showAddForm && (() => {
+              {!readOnly && showAddForm && (() => {
                 const fc = FORM_CONFIG[newSubCategory] ?? FORM_CONFIG["_default"];
                 return (
                 <form onSubmit={handleAddAsset} className="bg-violet-50 p-5 rounded-2xl border border-violet-200 shadow-md space-y-4 text-xs shrink-0">
@@ -894,7 +895,7 @@ export function KnowledgeRepository({ data, repoLoading = false }: KnowledgeRepo
                         </div>
                       )}
 
-                      {/* 사내규격 액션 버튼 */}
+                      {/* 사내규격 액션 버튼 — 현황 조회 모드 제외 */}
                       {selectedAsset.isInternal && (
                         <div className="pt-3 border-t space-y-2">
                           <div className="flex gap-2">
@@ -904,14 +905,18 @@ export function KnowledgeRepository({ data, repoLoading = false }: KnowledgeRepo
                                 <Download className="w-3.5 h-3.5" /> 파일 다운로드
                               </a>
                             )}
-                            <button onClick={() => startEdit(selectedAsset)}
-                              className="flex-1 py-2 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-lg flex items-center justify-center gap-1.5 transition-colors">
-                              <Pencil className="w-3.5 h-3.5" /> 수정
-                            </button>
-                            <button onClick={() => handleDelete(selectedAsset)} disabled={deletingId === selectedAsset.internalId}
-                              className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-lg flex items-center justify-center gap-1 transition-colors disabled:opacity-50">
-                              {deletingId === selectedAsset.internalId ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-                            </button>
+                            {!readOnly && (
+                              <>
+                                <button onClick={() => startEdit(selectedAsset)}
+                                  className="flex-1 py-2 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-lg flex items-center justify-center gap-1.5 transition-colors">
+                                  <Pencil className="w-3.5 h-3.5" /> 수정
+                                </button>
+                                <button onClick={() => handleDelete(selectedAsset)} disabled={deletingId === selectedAsset.internalId}
+                                  className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-lg flex items-center justify-center gap-1 transition-colors disabled:opacity-50">
+                                  {deletingId === selectedAsset.internalId ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                                </button>
+                              </>
+                            )}
                           </div>
                         </div>
                       )}

@@ -92,10 +92,11 @@ const ALL_NAV: NavItem[] = [
     label: "기준 정보 및 지원", icon: Layers,
     roles: ALL, readonlyFor: [],
     children: [
-      { href: "/knowledge",        label: "지식 저장소",  roles: ALL,                                    readonlyFor: [] },
-      { href: "/knowledge/search", label: "AI 지식 검색", roles: ALL,                                    readonlyFor: [] },
-      { href: "/intelligence",     label: "외부 정보",    roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD"],     readonlyFor: [] },
-      { href: "/hr",               label: "인사·면담",    roles: ["DIRECTOR", "ADMIN"],                  readonlyFor: [] },
+      { href: "/knowledge/status", label: "지식/규격 현황", roles: ALL,                                readonlyFor: [] },
+      { href: "/knowledge",        label: "지식/규격 등록", roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD"], readonlyFor: [] },
+      { href: "/knowledge/search", label: "AI 지식 검색",  roles: ALL,                                readonlyFor: [] },
+      { href: "/intelligence",     label: "외부 정보",     roles: ["DIRECTOR", "ADMIN", "TEAM_LEAD"], readonlyFor: [] },
+      { href: "/hr",               label: "인사·면담",     roles: ["DIRECTOR", "ADMIN"],              readonlyFor: [] },
     ],
   },
 ]

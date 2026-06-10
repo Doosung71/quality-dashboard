@@ -5,7 +5,7 @@ import { knowledgeRepositoryData } from "@/data/knowledge.data";
 import type { KnowledgeRepositoryData } from "@/types/knowledge";
 import { KnowledgeRepository } from "@/components/knowledge/knowledge-repository";
 
-export default function KnowledgePage() {
+export default function KnowledgeStatusPage() {
   const [repoData, setRepoData] = useState<KnowledgeRepositoryData>(knowledgeRepositoryData);
   const [repoLoading, setRepoLoading] = useState(true);
 
@@ -22,15 +22,16 @@ export default function KnowledgePage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">지식/규격 등록</h1>
+        <h1 className="text-2xl font-bold text-slate-900">지식/규격 현황</h1>
         <p className="text-slate-500">
-          사내규격·국제규격·국가규격·단체규격·기술자료 등을 등록·수정·삭제합니다.
+          등록된 지식자산(국제·국가·단체 규격, 사내규격, 기술자료)의 전체 현황을 조회합니다.
         </p>
       </div>
 
       <KnowledgeRepository
         data={repoData}
         repoLoading={repoLoading}
+        readOnly
       />
     </div>
   );
