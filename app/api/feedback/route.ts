@@ -30,16 +30,18 @@ export async function POST(req: Request) {
   const validatedUrls = Array.isArray(imageUrls)
     ? imageUrls.filter((u): u is string => {
         if (typeof u !== "string") return false
+        // proxy URL: /api/blob/serve?url=<encoded-blob-url>
+        if (u.startsWith("/api/blob/serve?url=")) {
+          try {
+            const inner = new URL(decodeURIComponent(u.slice("/api/blob/serve?url=".length)))
+            return inner.protocol === "https:" && inner.hostname.endsWith(".blob.vercel-storage.com")
+          } catch { return false }
+        }
+        // direct blob URL (legacy)
         try {
           const parsed = new URL(u)
-          return (
-            parsed.protocol === "https:" &&
-            parsed.hostname.endsWith(".blob.vercel-storage.com") &&
-            parsed.pathname.startsWith("/feedback/")
-          )
-        } catch {
-          return false
-        }
+          return parsed.protocol === "https:" && parsed.hostname.endsWith(".blob.vercel-storage.com")
+        } catch { return false }
       }).slice(0, 3)
     : []
 
