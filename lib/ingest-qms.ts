@@ -199,3 +199,149 @@ export async function ingestClosedClaim(claimId: string): Promise<void> {
     console.error(`[ingest-qms] Claim 인제스트 실패 — ${claimId}:`, error)
   }
 }
+
+function buildIncomingInspectionMarkdown(item: {
+  itemName: string; vendorName: string
+  inspectionDate: Date; quantity: number
+  sampleSize: number | null; defectCount: number | null; defectRate: number | null
+  result: string | null; notes: string | null; inspector: string | null
+}): string {
+  const resultLabel: Record<string, string> = {
+    PASS: "합격", FAIL: "불합격", CONDITIONAL_PASS: "조건부합격",
+  }
+  const lines: string[] = [
+    `# [수입검사] ${item.itemName}`,
+    "",
+    "## 검사 개요",
+    `- **협력업체**: ${item.vendorName}`,
+    `- **검사일**: ${item.inspectionDate.toISOString().slice(0, 10)}`,
+    `- **수량**: ${item.quantity}`,
+    ...(item.sampleSize  != null ? [`- **샘플 수량**: ${item.sampleSize}`]  : []),
+    ...(item.defectCount != null ? [`- **불량 수량**: ${item.defectCount}`] : []),
+    ...(item.defectRate  != null ? [`- **불량률**: ${item.defectRate}%`]    : []),
+    `- **판정**: ${item.result ? (resultLabel[item.result] ?? item.result) : "-"}`,
+    ...(item.inspector ? [`- **검사원**: ${item.inspector}`] : []),
+    "",
+  ]
+  if (item.notes) lines.push("## 특이사항", item.notes, "")
+  return lines.join("\n")
+}
+
+function buildSourceInspectionMarkdown(item: {
+  itemName: string; vendorName: string
+  inspectionDate: Date; location: string | null; quantity: number
+  sampleSize: number | null; defectCount: number | null; defectRate: number | null
+  result: string | null; notes: string | null; inspector: string | null
+}): string {
+  const resultLabel: Record<string, string> = {
+    PASS: "합격", FAIL: "불합격", CONDITIONAL_PASS: "조건부합격",
+  }
+  const lines: string[] = [
+    `# [출장검사] ${item.itemName}`,
+    "",
+    "## 검사 개요",
+    `- **협력업체**: ${item.vendorName}`,
+    `- **검사일**: ${item.inspectionDate.toISOString().slice(0, 10)}`,
+    ...(item.location    ? [`- **검사장소**: ${item.location}`]            : []),
+    `- **수량**: ${item.quantity}`,
+    ...(item.sampleSize  != null ? [`- **샘플 수량**: ${item.sampleSize}`]  : []),
+    ...(item.defectCount != null ? [`- **불량 수량**: ${item.defectCount}`] : []),
+    ...(item.defectRate  != null ? [`- **불량률**: ${item.defectRate}%`]    : []),
+    `- **판정**: ${item.result ? (resultLabel[item.result] ?? item.result) : "-"}`,
+    ...(item.inspector ? [`- **검사원**: ${item.inspector}`] : []),
+    "",
+  ]
+  if (item.notes) lines.push("## 특이사항", item.notes, "")
+  return lines.join("\n")
+}
+
+function buildSupplierAuditMarkdown(audit: {
+  vendorName: string; auditDate: Date
+  auditType: string; auditor: string
+  overallGrade: string | null; totalScore: number | null
+  status: string; summary: string | null
+  findings: { category: string; severity: string; description: string | null }[]
+}): string {
+  const lines: string[] = [
+    `# [협력업체 감사] ${audit.vendorName}`,
+    "",
+    "## 감사 개요",
+    `- **감사일**: ${audit.auditDate.toISOString().slice(0, 10)}`,
+    `- **감사 유형**: ${audit.auditType}`,
+    `- **감사원**: ${audit.auditor}`,
+    ...(audit.overallGrade ? [`- **종합 등급**: ${audit.overallGrade}`] : []),
+    ...(audit.totalScore != null ? [`- **총점**: ${audit.totalScore}`]  : []),
+    `- **상태**: ${audit.status}`,
+    "",
+  ]
+  if (audit.summary) lines.push("## 감사 요약", audit.summary, "")
+  if (audit.findings.length > 0) {
+    lines.push("## 지적 사항")
+    for (const f of audit.findings) {
+      lines.push(`- **[${f.severity}] ${f.category}**${f.description ? `: ${f.description}` : ""}`)
+    }
+    lines.push("")
+  }
+  return lines.join("\n")
+}
+
+export async function ingestIncomingInspection(id: string): Promise<void> {
+  try {
+    const item = await prisma.incomingInspection.findUnique({ where: { id } })
+    if (!item || !item.result) return
+
+    const markdown = buildIncomingInspectionMarkdown(item)
+    await ingestChunks(
+      `incoming_inspection/${id}`,
+      "incoming_inspection",
+      `[수입검사] ${item.itemName} (${item.vendorName})`,
+      markdown,
+      { id, item_name: item.itemName, result: item.result, vendor: item.vendorName },
+    )
+    console.log(`[ingest-qms] 수입검사 인제스트 완료 — ${item.itemName}`)
+  } catch (error) {
+    console.error(`[ingest-qms] 수입검사 인제스트 실패 — ${id}:`, error)
+  }
+}
+
+export async function ingestSourceInspection(id: string): Promise<void> {
+  try {
+    const item = await prisma.sourceInspection.findUnique({ where: { id } })
+    if (!item || !item.result) return
+
+    const markdown = buildSourceInspectionMarkdown(item)
+    await ingestChunks(
+      `source_inspection/${id}`,
+      "source_inspection",
+      `[출장검사] ${item.itemName} (${item.vendorName})`,
+      markdown,
+      { id, item_name: item.itemName, result: item.result, vendor: item.vendorName },
+    )
+    console.log(`[ingest-qms] 출장검사 인제스트 완료 — ${item.itemName}`)
+  } catch (error) {
+    console.error(`[ingest-qms] 출장검사 인제스트 실패 — ${id}:`, error)
+  }
+}
+
+export async function ingestSupplierAudit(id: string): Promise<void> {
+  try {
+    const audit = await prisma.supplierAudit.findUnique({
+      where: { id },
+      include: { findings: { select: { category: true, severity: true, description: true } } },
+    })
+    // 감사 결과가 있고(overallGrade 또는 status가 COMPLETED) 인제스트
+    if (!audit || (!audit.overallGrade && audit.status !== "COMPLETED")) return
+
+    const markdown = buildSupplierAuditMarkdown(audit)
+    await ingestChunks(
+      `supplier_audit/${id}`,
+      "supplier_audit",
+      `[협력업체 감사] ${audit.vendorName} (${audit.auditDate.toISOString().slice(0, 10)})`,
+      markdown,
+      { id, vendor: audit.vendorName, overall_grade: audit.overallGrade, status: audit.status },
+    )
+    console.log(`[ingest-qms] 협력업체 감사 인제스트 완료 — ${audit.vendorName}`)
+  } catch (error) {
+    console.error(`[ingest-qms] 협력업체 감사 인제스트 실패 — ${id}:`, error)
+  }
+}

@@ -56,6 +56,7 @@ export default async function AuditDetailPage({ params }: { params: Promise<{ id
           overallGrade: audit.overallGrade,
           totalScore:   audit.totalScore,
           summary:      audit.summary,
+          vendorName:   audit.vendorName,
           attachments:  (audit.attachments as { url: string; name: string; size: number; contentType: string }[]) ?? [],
           findings:     audit.findings.map(f => ({
             id:          f.id,

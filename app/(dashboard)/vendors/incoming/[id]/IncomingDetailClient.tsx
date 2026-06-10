@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader"
+import { AiSuggestionPanel } from "@/components/ui/ai-suggestion-panel"
 import { Paperclip } from "lucide-react"
 
 type Inspection = {
@@ -193,6 +194,12 @@ export default function IncomingDetailClient({ inspection: initial }: { inspecti
           </div>
         )}
       </section>
+
+      <AiSuggestionPanel
+        type="incoming_inspection"
+        title={insp.itemName}
+        description={insp.notes ?? undefined}
+      />
 
       <section className="bg-white rounded-xl border border-slate-200 p-5">
         <h2 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">

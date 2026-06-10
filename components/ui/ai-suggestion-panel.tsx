@@ -12,10 +12,12 @@ interface KnowledgeChunk {
   similarity: number
 }
 
+type SuggestType = "claim" | "ncr" | "incoming_inspection" | "source_inspection" | "supplier_audit"
+
 interface Props {
   title: string
   description?: string
-  type: "claim" | "ncr"
+  type: SuggestType
 }
 
 export function AiSuggestionPanel({ title, description, type }: Props) {
@@ -62,7 +64,14 @@ export function AiSuggestionPanel({ title, description, type }: Props) {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const typeLabel = type === "claim" ? "클레임 대책" : "NCR 시정조치"
+  const TYPE_LABELS: Record<SuggestType, string> = {
+    claim:               "클레임 대책",
+    ncr:                 "NCR 시정조치",
+    incoming_inspection: "수입검사 포인트",
+    source_inspection:   "출장검사 포인트",
+    supplier_audit:      "감사 확인 항목",
+  }
+  const typeLabel = TYPE_LABELS[type]
 
   return (
     <div className="bg-linear-to-br from-violet-50 to-indigo-50 rounded-2xl border border-violet-100 shadow-sm overflow-hidden">

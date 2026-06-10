@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Plus, Trash2, CheckCircle2, ChevronDown, ChevronUp, Paperclip } from "lucide-react"
 import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader"
+import { AiSuggestionPanel } from "@/components/ui/ai-suggestion-panel"
 
 type Finding = {
   id: string; category: string; description: string; severity: string
@@ -14,6 +15,7 @@ type Finding = {
 type Audit = {
   id: string; status: string; overallGrade: string | null
   totalScore: number | null; summary: string | null
+  vendorName: string
   attachments: AttachmentItem[]; findings: Finding[]
 }
 
@@ -277,6 +279,12 @@ export default function AuditDetailClient({ audit: initial }: { audit: Audit }) 
           </div>
         )}
       </section>
+
+      <AiSuggestionPanel
+        type="supplier_audit"
+        title={audit.vendorName}
+        description={audit.summary ?? undefined}
+      />
 
       <section className="bg-white rounded-xl border border-slate-200 p-5">
         <h2 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">

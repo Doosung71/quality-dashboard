@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse, after } from "next/server"
 import { requireActiveSession } from "@/lib/session-guard"
 import { prisma } from "@/lib/prisma"
+import { ingestSourceInspection } from "@/lib/ingest-qms"
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
@@ -39,6 +40,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       ...(body.attachments !== undefined && { attachments: body.attachments as never }),
     },
   })
+  if (body.result !== undefined) {
+    after(() => ingestSourceInspection(id))
+  }
   return NextResponse.json({ id: inspection.id })
 }
 
