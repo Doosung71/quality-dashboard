@@ -6,6 +6,7 @@ import type { Claim, ClaimStatus, ClaimPriority, ClaimTimelineItem, ClaimAttachm
 import { CLAIM_STATUSES } from "@/types/claim";
 import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTriangle, ShieldAlert, Paperclip } from "lucide-react";
 import { AttachmentUploader } from "@/components/ui/attachment-uploader";
+import { AiSuggestionPanel } from "@/components/ui/ai-suggestion-panel";
 import Link from "next/link";
 
 const STATUS_LABELS: Record<ClaimStatus, string> = {
@@ -340,6 +341,9 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
           </div>
         </div>
       )}
+
+      {/* AI 유사사례 분석 패널 */}
+      <AiSuggestionPanel title={claim.title} description={claim.description} type="claim" />
 
       {/* 타임라인 */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">

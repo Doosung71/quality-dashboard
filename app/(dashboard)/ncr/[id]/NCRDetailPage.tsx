@@ -7,6 +7,7 @@ import type { NCR, NCRStatus, NCRSeverity, NCRDispositionType, NCRTimelineItem, 
 import { NCR_STATUSES } from "@/types/ncr";
 import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
 import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader";
+import { AiSuggestionPanel } from "@/components/ui/ai-suggestion-panel";
 
 const STATUS_LABELS: Record<NCRStatus, string> = {
   Issued:          "발행",
@@ -359,6 +360,9 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
           </div>
         </div>
       )}
+
+      {/* AI 유사사례 분석 패널 */}
+      <AiSuggestionPanel title={ncr.title} description={ncr.description} type="ncr" />
 
       {/* 타임라인 */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
