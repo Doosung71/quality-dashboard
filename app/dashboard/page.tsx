@@ -48,7 +48,7 @@ export default async function DashboardPage() {
   const session = await requireActivePageSession()
 
   const tenders = await prisma.tender.findMany({
-    where: !TEST_MODE && session.user.role === "PRACTITIONER" ? { createdById: session.user.id } : undefined,
+    where: undefined,
     orderBy: { createdAt: "desc" },
     include: {
       documents: { take: 1 },
@@ -178,11 +178,9 @@ export default async function DashboardPage() {
               />
             </div>
             <CableHeroCard />
-            {(TEST_MODE || session.user.role === "PRACTITIONER") && (
-              <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                <UploadForm />
-              </div>
-            )}
+            <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+              <UploadForm />
+            </div>
           </div>
 
           {/* 우측: 결재 대기 패널 + 입찰 목록 */}
@@ -238,7 +236,7 @@ export default async function DashboardPage() {
                   ? analysisStatusLabel(analysis.status, analysis.submittedAt, lastAction)
                   : ""
                 const isApproved = analysis?.status === "REVIEWED" || analysis?.status === "APPROVED"
-                const canEdit = TEST_MODE || session.user.role === "PRACTITIONER"
+                const canEdit = true
 
                 const threadHistory = (analysis?.history ?? [])
                   .filter((h) => h.reason)

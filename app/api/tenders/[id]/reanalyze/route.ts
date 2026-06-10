@@ -26,9 +26,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (session instanceof NextResponse) return session
   const rl = await checkRateLimit(req)
   if (rl) return rl
-  if (session.user.role !== "PRACTITIONER") {
-    return NextResponse.json({ error: "실무자만 재분석할 수 있습니다." }, { status: 403 })
-  }
+
 
   const { id: tenderId } = await params
 

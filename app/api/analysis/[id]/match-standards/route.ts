@@ -7,9 +7,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
 
-  if (!["PRACTITIONER", "ADMIN"].includes(session.user.role ?? "")) {
-    return NextResponse.json({ error: "실무자만 표준 매칭을 실행할 수 있습니다." }, { status: 403 })
-  }
+
 
   const { id: analysisId } = await params
 

@@ -5,9 +5,7 @@ import { prisma } from "@/lib/prisma"
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
-  if (!["PRACTITIONER", "ADMIN"].includes(session.user.role ?? "")) {
-    return NextResponse.json({ error: "실무자만 제출할 수 있습니다." }, { status: 403 })
-  }
+
 
   const { id: analysisId } = await params
 

@@ -8,9 +8,7 @@ const SYS_FIELDS = ["voltage", "bilSil", "shortCircuit", "installCond", "groundC
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
-  if (!["PRACTITIONER", "ADMIN"].includes(session.user.role ?? "")) {
-    return NextResponse.json({ error: "실무자만 수정할 수 있습니다." }, { status: 403 })
-  }
+
 
   const { id } = await params
 
@@ -46,9 +44,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
-  if (!["PRACTITIONER", "ADMIN"].includes(session.user.role ?? "")) {
-    return NextResponse.json({ error: "실무자만 삭제할 수 있습니다." }, { status: 403 })
-  }
+
 
   const { id } = await params
 

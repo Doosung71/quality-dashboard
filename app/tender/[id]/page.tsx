@@ -63,7 +63,6 @@ export default async function TenderPage({
   const tender = await prisma.tender.findFirst({
     where: {
       id,
-      ...(session.user.role === "PRACTITIONER" ? { createdById: session.user.id } : {}),
     },
     include: {
       documents: {
@@ -102,14 +101,10 @@ export default async function TenderPage({
 
   const analysis = tender.analyses[0]
   const canEdit =
-    session.user.role === "PRACTITIONER" &&
     analysis?.status === "DRAFT" &&
     !analysis.submittedAt
 
-  // 참고 파일 추가·삭제: 실무자(소유자) + 팀장·부문장 모두 허용
-  const canAddRef = session.user.role === "PRACTITIONER" ||
-    session.user.role === "TEAM_LEAD" ||
-    session.user.role === "DIRECTOR"
+  const canAddRef = true
 
   const canMarkComply =
     session.user.role === "TEAM_LEAD" &&
@@ -497,7 +492,7 @@ export default async function TenderPage({
                 comply: r.comply,
               })),
             }))}
-            canDelete={session.user.role === "PRACTITIONER"}
+            canDelete={true}
           />
         )}
 
@@ -512,7 +507,7 @@ export default async function TenderPage({
               tenderId={id} 
               documents={docs} 
               canManage={canEdit} 
-              canAnalyze={session.user.role === "PRACTITIONER" && !analysis} 
+              canAnalyze={!analysis}
               canDeleteFiles={canAddRef} 
             />
           </div>
