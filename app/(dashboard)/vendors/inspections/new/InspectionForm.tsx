@@ -34,6 +34,15 @@ export default function InspectionForm({ vendors, defaultInspector }: { vendors:
     if (!form.vendorId) { setError("협력업체를 선택해주세요."); return }
     if (!form.itemName) { setError("검사 품목명을 입력해주세요."); return }
     if (!form.quantity) { setError("수량을 입력해주세요."); return }
+    const qtyVal    = parseInt(form.quantity)
+    const sampleVal = form.sampleSize  ? parseInt(form.sampleSize)  : null
+    const defVal    = form.defectCount ? parseInt(form.defectCount) : null
+    if (sampleVal !== null && sampleVal > qtyVal) {
+      setError("샘플 검사 수량은 납품 수량을 초과할 수 없습니다."); return
+    }
+    if (defVal !== null && defVal > (sampleVal ?? qtyVal)) {
+      setError("불량 수량은 샘플 검사 수량을 초과할 수 없습니다."); return
+    }
     setLoading(true); setError("")
     try {
       const vendor = vendors.find(v => v.id === form.vendorId)
@@ -117,7 +126,7 @@ export default function InspectionForm({ vendors, defaultInspector }: { vendors:
 
         <div>
           <label className={label}>샘플 검사 수량</label>
-          <input type="number" min="1" value={form.sampleSize} onChange={e => set("sampleSize", e.target.value)} className={field} placeholder="10" />
+          <input type="number" min="1" max={form.quantity || undefined} value={form.sampleSize} onChange={e => set("sampleSize", e.target.value)} className={field} placeholder="10" />
         </div>
 
         <div>
@@ -131,7 +140,7 @@ export default function InspectionForm({ vendors, defaultInspector }: { vendors:
 
         <div>
           <label className={label}>불량 수량</label>
-          <input type="number" min="0" value={form.defectCount} onChange={e => set("defectCount", e.target.value)} className={field} placeholder="0" />
+          <input type="number" min="0" max={form.sampleSize || form.quantity || undefined} value={form.defectCount} onChange={e => set("defectCount", e.target.value)} className={field} placeholder="0" />
         </div>
 
         <div>

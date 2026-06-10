@@ -8,6 +8,7 @@ import { displayName } from "@/lib/display-name"
 import UploadForm from "./UploadForm"
 import TenderList from "./TenderList"
 import { type TenderRow } from "./TenderList"
+import BackButton from "./BackButton"
 import Image from "next/image"
 import {
   FileSearch,
@@ -18,7 +19,6 @@ import {
   UserCheck,
   CheckCircle2,
   Clock,
-  ArrowLeft
 } from "lucide-react"
 
 const roleLabel: Record<string, string> = {
@@ -105,13 +105,7 @@ export default async function DashboardPage() {
       <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur sticky top-0 z-50 px-3 md:px-6 py-3 flex items-center justify-between gap-2 shadow-sm overflow-hidden">
         {/* 좌측: 뒤로가기 + 제목 */}
         <div className="flex items-center gap-2 min-w-0">
-          <Link
-            href="/"
-            className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors shrink-0"
-            title="전사 품질 대시보드로 돌아가기"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </Link>
+          <BackButton />
           <div className="flex items-center gap-1.5 min-w-0">
             <FileSearch className="w-4 h-4 text-indigo-600 shrink-0" />
             <h1 className="font-extrabold text-sm text-slate-900 tracking-tight truncate">AI 입찰검토 시스템</h1>
