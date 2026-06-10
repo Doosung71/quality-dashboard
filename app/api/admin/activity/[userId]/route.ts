@@ -1,0 +1,147 @@
+import { auth } from "@/auth"
+import { isAdmin } from "@/lib/admin"
+import { prisma } from "@/lib/prisma"
+import { NextResponse } from "next/server"
+
+const AUDIT_TYPE_LABEL: Record<string, string> = {
+  INITIAL: "초기심사", PERIODIC: "정기심사", FOLLOW_UP: "사후관리", SPECIAL: "특별심사",
+}
+
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ userId: string }> }
+) {
+  const session = await auth()
+  if (!session || !isAdmin(session.user.email)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
+
+  const { userId } = await params
+  const { searchParams } = new URL(req.url)
+  const period = searchParams.get("period") ?? "all"
+  const limit = Math.min(parseInt(searchParams.get("limit") ?? "100"), 500)
+
+  let since: Date | undefined
+  if (period === "7")  since = new Date(Date.now() - 7  * 86400000)
+  if (period === "30") since = new Date(Date.now() - 30 * 86400000)
+  const dateFilter = since ? { createdAt: { gte: since } } : {}
+
+  const [
+    boardPosts, boardComments,
+    feedbackPosts, feedbackReplies,
+    claims, ncrs,
+    incoming, source, audits,
+  ] = await Promise.all([
+    prisma.boardPost.findMany({
+      where: { authorId: userId, ...dateFilter },
+      select: { id: true, title: true, category: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.boardComment.findMany({
+      where: { authorId: userId, ...dateFilter },
+      select: { id: true, content: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.feedback.findMany({
+      where: { authorId: userId, ...dateFilter },
+      select: { id: true, content: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.feedbackReply.findMany({
+      where: { authorId: userId, ...dateFilter },
+      select: { id: true, content: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.claim.findMany({
+      where: { createdById: userId, ...dateFilter },
+      select: { id: true, claimNo: true, title: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.ncr.findMany({
+      where: { createdById: userId, ...dateFilter },
+      select: { id: true, ncrNo: true, title: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.incomingInspection.findMany({
+      where: { createdById: userId, ...dateFilter },
+      select: { id: true, itemName: true, vendorName: true, result: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.sourceInspection.findMany({
+      where: { createdById: userId, ...dateFilter },
+      select: { id: true, itemName: true, vendorName: true, result: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.supplierAudit.findMany({
+      where: { createdById: userId, ...dateFilter },
+      select: { id: true, vendorName: true, auditType: true, overallGrade: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
+  ])
+
+  const CATEGORY_LABEL: Record<string, string> = { NOTICE: "공지", GENERAL: "일반" }
+  const RESULT_LABEL: Record<string, string> = { PASS: "합격", FAIL: "불합격", CONDITIONAL_PASS: "조건부합격" }
+
+  type Item = { type: string; label: string; detail: string; createdAt: string }
+
+  const items: Item[] = [
+    ...boardPosts.map(r => ({
+      type: "게시글",
+      label: r.title,
+      detail: CATEGORY_LABEL[r.category] ?? r.category,
+      createdAt: r.createdAt.toISOString(),
+    })),
+    ...boardComments.map(r => ({
+      type: "댓글",
+      label: r.content.slice(0, 120),
+      detail: "게시판",
+      createdAt: r.createdAt.toISOString(),
+    })),
+    ...feedbackPosts.map(r => ({
+      type: "게시글",
+      label: r.content.slice(0, 120),
+      detail: "소통방",
+      createdAt: r.createdAt.toISOString(),
+    })),
+    ...feedbackReplies.map(r => ({
+      type: "댓글",
+      label: r.content.slice(0, 120),
+      detail: "소통방",
+      createdAt: r.createdAt.toISOString(),
+    })),
+    ...claims.map(r => ({
+      type: "클레임",
+      label: r.title,
+      detail: r.claimNo,
+      createdAt: r.createdAt.toISOString(),
+    })),
+    ...ncrs.map(r => ({
+      type: "NCR",
+      label: r.title,
+      detail: r.ncrNo,
+      createdAt: r.createdAt.toISOString(),
+    })),
+    ...incoming.map(r => ({
+      type: "수입검사",
+      label: r.itemName,
+      detail: `${r.vendorName} · ${RESULT_LABEL[r.result] ?? r.result}`,
+      createdAt: r.createdAt.toISOString(),
+    })),
+    ...source.map(r => ({
+      type: "출장검사",
+      label: r.itemName,
+      detail: `${r.vendorName} · ${RESULT_LABEL[r.result] ?? r.result}`,
+      createdAt: r.createdAt.toISOString(),
+    })),
+    ...audits.map(r => ({
+      type: "협력업체감사",
+      label: r.vendorName,
+      detail: `${AUDIT_TYPE_LABEL[r.auditType] ?? r.auditType}${r.overallGrade ? ` · ${r.overallGrade}등급` : ""}`,
+      createdAt: r.createdAt.toISOString(),
+    })),
+  ]
+
+  items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+
+  return NextResponse.json(items.slice(0, limit))
+}

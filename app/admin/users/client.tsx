@@ -19,6 +19,13 @@ type ActivityRow = {
   total: number; lastActivity: string | null
 }
 
+type ActivityItem = {
+  type: string
+  label: string
+  detail: string
+  createdAt: string
+}
+
 const ACTIVITY_COLS: { key: keyof ActivityRow; label: string; color: string }[] = [
   { key: "posts",               label: "게시글",      color: "text-indigo-600" },
   { key: "comments",            label: "댓글",        color: "text-violet-600" },
@@ -29,19 +36,50 @@ const ACTIVITY_COLS: { key: keyof ActivityRow; label: string; color: string }[] 
   { key: "audits",              label: "협력업체감사", color: "text-amber-600"  },
 ]
 
+const TYPE_BADGE: Record<string, string> = {
+  게시글: "bg-indigo-100 text-indigo-700",
+  댓글: "bg-violet-100 text-violet-700",
+  클레임: "bg-blue-100 text-blue-700",
+  NCR: "bg-rose-100 text-rose-700",
+  수입검사: "bg-sky-100 text-sky-700",
+  출장검사: "bg-emerald-100 text-emerald-700",
+  협력업체감사: "bg-amber-100 text-amber-700",
+}
+
 function ActivityView() {
   const [period, setPeriod] = useState<"all" | "30" | "7">("all")
   const [rows, setRows] = useState<ActivityRow[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
+  const [detailMap, setDetailMap] = useState<Record<string, ActivityItem[]>>({})
+  const [detailLoading, setDetailLoading] = useState<string | null>(null)
 
   const load = useCallback(async () => {
     setLoading(true)
+    setSelectedUserId(null)
     const res = await fetch(`/api/admin/activity?period=${period}`)
     if (res.ok) setRows(await res.json())
     setLoading(false)
   }, [period])
 
   useEffect(() => { load() }, [load])
+
+  async function selectUser(userId: string) {
+    if (selectedUserId === userId) { setSelectedUserId(null); return }
+    setSelectedUserId(userId)
+    const cacheKey = `${userId}|${period}`
+    if (detailMap[cacheKey]) return
+    setDetailLoading(userId)
+    try {
+      const res = await fetch(`/api/admin/activity/${userId}?period=${period}`)
+      if (res.ok) {
+        const items = await res.json()
+        setDetailMap(prev => ({ ...prev, [cacheKey]: items }))
+      }
+    } finally {
+      setDetailLoading(null)
+    }
+  }
 
   const ROLE_LABEL: Record<string, string> = {
     PRACTITIONER: "실무자", TEAM_LEAD: "팀장", DIRECTOR: "임원", ADMIN: "관리자"
@@ -66,7 +104,7 @@ function ActivityView() {
           </button>
         ))}
         <span className="ml-auto text-xs text-slate-400">
-          활동이 많은 순으로 정렬
+          이름을 클릭하면 상세 활동 내역을 볼 수 있습니다
         </span>
       </div>
 
@@ -107,33 +145,91 @@ function ActivityView() {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((r, idx) => (
-                  <tr key={r.id} className={`border-b border-slate-100 last:border-0 ${r.total === 0 ? "opacity-50" : "hover:bg-slate-50"}`}>
-                    <td className="px-4 py-2.5 text-xs text-slate-400">{idx + 1}</td>
-                    <td className="px-4 py-2.5">
-                      <p className="font-medium text-slate-800">{r.name}</p>
-                      <p className="text-[11px] text-slate-400">{r.department ?? r.email}</p>
-                    </td>
-                    <td className="px-4 py-2.5 text-xs text-slate-500 whitespace-nowrap">
-                      {ROLE_LABEL[r.role] ?? r.role}
-                    </td>
-                    {ACTIVITY_COLS.map(c => (
-                      <td key={c.key} className={`px-3 py-2.5 text-right text-sm font-medium ${(r[c.key] as number) > 0 ? c.color : "text-slate-200"}`}>
-                        {r[c.key] as number}
-                      </td>
-                    ))}
-                    <td className={`px-4 py-2.5 text-right text-sm font-bold ${
-                      r.total >= 10 ? "text-slate-900" : r.total > 0 ? "text-slate-600" : "text-slate-200"
-                    }`}>
-                      {r.total}
-                    </td>
-                    <td className="px-4 py-2.5 text-xs text-slate-400 whitespace-nowrap">
-                      {r.lastActivity
-                        ? new Date(r.lastActivity).toLocaleString("ko-KR", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })
-                        : "—"}
-                    </td>
-                  </tr>
-                ))}
+                {rows.map((r, idx) => {
+                  const isSelected = selectedUserId === r.id
+                  const cacheKey = `${r.id}|${period}`
+                  const detailItems = detailMap[cacheKey] ?? []
+                  return (
+                    <React.Fragment key={r.id}>
+                      <tr
+                        onClick={() => { if (r.total > 0) selectUser(r.id) }}
+                        className={`border-b border-slate-100 transition-colors ${
+                          r.total === 0
+                            ? "opacity-50"
+                            : isSelected
+                            ? "bg-indigo-50 border-indigo-100"
+                            : "hover:bg-slate-50 cursor-pointer"
+                        }`}
+                      >
+                        <td className="px-4 py-2.5 text-xs text-slate-400">{idx + 1}</td>
+                        <td className="px-4 py-2.5">
+                          <div className="flex items-center gap-1.5">
+                            <p className="font-medium text-slate-800">{r.name}</p>
+                            {r.total > 0 && (
+                              <span className="text-[10px] text-slate-400 select-none">{isSelected ? "▼" : "▶"}</span>
+                            )}
+                          </div>
+                          <p className="text-[11px] text-slate-400">{r.department ?? r.email}</p>
+                        </td>
+                        <td className="px-4 py-2.5 text-xs text-slate-500 whitespace-nowrap">
+                          {ROLE_LABEL[r.role] ?? r.role}
+                        </td>
+                        {ACTIVITY_COLS.map(c => (
+                          <td key={c.key} className={`px-3 py-2.5 text-right text-sm font-medium ${(r[c.key] as number) > 0 ? c.color : "text-slate-200"}`}>
+                            {r[c.key] as number}
+                          </td>
+                        ))}
+                        <td className={`px-4 py-2.5 text-right text-sm font-bold ${
+                          r.total >= 10 ? "text-slate-900" : r.total > 0 ? "text-slate-600" : "text-slate-200"
+                        }`}>
+                          {r.total}
+                        </td>
+                        <td className="px-4 py-2.5 text-xs text-slate-400 whitespace-nowrap">
+                          {r.lastActivity
+                            ? new Date(r.lastActivity).toLocaleString("ko-KR", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })
+                            : "—"}
+                        </td>
+                      </tr>
+
+                      {isSelected && (
+                        <tr className="border-b border-indigo-100 bg-slate-50/80">
+                          <td colSpan={12} className="px-6 py-3">
+                            {detailLoading === r.id ? (
+                              <p className="text-xs text-slate-400 py-1">불러오는 중...</p>
+                            ) : detailItems.length === 0 ? (
+                              <p className="text-xs text-slate-400 py-1">이 기간에 활동 없음</p>
+                            ) : (
+                              <div>
+                                <p className="text-[11px] text-slate-400 mb-2">
+                                  총 <span className="font-semibold text-slate-600">{detailItems.length}</span>건의 활동 내역 (최근순)
+                                </p>
+                                <div className="max-h-72 overflow-y-auto divide-y divide-slate-100">
+                                  {detailItems.map((item, i) => (
+                                    <div key={i} className="flex items-center gap-3 py-1.5">
+                                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium shrink-0 min-w-[52px] text-center ${TYPE_BADGE[item.type] ?? "bg-slate-100 text-slate-700"}`}>
+                                        {item.type}
+                                      </span>
+                                      <div className="flex-1 min-w-0">
+                                        <p className="text-xs text-slate-700 truncate">{item.label}</p>
+                                        {item.detail && <p className="text-[10px] text-slate-400 truncate">{item.detail}</p>}
+                                      </div>
+                                      <time className="text-[10px] text-slate-400 whitespace-nowrap shrink-0">
+                                        {new Date(item.createdAt).toLocaleString("ko-KR", {
+                                          year: "2-digit", month: "2-digit", day: "2-digit",
+                                          hour: "2-digit", minute: "2-digit",
+                                        })}
+                                      </time>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  )
+                })}
                 {rows.length === 0 && (
                   <tr><td colSpan={12} className="text-center py-10 text-sm text-slate-400">활동 데이터 없음</td></tr>
                 )}
