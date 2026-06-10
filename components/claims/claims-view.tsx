@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import type { ClaimsData, Claim, ClaimPriority } from "@/types/claim";
-import { ClaimsKpi } from "./claims-kpi";
 import { ClaimsKanban } from "./claims-kanban";
 import { X, Plus } from "lucide-react";
 import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader";
@@ -86,8 +85,6 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
 
   return (
     <div className="space-y-6 relative">
-      <ClaimsKpi claims={claims} />
-
       <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm overflow-x-auto">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>

@@ -78,7 +78,7 @@ const ALL_NAV: NavItem[] = [
 
   // ── 품질 이상/사후 관리 ───────────────────────────────────
   {
-    label: "품질 이상/사후 관리", icon: ShieldAlert,
+    href: "/quality-issues", label: "품질 이상/사후 관리", icon: ShieldAlert,
     roles: ALL, readonlyFor: [],
     children: [
       { href: "/ncr",    label: "부적합품 (NCR)", roles: ALL, readonlyFor: [] },
