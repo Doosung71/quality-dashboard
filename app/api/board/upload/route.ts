@@ -27,10 +27,11 @@ export async function POST(req: NextRequest) {
   if (!ALLOWED_EXTENSIONS.includes(ext)) return NextResponse.json({ error: "지원하지 않는 파일 확장자입니다." }, { status: 400 })
   const safeName = `board/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext || "bin"}`
 
-  const blob = await put(safeName, file, { access: "public", contentType: file.type })
+  const blob = await put(safeName, file, { access: "private", contentType: file.type })
+  const proxyUrl = `/api/blob/serve?url=${encodeURIComponent(blob.url)}`
 
   return NextResponse.json({
-    url: blob.url,
+    url: proxyUrl,
     name: file.name,
     size: file.size,
     contentType: file.type,

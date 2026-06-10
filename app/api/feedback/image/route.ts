@@ -22,10 +22,11 @@ export async function POST(req: Request) {
 
   try {
     const blob = await put(`feedback/${Date.now()}-${crypto.randomUUID()}.${ext}`, file, {
-      access: "public",
+      access: "private",
       contentType: file.type,
     })
-    return NextResponse.json({ url: blob.url }, { status: 201 })
+    const proxyUrl = `/api/blob/serve?url=${encodeURIComponent(blob.url)}`
+    return NextResponse.json({ url: proxyUrl }, { status: 201 })
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e)
     console.error("[feedback/image] blob upload failed:", msg)

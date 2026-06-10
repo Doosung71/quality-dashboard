@@ -37,9 +37,10 @@ export async function POST(req: NextRequest) {
   const path = `${safe}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
 
   try {
-    const blob = await put(path, file, { access: "public", contentType: file.type })
+    const blob = await put(path, file, { access: "private", contentType: file.type })
+    const proxyUrl = `/api/blob/serve?url=${encodeURIComponent(blob.url)}`
     return NextResponse.json({
-      url: blob.url,
+      url: proxyUrl,
       name: file.name,
       size: file.size,
       contentType: file.type,
