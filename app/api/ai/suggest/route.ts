@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
 
-  const rl = await checkRateLimit(req)
+  const rl = await checkRateLimit(req, session.user.id)
   if (rl) return rl
 
   let body: unknown

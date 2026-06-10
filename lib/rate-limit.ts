@@ -8,7 +8,7 @@ const redisClient =
     ? Redis.fromEnv()
     : null
 
-// IP당 1분에 5회 — AI 분석·검색 전용
+// 사용자+IP 복합 기준 1분에 5회 — AI 분석·검색 전용
 export const aiRateLimiter = redisClient
   ? new Ratelimit({
       redis: redisClient,
@@ -22,15 +22,17 @@ export const aiRateLimiter = redisClient
  * AI/검색 API 라우트 앞에서 호출.
  * 한도 초과 시 429 Response 반환, 통과 시 null.
  * Upstash 미설정 또는 장애 시 null(Fail-Open).
+ * userId 전달 시 rate limit key를 "userId:IP" 복합으로 구성한다.
  */
-export async function checkRateLimit(req: NextRequest): Promise<NextResponse | null> {
+export async function checkRateLimit(req: NextRequest, userId?: string): Promise<NextResponse | null> {
   if (!aiRateLimiter) return null
 
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "127.0.0.1"
+  const key = userId ? `${userId}:${ip}` : ip
 
   try {
-    const { success, limit, reset, remaining } = await aiRateLimiter.limit(ip)
+    const { success, limit, reset, remaining } = await aiRateLimiter.limit(key)
     if (!success) {
       return NextResponse.json(
         {

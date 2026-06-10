@@ -81,6 +81,9 @@ export function AiSuggestionPanel({ title, description, type }: Props) {
               유사사례 {chunks.length}건
             </span>
           )}
+          <span className="text-[9px] font-medium text-violet-400 bg-violet-50 border border-violet-100 px-1.5 py-0.5 rounded-full">
+            PoC · 외부 AI API 전송
+          </span>
         </div>
         {open ? (
           <ChevronUp className="w-4 h-4 text-violet-400" />
