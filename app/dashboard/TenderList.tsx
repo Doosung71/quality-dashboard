@@ -18,6 +18,7 @@ export type TenderRow = {
   threadComments: CommentEntry[]
   riskCount?: number
   nonComplyCount?: number
+  creatorName?: string
 }
 
 export default function TenderList({ tenders }: { tenders: TenderRow[] }) {

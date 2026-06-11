@@ -51,6 +51,7 @@ export default async function DashboardPage() {
     where: undefined,
     orderBy: { createdAt: "desc" },
     include: {
+      createdBy: { select: { name: true, nickname: true, department: true } },
       documents: { take: 1 },
       analyses: {
         orderBy: { createdAt: "desc" },
@@ -259,6 +260,11 @@ export default async function DashboardPage() {
                 const riskCount = reqs.filter((r) => r.isRisk).length
                 const nonComplyCount = reqs.filter((r) => r.comply === "NON_COMPLY").length
 
+                const creator = t.createdBy
+                const creatorName = creator
+                  ? [creator.department, displayName(creator)].filter(Boolean).join(" · ")
+                  : undefined
+
                 return {
                   id: t.id,
                   title: t.title,
@@ -272,6 +278,7 @@ export default async function DashboardPage() {
                   threadComments,
                   riskCount: riskCount > 0 ? riskCount : undefined,
                   nonComplyCount: nonComplyCount > 0 ? nonComplyCount : undefined,
+                  creatorName,
                 } satisfies TenderRow
               })} />
             </div>

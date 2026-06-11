@@ -11,7 +11,8 @@ import {
   Eye,
   Edit2,
   Trash2,
-  CalendarDays
+  CalendarDays,
+  User
 } from "lucide-react"
 
 type Props = {
@@ -27,11 +28,12 @@ type Props = {
   threadComments: CommentEntry[]
   riskCount?: number
   nonComplyCount?: number
+  creatorName?: string
 }
 
 export default function TenderCard({
   id, title, createdAt, statusLabel, statusClass, canEdit, canDelete,
-  analysisId, threadHistory, threadComments, riskCount, nonComplyCount,
+  analysisId, threadHistory, threadComments, riskCount, nonComplyCount, creatorName,
 }: Props) {
   const router = useRouter()
   const [deleting, setDeleting] = useState(false)
@@ -82,9 +84,16 @@ export default function TenderCard({
           {title}
         </p>
 
-        {/* 생성 일자 */}
-        <div className="flex items-center gap-1 text-[10px] text-slate-400 font-mono">
-          <CalendarDays className="w-3.5 h-3.5" /> 등록일: {createdAt}
+        {/* 생성 일자 + 등록자 */}
+        <div className="flex items-center gap-3 flex-wrap text-[10px] text-slate-400 font-mono">
+          <span className="flex items-center gap-1">
+            <CalendarDays className="w-3.5 h-3.5" /> 등록일: {createdAt}
+          </span>
+          {creatorName && (
+            <span className="flex items-center gap-1">
+              <User className="w-3.5 h-3.5" /> {creatorName}
+            </span>
+          )}
         </div>
       </div>
 
