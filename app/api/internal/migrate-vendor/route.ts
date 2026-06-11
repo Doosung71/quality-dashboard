@@ -1,12 +1,14 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
+import { requireActiveSession } from "@/lib/session-guard"
 import { prisma } from "@/lib/prisma"
 
-// 1회성 프로덕션 마이그레이션 엔드포인트
-// 사용 후 즉시 삭제할 것
-export async function GET(req: NextRequest) {
-  const t = req.nextUrl.searchParams.get("t")
-  if (!t || t !== process.env.MIGRATION_TOKEN) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+// 1회성 프로덕션 마이그레이션 엔드포인트 — 실행 후 즉시 삭제할 것
+// ADMIN 계정으로 로그인한 상태에서 호출해야 함
+export async function GET() {
+  const session = await requireActiveSession()
+  if (session instanceof NextResponse) return session
+  if (session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "ADMIN 권한 필요" }, { status: 403 })
   }
 
   try {
@@ -28,7 +30,7 @@ export async function GET(req: NextRequest) {
     await prisma.$executeRawUnsafe(`
       CREATE INDEX IF NOT EXISTS "Vendor_createdById_idx" ON "Vendor"("createdById")
     `)
-    return NextResponse.json({ ok: true, message: "Vendor 테이블 생성 완료" })
+    return NextResponse.json({ ok: true, message: "✓ Vendor 테이블 생성 완료" })
   } catch (err) {
     return NextResponse.json({ ok: false, error: (err as Error).message }, { status: 500 })
   }
