@@ -87,14 +87,15 @@ model Feedback {
 }
 
 model FeedbackReply {
-  id         String   @id @default(cuid())
-  feedback   Feedback @relation(fields: [feedbackId], references: [id])
-  feedbackId String
-  author     User     @relation(fields: [authorId], references: [id])
-  authorId   String
-  content    String
-  parentId   String?
-  createdAt  DateTime @default(now())
+  id          String   @id @default(cuid())
+  feedback    Feedback @relation(fields: [feedbackId], references: [id])
+  feedbackId  String
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    String
+  content     String
+  parentId    String?
+  attachments Json     @default("[]") // [{url, name}]
+  createdAt   DateTime @default(now())
 }
 
 enum Role {

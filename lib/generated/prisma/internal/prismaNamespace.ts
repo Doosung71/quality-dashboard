@@ -3178,6 +3178,7 @@ export const FeedbackReplyScalarFieldEnum = {
   authorId: 'authorId',
   content: 'content',
   parentId: 'parentId',
+  attachments: 'attachments',
   createdAt: 'createdAt'
 } as const
 
@@ -3869,6 +3870,20 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
  * Reference to a field of type 'BoardCategory'
  */
 export type EnumBoardCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BoardCategory'>
@@ -3886,20 +3901,6 @@ export type ListEnumBoardCategoryFieldRefInput<$PrismaModel> = FieldRefInputType
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 

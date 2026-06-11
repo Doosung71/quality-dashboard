@@ -48,6 +48,7 @@ export type FeedbackReplyCountAggregateOutputType = {
   authorId: number
   content: number
   parentId: number
+  attachments: number
   createdAt: number
   _all: number
 }
@@ -77,6 +78,7 @@ export type FeedbackReplyCountAggregateInputType = {
   authorId?: true
   content?: true
   parentId?: true
+  attachments?: true
   createdAt?: true
   _all?: true
 }
@@ -159,6 +161,7 @@ export type FeedbackReplyGroupByOutputType = {
   authorId: string
   content: string
   parentId: string | null
+  attachments: runtime.JsonValue
   createdAt: Date
   _count: FeedbackReplyCountAggregateOutputType | null
   _min: FeedbackReplyMinAggregateOutputType | null
@@ -189,6 +192,7 @@ export type FeedbackReplyWhereInput = {
   authorId?: Prisma.StringFilter<"FeedbackReply"> | string
   content?: Prisma.StringFilter<"FeedbackReply"> | string
   parentId?: Prisma.StringNullableFilter<"FeedbackReply"> | string | null
+  attachments?: Prisma.JsonFilter<"FeedbackReply">
   createdAt?: Prisma.DateTimeFilter<"FeedbackReply"> | Date | string
   feedback?: Prisma.XOR<Prisma.FeedbackScalarRelationFilter, Prisma.FeedbackWhereInput>
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -200,6 +204,7 @@ export type FeedbackReplyOrderByWithRelationInput = {
   authorId?: Prisma.SortOrder
   content?: Prisma.SortOrder
   parentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   feedback?: Prisma.FeedbackOrderByWithRelationInput
   author?: Prisma.UserOrderByWithRelationInput
@@ -214,6 +219,7 @@ export type FeedbackReplyWhereUniqueInput = Prisma.AtLeast<{
   authorId?: Prisma.StringFilter<"FeedbackReply"> | string
   content?: Prisma.StringFilter<"FeedbackReply"> | string
   parentId?: Prisma.StringNullableFilter<"FeedbackReply"> | string | null
+  attachments?: Prisma.JsonFilter<"FeedbackReply">
   createdAt?: Prisma.DateTimeFilter<"FeedbackReply"> | Date | string
   feedback?: Prisma.XOR<Prisma.FeedbackScalarRelationFilter, Prisma.FeedbackWhereInput>
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -225,6 +231,7 @@ export type FeedbackReplyOrderByWithAggregationInput = {
   authorId?: Prisma.SortOrder
   content?: Prisma.SortOrder
   parentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.FeedbackReplyCountOrderByAggregateInput
   _max?: Prisma.FeedbackReplyMaxOrderByAggregateInput
@@ -240,6 +247,7 @@ export type FeedbackReplyScalarWhereWithAggregatesInput = {
   authorId?: Prisma.StringWithAggregatesFilter<"FeedbackReply"> | string
   content?: Prisma.StringWithAggregatesFilter<"FeedbackReply"> | string
   parentId?: Prisma.StringNullableWithAggregatesFilter<"FeedbackReply"> | string | null
+  attachments?: Prisma.JsonWithAggregatesFilter<"FeedbackReply">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"FeedbackReply"> | Date | string
 }
 
@@ -247,6 +255,7 @@ export type FeedbackReplyCreateInput = {
   id?: string
   content: string
   parentId?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   feedback: Prisma.FeedbackCreateNestedOneWithoutRepliesInput
   author: Prisma.UserCreateNestedOneWithoutFeedbackRepliesInput
@@ -258,6 +267,7 @@ export type FeedbackReplyUncheckedCreateInput = {
   authorId: string
   content: string
   parentId?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -265,6 +275,7 @@ export type FeedbackReplyUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedback?: Prisma.FeedbackUpdateOneRequiredWithoutRepliesNestedInput
   author?: Prisma.UserUpdateOneRequiredWithoutFeedbackRepliesNestedInput
@@ -276,6 +287,7 @@ export type FeedbackReplyUncheckedUpdateInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -285,6 +297,7 @@ export type FeedbackReplyCreateManyInput = {
   authorId: string
   content: string
   parentId?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -292,6 +305,7 @@ export type FeedbackReplyUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -301,6 +315,7 @@ export type FeedbackReplyUncheckedUpdateManyInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -320,6 +335,7 @@ export type FeedbackReplyCountOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   content?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -429,6 +445,7 @@ export type FeedbackReplyCreateWithoutAuthorInput = {
   id?: string
   content: string
   parentId?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   feedback: Prisma.FeedbackCreateNestedOneWithoutRepliesInput
 }
@@ -438,6 +455,7 @@ export type FeedbackReplyUncheckedCreateWithoutAuthorInput = {
   feedbackId: string
   content: string
   parentId?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -476,6 +494,7 @@ export type FeedbackReplyScalarWhereInput = {
   authorId?: Prisma.StringFilter<"FeedbackReply"> | string
   content?: Prisma.StringFilter<"FeedbackReply"> | string
   parentId?: Prisma.StringNullableFilter<"FeedbackReply"> | string | null
+  attachments?: Prisma.JsonFilter<"FeedbackReply">
   createdAt?: Prisma.DateTimeFilter<"FeedbackReply"> | Date | string
 }
 
@@ -483,6 +502,7 @@ export type FeedbackReplyCreateWithoutFeedbackInput = {
   id?: string
   content: string
   parentId?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutFeedbackRepliesInput
 }
@@ -492,6 +512,7 @@ export type FeedbackReplyUncheckedCreateWithoutFeedbackInput = {
   authorId: string
   content: string
   parentId?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -526,6 +547,7 @@ export type FeedbackReplyCreateManyAuthorInput = {
   feedbackId: string
   content: string
   parentId?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -533,6 +555,7 @@ export type FeedbackReplyUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedback?: Prisma.FeedbackUpdateOneRequiredWithoutRepliesNestedInput
 }
@@ -542,6 +565,7 @@ export type FeedbackReplyUncheckedUpdateWithoutAuthorInput = {
   feedbackId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -550,6 +574,7 @@ export type FeedbackReplyUncheckedUpdateManyWithoutAuthorInput = {
   feedbackId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -558,6 +583,7 @@ export type FeedbackReplyCreateManyFeedbackInput = {
   authorId: string
   content: string
   parentId?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -565,6 +591,7 @@ export type FeedbackReplyUpdateWithoutFeedbackInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutFeedbackRepliesNestedInput
 }
@@ -574,6 +601,7 @@ export type FeedbackReplyUncheckedUpdateWithoutFeedbackInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -582,6 +610,7 @@ export type FeedbackReplyUncheckedUpdateManyWithoutFeedbackInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -593,6 +622,7 @@ export type FeedbackReplySelect<ExtArgs extends runtime.Types.Extensions.Interna
   authorId?: boolean
   content?: boolean
   parentId?: boolean
+  attachments?: boolean
   createdAt?: boolean
   feedback?: boolean | Prisma.FeedbackDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -604,6 +634,7 @@ export type FeedbackReplySelectCreateManyAndReturn<ExtArgs extends runtime.Types
   authorId?: boolean
   content?: boolean
   parentId?: boolean
+  attachments?: boolean
   createdAt?: boolean
   feedback?: boolean | Prisma.FeedbackDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -615,6 +646,7 @@ export type FeedbackReplySelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   authorId?: boolean
   content?: boolean
   parentId?: boolean
+  attachments?: boolean
   createdAt?: boolean
   feedback?: boolean | Prisma.FeedbackDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -626,10 +658,11 @@ export type FeedbackReplySelectScalar = {
   authorId?: boolean
   content?: boolean
   parentId?: boolean
+  attachments?: boolean
   createdAt?: boolean
 }
 
-export type FeedbackReplyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "feedbackId" | "authorId" | "content" | "parentId" | "createdAt", ExtArgs["result"]["feedbackReply"]>
+export type FeedbackReplyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "feedbackId" | "authorId" | "content" | "parentId" | "attachments" | "createdAt", ExtArgs["result"]["feedbackReply"]>
 export type FeedbackReplyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   feedback?: boolean | Prisma.FeedbackDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -655,6 +688,7 @@ export type $FeedbackReplyPayload<ExtArgs extends runtime.Types.Extensions.Inter
     authorId: string
     content: string
     parentId: string | null
+    attachments: runtime.JsonValue
     createdAt: Date
   }, ExtArgs["result"]["feedbackReply"]>
   composites: {}
@@ -1086,6 +1120,7 @@ export interface FeedbackReplyFieldRefs {
   readonly authorId: Prisma.FieldRef<"FeedbackReply", 'String'>
   readonly content: Prisma.FieldRef<"FeedbackReply", 'String'>
   readonly parentId: Prisma.FieldRef<"FeedbackReply", 'String'>
+  readonly attachments: Prisma.FieldRef<"FeedbackReply", 'Json'>
   readonly createdAt: Prisma.FieldRef<"FeedbackReply", 'DateTime'>
 }
     

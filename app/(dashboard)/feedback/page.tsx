@@ -20,7 +20,11 @@ export default async function FeedbackPage() {
     ...f,
     createdAt: f.createdAt.toISOString(),
     imageUrls: f.imageUrls ?? null,
-    replies: f.replies.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() })),
+    replies: f.replies.map((r) => ({
+      ...r,
+      createdAt: r.createdAt.toISOString(),
+      attachments: (r.attachments as { url: string; name: string }[] | null) ?? [],
+    })),
   }))
 
   const currentUserName = session.user.nickname || session.user.name || ""

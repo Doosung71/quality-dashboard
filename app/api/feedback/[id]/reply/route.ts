@@ -7,7 +7,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id: feedbackId } = await params
-  const { content, parentId } = await req.json() as { content?: string; parentId?: string }
+  const { content, parentId, attachments } = await req.json() as {
+    content?: string; parentId?: string; attachments?: { url: string; name: string }[]
+  }
   if (!content?.trim()) return NextResponse.json({ error: "내용을 입력해주세요" }, { status: 400 })
 
   const reply = await prisma.feedbackReply.create({
@@ -15,6 +17,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       content: content.trim(),
       feedbackId,
       authorId: session.user.id,
+      attachments: attachments ?? [],
       ...(parentId ? { parentId } : {}),
     },
     include: {

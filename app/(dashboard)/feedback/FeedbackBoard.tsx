@@ -10,9 +10,11 @@ import { cn } from "@/lib/utils"
 // ─── 타입 ──────────────────────────────────────────────────
 
 type Author = { id: string; name: string; nickname: string | null; role: string }
+type Attachment = { url: string; name: string }
 type Reply = {
   id: string; content: string; author: Author
   parentId: string | null; createdAt: string
+  attachments?: Attachment[]
 }
 type ReplyNode = Reply & { children: ReplyNode[] }
 type FeedbackItem = {
@@ -161,7 +163,11 @@ function ReplyForm({
 }) {
   const [text, setText] = useState("")
   const [posting, setPosting] = useState(false)
+  const [attachments, setAttachments] = useState<Attachment[]>([])
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState("")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
 
   function insertEmoji(emoji: string) {
     const el = textareaRef.current
@@ -173,15 +179,43 @@ function ReplyForm({
     setTimeout(() => { el.focus(); el.setSelectionRange(s + emoji.length, s + emoji.length) }, 0)
   }
 
+  async function uploadFiles(files: File[]) {
+    if (attachments.length + files.length > 3) { setUploadError("이미지는 최대 3장까지"); return }
+    setUploading(true); setUploadError("")
+    const newAttachments: Attachment[] = []
+    for (const file of files) {
+      const form = new FormData(); form.append("file", file)
+      try {
+        const res = await fetch("/api/feedback/image", { method: "POST", body: form })
+        if (res.ok) {
+          const { url } = await res.json()
+          newAttachments.push({ url, name: file.name })
+        } else {
+          // fail-open: 업로드 실패해도 텍스트 댓글은 가능
+          let msg = "이미지 업로드 실패"
+          try { const d = await res.json(); msg = d.error ?? msg } catch { /* noop */ }
+          setUploadError(msg)
+        }
+      } catch { setUploadError("네트워크 오류") }
+    }
+    setAttachments(prev => [...prev, ...newAttachments])
+    setUploading(false)
+    if (fileRef.current) fileRef.current.value = ""
+  }
+
   async function submit() {
     if (!text.trim()) return
     setPosting(true)
     const res = await fetch(`/api/feedback/${feedbackId}/reply`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: text, parentId }),
+      body: JSON.stringify({ content: text, parentId, attachments }),
     })
-    if (res.ok) { onAdd(await res.json()); setText(""); onCancel?.() }
+    if (res.ok) {
+      onAdd(await res.json())
+      setText(""); setAttachments([]); setUploadError("")
+      onCancel?.()
+    }
     setPosting(false)
   }
 
@@ -190,29 +224,63 @@ function ReplyForm({
       <div className="w-6 h-6 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-1.5">
         {currentUserInitial}
       </div>
-      <div className="flex-1 relative">
-        <textarea
-          ref={textareaRef}
-          className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2 pr-16 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-slate-50 placeholder:text-slate-400"
-          rows={2}
-          placeholder={parentId ? "답글을 입력하세요… (Enter 전송)" : "댓글을 입력하세요… (Enter 전송)"}
-          value={text}
-          onChange={e => setText(e.target.value)}
-          onKeyDown={e => {
-            if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); if (text.trim()) submit() }
-            if (e.key === "Escape") onCancel?.()
-          }}
-          autoFocus={autoFocus}
-        />
-        <div className="absolute right-8 bottom-1.5">
-          <EmojiPicker onSelect={insertEmoji} />
+      <div className="flex-1 min-w-0">
+        <div className="relative">
+          <textarea
+            ref={textareaRef}
+            className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2 pr-16 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-slate-50 placeholder:text-slate-400"
+            rows={2}
+            placeholder={parentId ? "답글을 입력하세요… (Enter 전송)" : "댓글을 입력하세요… (Enter 전송)"}
+            value={text}
+            onChange={e => setText(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); if (text.trim()) submit() }
+              if (e.key === "Escape") onCancel?.()
+            }}
+            autoFocus={autoFocus}
+          />
+          <div className="absolute right-8 bottom-1.5">
+            <EmojiPicker onSelect={insertEmoji} />
+          </div>
+          <button
+            onClick={submit}
+            disabled={posting || !text.trim()}
+            className="absolute right-2 bottom-1.5 p-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40 disabled:bg-slate-300 transition-all">
+            <Send className="w-3 h-3" />
+          </button>
         </div>
-        <button
-          onClick={submit}
-          disabled={posting || !text.trim()}
-          className="absolute right-2 bottom-1.5 p-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40 disabled:bg-slate-300 transition-all">
-          <Send className="w-3 h-3" />
-        </button>
+
+        {/* 첨부 이미지 미리보기 */}
+        {attachments.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-1.5">
+            {attachments.map((a, i) => (
+              <div key={i} className="relative group/img">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={a.url} alt={a.name} className="h-14 w-auto rounded-lg border object-cover" />
+                <button
+                  onClick={() => setAttachments(prev => prev.filter((_, j) => j !== i))}
+                  className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity shadow-sm">
+                  <X className="w-2.5 h-2.5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* 첨부 버튼 + 오류 */}
+        <div className="flex items-center gap-2 mt-1">
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            disabled={uploading || attachments.length >= 3}
+            className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-indigo-500 transition-colors disabled:opacity-40">
+            <Paperclip className="w-3 h-3" />
+            {uploading ? "업로드 중…" : `이미지${attachments.length > 0 ? ` (${attachments.length}/3)` : ""}`}
+          </button>
+          {uploadError && <span className="text-[10px] text-rose-400">{uploadError}</span>}
+          <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" multiple className="hidden"
+            onChange={e => uploadFiles(Array.from(e.target.files ?? []))} />
+        </div>
       </div>
       {onCancel && (
         <button onClick={onCancel}
@@ -316,7 +384,12 @@ function ReplyItem({
               </div>
             </div>
           ) : (
-            <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{editText}</p>
+            <>
+              <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{editText}</p>
+              {node.attachments && node.attachments.length > 0 && (
+                <ImageGrid urls={node.attachments.map(a => a.url)} />
+              )}
+            </>
           )}
         </div>
       </div>
