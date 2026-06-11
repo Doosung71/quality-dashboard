@@ -601,6 +601,20 @@ function restrictedUntilLabel(until: Date | null | undefined): string {
 
 export function AdminUsersClient({ users: initial }: { users: User[] }) {
   const [activeTab, setActiveTab] = useState<"users" | "activity" | "presence">("users")
+
+  // /admin/users는 DashboardShell 밖이므로 여기서 직접 하트비트 전송
+  useEffect(() => {
+    const send = () => {
+      fetch("/api/presence/heartbeat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPage: "/admin/users" }),
+      }).catch(() => {})
+    }
+    send()
+    const id = setInterval(send, 45_000)
+    return () => clearInterval(id)
+  }, [])
   const [users, setUsers] = useState(initial)
   const [loading, setLoading] = useState<string | null>(null)
   const [tempPasswords, setTempPasswords] = useState<Record<string, string>>({})
