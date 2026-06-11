@@ -53,6 +53,7 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
   const [meeting, setMeeting]   = useState<Meeting | null>(null)
   const [loading, setLoading]   = useState(true)
   const [saving, setSaving]     = useState(false)
+  const [savedOk, setSavedOk]   = useState(false)
   const [editTitle, setEditTitle]     = useState("")
   const [editType, setEditType]       = useState("")
   const [editDate, setEditDate]       = useState("")
@@ -82,6 +83,11 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
       .catch(() => setLoading(false))
   }, [id])
 
+  function flashSaved() {
+    setSavedOk(true)
+    setTimeout(() => setSavedOk(false), 2000)
+  }
+
   async function saveHeader() {
     if (!meeting) return
     setSaving(true)
@@ -93,6 +99,7 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
     if (res.ok) {
       const updated: Meeting = await res.json()
       setMeeting(updated)
+      flashSaved()
     }
     setSaving(false)
   }
@@ -104,7 +111,7 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ body: editBody }),
     })
-    if (res.ok) { setBodyDirty(false) }
+    if (res.ok) { setBodyDirty(false); flashSaved() }
     setSaving(false)
   }
 
@@ -242,8 +249,10 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
               삭제
             </button>
             <button onClick={saveHeader} disabled={saving}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-slate-900 text-white rounded-xl hover:bg-slate-700 disabled:opacity-50 transition-all">
-              <Save className="w-3 h-3" /> {saving ? "저장 중…" : "저장"}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl disabled:opacity-50 transition-all
+                ${savedOk ? "bg-emerald-600 text-white" : "bg-slate-900 text-white hover:bg-slate-700"}`}>
+              <Save className="w-3 h-3" />
+              {saving ? "저장 중…" : savedOk ? "저장됨 ✓" : "저장"}
             </button>
           </div>
         </div>
@@ -322,10 +331,12 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
           <h2 className="text-xs font-extrabold text-slate-800 flex items-center gap-1.5">
             <Edit3 className="w-4 h-4 text-indigo-400" /> 회의록 본문
           </h2>
-          {bodyDirty && (
+          {(bodyDirty || savedOk) && (
             <button onClick={saveBody} disabled={saving}
-              className="flex items-center gap-1 px-3 py-1 text-[10px] font-bold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50">
-              <Save className="w-3 h-3" /> 저장
+              className={`flex items-center gap-1 px-3 py-1 text-[10px] font-bold rounded-lg disabled:opacity-50 transition-all
+                ${savedOk ? "bg-emerald-600 text-white" : "bg-indigo-600 text-white hover:bg-indigo-700"}`}>
+              <Save className="w-3 h-3" />
+              {saving ? "저장 중…" : savedOk ? "저장됨 ✓" : "저장"}
             </button>
           )}
         </div>
