@@ -34,8 +34,6 @@ import {
   CheckSquare,
 } from "lucide-react";
 
-const TARGET_DATE = new Date("2026-09-15");
-
 function roleToView(role: string): "executive" | "team_leader" | "operator" {
   if (role === "DIRECTOR") return "executive";
   if (role === "TEAM_LEAD") return "team_leader";
@@ -54,12 +52,6 @@ export function MainDashboard({ role, userName, userId }: Props) {
   );
 
   const todayStr = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
-
-  const dDay = useMemo(() => {
-    const today = new Date(todayStr);
-    const diffTime = TARGET_DATE.getTime() - today.getTime();
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  }, [todayStr]);
 
   const [rejectModal, setRejectModal] = useState<{ taskId: string; reason: string } | null>(null);
   const [approvalToast, setApprovalToast] = useState<{ message: string; type: "approve" | "reject" } | null>(null);
@@ -364,19 +356,6 @@ export function MainDashboard({ role, userName, userId }: Props) {
               <p className="text-xs md:text-sm text-slate-400 max-w-xl">
                 전 부서의 오프라인 작업을 박멸하고 시스템 내 업무 100% 완계를 지향합니다. 인공지능과 연동된 전사 품질 지표를 관제하십시오.
               </p>
-            </div>
-
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4 shrink-0 shadow-inner w-full md:w-auto">
-              <div className="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm shrink-0">
-                D-{dDay}
-              </div>
-              <div>
-                <h4 className="text-xs font-extrabold text-slate-300">CEO 주관 품질전략기능회의</h4>
-                <p className="text-[10px] text-slate-400 mt-0.5">시연 목표: 2026-09-15</p>
-                <div className="w-full md:w-36 bg-white/10 h-1.5 rounded-full mt-2 overflow-hidden">
-                  <div className="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full w-[85%]" />
-                </div>
-              </div>
             </div>
           </div>
 

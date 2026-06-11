@@ -2,8 +2,7 @@
 
 이 문서는 새 세션을 시작할 때 Claude Code (클로이), Gemini CLI, Codex CLI (코라)를 어떤 순서로 깨우고 어떤 파일을 읽게 할지 정리한 가이드다.
 
-**이 프로젝트**: LS전선 품질부문장 대시보드 (quality-dashboard)  
-**D-day**: 2026년 9월 품질전략기능회의 (CEO + 임원진 시연)
+**이 프로젝트**: LS전선 품질부문장 대시보드 (quality-dashboard)
 
 ## 결론
 
@@ -28,7 +27,7 @@ CLAUDE.md                   # Claude Code (클로이) 특화 지침
 CLAUDE_AGENT_START.md       # Claude Code (클로이) 세션 시작 지침
 GEMINI_RESEARCHER_START.md  # Gemini CLI 시작 지침
 CODEX_REVIEWER_START.md     # Codex CLI (코라) 시작 지침
-PRD.md                      # 제품 요구사항 (D-day 역산 마일스톤)
+PRD.md                      # 제품 요구사항 (마일스톤)
 ```
 
 산출물 저장 위치:

@@ -10,8 +10,7 @@
 
 **프로젝트**: quality-dashboard — LS전선 품질부문장 통합 대시보드 PoC  
 **기술 스택**: Next.js 15 (App Router) + TypeScript + Tailwind v4 + Prisma + Neon(PostgreSQL) + Vercel  
-**배포 URL**: https://quality-dashboard-flax.vercel.app  
-**D-day**: 2026년 9월 품질전략기능회의 (CEO + 임원진 시연)
+**배포 URL**: https://quality-dashboard-flax.vercel.app
 
 현재 좌측 사이드바에 **"시험장·시험 현황"** 메뉴(`/facilities`) 하나에 아래 세 가지 정보가 혼합되어 있다.
 
@@ -79,7 +78,7 @@ interface Test {
 
 ### Q2. 자산관리 — 데이터 모델 확장 필요 여부
 - 현재 Equipment에 **자산 카테고리 필드** (예: `category: "시험설비" | "계측설비" | "보조설비"`)가 없다. 이 필드를 추가해야 하는가, 아니면 기존 `type` 문자열 기반으로 파생 분류가 가능한가?
-- 자산 고유번호, 취득일, 감가상각/잔존가치, 점검 주기 같은 필드가 CEO 시연 수준에서 필요한가? (과도한 확장 vs 필요 최소한 기준으로 판단)
+- 자산 고유번호, 취득일, 감가상각/잔존가치, 점검 주기 같은 필드가 PoC 수준에서 필요한가? (과도한 확장 vs 필요 최소한 기준으로 판단)
 - JSON mock → Neon DB 전환을 자산관리 구현 시 같이 하는 것이 바람직한가, 아니면 분리해서 나중에 하는 것이 낫는가?
 
 ### Q3. 시험장·시험 현황 화면 — Test 제품 연계 UX
@@ -107,7 +106,7 @@ interface Test {
 - **JSON mock 유지 가능**: DB 전환은 이 작업과 분리 가능. Claude(클로이)가 결정.
 - **모바일 대응 필요**: 이미 모바일 카드 뷰가 `EquipmentTable`에 구현되어 있음 (`block md:hidden`).
 - **권한 체계 유지**: PRACTITIONER(실무자) / TEAM_LEAD(팀장) / DIRECTOR(임원). 자산관리는 쓰기 권한을 팀장 이상으로 설정 예정.
-- **CEO 시연 수준**: 데이터가 mock이라도 UI는 프로덕션 수준으로 완성도 있게.
+- **완성도 수준**: 데이터가 mock이라도 UI는 프로덕션 수준으로 완성도 있게.
 
 ---
 
