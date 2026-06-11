@@ -53,6 +53,9 @@ function ActivityView() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
   const [detailMap, setDetailMap] = useState<Record<string, ActivityItem[]>>({})
   const [detailLoading, setDetailLoading] = useState<string | null>(null)
+  const [lbOpen, setLbOpen] = useState(false)
+  const [lbPosting, setLbPosting] = useState(false)
+  const [lbResult, setLbResult] = useState<"success" | "error" | null>(null)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -85,6 +88,73 @@ function ActivityView() {
     PRACTITIONER: "실무자", TEAM_LEAD: "팀장", DIRECTOR: "임원", ADMIN: "관리자"
   }
 
+  const PERIOD_LABEL: Record<string, string> = { all: "누적 전체", "30": "최근 30일", "7": "이번 주" }
+  const LB_TITLE: Record<string, string> = {
+    all: "🏆 QMS E2E-1 누적 활동 Top 3",
+    "30": "🏆 QMS E2E-1 이달의 활동 Top 3",
+    "7": "🏆 QMS E2E-1 이번 주 활동 Top 3",
+  }
+
+  function buildLeaderboardContent(top3: ActivityRow[]): string {
+    const medals = ["🥇", "🥈", "🥉"]
+    const rankLines = top3.map((r, i) => {
+      const parts = [
+        r.posts > 0 && `게시글 ${r.posts}`,
+        r.comments > 0 && `댓글 ${r.comments}`,
+        r.claims > 0 && `클레임 ${r.claims}`,
+        r.ncrs > 0 && `NCR ${r.ncrs}`,
+        r.incomingInspections > 0 && `수입검사 ${r.incomingInspections}`,
+        r.sourceInspections > 0 && `출장검사 ${r.sourceInspections}`,
+        r.audits > 0 && `협력업체감사 ${r.audits}`,
+      ].filter(Boolean).join(" · ")
+      const dept = r.department ? ` (${r.department})` : ""
+      return `${medals[i]} **${i + 1}위** ${r.name}${dept} — **${r.total}건**\n> ${parts}`
+    }).join("\n\n")
+
+    return `## ${LB_TITLE[period].replace("🏆 ", "")}
+
+품질부문 여러분의 열정적인 참여에 감사드립니다!
+
+${PERIOD_LABEL[period]} QMS 2.0 시스템을 가장 활발하게 활용하신 분들을 소개합니다.
+
+---
+
+${rankLines}
+
+---
+
+여러분 한 분 한 분의 참여가 더 나은 QMS를 만듭니다.
+지속적인 시스템 활용과 피드백 부탁드립니다! 🙌`
+  }
+
+  async function postLeaderboard() {
+    const top3 = rows.filter(r => r.total > 0).slice(0, 3)
+    if (top3.length === 0) return
+    setLbPosting(true)
+    setLbResult(null)
+    try {
+      const res = await fetch("/api/board", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          category: "NOTICE",
+          pinned: true,
+          title: LB_TITLE[period],
+          content: buildLeaderboardContent(top3),
+          displayMode: "REAL",
+          visibility: "ALL",
+          attachments: [],
+        }),
+      })
+      setLbResult(res.ok ? "success" : "error")
+      if (res.ok) setTimeout(() => { setLbOpen(false); setLbResult(null) }, 2500)
+    } catch {
+      setLbResult("error")
+    } finally {
+      setLbPosting(false)
+    }
+  }
+
   return (
     <div className="space-y-4">
       {/* 기간 필터 */}
@@ -103,15 +173,95 @@ function ActivityView() {
             {l}
           </button>
         ))}
-        <span className="ml-auto text-xs text-slate-400">
-          이름을 클릭하면 상세 활동 내역을 볼 수 있습니다
-        </span>
+        <div className="ml-auto flex items-center gap-3">
+          <span className="text-xs text-slate-400 hidden sm:block">이름 클릭 시 상세 내역</span>
+          <button
+            onClick={() => { setLbOpen(v => !v); setLbResult(null) }}
+            disabled={rows.filter(r => r.total > 0).length === 0}
+            className="px-3 py-1.5 text-xs font-medium bg-amber-50 border border-amber-200 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors disabled:opacity-40 whitespace-nowrap"
+          >
+            🏆 리더보드 공지
+          </button>
+        </div>
       </div>
 
       {loading ? (
         <div className="py-12 text-center text-sm text-slate-400">집계 중...</div>
       ) : (
         <>
+          {/* 리더보드 공지 패널 */}
+          {lbOpen && (() => {
+            const top3 = rows.filter(r => r.total > 0).slice(0, 3)
+            const medals = ["🥇", "🥈", "🥉"]
+            return (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h3 className="text-sm font-semibold text-amber-800">🏆 리더보드 게시판 공지 작성</h3>
+                    <p className="text-xs text-amber-600 mt-0.5">
+                      {PERIOD_LABEL[period]} 기준 · 게시판에 핀 고정 공지로 등록됩니다
+                    </p>
+                  </div>
+                  <button onClick={() => setLbOpen(false)} className="text-amber-400 hover:text-amber-600 text-xl leading-none mt-0.5">×</button>
+                </div>
+
+                {top3.length === 0 ? (
+                  <p className="text-xs text-amber-600 py-1">현재 기간에 활동 데이터가 없습니다.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {top3.map((r, i) => {
+                      const parts = [
+                        r.posts > 0 && `게시글 ${r.posts}`,
+                        r.comments > 0 && `댓글 ${r.comments}`,
+                        r.claims > 0 && `클레임 ${r.claims}`,
+                        r.ncrs > 0 && `NCR ${r.ncrs}`,
+                        r.incomingInspections > 0 && `수입검사 ${r.incomingInspections}`,
+                        r.sourceInspections > 0 && `출장검사 ${r.sourceInspections}`,
+                        r.audits > 0 && `협력업체감사 ${r.audits}`,
+                      ].filter(Boolean).join(" · ")
+                      return (
+                        <div key={r.id} className="flex items-center gap-3 bg-white rounded-lg px-3 py-2.5 border border-amber-100">
+                          <span className="text-2xl shrink-0">{medals[i]}</span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-baseline gap-1.5">
+                              <span className="text-sm font-semibold text-slate-800">{r.name}</span>
+                              {r.department && <span className="text-xs text-slate-400">({r.department})</span>}
+                            </div>
+                            <p className="text-[11px] text-slate-400 truncate mt-0.5">{parts}</p>
+                          </div>
+                          <span className="text-base font-bold text-amber-700 shrink-0">{r.total}건</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+
+                {lbResult === "success" && (
+                  <p className="text-xs font-medium text-emerald-600">✓ 게시판에 공지가 등록되었습니다.</p>
+                )}
+                {lbResult === "error" && (
+                  <p className="text-xs text-red-500">공지 등록 중 오류가 발생했습니다. 다시 시도해 주세요.</p>
+                )}
+
+                <div className="flex gap-2 pt-1">
+                  <button
+                    onClick={postLeaderboard}
+                    disabled={lbPosting || top3.length === 0 || lbResult === "success"}
+                    className="px-4 py-1.5 text-xs font-medium bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50 transition-colors"
+                  >
+                    {lbPosting ? "등록 중..." : "게시판에 공지 등록"}
+                  </button>
+                  <button
+                    onClick={() => { setLbOpen(false); setLbResult(null) }}
+                    className="px-3 py-1.5 text-xs text-amber-700 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors"
+                  >
+                    취소
+                  </button>
+                </div>
+              </div>
+            )
+          })()}
+
           {/* 요약 카드 */}
           <div className="grid grid-cols-4 gap-3">
             {[
