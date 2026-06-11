@@ -38,6 +38,8 @@ const titles: Record<string, string> = {
   "/board": "품질부문 게시판",
   "/feedback": "피드백 게시판",
   "/help": "사용 가이드",
+  "/meetings": "회의록",
+  "/my-job": "내 할 일",
 }
 
 function NavBtn({ href, icon: Icon, label, active }: {

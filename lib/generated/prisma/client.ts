@@ -62,6 +62,16 @@ export type FeedbackReply = Prisma.FeedbackReplyModel
  */
 export type BoardPost = Prisma.BoardPostModel
 /**
+ * Model Meeting
+ * 
+ */
+export type Meeting = Prisma.MeetingModel
+/**
+ * Model MeetingAction
+ * 
+ */
+export type MeetingAction = Prisma.MeetingActionModel
+/**
  * Model BoardComment
  * 
  */

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import {
   LayoutDashboard, FlaskConical,
   X, MessageSquare, Newspaper,
-  ClipboardList, ShieldAlert, Briefcase, Layers, Wrench,
+  ClipboardList, ShieldAlert, Briefcase, Layers, Wrench, CheckSquare,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { Role } from "@/lib/generated/prisma/client"
@@ -81,9 +81,10 @@ const ALL_NAV: NavItem[] = [
     href: "/quality-issues", label: "품질 이상/사후 관리", icon: ShieldAlert,
     roles: ALL, readonlyFor: [],
     children: [
-      { href: "/ncr",    label: "부적합품 (NCR)", roles: ALL, readonlyFor: [] },
-      { href: "/claims", label: "고객 클레임",    roles: ALL, readonlyFor: [] },
-      { href: "/qcost",  label: "품질 비용 관리", roles: ALL, readonlyFor: ["PRACTITIONER"] },
+      { href: "/ncr",      label: "부적합품 (NCR)", roles: ALL, readonlyFor: [] },
+      { href: "/claims",   label: "고객 클레임",    roles: ALL, readonlyFor: [] },
+      { href: "/qcost",    label: "품질 비용 관리", roles: ALL, readonlyFor: ["PRACTITIONER"] },
+      { href: "/meetings", label: "회의록",         roles: ALL, readonlyFor: [] },
     ],
   },
 
@@ -199,6 +200,14 @@ export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
 
       <div className="px-3 py-3 border-t border-slate-700 space-y-1">
         <p className="px-3 pb-0.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">소통 채널</p>
+        <Link href="/my-job" onClick={onClose}
+          className={cn(
+            "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+            pathname === "/my-job" ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
+          )}>
+          <CheckSquare className="w-4 h-4 shrink-0" />
+          내 할 일
+        </Link>
         <Link href="/board" onClick={onClose}
           className={cn(
             "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",

@@ -68,6 +68,9 @@ model User {
   // QPA 공정감사
   qpaAudits               QpaAudit[]              @relation("QpaAuditCreator")
 
+  // 회의록
+  meetings                Meeting[]               @relation("MeetingCreator")
+
   // 협력업체 직접 등록
   vendorsCreated          Vendor[]                @relation("VendorCreator")
 }
@@ -129,6 +132,42 @@ model BoardPost {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   comments    BoardComment[]
+}
+
+// ─── 회의록 ─────────────────────────────────────────────────
+
+enum MeetingType {
+  QUALITY_ISSUE       // 품질이슈 회의
+  STANDARD_REVIEW     // 표준검토 회의
+  CHANGE_MANAGEMENT   // 변경관리 회의
+  QUALITY_MEETING     // 품질회의
+  OTHER               // 기타
+}
+
+model Meeting {
+  id          String        @id @default(cuid())
+  title       String
+  type        MeetingType
+  meetingDate DateTime
+  body        String        @default("")   // 회의록 본문 (마크다운)
+  issueLinks  Json          @default("[]") // [{issueType, issueId, issueLabel}]
+  createdBy   User          @relation("MeetingCreator", fields: [createdById], references: [id])
+  createdById String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  actions     MeetingAction[]
+}
+
+model MeetingAction {
+  id           String    @id @default(cuid())
+  meeting      Meeting   @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  meetingId    String
+  content      String
+  assigneeName String
+  dueDate      DateTime?
+  done         Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model BoardComment {

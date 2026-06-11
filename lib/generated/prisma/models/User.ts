@@ -270,6 +270,7 @@ export type UserWhereInput = {
   sourceInspections?: Prisma.SourceInspectionListRelationFilter
   internalStandards?: Prisma.InternalStandardListRelationFilter
   qpaAudits?: Prisma.QpaAuditListRelationFilter
+  meetings?: Prisma.MeetingListRelationFilter
   vendorsCreated?: Prisma.VendorListRelationFilter
 }
 
@@ -311,6 +312,7 @@ export type UserOrderByWithRelationInput = {
   sourceInspections?: Prisma.SourceInspectionOrderByRelationAggregateInput
   internalStandards?: Prisma.InternalStandardOrderByRelationAggregateInput
   qpaAudits?: Prisma.QpaAuditOrderByRelationAggregateInput
+  meetings?: Prisma.MeetingOrderByRelationAggregateInput
   vendorsCreated?: Prisma.VendorOrderByRelationAggregateInput
 }
 
@@ -355,6 +357,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   sourceInspections?: Prisma.SourceInspectionListRelationFilter
   internalStandards?: Prisma.InternalStandardListRelationFilter
   qpaAudits?: Prisma.QpaAuditListRelationFilter
+  meetings?: Prisma.MeetingListRelationFilter
   vendorsCreated?: Prisma.VendorListRelationFilter
 }, "id" | "email">
 
@@ -434,6 +437,7 @@ export type UserCreateInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -475,6 +479,7 @@ export type UserUncheckedCreateInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -516,6 +521,7 @@ export type UserUpdateInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -557,6 +563,7 @@ export type UserUncheckedUpdateInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -730,6 +737,20 @@ export type UserUpdateOneRequiredWithoutBoardPostsNestedInput = {
   upsert?: Prisma.UserUpsertWithoutBoardPostsInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBoardPostsInput, Prisma.UserUpdateWithoutBoardPostsInput>, Prisma.UserUncheckedUpdateWithoutBoardPostsInput>
+}
+
+export type UserCreateNestedOneWithoutMeetingsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMeetingsInput, Prisma.UserUncheckedCreateWithoutMeetingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMeetingsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutMeetingsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMeetingsInput, Prisma.UserUncheckedCreateWithoutMeetingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMeetingsInput
+  upsert?: Prisma.UserUpsertWithoutMeetingsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMeetingsInput, Prisma.UserUpdateWithoutMeetingsInput>, Prisma.UserUncheckedUpdateWithoutMeetingsInput>
 }
 
 export type UserCreateNestedOneWithoutBoardCommentsInput = {
@@ -1085,6 +1106,7 @@ export type UserCreateWithoutFeedbacksInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -1125,6 +1147,7 @@ export type UserUncheckedCreateWithoutFeedbacksInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -1181,6 +1204,7 @@ export type UserUpdateWithoutFeedbacksInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -1221,6 +1245,7 @@ export type UserUncheckedUpdateWithoutFeedbacksInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -1261,6 +1286,7 @@ export type UserCreateWithoutFeedbackRepliesInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -1301,6 +1327,7 @@ export type UserUncheckedCreateWithoutFeedbackRepliesInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -1357,6 +1384,7 @@ export type UserUpdateWithoutFeedbackRepliesInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -1397,6 +1425,7 @@ export type UserUncheckedUpdateWithoutFeedbackRepliesInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -1437,6 +1466,7 @@ export type UserCreateWithoutBoardPostsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -1477,6 +1507,7 @@ export type UserUncheckedCreateWithoutBoardPostsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -1533,6 +1564,7 @@ export type UserUpdateWithoutBoardPostsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -1552,6 +1584,187 @@ export type UserUncheckedUpdateWithoutBoardPostsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
   feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  ownedTestPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
+  supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
+  sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
+  internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
+  qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutMeetingsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
+  ownedTestPlans?: Prisma.TestPlanCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
+  reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
+  supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
+  incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
+  sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
+  internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
+  qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutMeetingsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  ownedTestPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
+  supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
+  sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
+  internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
+  qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutMeetingsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMeetingsInput, Prisma.UserUncheckedCreateWithoutMeetingsInput>
+}
+
+export type UserUpsertWithoutMeetingsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMeetingsInput, Prisma.UserUncheckedUpdateWithoutMeetingsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMeetingsInput, Prisma.UserUncheckedCreateWithoutMeetingsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMeetingsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMeetingsInput, Prisma.UserUncheckedUpdateWithoutMeetingsInput>
+}
+
+export type UserUpdateWithoutMeetingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  ownedTestPlans?: Prisma.TestPlanUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
+  supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
+  incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
+  sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
+  internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
+  qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMeetingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
   boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
   tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -1613,6 +1826,7 @@ export type UserCreateWithoutBoardCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -1653,6 +1867,7 @@ export type UserUncheckedCreateWithoutBoardCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -1709,6 +1924,7 @@ export type UserUpdateWithoutBoardCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -1749,6 +1965,7 @@ export type UserUncheckedUpdateWithoutBoardCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -1789,6 +2006,7 @@ export type UserCreateWithoutOwnedEquipmentInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -1829,6 +2047,7 @@ export type UserUncheckedCreateWithoutOwnedEquipmentInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -1885,6 +2104,7 @@ export type UserUpdateWithoutOwnedEquipmentInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -1925,6 +2145,7 @@ export type UserUncheckedUpdateWithoutOwnedEquipmentInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -1965,6 +2186,7 @@ export type UserCreateWithoutOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -2005,6 +2227,7 @@ export type UserUncheckedCreateWithoutOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -2050,6 +2273,7 @@ export type UserCreateWithoutOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -2090,6 +2314,7 @@ export type UserUncheckedCreateWithoutOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -2146,6 +2371,7 @@ export type UserUpdateWithoutOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -2186,6 +2412,7 @@ export type UserUncheckedUpdateWithoutOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -2237,6 +2464,7 @@ export type UserUpdateWithoutOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -2277,6 +2505,7 @@ export type UserUncheckedUpdateWithoutOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -2317,6 +2546,7 @@ export type UserCreateWithoutOwnedTestPlansInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -2357,6 +2587,7 @@ export type UserUncheckedCreateWithoutOwnedTestPlansInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -2413,6 +2644,7 @@ export type UserUpdateWithoutOwnedTestPlansInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -2453,6 +2685,7 @@ export type UserUncheckedUpdateWithoutOwnedTestPlansInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -2493,6 +2726,7 @@ export type UserCreateWithoutReportedRepairsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -2533,6 +2767,7 @@ export type UserUncheckedCreateWithoutReportedRepairsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -2589,6 +2824,7 @@ export type UserUpdateWithoutReportedRepairsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -2629,6 +2865,7 @@ export type UserUncheckedUpdateWithoutReportedRepairsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -2669,6 +2906,7 @@ export type UserCreateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -2709,6 +2947,7 @@ export type UserUncheckedCreateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -2754,6 +2993,7 @@ export type UserCreateWithoutTestPlanOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -2794,6 +3034,7 @@ export type UserUncheckedCreateWithoutTestPlanOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -2850,6 +3091,7 @@ export type UserUpdateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -2890,6 +3132,7 @@ export type UserUncheckedUpdateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -2941,6 +3184,7 @@ export type UserUpdateWithoutTestPlanOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -2981,6 +3225,7 @@ export type UserUncheckedUpdateWithoutTestPlanOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -3021,6 +3266,7 @@ export type UserCreateWithoutInternalStandardsInput = {
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -3061,6 +3307,7 @@ export type UserUncheckedCreateWithoutInternalStandardsInput = {
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -3117,6 +3364,7 @@ export type UserUpdateWithoutInternalStandardsInput = {
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -3157,6 +3405,7 @@ export type UserUncheckedUpdateWithoutInternalStandardsInput = {
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -3197,6 +3446,7 @@ export type UserCreateWithoutClaimsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -3237,6 +3487,7 @@ export type UserUncheckedCreateWithoutClaimsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -3293,6 +3544,7 @@ export type UserUpdateWithoutClaimsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -3333,6 +3585,7 @@ export type UserUncheckedUpdateWithoutClaimsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -3373,6 +3626,7 @@ export type UserCreateWithoutNcrsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -3413,6 +3667,7 @@ export type UserUncheckedCreateWithoutNcrsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -3469,6 +3724,7 @@ export type UserUpdateWithoutNcrsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -3509,6 +3765,7 @@ export type UserUncheckedUpdateWithoutNcrsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -3549,6 +3806,7 @@ export type UserCreateWithoutTendersInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -3589,6 +3847,7 @@ export type UserUncheckedCreateWithoutTendersInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -3645,6 +3904,7 @@ export type UserUpdateWithoutTendersInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -3685,6 +3945,7 @@ export type UserUncheckedUpdateWithoutTendersInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -3725,6 +3986,7 @@ export type UserCreateWithoutReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -3765,6 +4027,7 @@ export type UserUncheckedCreateWithoutReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -3821,6 +4084,7 @@ export type UserUpdateWithoutReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -3861,6 +4125,7 @@ export type UserUncheckedUpdateWithoutReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -3901,6 +4166,7 @@ export type UserCreateWithoutCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -3941,6 +4207,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -3997,6 +4264,7 @@ export type UserUpdateWithoutCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -4037,6 +4305,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -4077,6 +4346,7 @@ export type UserCreateWithoutAwardedProjectsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -4117,6 +4387,7 @@ export type UserUncheckedCreateWithoutAwardedProjectsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -4173,6 +4444,7 @@ export type UserUpdateWithoutAwardedProjectsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -4213,6 +4485,7 @@ export type UserUncheckedUpdateWithoutAwardedProjectsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -4253,6 +4526,7 @@ export type UserCreateWithoutContractReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -4293,6 +4567,7 @@ export type UserUncheckedCreateWithoutContractReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -4349,6 +4624,7 @@ export type UserUpdateWithoutContractReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -4389,6 +4665,7 @@ export type UserUncheckedUpdateWithoutContractReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -4429,6 +4706,7 @@ export type UserCreateWithoutContractCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -4469,6 +4747,7 @@ export type UserUncheckedCreateWithoutContractCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -4525,6 +4804,7 @@ export type UserUpdateWithoutContractCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -4565,6 +4845,7 @@ export type UserUncheckedUpdateWithoutContractCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -4606,6 +4887,7 @@ export type UserCreateWithoutVendorsCreatedInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutVendorsCreatedInput = {
@@ -4646,6 +4928,7 @@ export type UserUncheckedCreateWithoutVendorsCreatedInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutVendorsCreatedInput = {
@@ -4702,6 +4985,7 @@ export type UserUpdateWithoutVendorsCreatedInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVendorsCreatedInput = {
@@ -4742,6 +5026,7 @@ export type UserUncheckedUpdateWithoutVendorsCreatedInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutSupplierAuditsInput = {
@@ -4781,6 +5066,7 @@ export type UserCreateWithoutSupplierAuditsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -4821,6 +5107,7 @@ export type UserUncheckedCreateWithoutSupplierAuditsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -4877,6 +5164,7 @@ export type UserUpdateWithoutSupplierAuditsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -4917,6 +5205,7 @@ export type UserUncheckedUpdateWithoutSupplierAuditsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -4957,6 +5246,7 @@ export type UserCreateWithoutIncomingInspectionsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -4997,6 +5287,7 @@ export type UserUncheckedCreateWithoutIncomingInspectionsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -5053,6 +5344,7 @@ export type UserUpdateWithoutIncomingInspectionsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -5093,6 +5385,7 @@ export type UserUncheckedUpdateWithoutIncomingInspectionsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -5133,6 +5426,7 @@ export type UserCreateWithoutSourceInspectionsInput = {
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -5173,6 +5467,7 @@ export type UserUncheckedCreateWithoutSourceInspectionsInput = {
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -5229,6 +5524,7 @@ export type UserUpdateWithoutSourceInspectionsInput = {
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -5269,6 +5565,7 @@ export type UserUncheckedUpdateWithoutSourceInspectionsInput = {
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -5309,6 +5606,7 @@ export type UserCreateWithoutQpaAuditsInput = {
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
@@ -5349,6 +5647,7 @@ export type UserUncheckedCreateWithoutQpaAuditsInput = {
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutCreatedByInput
   vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
@@ -5405,6 +5704,7 @@ export type UserUpdateWithoutQpaAuditsInput = {
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -5445,6 +5745,7 @@ export type UserUncheckedUpdateWithoutQpaAuditsInput = {
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutCreatedByNestedInput
   vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -5478,6 +5779,7 @@ export type UserCountOutputType = {
   sourceInspections: number
   internalStandards: number
   qpaAudits: number
+  meetings: number
   vendorsCreated: number
 }
 
@@ -5506,6 +5808,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   sourceInspections?: boolean | UserCountOutputTypeCountSourceInspectionsArgs
   internalStandards?: boolean | UserCountOutputTypeCountInternalStandardsArgs
   qpaAudits?: boolean | UserCountOutputTypeCountQpaAuditsArgs
+  meetings?: boolean | UserCountOutputTypeCountMeetingsArgs
   vendorsCreated?: boolean | UserCountOutputTypeCountVendorsCreatedArgs
 }
 
@@ -5690,6 +5993,13 @@ export type UserCountOutputTypeCountQpaAuditsArgs<ExtArgs extends runtime.Types.
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountMeetingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MeetingWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountVendorsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.VendorWhereInput
 }
@@ -5733,6 +6043,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   sourceInspections?: boolean | Prisma.User$sourceInspectionsArgs<ExtArgs>
   internalStandards?: boolean | Prisma.User$internalStandardsArgs<ExtArgs>
   qpaAudits?: boolean | Prisma.User$qpaAuditsArgs<ExtArgs>
+  meetings?: boolean | Prisma.User$meetingsArgs<ExtArgs>
   vendorsCreated?: boolean | Prisma.User$vendorsCreatedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -5811,6 +6122,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   sourceInspections?: boolean | Prisma.User$sourceInspectionsArgs<ExtArgs>
   internalStandards?: boolean | Prisma.User$internalStandardsArgs<ExtArgs>
   qpaAudits?: boolean | Prisma.User$qpaAuditsArgs<ExtArgs>
+  meetings?: boolean | Prisma.User$meetingsArgs<ExtArgs>
   vendorsCreated?: boolean | Prisma.User$vendorsCreatedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -5844,6 +6156,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     sourceInspections: Prisma.$SourceInspectionPayload<ExtArgs>[]
     internalStandards: Prisma.$InternalStandardPayload<ExtArgs>[]
     qpaAudits: Prisma.$QpaAuditPayload<ExtArgs>[]
+    meetings: Prisma.$MeetingPayload<ExtArgs>[]
     vendorsCreated: Prisma.$VendorPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -6278,6 +6591,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   sourceInspections<T extends Prisma.User$sourceInspectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sourceInspectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SourceInspectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   internalStandards<T extends Prisma.User$internalStandardsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$internalStandardsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InternalStandardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   qpaAudits<T extends Prisma.User$qpaAuditsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$qpaAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QpaAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  meetings<T extends Prisma.User$meetingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$meetingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MeetingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vendorsCreated<T extends Prisma.User$vendorsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -7287,6 +7601,30 @@ export type User$qpaAuditsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.QpaAuditScalarFieldEnum | Prisma.QpaAuditScalarFieldEnum[]
+}
+
+/**
+ * User.meetings
+ */
+export type User$meetingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Meeting
+   */
+  select?: Prisma.MeetingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Meeting
+   */
+  omit?: Prisma.MeetingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeetingInclude<ExtArgs> | null
+  where?: Prisma.MeetingWhereInput
+  orderBy?: Prisma.MeetingOrderByWithRelationInput | Prisma.MeetingOrderByWithRelationInput[]
+  cursor?: Prisma.MeetingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MeetingScalarFieldEnum | Prisma.MeetingScalarFieldEnum[]
 }
 
 /**

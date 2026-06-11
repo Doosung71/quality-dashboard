@@ -55,6 +55,8 @@ export const ModelName = {
   Feedback: 'Feedback',
   FeedbackReply: 'FeedbackReply',
   BoardPost: 'BoardPost',
+  Meeting: 'Meeting',
+  MeetingAction: 'MeetingAction',
   BoardComment: 'BoardComment',
   Equipment: 'Equipment',
   EquipmentOwnerHistory: 'EquipmentOwnerHistory',
@@ -160,6 +162,35 @@ export const BoardPostScalarFieldEnum = {
 } as const
 
 export type BoardPostScalarFieldEnum = (typeof BoardPostScalarFieldEnum)[keyof typeof BoardPostScalarFieldEnum]
+
+
+export const MeetingScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  type: 'type',
+  meetingDate: 'meetingDate',
+  body: 'body',
+  issueLinks: 'issueLinks',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MeetingScalarFieldEnum = (typeof MeetingScalarFieldEnum)[keyof typeof MeetingScalarFieldEnum]
+
+
+export const MeetingActionScalarFieldEnum = {
+  id: 'id',
+  meetingId: 'meetingId',
+  content: 'content',
+  assigneeName: 'assigneeName',
+  dueDate: 'dueDate',
+  done: 'done',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MeetingActionScalarFieldEnum = (typeof MeetingActionScalarFieldEnum)[keyof typeof MeetingActionScalarFieldEnum]
 
 
 export const BoardCommentScalarFieldEnum = {

@@ -37,6 +37,17 @@ export const BoardCategory = {
 export type BoardCategory = (typeof BoardCategory)[keyof typeof BoardCategory]
 
 
+export const MeetingType = {
+  QUALITY_ISSUE: 'QUALITY_ISSUE',
+  STANDARD_REVIEW: 'STANDARD_REVIEW',
+  CHANGE_MANAGEMENT: 'CHANGE_MANAGEMENT',
+  QUALITY_MEETING: 'QUALITY_MEETING',
+  OTHER: 'OTHER'
+} as const
+
+export type MeetingType = (typeof MeetingType)[keyof typeof MeetingType]
+
+
 export const ClaimPriority = {
   High: 'High',
   Mid: 'Mid',

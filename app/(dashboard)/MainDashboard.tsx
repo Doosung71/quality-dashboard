@@ -30,7 +30,8 @@ import {
   ChevronRight,
   Wrench,
   FlaskConical,
-  Truck
+  Truck,
+  CheckSquare,
 } from "lucide-react";
 
 const TARGET_DATE = new Date("2026-09-15");
@@ -703,8 +704,33 @@ export function MainDashboard({ role, userName, userId }: Props) {
                 </h4>
                 <div className="space-y-3 text-xs">
 
+                  {/* 내 할 일 & 회의록 */}
+                  <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest">업무 관리</p>
+                  <div className="space-y-1.5">
+                    <Link href="/my-job" className="flex items-center justify-between p-2.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 hover:border-indigo-300 rounded-xl group transition-all">
+                      <div className="flex items-center gap-2">
+                        <CheckSquare className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">내 할 일</p>
+                          <p className="text-[9px] text-slate-400">회의 액션 아이템 F/U</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-indigo-300 group-hover:translate-x-1 transition-transform shrink-0" />
+                    </Link>
+                    <Link href="/meetings" className="flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-400 rounded-xl group transition-all">
+                      <div className="flex items-center gap-2">
+                        <ClipboardList className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">회의록</p>
+                          <p className="text-[9px] text-slate-400">회의 결과·액션 아이템 등록</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:translate-x-1 transition-transform shrink-0" />
+                    </Link>
+                  </div>
+
                   {/* 품질 비용 관리 */}
-                  <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest">품질 비용 관리</p>
+                  <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest pt-1">품질 비용 관리</p>
                   <div className="space-y-1.5">
                     <Link href="/claims" className="flex items-center justify-between p-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-100 hover:border-blue-300 rounded-xl group transition-all">
                       <div className="flex items-center gap-2">
