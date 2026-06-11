@@ -128,7 +128,7 @@ ${rankLines}
   }
 
   async function postLeaderboard() {
-    const top3 = rows.filter(r => r.total > 0).slice(0, 3)
+    const top3 = rows.filter(r => r.total > 0 && r.role !== "ADMIN").slice(0, 3)
     if (top3.length === 0) return
     setLbPosting(true)
     setLbResult(null)
@@ -191,7 +191,7 @@ ${rankLines}
         <>
           {/* 리더보드 공지 패널 */}
           {lbOpen && (() => {
-            const top3 = rows.filter(r => r.total > 0).slice(0, 3)
+            const top3 = rows.filter(r => r.total > 0 && r.role !== "ADMIN").slice(0, 3)
             const medals = ["🥇", "🥈", "🥉"]
             return (
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-3">
