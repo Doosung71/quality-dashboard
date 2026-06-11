@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Header } from "@/components/layout/header"
 import { NoticeBanner } from "@/components/board/notice-banner"
@@ -14,6 +15,20 @@ export function DashboardShell({
   session: Session
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
+
+  useEffect(() => {
+    const send = () => {
+      fetch("/api/presence/heartbeat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPage: pathname }),
+      }).catch(() => {})
+    }
+    send()
+    const id = setInterval(send, 45_000)
+    return () => clearInterval(id)
+  }, [pathname])
 
   return (
     <div className="min-h-screen bg-slate-50">

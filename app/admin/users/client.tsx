@@ -2,6 +2,171 @@
 
 import React, { useState, useEffect, useCallback } from "react"
 
+// ─── 접속 현황 ───────────────────────────────────────────────────────────────
+
+type PresenceUser = {
+  id: string
+  name: string
+  role: string
+  currentPage: string
+  lastSeen: string
+}
+
+const PAGE_LABELS: [string, string][] = [
+  ["/vendors/incoming",    "수입검사"],
+  ["/vendors/inspections", "출장검사"],
+  ["/vendors/audits",      "협력업체감사"],
+  ["/vendors/qpa",         "QPA 공정감사"],
+  ["/vendors",             "공급망 품질관리"],
+  ["/assets/repairs",      "설비 수선"],
+  ["/assets/new",          "설비 등록"],
+  ["/assets",              "시험설비/계측기"],
+  ["/facilities",          "시험/분석 관리"],
+  ["/claims",              "클레임"],
+  ["/ncr",                 "부적합품(NCR)"],
+  ["/board",               "게시판"],
+  ["/feedback",            "소통방"],
+  ["/hr",                  "인사·면담"],
+  ["/knowledge",           "지식관리"],
+  ["/intelligence",        "외부정보"],
+  ["/projects/awarded",    "수주 프로젝트"],
+  ["/projects",            "프로젝트관리"],
+  ["/admin",               "관리자"],
+  ["/profile",             "내 프로필"],
+  ["/help",                "사용 가이드"],
+  ["/",                    "대시보드"],
+]
+
+function getPageLabel(path: string): string {
+  for (const [prefix, label] of PAGE_LABELS) {
+    if (path.startsWith(prefix)) return label
+  }
+  return path
+}
+
+function relativeTime(iso: string): string {
+  const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000)
+  if (diff < 10) return "방금 전"
+  if (diff < 60) return `${diff}초 전`
+  const m = Math.floor(diff / 60)
+  if (m < 60) return `${m}분 전`
+  return `${Math.floor(m / 60)}시간 전`
+}
+
+const ROLE_COLOR: Record<string, string> = {
+  PRACTITIONER: "bg-indigo-100 text-indigo-700",
+  TEAM_LEAD:    "bg-violet-100 text-violet-700",
+  DIRECTOR:     "bg-emerald-100 text-emerald-700",
+  ADMIN:        "bg-rose-100 text-rose-700",
+}
+
+function PresenceView() {
+  const [users, setUsers] = useState<PresenceUser[]>([])
+  const [loading, setLoading] = useState(true)
+  const [tick, setTick] = useState(0)
+
+  const load = useCallback(async () => {
+    const res = await fetch("/api/presence")
+    if (res.ok) setUsers(await res.json())
+    setLoading(false)
+  }, [])
+
+  useEffect(() => { load() }, [load])
+
+  // 15초마다 자동 갱신
+  useEffect(() => {
+    const id = setInterval(() => {
+      load()
+      setTick(t => t + 1)
+    }, 15_000)
+    return () => clearInterval(id)
+  }, [load])
+
+  // 상대시간 표시를 매초 갱신
+  useEffect(() => {
+    const id = setInterval(() => setTick(t => t + 1), 10_000)
+    return () => clearInterval(id)
+  }, [])
+
+  void tick
+
+  const ROLE_LABEL_P: Record<string, string> = {
+    PRACTITIONER: "실무자", TEAM_LEAD: "팀장", DIRECTOR: "임원", ADMIN: "관리자"
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* 요약 카드 */}
+      <div className="flex items-center gap-4">
+        <div className="bg-white border border-slate-200 rounded-xl px-6 py-4 flex items-center gap-4">
+          <div className="relative">
+            <div className="w-3 h-3 bg-emerald-500 rounded-full" />
+            {users.length > 0 && (
+              <div className="absolute inset-0 w-3 h-3 bg-emerald-400 rounded-full animate-ping opacity-75" />
+            )}
+          </div>
+          <div>
+            <p className="text-3xl font-bold text-slate-900">{users.length}</p>
+            <p className="text-xs text-slate-500 mt-0.5">현재 접속 중</p>
+          </div>
+        </div>
+        <button
+          onClick={() => { setLoading(true); load() }}
+          className="px-3 py-1.5 text-xs text-slate-500 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+        >
+          새로고침
+        </button>
+        <span className="text-xs text-slate-400">15초마다 자동 갱신</span>
+      </div>
+
+      {loading ? (
+        <div className="py-12 text-center text-sm text-slate-400">불러오는 중...</div>
+      ) : users.length === 0 ? (
+        <div className="py-12 text-center text-sm text-slate-400">
+          현재 접속 중인 사용자가 없습니다.
+        </div>
+      ) : (
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 border-b border-slate-200">
+              <tr>
+                {["이름", "역할", "현재 화면", "마지막 활동"].map(h => (
+                  <th key={h} className="text-left px-4 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {users.map(u => (
+                <tr key={u.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-emerald-400 rounded-full shrink-0" />
+                      <span className="font-medium text-slate-800">{u.name}</span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${ROLE_COLOR[u.role] ?? "bg-slate-100 text-slate-700"}`}>
+                      {ROLE_LABEL_P[u.role] ?? u.role}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-slate-700">
+                    {getPageLabel(u.currentPage)}
+                  </td>
+                  <td className="px-4 py-3 text-xs text-slate-400 whitespace-nowrap">
+                    {relativeTime(u.lastSeen)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}
+
 type User = {
   id: string; name: string; email: string
   role: string; status: string
@@ -435,7 +600,7 @@ function restrictedUntilLabel(until: Date | null | undefined): string {
 }
 
 export function AdminUsersClient({ users: initial }: { users: User[] }) {
-  const [activeTab, setActiveTab] = useState<"users" | "activity">("users")
+  const [activeTab, setActiveTab] = useState<"users" | "activity" | "presence">("users")
   const [users, setUsers] = useState(initial)
   const [loading, setLoading] = useState<string | null>(null)
   const [tempPasswords, setTempPasswords] = useState<Record<string, string>>({})
@@ -713,7 +878,7 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
     <div className="space-y-4">
       {/* 탭 바 */}
       <div className="flex gap-1 bg-slate-100 p-1 rounded-xl w-fit">
-        {([["users", "사용자 목록"], ["activity", "활동 현황"]] as const).map(([tab, label]) => (
+        {([["users", "사용자 목록"], ["activity", "활동 현황"], ["presence", "접속 현황"]] as const).map(([tab, label]) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -723,13 +888,21 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
                 : "text-slate-500 hover:text-slate-700"
             }`}
           >
-            {label}
+            {tab === "presence" ? (
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 bg-emerald-400 rounded-full inline-block" />
+                {label}
+              </span>
+            ) : label}
           </button>
         ))}
       </div>
 
       {/* 활동 현황 탭 */}
       {activeTab === "activity" && <ActivityView />}
+
+      {/* 접속 현황 탭 */}
+      {activeTab === "presence" && <PresenceView />}
 
       {/* 사용자 목록 탭 */}
       {activeTab === "users" && (
