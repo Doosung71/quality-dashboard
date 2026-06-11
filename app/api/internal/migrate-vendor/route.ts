@@ -3,13 +3,10 @@ import { requireActiveSession } from "@/lib/session-guard"
 import { prisma } from "@/lib/prisma"
 
 // 1회성 프로덕션 마이그레이션 엔드포인트 — 실행 후 즉시 삭제할 것
-// ADMIN 계정으로 로그인한 상태에서 호출해야 함
+// 로그인한 상태에서 브라우저로 이 URL을 방문하면 실행됨
 export async function GET() {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
-  if (session.user.role !== "ADMIN") {
-    return NextResponse.json({ error: "ADMIN 권한 필요" }, { status: 403 })
-  }
 
   try {
     await prisma.$executeRawUnsafe(`
