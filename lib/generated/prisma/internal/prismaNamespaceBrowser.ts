@@ -77,6 +77,7 @@ export const ModelName = {
   ContractGap: 'ContractGap',
   ContractReviewHistory: 'ContractReviewHistory',
   ContractComment: 'ContractComment',
+  Vendor: 'Vendor',
   SupplierAudit: 'SupplierAudit',
   AuditFinding: 'AuditFinding',
   IncomingInspection: 'IncomingInspection',
@@ -531,6 +532,19 @@ export const ContractCommentScalarFieldEnum = {
 } as const
 
 export type ContractCommentScalarFieldEnum = (typeof ContractCommentScalarFieldEnum)[keyof typeof ContractCommentScalarFieldEnum]
+
+
+export const VendorScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  location: 'location',
+  mainItem: 'mainItem',
+  status: 'status',
+  createdAt: 'createdAt',
+  createdById: 'createdById'
+} as const
+
+export type VendorScalarFieldEnum = (typeof VendorScalarFieldEnum)[keyof typeof VendorScalarFieldEnum]
 
 
 export const SupplierAuditScalarFieldEnum = {

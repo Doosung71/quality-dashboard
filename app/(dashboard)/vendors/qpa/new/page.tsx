@@ -1,15 +1,23 @@
 import { requireActivePageSession } from "@/lib/session-guard"
+import { prisma } from "@/lib/prisma"
 import vendorsData from "@/data/vendors.json"
 import QpaNewForm from "./QpaNewForm"
 
 export default async function QpaNewPage() {
   const session = await requireActivePageSession()
 
-  const vendors = vendorsData.vendors.map(v => ({
+  const jsonVendors = vendorsData.vendors.map(v => ({
     id:       v.id,
     name:     v.name,
     location: v.location ?? "",
   }))
+
+  const dbVendors = await prisma.vendor.findMany({
+    select: { id: true, name: true, location: true },
+    orderBy: { createdAt: "asc" },
+  }).catch(() => [] as { id: string; name: string; location: string }[])
+
+  const vendors = [...jsonVendors, ...dbVendors]
 
   return (
     <div className="max-w-2xl mx-auto">

@@ -270,6 +270,7 @@ export type UserWhereInput = {
   sourceInspections?: Prisma.SourceInspectionListRelationFilter
   internalStandards?: Prisma.InternalStandardListRelationFilter
   qpaAudits?: Prisma.QpaAuditListRelationFilter
+  vendorsCreated?: Prisma.VendorListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -310,6 +311,7 @@ export type UserOrderByWithRelationInput = {
   sourceInspections?: Prisma.SourceInspectionOrderByRelationAggregateInput
   internalStandards?: Prisma.InternalStandardOrderByRelationAggregateInput
   qpaAudits?: Prisma.QpaAuditOrderByRelationAggregateInput
+  vendorsCreated?: Prisma.VendorOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -353,6 +355,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   sourceInspections?: Prisma.SourceInspectionListRelationFilter
   internalStandards?: Prisma.InternalStandardListRelationFilter
   qpaAudits?: Prisma.QpaAuditListRelationFilter
+  vendorsCreated?: Prisma.VendorListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -431,6 +434,7 @@ export type UserCreateInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -471,6 +475,7 @@ export type UserUncheckedCreateInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUpdateInput = {
@@ -511,6 +516,7 @@ export type UserUpdateInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -551,6 +557,7 @@ export type UserUncheckedUpdateInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -971,6 +978,20 @@ export type UserUpdateOneRequiredWithoutContractCommentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutContractCommentsInput, Prisma.UserUpdateWithoutContractCommentsInput>, Prisma.UserUncheckedUpdateWithoutContractCommentsInput>
 }
 
+export type UserCreateNestedOneWithoutVendorsCreatedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorsCreatedInput, Prisma.UserUncheckedCreateWithoutVendorsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorsCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutVendorsCreatedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorsCreatedInput, Prisma.UserUncheckedCreateWithoutVendorsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorsCreatedInput
+  upsert?: Prisma.UserUpsertWithoutVendorsCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVendorsCreatedInput, Prisma.UserUpdateWithoutVendorsCreatedInput>, Prisma.UserUncheckedUpdateWithoutVendorsCreatedInput>
+}
+
 export type UserCreateNestedOneWithoutSupplierAuditsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutSupplierAuditsInput, Prisma.UserUncheckedCreateWithoutSupplierAuditsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutSupplierAuditsInput
@@ -1064,6 +1085,7 @@ export type UserCreateWithoutFeedbacksInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutFeedbacksInput = {
@@ -1103,6 +1125,7 @@ export type UserUncheckedCreateWithoutFeedbacksInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutFeedbacksInput = {
@@ -1158,6 +1181,7 @@ export type UserUpdateWithoutFeedbacksInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFeedbacksInput = {
@@ -1197,6 +1221,7 @@ export type UserUncheckedUpdateWithoutFeedbacksInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutFeedbackRepliesInput = {
@@ -1236,6 +1261,7 @@ export type UserCreateWithoutFeedbackRepliesInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutFeedbackRepliesInput = {
@@ -1275,6 +1301,7 @@ export type UserUncheckedCreateWithoutFeedbackRepliesInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutFeedbackRepliesInput = {
@@ -1330,6 +1357,7 @@ export type UserUpdateWithoutFeedbackRepliesInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFeedbackRepliesInput = {
@@ -1369,6 +1397,7 @@ export type UserUncheckedUpdateWithoutFeedbackRepliesInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutBoardPostsInput = {
@@ -1408,6 +1437,7 @@ export type UserCreateWithoutBoardPostsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutBoardPostsInput = {
@@ -1447,6 +1477,7 @@ export type UserUncheckedCreateWithoutBoardPostsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutBoardPostsInput = {
@@ -1502,6 +1533,7 @@ export type UserUpdateWithoutBoardPostsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBoardPostsInput = {
@@ -1541,6 +1573,7 @@ export type UserUncheckedUpdateWithoutBoardPostsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutBoardCommentsInput = {
@@ -1580,6 +1613,7 @@ export type UserCreateWithoutBoardCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutBoardCommentsInput = {
@@ -1619,6 +1653,7 @@ export type UserUncheckedCreateWithoutBoardCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutBoardCommentsInput = {
@@ -1674,6 +1709,7 @@ export type UserUpdateWithoutBoardCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBoardCommentsInput = {
@@ -1713,6 +1749,7 @@ export type UserUncheckedUpdateWithoutBoardCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutOwnedEquipmentInput = {
@@ -1752,6 +1789,7 @@ export type UserCreateWithoutOwnedEquipmentInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutOwnedEquipmentInput = {
@@ -1791,6 +1829,7 @@ export type UserUncheckedCreateWithoutOwnedEquipmentInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutOwnedEquipmentInput = {
@@ -1846,6 +1885,7 @@ export type UserUpdateWithoutOwnedEquipmentInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedEquipmentInput = {
@@ -1885,6 +1925,7 @@ export type UserUncheckedUpdateWithoutOwnedEquipmentInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutOwnerHistoryAsOwnerInput = {
@@ -1924,6 +1965,7 @@ export type UserCreateWithoutOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutOwnerHistoryAsOwnerInput = {
@@ -1963,6 +2005,7 @@ export type UserUncheckedCreateWithoutOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutOwnerHistoryAsOwnerInput = {
@@ -2007,6 +2050,7 @@ export type UserCreateWithoutOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutOwnerHistoryAsChangerInput = {
@@ -2046,6 +2090,7 @@ export type UserUncheckedCreateWithoutOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutOwnerHistoryAsChangerInput = {
@@ -2101,6 +2146,7 @@ export type UserUpdateWithoutOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnerHistoryAsOwnerInput = {
@@ -2140,6 +2186,7 @@ export type UserUncheckedUpdateWithoutOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutOwnerHistoryAsChangerInput = {
@@ -2190,6 +2237,7 @@ export type UserUpdateWithoutOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnerHistoryAsChangerInput = {
@@ -2229,6 +2277,7 @@ export type UserUncheckedUpdateWithoutOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutOwnedTestPlansInput = {
@@ -2268,6 +2317,7 @@ export type UserCreateWithoutOwnedTestPlansInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutOwnedTestPlansInput = {
@@ -2307,6 +2357,7 @@ export type UserUncheckedCreateWithoutOwnedTestPlansInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutOwnedTestPlansInput = {
@@ -2362,6 +2413,7 @@ export type UserUpdateWithoutOwnedTestPlansInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedTestPlansInput = {
@@ -2401,6 +2453,7 @@ export type UserUncheckedUpdateWithoutOwnedTestPlansInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutReportedRepairsInput = {
@@ -2440,6 +2493,7 @@ export type UserCreateWithoutReportedRepairsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutReportedRepairsInput = {
@@ -2479,6 +2533,7 @@ export type UserUncheckedCreateWithoutReportedRepairsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutReportedRepairsInput = {
@@ -2534,6 +2589,7 @@ export type UserUpdateWithoutReportedRepairsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportedRepairsInput = {
@@ -2573,6 +2629,7 @@ export type UserUncheckedUpdateWithoutReportedRepairsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutTestPlanOwnerHistoryAsOwnerInput = {
@@ -2612,6 +2669,7 @@ export type UserCreateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutTestPlanOwnerHistoryAsOwnerInput = {
@@ -2651,6 +2709,7 @@ export type UserUncheckedCreateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutTestPlanOwnerHistoryAsOwnerInput = {
@@ -2695,6 +2754,7 @@ export type UserCreateWithoutTestPlanOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutTestPlanOwnerHistoryAsChangerInput = {
@@ -2734,6 +2794,7 @@ export type UserUncheckedCreateWithoutTestPlanOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutTestPlanOwnerHistoryAsChangerInput = {
@@ -2789,6 +2850,7 @@ export type UserUpdateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTestPlanOwnerHistoryAsOwnerInput = {
@@ -2828,6 +2890,7 @@ export type UserUncheckedUpdateWithoutTestPlanOwnerHistoryAsOwnerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutTestPlanOwnerHistoryAsChangerInput = {
@@ -2878,6 +2941,7 @@ export type UserUpdateWithoutTestPlanOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTestPlanOwnerHistoryAsChangerInput = {
@@ -2917,6 +2981,7 @@ export type UserUncheckedUpdateWithoutTestPlanOwnerHistoryAsChangerInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutInternalStandardsInput = {
@@ -2956,6 +3021,7 @@ export type UserCreateWithoutInternalStandardsInput = {
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutInternalStandardsInput = {
@@ -2995,6 +3061,7 @@ export type UserUncheckedCreateWithoutInternalStandardsInput = {
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutInternalStandardsInput = {
@@ -3050,6 +3117,7 @@ export type UserUpdateWithoutInternalStandardsInput = {
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInternalStandardsInput = {
@@ -3089,6 +3157,7 @@ export type UserUncheckedUpdateWithoutInternalStandardsInput = {
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutClaimsInput = {
@@ -3128,6 +3197,7 @@ export type UserCreateWithoutClaimsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutClaimsInput = {
@@ -3167,6 +3237,7 @@ export type UserUncheckedCreateWithoutClaimsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutClaimsInput = {
@@ -3222,6 +3293,7 @@ export type UserUpdateWithoutClaimsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClaimsInput = {
@@ -3261,6 +3333,7 @@ export type UserUncheckedUpdateWithoutClaimsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutNcrsInput = {
@@ -3300,6 +3373,7 @@ export type UserCreateWithoutNcrsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutNcrsInput = {
@@ -3339,6 +3413,7 @@ export type UserUncheckedCreateWithoutNcrsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutNcrsInput = {
@@ -3394,6 +3469,7 @@ export type UserUpdateWithoutNcrsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNcrsInput = {
@@ -3433,6 +3509,7 @@ export type UserUncheckedUpdateWithoutNcrsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutTendersInput = {
@@ -3472,6 +3549,7 @@ export type UserCreateWithoutTendersInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutTendersInput = {
@@ -3511,6 +3589,7 @@ export type UserUncheckedCreateWithoutTendersInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutTendersInput = {
@@ -3566,6 +3645,7 @@ export type UserUpdateWithoutTendersInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTendersInput = {
@@ -3605,6 +3685,7 @@ export type UserUncheckedUpdateWithoutTendersInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutReviewActionsInput = {
@@ -3644,6 +3725,7 @@ export type UserCreateWithoutReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutReviewActionsInput = {
@@ -3683,6 +3765,7 @@ export type UserUncheckedCreateWithoutReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutReviewActionsInput = {
@@ -3738,6 +3821,7 @@ export type UserUpdateWithoutReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewActionsInput = {
@@ -3777,6 +3861,7 @@ export type UserUncheckedUpdateWithoutReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -3816,6 +3901,7 @@ export type UserCreateWithoutCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -3855,6 +3941,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -3910,6 +3997,7 @@ export type UserUpdateWithoutCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -3949,6 +4037,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutAwardedProjectsInput = {
@@ -3988,6 +4077,7 @@ export type UserCreateWithoutAwardedProjectsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutAwardedProjectsInput = {
@@ -4027,6 +4117,7 @@ export type UserUncheckedCreateWithoutAwardedProjectsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAwardedProjectsInput = {
@@ -4082,6 +4173,7 @@ export type UserUpdateWithoutAwardedProjectsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAwardedProjectsInput = {
@@ -4121,6 +4213,7 @@ export type UserUncheckedUpdateWithoutAwardedProjectsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutContractReviewActionsInput = {
@@ -4160,6 +4253,7 @@ export type UserCreateWithoutContractReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContractReviewActionsInput = {
@@ -4199,6 +4293,7 @@ export type UserUncheckedCreateWithoutContractReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContractReviewActionsInput = {
@@ -4254,6 +4349,7 @@ export type UserUpdateWithoutContractReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContractReviewActionsInput = {
@@ -4293,6 +4389,7 @@ export type UserUncheckedUpdateWithoutContractReviewActionsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutContractCommentsInput = {
@@ -4332,6 +4429,7 @@ export type UserCreateWithoutContractCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContractCommentsInput = {
@@ -4371,6 +4469,7 @@ export type UserUncheckedCreateWithoutContractCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContractCommentsInput = {
@@ -4426,6 +4525,7 @@ export type UserUpdateWithoutContractCommentsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContractCommentsInput = {
@@ -4451,6 +4551,183 @@ export type UserUncheckedUpdateWithoutContractCommentsInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
   awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  ownedTestPlans?: Prisma.TestPlanUncheckedUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  reportedRepairs?: Prisma.EquipmentRepairUncheckedUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUncheckedUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUncheckedUpdateManyWithoutCreatedByNestedInput
+  supplierAudits?: Prisma.SupplierAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
+  sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
+  internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
+  qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutVendorsCreatedInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryCreateNestedManyWithoutChangedByInput
+  ownedTestPlans?: Prisma.TestPlanCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryCreateNestedManyWithoutChangedByInput
+  reportedRepairs?: Prisma.EquipmentRepairCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrCreateNestedManyWithoutCreatedByInput
+  supplierAudits?: Prisma.SupplierAuditCreateNestedManyWithoutCreatedByInput
+  incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
+  sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
+  internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
+  qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutVendorsCreatedInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  statusReason?: string | null
+  restrictedUntil?: Date | string | null
+  department?: string | null
+  employeeId?: string | null
+  phone?: string | null
+  nickname?: string | null
+  createdAt?: Date | string
+  feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAuthorInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedCreateNestedManyWithoutAuthorInput
+  boardPosts?: Prisma.BoardPostUncheckedCreateNestedManyWithoutAuthorInput
+  boardComments?: Prisma.BoardCommentUncheckedCreateNestedManyWithoutAuthorInput
+  tenders?: Prisma.TenderUncheckedCreateNestedManyWithoutCreatedByInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedCreateNestedManyWithoutUserInput
+  contractComments?: Prisma.ContractCommentUncheckedCreateNestedManyWithoutAuthorInput
+  ownedEquipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  ownedTestPlans?: Prisma.TestPlanUncheckedCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutOwnerInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  reportedRepairs?: Prisma.EquipmentRepairUncheckedCreateNestedManyWithoutReportedByInput
+  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutCreatedByInput
+  ncrs?: Prisma.NcrUncheckedCreateNestedManyWithoutCreatedByInput
+  supplierAudits?: Prisma.SupplierAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
+  sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
+  internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
+  qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutVendorsCreatedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorsCreatedInput, Prisma.UserUncheckedCreateWithoutVendorsCreatedInput>
+}
+
+export type UserUpsertWithoutVendorsCreatedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVendorsCreatedInput, Prisma.UserUncheckedUpdateWithoutVendorsCreatedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorsCreatedInput, Prisma.UserUncheckedCreateWithoutVendorsCreatedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVendorsCreatedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVendorsCreatedInput, Prisma.UserUncheckedUpdateWithoutVendorsCreatedInput>
+}
+
+export type UserUpdateWithoutVendorsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUpdateManyWithoutAuthorNestedInput
+  ownedEquipment?: Prisma.EquipmentUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  ownedTestPlans?: Prisma.TestPlanUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsOwner?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutOwnerNestedInput
+  testPlanOwnerHistoryAsChanger?: Prisma.TestPlanOwnerHistoryUpdateManyWithoutChangedByNestedInput
+  reportedRepairs?: Prisma.EquipmentRepairUpdateManyWithoutReportedByNestedInput
+  claims?: Prisma.ClaimUpdateManyWithoutCreatedByNestedInput
+  ncrs?: Prisma.NcrUpdateManyWithoutCreatedByNestedInput
+  supplierAudits?: Prisma.SupplierAuditUpdateManyWithoutCreatedByNestedInput
+  incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
+  sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
+  internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
+  qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVendorsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  restrictedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutAuthorNestedInput
+  feedbackReplies?: Prisma.FeedbackReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  boardPosts?: Prisma.BoardPostUncheckedUpdateManyWithoutAuthorNestedInput
+  boardComments?: Prisma.BoardCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  tenders?: Prisma.TenderUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewActions?: Prisma.ReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  awardedProjects?: Prisma.AwardedProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  contractReviewActions?: Prisma.ContractReviewHistoryUncheckedUpdateManyWithoutUserNestedInput
+  contractComments?: Prisma.ContractCommentUncheckedUpdateManyWithoutAuthorNestedInput
   ownedEquipment?: Prisma.EquipmentUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsOwner?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutOwnerNestedInput
   ownerHistoryAsChanger?: Prisma.EquipmentOwnerHistoryUncheckedUpdateManyWithoutChangedByNestedInput
@@ -4504,6 +4781,7 @@ export type UserCreateWithoutSupplierAuditsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutSupplierAuditsInput = {
@@ -4543,6 +4821,7 @@ export type UserUncheckedCreateWithoutSupplierAuditsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutSupplierAuditsInput = {
@@ -4598,6 +4877,7 @@ export type UserUpdateWithoutSupplierAuditsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSupplierAuditsInput = {
@@ -4637,6 +4917,7 @@ export type UserUncheckedUpdateWithoutSupplierAuditsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutIncomingInspectionsInput = {
@@ -4676,6 +4957,7 @@ export type UserCreateWithoutIncomingInspectionsInput = {
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutIncomingInspectionsInput = {
@@ -4715,6 +4997,7 @@ export type UserUncheckedCreateWithoutIncomingInspectionsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutIncomingInspectionsInput = {
@@ -4770,6 +5053,7 @@ export type UserUpdateWithoutIncomingInspectionsInput = {
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutIncomingInspectionsInput = {
@@ -4809,6 +5093,7 @@ export type UserUncheckedUpdateWithoutIncomingInspectionsInput = {
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutSourceInspectionsInput = {
@@ -4848,6 +5133,7 @@ export type UserCreateWithoutSourceInspectionsInput = {
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutSourceInspectionsInput = {
@@ -4887,6 +5173,7 @@ export type UserUncheckedCreateWithoutSourceInspectionsInput = {
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
   qpaAudits?: Prisma.QpaAuditUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutSourceInspectionsInput = {
@@ -4942,6 +5229,7 @@ export type UserUpdateWithoutSourceInspectionsInput = {
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSourceInspectionsInput = {
@@ -4981,6 +5269,7 @@ export type UserUncheckedUpdateWithoutSourceInspectionsInput = {
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
   qpaAudits?: Prisma.QpaAuditUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutQpaAuditsInput = {
@@ -5020,6 +5309,7 @@ export type UserCreateWithoutQpaAuditsInput = {
   incomingInspections?: Prisma.IncomingInspectionCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardCreateNestedManyWithoutUploadedByInput
+  vendorsCreated?: Prisma.VendorCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutQpaAuditsInput = {
@@ -5059,6 +5349,7 @@ export type UserUncheckedCreateWithoutQpaAuditsInput = {
   incomingInspections?: Prisma.IncomingInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   sourceInspections?: Prisma.SourceInspectionUncheckedCreateNestedManyWithoutCreatedByInput
   internalStandards?: Prisma.InternalStandardUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorsCreated?: Prisma.VendorUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutQpaAuditsInput = {
@@ -5114,6 +5405,7 @@ export type UserUpdateWithoutQpaAuditsInput = {
   incomingInspections?: Prisma.IncomingInspectionUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUpdateManyWithoutUploadedByNestedInput
+  vendorsCreated?: Prisma.VendorUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutQpaAuditsInput = {
@@ -5153,6 +5445,7 @@ export type UserUncheckedUpdateWithoutQpaAuditsInput = {
   incomingInspections?: Prisma.IncomingInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   sourceInspections?: Prisma.SourceInspectionUncheckedUpdateManyWithoutCreatedByNestedInput
   internalStandards?: Prisma.InternalStandardUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorsCreated?: Prisma.VendorUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 
@@ -5185,6 +5478,7 @@ export type UserCountOutputType = {
   sourceInspections: number
   internalStandards: number
   qpaAudits: number
+  vendorsCreated: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -5212,6 +5506,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   sourceInspections?: boolean | UserCountOutputTypeCountSourceInspectionsArgs
   internalStandards?: boolean | UserCountOutputTypeCountInternalStandardsArgs
   qpaAudits?: boolean | UserCountOutputTypeCountQpaAuditsArgs
+  vendorsCreated?: boolean | UserCountOutputTypeCountVendorsCreatedArgs
 }
 
 /**
@@ -5392,6 +5687,13 @@ export type UserCountOutputTypeCountQpaAuditsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.QpaAuditWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVendorsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -5431,6 +5733,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   sourceInspections?: boolean | Prisma.User$sourceInspectionsArgs<ExtArgs>
   internalStandards?: boolean | Prisma.User$internalStandardsArgs<ExtArgs>
   qpaAudits?: boolean | Prisma.User$qpaAuditsArgs<ExtArgs>
+  vendorsCreated?: boolean | Prisma.User$vendorsCreatedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -5508,6 +5811,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   sourceInspections?: boolean | Prisma.User$sourceInspectionsArgs<ExtArgs>
   internalStandards?: boolean | Prisma.User$internalStandardsArgs<ExtArgs>
   qpaAudits?: boolean | Prisma.User$qpaAuditsArgs<ExtArgs>
+  vendorsCreated?: boolean | Prisma.User$vendorsCreatedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -5540,6 +5844,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     sourceInspections: Prisma.$SourceInspectionPayload<ExtArgs>[]
     internalStandards: Prisma.$InternalStandardPayload<ExtArgs>[]
     qpaAudits: Prisma.$QpaAuditPayload<ExtArgs>[]
+    vendorsCreated: Prisma.$VendorPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -5973,6 +6278,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   sourceInspections<T extends Prisma.User$sourceInspectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sourceInspectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SourceInspectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   internalStandards<T extends Prisma.User$internalStandardsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$internalStandardsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InternalStandardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   qpaAudits<T extends Prisma.User$qpaAuditsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$qpaAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QpaAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorsCreated<T extends Prisma.User$vendorsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6981,6 +7287,30 @@ export type User$qpaAuditsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.QpaAuditScalarFieldEnum | Prisma.QpaAuditScalarFieldEnum[]
+}
+
+/**
+ * User.vendorsCreated
+ */
+export type User$vendorsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Vendor
+   */
+  select?: Prisma.VendorSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Vendor
+   */
+  omit?: Prisma.VendorOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorInclude<ExtArgs> | null
+  where?: Prisma.VendorWhereInput
+  orderBy?: Prisma.VendorOrderByWithRelationInput | Prisma.VendorOrderByWithRelationInput[]
+  cursor?: Prisma.VendorWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorScalarFieldEnum | Prisma.VendorScalarFieldEnum[]
 }
 
 /**

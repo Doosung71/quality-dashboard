@@ -172,6 +172,11 @@ export type ContractReviewHistory = Prisma.ContractReviewHistoryModel
  */
 export type ContractComment = Prisma.ContractCommentModel
 /**
+ * Model Vendor
+ * 
+ */
+export type Vendor = Prisma.VendorModel
+/**
  * Model SupplierAudit
  * 
  */

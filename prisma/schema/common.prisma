@@ -67,6 +67,9 @@ model User {
 
   // QPA 공정감사
   qpaAudits               QpaAudit[]              @relation("QpaAuditCreator")
+
+  // 협력업체 직접 등록
+  vendorsCreated          Vendor[]                @relation("VendorCreator")
 }
 
 model Feedback {

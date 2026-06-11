@@ -1,5 +1,16 @@
 // 공급망 관리 — 협력업체 감사, 수입검사, 출장검사
 
+model Vendor {
+  id          String   @id @default(cuid())
+  name        String
+  location    String   @default("")
+  mainItem    String   @default("")
+  status      String   @default("NORMAL")
+  createdAt   DateTime @default(now())
+  createdBy   User     @relation("VendorCreator", fields: [createdById], references: [id])
+  createdById String
+}
+
 enum AuditType {
   INITIAL    // 초기 심사
   PERIODIC   // 정기 심사
