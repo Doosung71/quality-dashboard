@@ -46,4 +46,7 @@ next-env.d.ts
 # local workflow state files
 docs/.bkit-memory.json
 docs/.pdca-status.json
+
+# ITP sample PDFs (confidential — place manually, do not commit)
+docs/samples/*.pdf
 .env*
