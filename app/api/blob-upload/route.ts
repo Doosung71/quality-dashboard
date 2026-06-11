@@ -5,13 +5,22 @@ import { requireActiveSession } from "@/lib/session-guard"
 
 const MAX_UPLOAD_BYTES = 500 * 1024 * 1024
 const TOKEN_TTL_MS = 60 * 60 * 1000
-const PDF_CONTENT_TYPES = ["application/pdf"]
 
-function assertAllowedPdfPath(pathname: string) {
+const ALLOWED_CONTENT_TYPES = [
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+  "application/vnd.ms-excel", // .xls
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+  "application/msword", // .doc
+]
+
+const ALLOWED_EXTENSIONS = [".pdf", ".xlsx", ".xls", ".docx", ".doc"]
+
+function assertAllowedPath(pathname: string) {
   const allowed = pathname.startsWith("tender-documents/") || pathname.startsWith("contract-documents/")
-  if (!allowed || !pathname.endsWith(".pdf")) {
-    throw new Error("허용되지 않은 업로드 경로입니다.")
-  }
+  if (!allowed) throw new Error("허용되지 않은 업로드 경로입니다.")
+  const hasAllowedExt = ALLOWED_EXTENSIONS.some((ext) => pathname.toLowerCase().endsWith(ext))
+  if (!hasAllowedExt) throw new Error("허용되지 않은 파일 형식입니다.")
 }
 
 export async function POST(request: NextRequest) {
@@ -26,18 +35,18 @@ export async function POST(request: NextRequest) {
       request,
       webhookPublicKey: "not-used",
       getSignedToken: async (pathname) => {
-        assertAllowedPdfPath(pathname)
+        assertAllowedPath(pathname)
         const validUntil = Date.now() + TOKEN_TTL_MS
         return {
           token: await issueSignedToken({
             pathname,
             operations: ["put"],
-            allowedContentTypes: PDF_CONTENT_TYPES,
+            allowedContentTypes: ALLOWED_CONTENT_TYPES,
             maximumSizeInBytes: MAX_UPLOAD_BYTES,
             validUntil,
           }),
           urlOptions: {
-            allowedContentTypes: PDF_CONTENT_TYPES,
+            allowedContentTypes: ALLOWED_CONTENT_TYPES,
             maximumSizeInBytes: MAX_UPLOAD_BYTES,
             validUntil,
           },

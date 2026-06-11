@@ -21,7 +21,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "요청 형식이 올바르지 않습니다." }, { status: 400 })
   }
 
-  const { blobUrl, filename, isAnalysisSource } = body as Record<string, unknown>
+  const { blobUrl, filename, isAnalysisSource, category } = body as Record<string, unknown>
   if (typeof blobUrl !== "string" || !blobUrl.startsWith("https://")) {
     return NextResponse.json({ error: "올바른 blobUrl이 필요합니다." }, { status: 400 })
   }
@@ -35,6 +35,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       filename,
       storagePath: blobUrl,
       isAnalysisSource: isAnalysisSource === true,
+      category: typeof category === "string" && category ? category : null,
     },
   })
 

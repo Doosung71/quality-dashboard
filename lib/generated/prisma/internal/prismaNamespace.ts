@@ -3173,7 +3173,8 @@ export const TenderDocumentScalarFieldEnum = {
   filename: 'filename',
   storagePath: 'storagePath',
   uploadedAt: 'uploadedAt',
-  isAnalysisSource: 'isAnalysisSource'
+  isAnalysisSource: 'isAnalysisSource',
+  category: 'category'
 } as const
 
 export type TenderDocumentScalarFieldEnum = (typeof TenderDocumentScalarFieldEnum)[keyof typeof TenderDocumentScalarFieldEnum]

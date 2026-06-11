@@ -31,6 +31,7 @@ export type TenderDocumentMinAggregateOutputType = {
   storagePath: string | null
   uploadedAt: Date | null
   isAnalysisSource: boolean | null
+  category: string | null
 }
 
 export type TenderDocumentMaxAggregateOutputType = {
@@ -40,6 +41,7 @@ export type TenderDocumentMaxAggregateOutputType = {
   storagePath: string | null
   uploadedAt: Date | null
   isAnalysisSource: boolean | null
+  category: string | null
 }
 
 export type TenderDocumentCountAggregateOutputType = {
@@ -49,6 +51,7 @@ export type TenderDocumentCountAggregateOutputType = {
   storagePath: number
   uploadedAt: number
   isAnalysisSource: number
+  category: number
   _all: number
 }
 
@@ -60,6 +63,7 @@ export type TenderDocumentMinAggregateInputType = {
   storagePath?: true
   uploadedAt?: true
   isAnalysisSource?: true
+  category?: true
 }
 
 export type TenderDocumentMaxAggregateInputType = {
@@ -69,6 +73,7 @@ export type TenderDocumentMaxAggregateInputType = {
   storagePath?: true
   uploadedAt?: true
   isAnalysisSource?: true
+  category?: true
 }
 
 export type TenderDocumentCountAggregateInputType = {
@@ -78,6 +83,7 @@ export type TenderDocumentCountAggregateInputType = {
   storagePath?: true
   uploadedAt?: true
   isAnalysisSource?: true
+  category?: true
   _all?: true
 }
 
@@ -160,6 +166,7 @@ export type TenderDocumentGroupByOutputType = {
   storagePath: string
   uploadedAt: Date
   isAnalysisSource: boolean
+  category: string | null
   _count: TenderDocumentCountAggregateOutputType | null
   _min: TenderDocumentMinAggregateOutputType | null
   _max: TenderDocumentMaxAggregateOutputType | null
@@ -190,6 +197,7 @@ export type TenderDocumentWhereInput = {
   storagePath?: Prisma.StringFilter<"TenderDocument"> | string
   uploadedAt?: Prisma.DateTimeFilter<"TenderDocument"> | Date | string
   isAnalysisSource?: Prisma.BoolFilter<"TenderDocument"> | boolean
+  category?: Prisma.StringNullableFilter<"TenderDocument"> | string | null
   tender?: Prisma.XOR<Prisma.TenderScalarRelationFilter, Prisma.TenderWhereInput>
   analyses?: Prisma.AnalysisListRelationFilter
 }
@@ -201,6 +209,7 @@ export type TenderDocumentOrderByWithRelationInput = {
   storagePath?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
   isAnalysisSource?: Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
   tender?: Prisma.TenderOrderByWithRelationInput
   analyses?: Prisma.AnalysisOrderByRelationAggregateInput
 }
@@ -215,6 +224,7 @@ export type TenderDocumentWhereUniqueInput = Prisma.AtLeast<{
   storagePath?: Prisma.StringFilter<"TenderDocument"> | string
   uploadedAt?: Prisma.DateTimeFilter<"TenderDocument"> | Date | string
   isAnalysisSource?: Prisma.BoolFilter<"TenderDocument"> | boolean
+  category?: Prisma.StringNullableFilter<"TenderDocument"> | string | null
   tender?: Prisma.XOR<Prisma.TenderScalarRelationFilter, Prisma.TenderWhereInput>
   analyses?: Prisma.AnalysisListRelationFilter
 }, "id">
@@ -226,6 +236,7 @@ export type TenderDocumentOrderByWithAggregationInput = {
   storagePath?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
   isAnalysisSource?: Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TenderDocumentCountOrderByAggregateInput
   _max?: Prisma.TenderDocumentMaxOrderByAggregateInput
   _min?: Prisma.TenderDocumentMinOrderByAggregateInput
@@ -241,6 +252,7 @@ export type TenderDocumentScalarWhereWithAggregatesInput = {
   storagePath?: Prisma.StringWithAggregatesFilter<"TenderDocument"> | string
   uploadedAt?: Prisma.DateTimeWithAggregatesFilter<"TenderDocument"> | Date | string
   isAnalysisSource?: Prisma.BoolWithAggregatesFilter<"TenderDocument"> | boolean
+  category?: Prisma.StringNullableWithAggregatesFilter<"TenderDocument"> | string | null
 }
 
 export type TenderDocumentCreateInput = {
@@ -249,6 +261,7 @@ export type TenderDocumentCreateInput = {
   storagePath: string
   uploadedAt?: Date | string
   isAnalysisSource?: boolean
+  category?: string | null
   tender: Prisma.TenderCreateNestedOneWithoutDocumentsInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutDocumentInput
 }
@@ -260,6 +273,7 @@ export type TenderDocumentUncheckedCreateInput = {
   storagePath: string
   uploadedAt?: Date | string
   isAnalysisSource?: boolean
+  category?: string | null
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutDocumentInput
 }
 
@@ -269,6 +283,7 @@ export type TenderDocumentUpdateInput = {
   storagePath?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isAnalysisSource?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tender?: Prisma.TenderUpdateOneRequiredWithoutDocumentsNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutDocumentNestedInput
 }
@@ -280,6 +295,7 @@ export type TenderDocumentUncheckedUpdateInput = {
   storagePath?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isAnalysisSource?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutDocumentNestedInput
 }
 
@@ -290,6 +306,7 @@ export type TenderDocumentCreateManyInput = {
   storagePath: string
   uploadedAt?: Date | string
   isAnalysisSource?: boolean
+  category?: string | null
 }
 
 export type TenderDocumentUpdateManyMutationInput = {
@@ -298,6 +315,7 @@ export type TenderDocumentUpdateManyMutationInput = {
   storagePath?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isAnalysisSource?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TenderDocumentUncheckedUpdateManyInput = {
@@ -307,6 +325,7 @@ export type TenderDocumentUncheckedUpdateManyInput = {
   storagePath?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isAnalysisSource?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TenderDocumentListRelationFilter = {
@@ -326,6 +345,7 @@ export type TenderDocumentCountOrderByAggregateInput = {
   storagePath?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
   isAnalysisSource?: Prisma.SortOrder
+  category?: Prisma.SortOrder
 }
 
 export type TenderDocumentMaxOrderByAggregateInput = {
@@ -335,6 +355,7 @@ export type TenderDocumentMaxOrderByAggregateInput = {
   storagePath?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
   isAnalysisSource?: Prisma.SortOrder
+  category?: Prisma.SortOrder
 }
 
 export type TenderDocumentMinOrderByAggregateInput = {
@@ -344,6 +365,7 @@ export type TenderDocumentMinOrderByAggregateInput = {
   storagePath?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
   isAnalysisSource?: Prisma.SortOrder
+  category?: Prisma.SortOrder
 }
 
 export type TenderDocumentNullableScalarRelationFilter = {
@@ -415,6 +437,7 @@ export type TenderDocumentCreateWithoutTenderInput = {
   storagePath: string
   uploadedAt?: Date | string
   isAnalysisSource?: boolean
+  category?: string | null
   analyses?: Prisma.AnalysisCreateNestedManyWithoutDocumentInput
 }
 
@@ -424,6 +447,7 @@ export type TenderDocumentUncheckedCreateWithoutTenderInput = {
   storagePath: string
   uploadedAt?: Date | string
   isAnalysisSource?: boolean
+  category?: string | null
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutDocumentInput
 }
 
@@ -463,6 +487,7 @@ export type TenderDocumentScalarWhereInput = {
   storagePath?: Prisma.StringFilter<"TenderDocument"> | string
   uploadedAt?: Prisma.DateTimeFilter<"TenderDocument"> | Date | string
   isAnalysisSource?: Prisma.BoolFilter<"TenderDocument"> | boolean
+  category?: Prisma.StringNullableFilter<"TenderDocument"> | string | null
 }
 
 export type TenderDocumentCreateWithoutAnalysesInput = {
@@ -471,6 +496,7 @@ export type TenderDocumentCreateWithoutAnalysesInput = {
   storagePath: string
   uploadedAt?: Date | string
   isAnalysisSource?: boolean
+  category?: string | null
   tender: Prisma.TenderCreateNestedOneWithoutDocumentsInput
 }
 
@@ -481,6 +507,7 @@ export type TenderDocumentUncheckedCreateWithoutAnalysesInput = {
   storagePath: string
   uploadedAt?: Date | string
   isAnalysisSource?: boolean
+  category?: string | null
 }
 
 export type TenderDocumentCreateOrConnectWithoutAnalysesInput = {
@@ -505,6 +532,7 @@ export type TenderDocumentUpdateWithoutAnalysesInput = {
   storagePath?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isAnalysisSource?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tender?: Prisma.TenderUpdateOneRequiredWithoutDocumentsNestedInput
 }
 
@@ -515,6 +543,7 @@ export type TenderDocumentUncheckedUpdateWithoutAnalysesInput = {
   storagePath?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isAnalysisSource?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TenderDocumentCreateManyTenderInput = {
@@ -523,6 +552,7 @@ export type TenderDocumentCreateManyTenderInput = {
   storagePath: string
   uploadedAt?: Date | string
   isAnalysisSource?: boolean
+  category?: string | null
 }
 
 export type TenderDocumentUpdateWithoutTenderInput = {
@@ -531,6 +561,7 @@ export type TenderDocumentUpdateWithoutTenderInput = {
   storagePath?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isAnalysisSource?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analyses?: Prisma.AnalysisUpdateManyWithoutDocumentNestedInput
 }
 
@@ -540,6 +571,7 @@ export type TenderDocumentUncheckedUpdateWithoutTenderInput = {
   storagePath?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isAnalysisSource?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutDocumentNestedInput
 }
 
@@ -549,6 +581,7 @@ export type TenderDocumentUncheckedUpdateManyWithoutTenderInput = {
   storagePath?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isAnalysisSource?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -589,6 +622,7 @@ export type TenderDocumentSelect<ExtArgs extends runtime.Types.Extensions.Intern
   storagePath?: boolean
   uploadedAt?: boolean
   isAnalysisSource?: boolean
+  category?: boolean
   tender?: boolean | Prisma.TenderDefaultArgs<ExtArgs>
   analyses?: boolean | Prisma.TenderDocument$analysesArgs<ExtArgs>
   _count?: boolean | Prisma.TenderDocumentCountOutputTypeDefaultArgs<ExtArgs>
@@ -601,6 +635,7 @@ export type TenderDocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   storagePath?: boolean
   uploadedAt?: boolean
   isAnalysisSource?: boolean
+  category?: boolean
   tender?: boolean | Prisma.TenderDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenderDocument"]>
 
@@ -611,6 +646,7 @@ export type TenderDocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   storagePath?: boolean
   uploadedAt?: boolean
   isAnalysisSource?: boolean
+  category?: boolean
   tender?: boolean | Prisma.TenderDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenderDocument"]>
 
@@ -621,9 +657,10 @@ export type TenderDocumentSelectScalar = {
   storagePath?: boolean
   uploadedAt?: boolean
   isAnalysisSource?: boolean
+  category?: boolean
 }
 
-export type TenderDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenderId" | "filename" | "storagePath" | "uploadedAt" | "isAnalysisSource", ExtArgs["result"]["tenderDocument"]>
+export type TenderDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenderId" | "filename" | "storagePath" | "uploadedAt" | "isAnalysisSource" | "category", ExtArgs["result"]["tenderDocument"]>
 export type TenderDocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tender?: boolean | Prisma.TenderDefaultArgs<ExtArgs>
   analyses?: boolean | Prisma.TenderDocument$analysesArgs<ExtArgs>
@@ -649,6 +686,7 @@ export type $TenderDocumentPayload<ExtArgs extends runtime.Types.Extensions.Inte
     storagePath: string
     uploadedAt: Date
     isAnalysisSource: boolean
+    category: string | null
   }, ExtArgs["result"]["tenderDocument"]>
   composites: {}
 }
@@ -1080,6 +1118,7 @@ export interface TenderDocumentFieldRefs {
   readonly storagePath: Prisma.FieldRef<"TenderDocument", 'String'>
   readonly uploadedAt: Prisma.FieldRef<"TenderDocument", 'DateTime'>
   readonly isAnalysisSource: Prisma.FieldRef<"TenderDocument", 'Boolean'>
+  readonly category: Prisma.FieldRef<"TenderDocument", 'String'>
 }
     
 

@@ -140,6 +140,8 @@ export default async function TenderPage({
     filename: d.filename,
     uploadedAt: d.uploadedAt.toISOString(),
     isAnalysis: d.analyses.length > 0,
+    storagePath: d.storagePath,
+    category: d.category ?? null,
   }))
 
   return (

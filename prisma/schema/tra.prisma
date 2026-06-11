@@ -22,6 +22,7 @@ model TenderDocument {
   storagePath      String
   uploadedAt       DateTime @default(now())
   isAnalysisSource Boolean  @default(true)
+  category         String?
 
   analyses Analysis[]
 }
