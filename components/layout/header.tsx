@@ -56,9 +56,24 @@ function NavBtn({ href, icon: Icon, label, active }: {
   )
 }
 
+function resolveTitle(pathname: string): string {
+  if (titles[pathname]) return titles[pathname]
+  if (pathname.startsWith("/meetings/"))   return "회의록 상세"
+  if (pathname.startsWith("/ncr/"))        return "부적합품보고 (NCR)"
+  if (pathname.startsWith("/claims/"))     return "고객 클레임"
+  if (pathname.startsWith("/vendors/incoming/"))   return "수입검사"
+  if (pathname.startsWith("/vendors/inspections/")) return "출장검사"
+  if (pathname.startsWith("/vendors/audits/"))      return "협력업체 감사"
+  if (pathname.startsWith("/vendors/qpa/"))         return "공정감사 (QPA)"
+  if (pathname.startsWith("/assets/"))     return "시험설비/계측기 관리"
+  if (pathname.startsWith("/projects/"))   return "프로젝트 관리"
+  if (pathname.startsWith("/admin/"))      return "사용자 관리"
+  return "대시보드"
+}
+
 export function Header({ onMenuOpen, session }: { onMenuOpen: () => void; session: Session }) {
   const pathname = usePathname()
-  const title = titles[pathname] ?? "대시보드"
+  const title = resolveTitle(pathname)
   const name = displayName({ nickname: session.user.nickname, name: session.user.name })
   const role = session.user.role as Role
   const isAdmin = role === "ADMIN" || role === "DIRECTOR"
