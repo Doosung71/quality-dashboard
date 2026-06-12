@@ -449,18 +449,12 @@ export function KnowledgeRepository({ data, repoLoading = false, readOnly = fals
           </div>
 
           {/* 2. 트리 브라우징 & 메인 패널 */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:h-[calc(100vh-440px)] lg:min-h-[360px]">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:h-[calc(100vh-300px)] lg:min-h-[360px]">
 
             {/* 좌측: 카테고리 트리 네비게이션 (데스크탑만) */}
             <div className="hidden md:block lg:col-span-1 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-4 overflow-y-auto">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <span className="text-[10px] font-extrabold text-slate-400 tracking-wider uppercase">지식 분류 트리</span>
-                <button 
-                  onClick={() => handleTreeClick("ALL", "ALL")}
-                  className={`text-[9px] font-bold px-2 py-0.5 rounded ${selectedTreeCategory === "ALL" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
-                >
-                  전체보기
-                </button>
               </div>
 
               {/* 카테고리 목록 아코디언 */}
@@ -959,7 +953,7 @@ export function KnowledgeRepository({ data, repoLoading = false, readOnly = fals
                             )}
                           </div>
                           {contentText && (
-                            <div className="rounded-lg border border-slate-100 bg-white p-4">
+                            <div className="rounded-lg border border-slate-100 bg-white p-4 max-h-[320px] overflow-y-auto">
                               <MarkdownContent content={contentText} className="text-[11px]" />
                             </div>
                           )}

@@ -117,7 +117,7 @@ export default function KnowledgeDetailPage({ params }: { params: Promise<{ id: 
         </div>
       )}
 
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="max-w-4xl mx-auto space-y-6">
         {/* 뒤로 가기 */}
         <button
           onClick={() => router.push("/knowledge/status")}
@@ -225,7 +225,7 @@ export default function KnowledgeDetailPage({ params }: { params: Promise<{ id: 
                 )}
               </div>
               {contentText && (
-                <div className="rounded-xl border border-slate-100 bg-white p-5">
+                <div className="rounded-xl border border-slate-100 bg-white p-5 max-h-[400px] overflow-y-auto">
                   <MarkdownContent content={contentText} className="text-sm" />
                 </div>
               )}
