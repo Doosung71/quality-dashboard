@@ -29,6 +29,12 @@ export async function POST(req: NextRequest) {
   const name = (body.name ?? "").trim()
   if (!name) return NextResponse.json({ error: "업체명은 필수입니다." }, { status: 400 })
 
+  const jsonDuplicate = vendorsData.vendors.some(v => v.name === name)
+  if (jsonDuplicate) return NextResponse.json({ error: "이미 등록된 업체명입니다." }, { status: 409 })
+
+  const dbDuplicate = await prisma.vendor.findFirst({ where: { name } }).catch(() => null)
+  if (dbDuplicate) return NextResponse.json({ error: "이미 등록된 업체명입니다." }, { status: 409 })
+
   const vendor = await prisma.vendor.create({
     data: {
       name,
