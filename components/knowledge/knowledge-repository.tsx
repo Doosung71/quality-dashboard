@@ -763,8 +763,8 @@ export function KnowledgeRepository({ data, repoLoading = false, readOnly = fals
                   )}
                 </div>
 
-                {/* 2) 선택된 지식 자산의 정밀 요약 및 행동 유효성 검사 */}
-                <div className={`md:flex-1 min-h-0 space-y-4 overflow-y-auto ${mobileView === "list" ? "hidden md:block" : ""}`}>
+                {/* 2) 선택된 지식 자산의 정밀 요약 및 행동 유효성 검사 — 편집 모드에서만 표시 */}
+                {!readOnly && <div className={`md:flex-1 min-h-0 space-y-4 overflow-y-auto ${mobileView === "list" ? "hidden md:block" : ""}`}>
                   <button
                     onClick={() => setMobileView("list")}
                     className="md:hidden flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors"
@@ -967,7 +967,7 @@ export function KnowledgeRepository({ data, repoLoading = false, readOnly = fals
                       )}
                     </div>
                   )}
-                </div>
+                </div>}
 
               </div>
 
