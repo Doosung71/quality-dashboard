@@ -34,6 +34,7 @@ interface KnowledgeRepositoryProps {
   data: { assets: KnowledgeAsset[] };
   repoLoading?: boolean;
   readOnly?: boolean;
+  onCardClick?: (asset: KnowledgeAsset) => void;
 }
 
 const CATEGORY_MAP: Record<KnowledgeCategory, { label: string; bg: string; text: string; border: string }> = {
@@ -145,7 +146,7 @@ const FORM_CONFIG: Record<string, FormConfig> = {
   },
 };
 
-export function KnowledgeRepository({ data, repoLoading = false, readOnly = false }: KnowledgeRepositoryProps) {
+export function KnowledgeRepository({ data, repoLoading = false, readOnly = false, onCardClick }: KnowledgeRepositoryProps) {
   const [assets, setAssets] = useState<KnowledgeAsset[]>(data.assets);
   const [selectedAssetId, setSelectedAssetId] = useState<string>(data.assets[0]?.id || "");
 
@@ -725,7 +726,11 @@ export function KnowledgeRepository({ data, repoLoading = false, readOnly = fals
                       return (
                         <div
                           key={asset.id}
-                          onClick={() => { setSelectedAssetId(asset.id); setMobileView("detail"); }}
+                          onClick={() => {
+                            if (onCardClick) { onCardClick(asset); return; }
+                            setSelectedAssetId(asset.id);
+                            setMobileView("detail");
+                          }}
                           className={`p-4 rounded-2xl border cursor-pointer transition-all space-y-2 text-xs ${isSelected ? "bg-slate-950 border-slate-950 text-white shadow-md" : "bg-white border-slate-100 hover:border-slate-300"}`}
                         >
                           <div className="flex items-center justify-between gap-2">

@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { knowledgeRepositoryData } from "@/data/knowledge.data";
 import type { KnowledgeRepositoryData } from "@/types/knowledge";
 import { KnowledgeRepository } from "@/components/knowledge/knowledge-repository";
 
 export default function KnowledgeStatusPage() {
+  const router = useRouter();
   const [repoData, setRepoData] = useState<KnowledgeRepositoryData>(knowledgeRepositoryData);
   const [repoLoading, setRepoLoading] = useState(true);
 
@@ -32,6 +34,7 @@ export default function KnowledgeStatusPage() {
         data={repoData}
         repoLoading={repoLoading}
         readOnly
+        onCardClick={(asset) => router.push(`/knowledge/status/${encodeURIComponent(asset.id)}`)}
       />
     </div>
   );
