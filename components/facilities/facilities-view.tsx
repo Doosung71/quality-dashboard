@@ -228,7 +228,7 @@ function IssueModal({
                           )}
                         </span>
                       </div>
-                      <p className="text-sm text-slate-700 font-medium">{issue.note}</p>
+                      <p className="text-sm text-slate-700 font-medium whitespace-pre-wrap">{issue.note}</p>
                     </div>
                     <CircleDot className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                   </div>
@@ -308,7 +308,7 @@ function IssueModal({
                         <span className="text-[10px] text-slate-400">{issue.date}</span>
                         <CheckCircle2 className="w-3 h-3 text-emerald-500 ml-auto" />
                       </div>
-                      <p className="text-xs text-slate-600">{issue.note}</p>
+                      <p className="text-xs text-slate-600 whitespace-pre-wrap">{issue.note}</p>
                       {issue.suspendedFrom && (
                         <p className="text-[10px] text-orange-600">
                           중단: {issue.suspendedFrom}

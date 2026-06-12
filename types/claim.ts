@@ -12,6 +12,7 @@ export type ClaimPriority = "Low" | "Mid" | "High";
 export interface ClaimTimelineItem {
   date: string;
   action: string;
+  handler?: string;
 }
 
 export interface ClaimAttachment {

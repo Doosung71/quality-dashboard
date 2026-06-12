@@ -895,28 +895,29 @@ export function KnowledgeRepository({ data, repoLoading = false, readOnly = fals
                         </div>
                       )}
 
-                      {/* 사내규격 액션 버튼 — 현황 조회 모드 제외 */}
-                      {selectedAsset.isInternal && (
-                        <div className="pt-3 border-t space-y-2">
+                      {/* 파일/외부 링크 버튼 — isInternal 여부와 무관하게 linkUrl 있으면 표시 */}
+                      {selectedAsset.linkUrl && (
+                        <div className="pt-3 border-t">
+                          <a href={selectedAsset.linkUrl} target="_blank" rel="noopener noreferrer"
+                            className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg flex items-center justify-center gap-1.5 transition-colors">
+                            <Download className="w-3.5 h-3.5" />
+                            {selectedAsset.isInternal ? "파일 다운로드" : "원문 보기"}
+                          </a>
+                        </div>
+                      )}
+
+                      {/* 사내규격 편집/삭제 버튼 — 현황 조회 모드 제외 */}
+                      {selectedAsset.isInternal && !readOnly && (
+                        <div className={selectedAsset.linkUrl ? "space-y-2" : "pt-3 border-t space-y-2"}>
                           <div className="flex gap-2">
-                            {selectedAsset.linkUrl && (
-                              <a href={selectedAsset.linkUrl} target="_blank" rel="noopener noreferrer"
-                                className="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg flex items-center justify-center gap-1.5 transition-colors">
-                                <Download className="w-3.5 h-3.5" /> 파일 다운로드
-                              </a>
-                            )}
-                            {!readOnly && (
-                              <>
-                                <button onClick={() => startEdit(selectedAsset)}
-                                  className="flex-1 py-2 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-lg flex items-center justify-center gap-1.5 transition-colors">
-                                  <Pencil className="w-3.5 h-3.5" /> 수정
-                                </button>
-                                <button onClick={() => handleDelete(selectedAsset)} disabled={deletingId === selectedAsset.internalId}
-                                  className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-lg flex items-center justify-center gap-1 transition-colors disabled:opacity-50">
-                                  {deletingId === selectedAsset.internalId ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-                                </button>
-                              </>
-                            )}
+                            <button onClick={() => startEdit(selectedAsset)}
+                              className="flex-1 py-2 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-lg flex items-center justify-center gap-1.5 transition-colors">
+                              <Pencil className="w-3.5 h-3.5" /> 수정
+                            </button>
+                            <button onClick={() => handleDelete(selectedAsset)} disabled={deletingId === selectedAsset.internalId}
+                              className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-lg flex items-center justify-center gap-1 transition-colors disabled:opacity-50">
+                              {deletingId === selectedAsset.internalId ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                            </button>
                           </div>
                         </div>
                       )}

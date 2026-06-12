@@ -107,7 +107,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
 
   async function handleMoveStatus(newStatus: ClaimStatus) {
     const closedAt = newStatus === "Closed" ? getToday() : null;
-    const timelineEntry = { date: getToday(), action: `단계 이동: ${STATUS_LABELS[claim.status]} → ${STATUS_LABELS[newStatus]}` };
+    const timelineEntry: ClaimTimelineItem = { date: getToday(), action: `단계 이동: ${STATUS_LABELS[claim.status]} → ${STATUS_LABELS[newStatus]}`, handler: userName || "담당자" };
     const newTimeline = [...(claim.timeline ?? []), timelineEntry];
     try {
       const res = await fetch(`/api/claims/${claim.id}`, {
@@ -124,7 +124,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
   async function handleAddTimelineEntry() {
     if (!newEntry.trim()) return;
     setAddingEntry(true);
-    const timelineEntry: ClaimTimelineItem = { date: getToday(), action: newEntry.trim() };
+    const timelineEntry: ClaimTimelineItem = { date: getToday(), action: newEntry.trim(), handler: userName || "담당자" };
     const newTimeline = [...(claim.timeline ?? []), timelineEntry];
     try {
       const res = await fetch(`/api/claims/${claim.id}`, {
@@ -359,6 +359,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
                   <p className="text-xs text-slate-700 font-medium">{item.action}</p>
                   <p className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1">
                     <Clock className="w-3 h-3" /> {item.date}
+                    {item.handler && <> · <span className="font-medium text-slate-500">{item.handler}</span></>}
                   </p>
                 </div>
               </div>

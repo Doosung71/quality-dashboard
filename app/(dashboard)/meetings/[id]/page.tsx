@@ -63,6 +63,9 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
   // 이슈 연결 폼
   const [showIssueForm, setShowIssueForm] = useState(false)
   const [issueForm, setIssueForm] = useState({ issueType: "NCR", issueId: "", issueLabel: "" })
+  const [issueOptions, setIssueOptions] = useState<{ id: string; no: string; label: string }[]>([])
+  const [loadingIssues, setLoadingIssues] = useState(false)
+  const [selectedIssueId, setSelectedIssueId] = useState("")
 
   // 액션 아이템 폼
   const [showActionForm, setShowActionForm] = useState(false)
@@ -115,6 +118,28 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
     setSaving(false)
   }
 
+  async function loadIssueOptions(type: string) {
+    if (type === "OTHER") { setIssueOptions([]); return }
+    setLoadingIssues(true)
+    setSelectedIssueId("")
+    try {
+      const res = await fetch(`/api/meetings/issue-list?type=${type}`)
+      setIssueOptions(res.ok ? await res.json() : [])
+    } catch { setIssueOptions([]) }
+    finally { setLoadingIssues(false) }
+  }
+
+  function handleIssueTypeChange(type: string) {
+    setIssueForm(p => ({ ...p, issueType: type, issueId: "", issueLabel: "" }))
+    setSelectedIssueId("")
+    loadIssueOptions(type)
+  }
+
+  function openIssueForm() {
+    setShowIssueForm(true)
+    loadIssueOptions(issueForm.issueType)
+  }
+
   async function addIssueLink() {
     if (!issueForm.issueId.trim() || !issueForm.issueLabel.trim()) return
     const newLinks = [...(meeting?.issueLinks ?? []), { ...issueForm }]
@@ -127,6 +152,8 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
       const updated: Meeting = await res.json()
       setMeeting(updated)
       setIssueForm({ issueType: "NCR", issueId: "", issueLabel: "" })
+      setIssueOptions([])
+      setSelectedIssueId("")
       setShowIssueForm(false)
     }
   }
@@ -264,7 +291,7 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
           <h2 className="text-xs font-extrabold text-slate-800 flex items-center gap-1.5">
             <Link2 className="w-4 h-4 text-indigo-400" /> 연결된 이슈
           </h2>
-          <button onClick={() => setShowIssueForm(v => !v)}
+          <button onClick={openIssueForm}
             className="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
             <Plus className="w-3 h-3" /> 이슈 연결
           </button>
@@ -272,34 +299,61 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
 
         {showIssueForm && (
           <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-3 space-y-2">
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
+              {/* 이슈 유형 */}
               <select
-                className="px-2 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none"
+                className="px-2 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none bg-white"
                 value={issueForm.issueType}
-                onChange={e => setIssueForm(p => ({ ...p, issueType: e.target.value }))}
+                onChange={e => handleIssueTypeChange(e.target.value)}
               >
                 {Object.entries(ISSUE_TYPE_LABELS).map(([v, l]) => (
                   <option key={v} value={v}>{l}</option>
                 ))}
               </select>
-              <input
-                className="px-2 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none"
-                placeholder="이슈 ID (예: NCR-2026-001)"
-                value={issueForm.issueId}
-                onChange={e => setIssueForm(p => ({ ...p, issueId: e.target.value }))}
-              />
-              <input
-                className="px-2 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none"
-                placeholder="표시명 (예: 배선 불량)"
-                value={issueForm.issueLabel}
-                onChange={e => setIssueForm(p => ({ ...p, issueLabel: e.target.value }))}
-              />
+
+              {/* 이슈 선택 (OTHER면 직접 입력) */}
+              {issueForm.issueType === "OTHER" ? (
+                <input
+                  className="px-2 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none bg-white"
+                  placeholder="표시명 (예: 외부 이슈)"
+                  value={issueForm.issueLabel}
+                  onChange={e => setIssueForm(p => ({ ...p, issueLabel: e.target.value, issueId: e.target.value }))}
+                />
+              ) : (
+                <select
+                  className="px-2 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none bg-white disabled:text-slate-400"
+                  value={selectedIssueId}
+                  disabled={loadingIssues}
+                  onChange={e => {
+                    const opt = issueOptions.find(o => o.id === e.target.value)
+                    if (opt) {
+                      setSelectedIssueId(e.target.value)
+                      setIssueForm(p => ({ ...p, issueId: opt.no, issueLabel: opt.label }))
+                    }
+                  }}
+                >
+                  <option value="">
+                    {loadingIssues ? "불러오는 중..." : issueOptions.length === 0 ? "등록된 이슈 없음" : "이슈 선택..."}
+                  </option>
+                  {issueOptions.map(opt => (
+                    <option key={opt.id} value={opt.id}>{opt.no} — {opt.label}</option>
+                  ))}
+                </select>
+              )}
             </div>
+
+            {/* 선택 미리보기 */}
+            {issueForm.issueId && (
+              <p className="text-[10px] text-indigo-700 bg-indigo-100 rounded px-2 py-1">
+                연결될 이슈: <span className="font-bold">{issueForm.issueId}</span> — {issueForm.issueLabel}
+              </p>
+            )}
+
             <div className="flex gap-2 justify-end">
-              <button onClick={() => setShowIssueForm(false)}
+              <button onClick={() => { setShowIssueForm(false); setIssueOptions([]); setSelectedIssueId("") }}
                 className="px-2.5 py-1 text-[10px] text-slate-500 border border-slate-200 rounded-lg hover:bg-slate-100">취소</button>
-              <button onClick={addIssueLink}
-                className="px-3 py-1 text-[10px] font-bold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">연결</button>
+              <button onClick={addIssueLink} disabled={!issueForm.issueId || !issueForm.issueLabel}
+                className="px-3 py-1 text-[10px] font-bold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-40">연결</button>
             </div>
           </div>
         )}

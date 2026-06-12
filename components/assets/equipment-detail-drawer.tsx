@@ -101,7 +101,7 @@ export function EquipmentDetailDrawer({ equipment, userRole, onClose, onSaved }:
       .catch(() => {});
 
     fetch(`/api/assets/${equipment.id}/owner-history`)
-      .then((r) => r.json())
+      .then((r) => r.ok ? r.json() : Promise.resolve([]))
       .then(setOwnerHistory)
       .catch(() => {})
       .finally(() => setHistoryLoading(false));
