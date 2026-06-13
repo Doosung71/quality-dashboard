@@ -181,6 +181,7 @@ type ActivityRow = {
   posts: number; comments: number
   claims: number; ncrs: number
   incomingInspections: number; sourceInspections: number; audits: number
+  tenders: number; witnessInspections: number; meetings: number; qpaAudits: number; awardedProjects: number
   total: number; lastActivity: string | null
 }
 
@@ -199,6 +200,11 @@ const ACTIVITY_COLS: { key: keyof ActivityRow; label: string; color: string }[] 
   { key: "incomingInspections", label: "수입검사",    color: "text-sky-600"    },
   { key: "sourceInspections",   label: "출장검사",    color: "text-emerald-600"},
   { key: "audits",              label: "협력업체감사", color: "text-amber-600"  },
+  { key: "tenders",             label: "입찰등록",    color: "text-orange-600" },
+  { key: "witnessInspections",  label: "입회검사",    color: "text-teal-600"   },
+  { key: "meetings",            label: "회의록",      color: "text-purple-600" },
+  { key: "qpaAudits",           label: "QPA",         color: "text-cyan-600"   },
+  { key: "awardedProjects",     label: "수주PJT",     color: "text-lime-600"   },
 ]
 
 const TYPE_BADGE: Record<string, string> = {
@@ -209,6 +215,11 @@ const TYPE_BADGE: Record<string, string> = {
   수입검사: "bg-sky-100 text-sky-700",
   출장검사: "bg-emerald-100 text-emerald-700",
   협력업체감사: "bg-amber-100 text-amber-700",
+  입찰등록: "bg-orange-100 text-orange-700",
+  입회검사: "bg-teal-100 text-teal-700",
+  회의록: "bg-purple-100 text-purple-700",
+  QPA: "bg-cyan-100 text-cyan-700",
+  수주PJT: "bg-lime-100 text-lime-700",
 }
 
 function ActivityView() {
@@ -271,6 +282,11 @@ function ActivityView() {
         r.incomingInspections > 0 && `수입검사 ${r.incomingInspections}`,
         r.sourceInspections > 0 && `출장검사 ${r.sourceInspections}`,
         r.audits > 0 && `협력업체감사 ${r.audits}`,
+        r.tenders > 0 && `입찰등록 ${r.tenders}`,
+        r.witnessInspections > 0 && `입회검사 ${r.witnessInspections}`,
+        r.meetings > 0 && `회의록 ${r.meetings}`,
+        r.qpaAudits > 0 && `QPA ${r.qpaAudits}`,
+        r.awardedProjects > 0 && `수주PJT ${r.awardedProjects}`,
       ].filter(Boolean).join(" · ")
       const dept = r.department ? ` (${r.department})` : ""
       return `${medals[i]} **${i + 1}위** ${r.name}${dept} — **${r.total}건**\n> ${parts}`
@@ -383,6 +399,11 @@ ${rankLines}
                         r.incomingInspections > 0 && `수입검사 ${r.incomingInspections}`,
                         r.sourceInspections > 0 && `출장검사 ${r.sourceInspections}`,
                         r.audits > 0 && `협력업체감사 ${r.audits}`,
+                        r.tenders > 0 && `입찰등록 ${r.tenders}`,
+                        r.witnessInspections > 0 && `입회검사 ${r.witnessInspections}`,
+                        r.meetings > 0 && `회의록 ${r.meetings}`,
+                        r.qpaAudits > 0 && `QPA ${r.qpaAudits}`,
+                        r.awardedProjects > 0 && `수주PJT ${r.awardedProjects}`,
                       ].filter(Boolean).join(" · ")
                       return (
                         <div key={r.id} className="flex items-center gap-3 bg-white rounded-lg px-3 py-2.5 border border-amber-100">
@@ -432,8 +453,8 @@ ${rankLines}
             {[
               { label: "총 활동 수",   value: rows.reduce((s, r) => s + r.total, 0),    color: "text-slate-800" },
               { label: "게시글+댓글", value: rows.reduce((s, r) => s + r.posts + r.comments, 0), color: "text-indigo-600" },
-              { label: "검사 기록",   value: rows.reduce((s, r) => s + r.incomingInspections + r.sourceInspections + r.audits, 0), color: "text-emerald-600" },
-              { label: "클레임+NCR", value: rows.reduce((s, r) => s + r.claims + r.ncrs, 0), color: "text-rose-600" },
+              { label: "검사 기록",   value: rows.reduce((s, r) => s + r.incomingInspections + r.sourceInspections + r.audits + r.witnessInspections + r.qpaAudits, 0), color: "text-emerald-600" },
+              { label: "입찰+수주",  value: rows.reduce((s, r) => s + r.tenders + r.awardedProjects, 0), color: "text-orange-600" },
             ].map(({ label, value, color }) => (
               <div key={label} className="bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-center">
                 <p className={`text-2xl font-bold ${color}`}>{value}</p>

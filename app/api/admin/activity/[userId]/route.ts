@@ -31,6 +31,7 @@ export async function GET(
     feedbackPosts, feedbackReplies,
     claims, ncrs,
     incoming, source, audits,
+    tenders, witnessInspections, meetings, qpaAudits, awardedProjects,
   ] = await Promise.all([
     prisma.boardPost.findMany({
       where: { authorId: userId, ...dateFilter },
@@ -77,10 +78,39 @@ export async function GET(
       select: { id: true, vendorName: true, auditType: true, overallGrade: true, createdAt: true },
       orderBy: { createdAt: "desc" },
     }),
+    prisma.tender.findMany({
+      where: { createdById: userId, ...dateFilter },
+      select: { id: true, title: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.witnessInspection.findMany({
+      where: { createdById: userId, ...dateFilter },
+      select: { id: true, inspNo: true, customer: true, projectName: true, result: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.meeting.findMany({
+      where: { createdById: userId, ...dateFilter },
+      select: { id: true, title: true, type: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.qpaAudit.findMany({
+      where: { createdById: userId, ...dateFilter },
+      select: { id: true, qpaNo: true, vendorName: true, result: true, level: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.awardedProject.findMany({
+      where: { createdById: userId, ...dateFilter },
+      select: { id: true, title: true, status: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
   ])
 
   const CATEGORY_LABEL: Record<string, string> = { NOTICE: "공지", GENERAL: "일반" }
   const RESULT_LABEL: Record<string, string> = { PASS: "합격", FAIL: "불합격", CONDITIONAL_PASS: "조건부합격" }
+  const MEETING_TYPE_LABEL: Record<string, string> = {
+    QUALITY_REVIEW: "품질검토", CLAIM_REVIEW: "클레임검토", NCR_REVIEW: "NCR검토",
+    SUPPLIER_MEETING: "협력업체회의", INTERNAL: "내부회의", OTHER: "기타",
+  }
 
   type Item = { type: string; label: string; detail: string; createdAt: string }
 
@@ -137,6 +167,36 @@ export async function GET(
       type: "협력업체감사",
       label: r.vendorName,
       detail: `${AUDIT_TYPE_LABEL[r.auditType] ?? r.auditType}${r.overallGrade ? ` · ${r.overallGrade}등급` : ""}`,
+      createdAt: r.createdAt.toISOString(),
+    })),
+    ...tenders.map(r => ({
+      type: "입찰등록",
+      label: r.title,
+      detail: "입찰 프로젝트",
+      createdAt: r.createdAt.toISOString(),
+    })),
+    ...witnessInspections.map(r => ({
+      type: "입회검사",
+      label: r.projectName,
+      detail: `${r.customer}${r.result ? ` · ${RESULT_LABEL[r.result] ?? r.result}` : ""} · ${r.inspNo}`,
+      createdAt: r.createdAt.toISOString(),
+    })),
+    ...meetings.map(r => ({
+      type: "회의록",
+      label: r.title,
+      detail: MEETING_TYPE_LABEL[r.type] ?? r.type,
+      createdAt: r.createdAt.toISOString(),
+    })),
+    ...qpaAudits.map(r => ({
+      type: "QPA",
+      label: r.vendorName,
+      detail: `${r.result}${r.level ? ` · ${r.level}등급` : ""} · ${r.qpaNo}`,
+      createdAt: r.createdAt.toISOString(),
+    })),
+    ...awardedProjects.map(r => ({
+      type: "수주PJT",
+      label: r.title ?? "수주 프로젝트",
+      detail: r.status,
       createdAt: r.createdAt.toISOString(),
     })),
   ]

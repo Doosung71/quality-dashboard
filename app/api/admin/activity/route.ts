@@ -23,6 +23,7 @@ export async function GET(req: Request) {
     feedbackPosts, feedbackReplies,
     claims, ncrs,
     incoming, source, audits,
+    tenders, witnessInspections, meetings, qpaAudits, awardedProjects,
   ] = await Promise.all([
     prisma.user.findMany({
       orderBy: { createdAt: "asc" },
@@ -64,6 +65,26 @@ export async function GET(req: Request) {
       by: ["createdById"], where: dateFilter,
       _count: { _all: true }, _max: { createdAt: true },
     }),
+    prisma.tender.groupBy({
+      by: ["createdById"], where: dateFilter,
+      _count: { _all: true }, _max: { createdAt: true },
+    }),
+    prisma.witnessInspection.groupBy({
+      by: ["createdById"], where: dateFilter,
+      _count: { _all: true }, _max: { createdAt: true },
+    }),
+    prisma.meeting.groupBy({
+      by: ["createdById"], where: dateFilter,
+      _count: { _all: true }, _max: { createdAt: true },
+    }),
+    prisma.qpaAudit.groupBy({
+      by: ["createdById"], where: dateFilter,
+      _count: { _all: true }, _max: { createdAt: true },
+    }),
+    prisma.awardedProject.groupBy({
+      by: ["createdById"], where: dateFilter,
+      _count: { _all: true }, _max: { createdAt: true },
+    }),
   ])
 
   // userId → { count, last } 맵으로 변환
@@ -72,25 +93,35 @@ export async function GET(req: Request) {
       rows.map(r => [(r as Record<string, unknown>)[key] as string, { count: r._count._all, last: r._max.createdAt }])
     )
 
-  const postMap         = toMap(posts,          "authorId")
-  const commentMap      = toMap(comments,       "authorId")
-  const feedPostMap     = toMap(feedbackPosts,  "authorId")
-  const feedReplyMap    = toMap(feedbackReplies,"authorId")
-  const claimMap        = toMap(claims,         "createdById")
-  const ncrMap          = toMap(ncrs,           "createdById")
-  const incomingMap     = toMap(incoming,       "createdById")
-  const sourceMap       = toMap(source,         "createdById")
-  const auditMap        = toMap(audits,         "createdById")
+  const postMap              = toMap(posts,             "authorId")
+  const commentMap           = toMap(comments,          "authorId")
+  const feedPostMap          = toMap(feedbackPosts,     "authorId")
+  const feedReplyMap         = toMap(feedbackReplies,   "authorId")
+  const claimMap             = toMap(claims,            "createdById")
+  const ncrMap               = toMap(ncrs,             "createdById")
+  const incomingMap          = toMap(incoming,          "createdById")
+  const sourceMap            = toMap(source,            "createdById")
+  const auditMap             = toMap(audits,            "createdById")
+  const tenderMap            = toMap(tenders,           "createdById")
+  const witnessMap           = toMap(witnessInspections,"createdById")
+  const meetingMap           = toMap(meetings,          "createdById")
+  const qpaMap               = toMap(qpaAudits,         "createdById")
+  const awardedMap           = toMap(awardedProjects,   "createdById")
 
   const result = users.map(u => {
-    const pc = (postMap[u.id]?.count      ?? 0) + (feedPostMap[u.id]?.count  ?? 0)
-    const cc = (commentMap[u.id]?.count   ?? 0) + (feedReplyMap[u.id]?.count ?? 0)
-    const cl = claimMap[u.id]?.count    ?? 0
-    const nc = ncrMap[u.id]?.count      ?? 0
-    const ic = incomingMap[u.id]?.count ?? 0
-    const sc = sourceMap[u.id]?.count   ?? 0
-    const ac = auditMap[u.id]?.count    ?? 0
-    const total = pc + cc + cl + nc + ic + sc + ac
+    const pc  = (postMap[u.id]?.count      ?? 0) + (feedPostMap[u.id]?.count  ?? 0)
+    const cc  = (commentMap[u.id]?.count   ?? 0) + (feedReplyMap[u.id]?.count ?? 0)
+    const cl  = claimMap[u.id]?.count    ?? 0
+    const nc  = ncrMap[u.id]?.count      ?? 0
+    const ic  = incomingMap[u.id]?.count ?? 0
+    const sc  = sourceMap[u.id]?.count   ?? 0
+    const ac  = auditMap[u.id]?.count    ?? 0
+    const tc  = tenderMap[u.id]?.count   ?? 0
+    const wc  = witnessMap[u.id]?.count  ?? 0
+    const mc  = meetingMap[u.id]?.count  ?? 0
+    const qc  = qpaMap[u.id]?.count      ?? 0
+    const arc = awardedMap[u.id]?.count  ?? 0
+    const total = pc + cc + cl + nc + ic + sc + ac + tc + wc + mc + qc + arc
 
     const dates = [
       postMap[u.id]?.last,
@@ -102,6 +133,11 @@ export async function GET(req: Request) {
       incomingMap[u.id]?.last,
       sourceMap[u.id]?.last,
       auditMap[u.id]?.last,
+      tenderMap[u.id]?.last,
+      witnessMap[u.id]?.last,
+      meetingMap[u.id]?.last,
+      qpaMap[u.id]?.last,
+      awardedMap[u.id]?.last,
     ].filter(Boolean) as Date[]
 
     const lastActivity = dates.length > 0
@@ -122,6 +158,11 @@ export async function GET(req: Request) {
       incomingInspections: ic,
       sourceInspections: sc,
       audits: ac,
+      tenders: tc,
+      witnessInspections: wc,
+      meetings: mc,
+      qpaAudits: qc,
+      awardedProjects: arc,
       total,
       lastActivity: lastActivity?.toISOString() ?? null,
     }
