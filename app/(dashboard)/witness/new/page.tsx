@@ -1,10 +1,8 @@
-import { auth } from "@/auth"
-import { redirect } from "next/navigation"
+import { requireActivePageSession } from "@/lib/session-guard"
 import WitnessForm from "./WitnessForm"
 
 export default async function NewWitnessPage() {
-  const session = await auth()
-  if (!session) redirect("/login")
+  const session = await requireActivePageSession()
 
   return (
     <div className="max-w-2xl mx-auto">

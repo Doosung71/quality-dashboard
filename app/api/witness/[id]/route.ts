@@ -4,6 +4,10 @@ import { prisma } from "@/lib/prisma"
 
 type Params = { params: Promise<{ id: string }> }
 
+const WRITER_ROLES = ["TEAM_LEAD", "DIRECTOR", "ADMIN"]
+const VALID_STATUS = ["SCHEDULED", "IN_PROGRESS", "COMPLETED", "CANCELLED"]
+const VALID_RESULT = ["PASS", "FAIL", "CONDITIONAL_PASS"]
+
 export async function GET(_: NextRequest, { params }: Params) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
@@ -23,6 +27,11 @@ export async function GET(_: NextRequest, { params }: Params) {
 export async function PATCH(req: NextRequest, { params }: Params) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
+
+  if (!WRITER_ROLES.includes(session.user.role)) {
+    return NextResponse.json({ error: "팀장 이상만 수정할 수 있습니다." }, { status: 403 })
+  }
+
   const { id } = await params
 
   const body = await req.json() as {
@@ -31,6 +40,13 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     location?: string; assigneeId?: string; assigneeName?: string
     status?: string; result?: string
     description?: string; notes?: string; attachments?: unknown
+  }
+
+  if (body.status !== undefined && !VALID_STATUS.includes(body.status)) {
+    return NextResponse.json({ error: `유효하지 않은 status: ${body.status}` }, { status: 400 })
+  }
+  if (body.result !== undefined && body.result !== "" && !VALID_RESULT.includes(body.result)) {
+    return NextResponse.json({ error: `유효하지 않은 result: ${body.result}` }, { status: 400 })
   }
 
   const data: Record<string, unknown> = {}
@@ -56,7 +72,24 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 export async function DELETE(_: NextRequest, { params }: Params) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
+
+  if (!WRITER_ROLES.includes(session.user.role)) {
+    return NextResponse.json({ error: "팀장 이상만 삭제할 수 있습니다." }, { status: 403 })
+  }
+
   const { id } = await params
+
+  const inspection = await prisma.witnessInspection.findUnique({
+    where: { id },
+    select: { createdById: true },
+  })
+  if (!inspection) return NextResponse.json({ error: "Not found" }, { status: 404 })
+
+  const isOwner = inspection.createdById === session.user.id
+  const isAdmin = ["DIRECTOR", "ADMIN"].includes(session.user.role)
+  if (!isOwner && !isAdmin) {
+    return NextResponse.json({ error: "본인이 등록한 입회검사만 삭제할 수 있습니다." }, { status: 403 })
+  }
 
   await prisma.witnessInspection.delete({ where: { id } })
   return NextResponse.json({ ok: true })

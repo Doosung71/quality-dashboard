@@ -47,19 +47,20 @@ const VOC_STATUS_COLOR: Record<string, string> = {
 }
 const VOC_STATUS_LABEL: Record<string, string> = { OPEN: "미처리", IN_PROGRESS: "처리중", RESOLVED: "완료" }
 
-// ─── .ics 내보내기 ───────────────────────────────────────────────
+// ─── .ics 내보내기 (VALUE=DATE — KST 날짜 기준, 시각 변환 없음) ──
 function exportIcs(inspection: InspectionData) {
-  const fmt = (d: string) => new Date(d).toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z"
-  const start = fmt(inspection.inspectionDate)
-  const end   = inspection.endDate ? fmt(inspection.endDate) : start
+  // YYYYMMDD 형식 — 시간대 변환 없이 날짜 문자열 그대로 사용
+  const toDate = (iso: string) => iso.slice(0, 10).replace(/-/g, "")
+  const start = toDate(inspection.inspectionDate)
+  const end   = inspection.endDate ? toDate(inspection.endDate) : start
   const ics = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
     "PRODID:-//QMS 2.0//Witness Inspection//KO",
     "BEGIN:VEVENT",
     `UID:${inspection.id}@qms`,
-    `DTSTART:${start}`,
-    `DTEND:${end}`,
+    `DTSTART;VALUE=DATE:${start}`,
+    `DTEND;VALUE=DATE:${end}`,
     `SUMMARY:[입회검사] ${inspection.customer} — ${inspection.projectName}`,
     `DESCRIPTION:검사번호: ${inspection.inspNo}\\n수주번호: ${inspection.projectNumber ?? "—"}\\n제품: ${inspection.productName ?? "—"}\\n담당: ${inspection.assigneeName}\\n장소: ${inspection.location ?? "—"}`,
     `LOCATION:${inspection.location ?? ""}`,
@@ -84,9 +85,11 @@ export default function WitnessDetailClient({
   const [editing, setEditing] = useState(false)
   const [form, setForm]     = useState({ ...init })
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState("")
 
   // VoC 상태
   const [vocForm, setVocForm] = useState({ content: "", category: "OTHER", priority: "NORMAL", dueDate: "" })
+  const [vocError, setVocError] = useState("")
   const [vocAdding, setVocAdding] = useState(false)
   const [vocSaving, setVocSaving] = useState(false)
   const [editingVocId, setEditingVocId] = useState<string | null>(null)
@@ -97,36 +100,46 @@ export default function WitnessDetailClient({
 
   // ── 기본정보 저장
   async function saveInfo() {
-    setSaving(true)
+    setSaving(true); setSaveError("")
     try {
       const res = await fetch(`/api/witness/${data.id}`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, attachments: data.attachments }),
       })
-      if (!res.ok) throw new Error("저장 실패")
+      if (!res.ok) {
+        const j = await res.json() as { error?: string }
+        throw new Error(j.error ?? "저장에 실패했습니다.")
+      }
       const updated = await res.json() as InspectionData
       setData(d => ({ ...updated, attachments: d.attachments }))
       setForm(f => ({ ...updated, attachments: f.attachments }))
       setEditing(false)
       router.refresh()
-    } catch { /* noop */ } finally { setSaving(false) }
+    } catch (err) {
+      setSaveError((err as Error).message)
+    } finally { setSaving(false) }
   }
 
   // ── VoC 등록
   async function addVoC() {
     if (!vocForm.content.trim()) return
-    setVocSaving(true)
+    setVocSaving(true); setVocError("")
     try {
       const res = await fetch(`/api/witness/${data.id}/voc`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(vocForm),
       })
-      if (!res.ok) throw new Error()
+      if (!res.ok) {
+        const j = await res.json() as { error?: string }
+        throw new Error(j.error ?? "VoC 등록에 실패했습니다.")
+      }
       const created = await res.json() as VoCData
       setVoCs(v => [...v, created])
       setVocForm({ content: "", category: "OTHER", priority: "NORMAL", dueDate: "" })
       setVocAdding(false)
-    } catch { /* noop */ } finally { setVocSaving(false) }
+    } catch (err) {
+      setVocError((err as Error).message)
+    } finally { setVocSaving(false) }
   }
 
   // ── VoC 대응 저장
@@ -135,7 +148,11 @@ export default function WitnessDetailClient({
       method: "PATCH", headers: { "Content-Type": "application/json" },
       body: JSON.stringify(vocEditForm),
     })
-    if (!res.ok) return
+    if (!res.ok) {
+      const j = await res.json() as { error?: string }
+      alert(j.error ?? "VoC 수정에 실패했습니다.")
+      return
+    }
     const updated = await res.json() as VoCData
     setVoCs(v => v.map(x => x.id === vocId ? updated : x))
     setEditingVocId(null)
@@ -144,7 +161,12 @@ export default function WitnessDetailClient({
   // ── VoC 삭제
   async function deleteVoC(vocId: string) {
     if (!confirm("이 VoC 항목을 삭제할까요?")) return
-    await fetch(`/api/witness/${data.id}/voc/${vocId}`, { method: "DELETE" })
+    const res = await fetch(`/api/witness/${data.id}/voc/${vocId}`, { method: "DELETE" })
+    if (!res.ok) {
+      const j = await res.json() as { error?: string }
+      alert(j.error ?? "VoC 삭제에 실패했습니다.")
+      return
+    }
     setVoCs(v => v.filter(x => x.id !== vocId))
   }
 
@@ -182,8 +204,9 @@ export default function WitnessDetailClient({
                 <Pencil className="w-3 h-3" />수정
               </button>
             ) : (
-              <div className="flex gap-2">
-                <button onClick={() => setEditing(false)} className="flex items-center gap-1 text-xs text-slate-500 hover:underline">
+              <div className="flex items-center gap-2">
+                {saveError && <span className="text-xs text-rose-600">{saveError}</span>}
+                <button onClick={() => { setEditing(false); setSaveError("") }} className="flex items-center gap-1 text-xs text-slate-500 hover:underline">
                   <X className="w-3 h-3" />취소
                 </button>
                 <button onClick={saveInfo} disabled={saving}
@@ -296,8 +319,9 @@ export default function WitnessDetailClient({
                 <div><label className={label}>마감일</label>
                   <input type="date" value={vocForm.dueDate} onChange={e => setVocForm(f => ({ ...f, dueDate: e.target.value }))} className={field} /></div>
               </div>
+              {vocError && <p className="text-xs text-rose-600">{vocError}</p>}
               <div className="flex justify-end gap-2">
-                <button onClick={() => setVocAdding(false)} className="px-3 py-1.5 text-xs text-slate-500 border border-slate-200 rounded-lg hover:bg-white">취소</button>
+                <button onClick={() => { setVocAdding(false); setVocError("") }} className="px-3 py-1.5 text-xs text-slate-500 border border-slate-200 rounded-lg hover:bg-white">취소</button>
                 <button onClick={addVoC} disabled={vocSaving || !vocForm.content.trim()}
                   className="px-4 py-1.5 text-xs font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50">
                   {vocSaving ? "저장중..." : "등록"}

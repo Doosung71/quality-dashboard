@@ -1,10 +1,8 @@
-import { auth } from "@/auth"
-import { redirect } from "next/navigation"
+import { requireActivePageSession } from "@/lib/session-guard"
 import { Suspense } from "react"
 import WitnessPageClient from "./WitnessPageClient"
 
 export default async function WitnessPage() {
-  const session = await auth()
-  if (!session) redirect("/login")
+  await requireActivePageSession()
   return <Suspense><WitnessPageClient /></Suspense>
 }

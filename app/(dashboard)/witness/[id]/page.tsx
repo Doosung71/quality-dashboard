@@ -1,4 +1,4 @@
-import { auth } from "@/auth"
+import { requireActivePageSession } from "@/lib/session-guard"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"
@@ -16,8 +16,7 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 export default async function WitnessDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const session = await auth()
-  if (!session) redirect("/login")
+  await requireActivePageSession()
   const { id } = await params
 
   const inspection = await prisma.witnessInspection.findUnique({
