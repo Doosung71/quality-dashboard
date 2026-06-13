@@ -156,18 +156,38 @@ export function Sidebar({ isOpen, onClose, role, isCollapsed, onToggleCollapse }
     )}>
       {/* 헤더 */}
       <div className={cn(
-        "py-5 border-b border-slate-700 flex items-center",
-        isCollapsed ? "justify-center px-2" : "justify-between px-6"
+        "py-4 border-b border-slate-700 flex items-center gap-2",
+        isCollapsed ? "justify-center px-2 flex-col" : "justify-between px-4"
       )}>
         {isCollapsed ? (
-          <div className="w-8 h-8 bg-slate-700 rounded-md flex items-center justify-center shrink-0">
-            <span className="text-xs font-bold text-white">Q</span>
-          </div>
+          <>
+            <div className="w-8 h-8 bg-slate-700 rounded-md flex items-center justify-center shrink-0">
+              <span className="text-xs font-bold text-white">Q</span>
+            </div>
+            {/* 접힘 상태: 펼치기 버튼 헤더 하단 */}
+            <button
+              onClick={onToggleCollapse}
+              title="사이드바 펼치기"
+              className="hidden lg:flex items-center justify-center w-8 h-8 rounded-md text-slate-500 hover:bg-slate-700 hover:text-white transition-colors"
+            >
+              <PanelLeftOpen className="w-4 h-4" />
+            </button>
+          </>
         ) : (
-          <div>
-            <p className="text-xs text-slate-400 leading-tight">LS전선</p>
-            <p className="text-sm font-semibold leading-tight mt-0.5">품질부문 대시보드</p>
-          </div>
+          <>
+            <div className="min-w-0">
+              <p className="text-xs text-slate-400 leading-tight">LS전선</p>
+              <p className="text-sm font-semibold leading-tight mt-0.5">품질부문 대시보드</p>
+            </div>
+            {/* 펼침 상태: 접기 버튼 헤더 우측 */}
+            <button
+              onClick={onToggleCollapse}
+              title="사이드바 접기"
+              className="hidden lg:flex items-center justify-center w-8 h-8 rounded-md text-slate-500 hover:bg-slate-700 hover:text-white transition-colors shrink-0"
+            >
+              <PanelLeftClose className="w-4 h-4" />
+            </button>
+          </>
         )}
         <button onClick={onClose} className="lg:hidden p-1 rounded text-slate-400 hover:text-white transition-colors">
           <X className="w-5 h-5" />
@@ -303,22 +323,6 @@ export function Sidebar({ isOpen, onClose, role, isCollapsed, onToggleCollapse }
           </>
         )}
 
-        {/* 접기/펼치기 토글 — 데스크톱 전용 */}
-        <button
-          onClick={onToggleCollapse}
-          title={isCollapsed ? "사이드바 펼치기" : "사이드바 접기"}
-          className={cn(
-            "hidden lg:flex transition-colors text-slate-400 hover:bg-slate-800 hover:text-white rounded-md",
-            isCollapsed
-              ? "items-center justify-center w-10 h-10 mx-auto"
-              : "items-center gap-3 px-3 py-2 w-full text-sm"
-          )}
-        >
-          {isCollapsed
-            ? <PanelLeftOpen className="w-5 h-5" />
-            : <><PanelLeftClose className="w-4 h-4" /><span>사이드바 접기</span></>
-          }
-        </button>
       </div>
     </aside>
   )
