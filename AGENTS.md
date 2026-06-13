@@ -258,6 +258,44 @@ npx prisma db push   # 스키마를 DB에 반영 (개발용)
 > Codex 결과 수신 후 → Dennis "수정해줘" 지시 후 → 코드 반영.  
 > 각 단계 사이에서 Dennis의 명시적 지시 없이 다음 단계로 자율 진행하지 않는다.
 
+---
+
+### 파일 경로 핸드오프 규칙
+
+에이전트 간 파일 전달 시 **항상 절대 경로**를 사용한다. 상대 경로(`docs/reviews/...`)는 에이전트마다 기준 디렉토리가 달라 혼동의 원인이 된다.
+
+#### 클로이 → 코라/앤 (요청서 전달)
+
+클로이가 요청서를 저장한 뒤 Dennis에게 전달하는 시작 프롬프트는 반드시 **요청서 절대 경로**를 포함한다:
+
+```
+요청서 절대 경로: C:\Dev\QMS 2.0 Integration\quality-dashboard\docs\reviews\request-YYYY-MM-DD-<topic>.md
+```
+
+#### 코라/앤 → 클로이 (결과서 전달)
+
+코라/앤이 결과서를 저장한 뒤 Dennis에게 출력하는 완료 신호는 반드시 **결과서 절대 경로**를 포함한다:
+
+```
+저장 위치: C:\Dev\QMS 2.0 Integration\quality-dashboard\docs\reviews\result-YYYY-MM-DD-<topic>.md
+```
+
+#### Dennis 역할
+
+Dennis는 완료 신호 출력 전체(저장 위치 포함)를 복사해서 클로이에게 전달한다.  
+클로이는 절대 경로를 보고 결과서를 직접 Read 도구로 읽는다.
+
+#### 경로 규칙 요약
+
+| 종류 | 위치 |
+|------|------|
+| 코라 검수 요청서 | `C:\Dev\QMS 2.0 Integration\quality-dashboard\docs\reviews\request-YYYY-MM-DD-<topic>.md` |
+| 코라 검수 결과서 | `C:\Dev\QMS 2.0 Integration\quality-dashboard\docs\reviews\result-YYYY-MM-DD-<topic>.md` |
+| 앤 리서치 요청서 | `C:\Dev\QMS 2.0 Integration\quality-dashboard\docs\research\request-YYYY-MM-DD-<topic>.md` |
+| 앤 리서치 결과서 | `C:\Dev\QMS 2.0 Integration\quality-dashboard\docs\research\result-YYYY-MM-DD-<topic>.md` |
+
+> ⚠️ **공통 오류 방지**: `QMS 2.0 Integration\docs\` 직하에 저장하지 않는다. 반드시 `quality-dashboard\docs\` 하위에 저장한다.
+
 🔴 Critical 항목 발생 시 Dennis에게 즉시 보고 후 수정 지시를 기다린다.
 
 ```text
