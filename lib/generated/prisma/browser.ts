@@ -53,6 +53,16 @@ export type MeetingAction = Prisma.MeetingActionModel
  */
 export type BoardComment = Prisma.BoardCommentModel
 /**
+ * Model WitnessInspection
+ * 
+ */
+export type WitnessInspection = Prisma.WitnessInspectionModel
+/**
+ * Model WitnessVoC
+ * 
+ */
+export type WitnessVoC = Prisma.WitnessVoCModel
+/**
  * Model Equipment
  * 
  */

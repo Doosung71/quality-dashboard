@@ -48,6 +48,45 @@ export const MeetingType = {
 export type MeetingType = (typeof MeetingType)[keyof typeof MeetingType]
 
 
+export const WitnessStatus = {
+  SCHEDULED: 'SCHEDULED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type WitnessStatus = (typeof WitnessStatus)[keyof typeof WitnessStatus]
+
+
+export const VoCCategory = {
+  DEFECT: 'DEFECT',
+  REQUIREMENT: 'REQUIREMENT',
+  SCHEDULE: 'SCHEDULE',
+  DOCUMENT: 'DOCUMENT',
+  OTHER: 'OTHER'
+} as const
+
+export type VoCCategory = (typeof VoCCategory)[keyof typeof VoCCategory]
+
+
+export const VoCPriority = {
+  HIGH: 'HIGH',
+  NORMAL: 'NORMAL',
+  LOW: 'LOW'
+} as const
+
+export type VoCPriority = (typeof VoCPriority)[keyof typeof VoCPriority]
+
+
+export const VoCStatus = {
+  OPEN: 'OPEN',
+  IN_PROGRESS: 'IN_PROGRESS',
+  RESOLVED: 'RESOLVED'
+} as const
+
+export type VoCStatus = (typeof VoCStatus)[keyof typeof VoCStatus]
+
+
 export const ClaimPriority = {
   High: 'High',
   Mid: 'Mid',

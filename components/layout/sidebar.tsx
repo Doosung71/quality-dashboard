@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import {
   LayoutDashboard, FlaskConical,
   X, MessageSquare, Newspaper,
-  ClipboardList, ShieldAlert, Briefcase, Layers, Wrench, CheckSquare,
+  ClipboardList, ShieldAlert, Briefcase, Layers, Wrench, CheckSquare, UserCheck,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { Role } from "@/lib/generated/prisma/client"
@@ -85,6 +85,15 @@ const ALL_NAV: NavItem[] = [
       { href: "/claims",   label: "고객 클레임",    roles: ALL, readonlyFor: [] },
       { href: "/qcost",    label: "품질 비용 관리", roles: ALL, readonlyFor: ["PRACTITIONER"] },
       { href: "/meetings", label: "회의록",         roles: ALL, readonlyFor: [] },
+    ],
+  },
+
+  // ── 고객 품질 관리 ────────────────────────────────────────
+  {
+    href: "/witness", label: "고객 품질 관리", icon: UserCheck,
+    roles: ALL, readonlyFor: [],
+    children: [
+      { href: "/witness", label: "입회검사", roles: ALL, readonlyFor: [] },
     ],
   },
 

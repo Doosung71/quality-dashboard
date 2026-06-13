@@ -40,6 +40,8 @@ const titles: Record<string, string> = {
   "/help": "사용 가이드",
   "/meetings": "회의록",
   "/my-job": "내 할 일",
+  "/witness": "입회검사",
+  "/witness/new": "입회검사 등록",
 }
 
 function NavBtn({ href, icon: Icon, label, active }: {
@@ -66,6 +68,7 @@ function resolveTitle(pathname: string): string {
   if (pathname.startsWith("/vendors/audits/"))      return "협력업체 감사"
   if (pathname.startsWith("/vendors/qpa/"))         return "공정감사 (QPA)"
   if (pathname.startsWith("/assets/"))     return "시험설비/계측기 관리"
+  if (pathname.startsWith("/witness/"))    return "입회검사"
   if (pathname.startsWith("/projects/"))   return "프로젝트 관리"
   if (pathname.startsWith("/admin/"))      return "사용자 관리"
   return "대시보드"

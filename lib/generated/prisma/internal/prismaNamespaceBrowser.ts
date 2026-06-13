@@ -58,6 +58,8 @@ export const ModelName = {
   Meeting: 'Meeting',
   MeetingAction: 'MeetingAction',
   BoardComment: 'BoardComment',
+  WitnessInspection: 'WitnessInspection',
+  WitnessVoC: 'WitnessVoC',
   Equipment: 'Equipment',
   EquipmentOwnerHistory: 'EquipmentOwnerHistory',
   TestPlan: 'TestPlan',
@@ -206,6 +208,48 @@ export const BoardCommentScalarFieldEnum = {
 } as const
 
 export type BoardCommentScalarFieldEnum = (typeof BoardCommentScalarFieldEnum)[keyof typeof BoardCommentScalarFieldEnum]
+
+
+export const WitnessInspectionScalarFieldEnum = {
+  id: 'id',
+  inspNo: 'inspNo',
+  customer: 'customer',
+  projectName: 'projectName',
+  projectNumber: 'projectNumber',
+  productName: 'productName',
+  inspectionDate: 'inspectionDate',
+  endDate: 'endDate',
+  location: 'location',
+  assigneeId: 'assigneeId',
+  assigneeName: 'assigneeName',
+  status: 'status',
+  result: 'result',
+  description: 'description',
+  notes: 'notes',
+  attachments: 'attachments',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type WitnessInspectionScalarFieldEnum = (typeof WitnessInspectionScalarFieldEnum)[keyof typeof WitnessInspectionScalarFieldEnum]
+
+
+export const WitnessVoCScalarFieldEnum = {
+  id: 'id',
+  inspectionId: 'inspectionId',
+  content: 'content',
+  category: 'category',
+  priority: 'priority',
+  status: 'status',
+  response: 'response',
+  dueDate: 'dueDate',
+  closedAt: 'closedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WitnessVoCScalarFieldEnum = (typeof WitnessVoCScalarFieldEnum)[keyof typeof WitnessVoCScalarFieldEnum]
 
 
 export const EquipmentScalarFieldEnum = {

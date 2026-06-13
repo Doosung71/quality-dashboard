@@ -391,6 +391,8 @@ export const ModelName = {
   Meeting: 'Meeting',
   MeetingAction: 'MeetingAction',
   BoardComment: 'BoardComment',
+  WitnessInspection: 'WitnessInspection',
+  WitnessVoC: 'WitnessVoC',
   Equipment: 'Equipment',
   EquipmentOwnerHistory: 'EquipmentOwnerHistory',
   TestPlan: 'TestPlan',
@@ -435,7 +437,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "meeting" | "meetingAction" | "boardComment" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "internalStandard" | "claim" | "ncr" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "vendor" | "supplierAudit" | "auditFinding" | "incomingInspection" | "sourceInspection" | "qpaAudit" | "qpaAuditItem" | "qpaFinding"
+    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "meeting" | "meetingAction" | "boardComment" | "witnessInspection" | "witnessVoC" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "internalStandard" | "claim" | "ncr" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "vendor" | "supplierAudit" | "auditFinding" | "incomingInspection" | "sourceInspection" | "qpaAudit" | "qpaAuditItem" | "qpaFinding"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -954,6 +956,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.BoardCommentCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.BoardCommentCountAggregateOutputType> | number
+        }
+      }
+    }
+    WitnessInspection: {
+      payload: Prisma.$WitnessInspectionPayload<ExtArgs>
+      fields: Prisma.WitnessInspectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WitnessInspectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessInspectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WitnessInspectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessInspectionPayload>
+        }
+        findFirst: {
+          args: Prisma.WitnessInspectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessInspectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WitnessInspectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessInspectionPayload>
+        }
+        findMany: {
+          args: Prisma.WitnessInspectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessInspectionPayload>[]
+        }
+        create: {
+          args: Prisma.WitnessInspectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessInspectionPayload>
+        }
+        createMany: {
+          args: Prisma.WitnessInspectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WitnessInspectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessInspectionPayload>[]
+        }
+        delete: {
+          args: Prisma.WitnessInspectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessInspectionPayload>
+        }
+        update: {
+          args: Prisma.WitnessInspectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessInspectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.WitnessInspectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WitnessInspectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WitnessInspectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessInspectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.WitnessInspectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessInspectionPayload>
+        }
+        aggregate: {
+          args: Prisma.WitnessInspectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWitnessInspection>
+        }
+        groupBy: {
+          args: Prisma.WitnessInspectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WitnessInspectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WitnessInspectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WitnessInspectionCountAggregateOutputType> | number
+        }
+      }
+    }
+    WitnessVoC: {
+      payload: Prisma.$WitnessVoCPayload<ExtArgs>
+      fields: Prisma.WitnessVoCFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WitnessVoCFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessVoCPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WitnessVoCFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessVoCPayload>
+        }
+        findFirst: {
+          args: Prisma.WitnessVoCFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessVoCPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WitnessVoCFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessVoCPayload>
+        }
+        findMany: {
+          args: Prisma.WitnessVoCFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessVoCPayload>[]
+        }
+        create: {
+          args: Prisma.WitnessVoCCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessVoCPayload>
+        }
+        createMany: {
+          args: Prisma.WitnessVoCCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WitnessVoCCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessVoCPayload>[]
+        }
+        delete: {
+          args: Prisma.WitnessVoCDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessVoCPayload>
+        }
+        update: {
+          args: Prisma.WitnessVoCUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessVoCPayload>
+        }
+        deleteMany: {
+          args: Prisma.WitnessVoCDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WitnessVoCUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WitnessVoCUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessVoCPayload>[]
+        }
+        upsert: {
+          args: Prisma.WitnessVoCUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WitnessVoCPayload>
+        }
+        aggregate: {
+          args: Prisma.WitnessVoCAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWitnessVoC>
+        }
+        groupBy: {
+          args: Prisma.WitnessVoCGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WitnessVoCGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WitnessVoCCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WitnessVoCCountAggregateOutputType> | number
         }
       }
     }
@@ -3245,6 +3395,48 @@ export const BoardCommentScalarFieldEnum = {
 export type BoardCommentScalarFieldEnum = (typeof BoardCommentScalarFieldEnum)[keyof typeof BoardCommentScalarFieldEnum]
 
 
+export const WitnessInspectionScalarFieldEnum = {
+  id: 'id',
+  inspNo: 'inspNo',
+  customer: 'customer',
+  projectName: 'projectName',
+  projectNumber: 'projectNumber',
+  productName: 'productName',
+  inspectionDate: 'inspectionDate',
+  endDate: 'endDate',
+  location: 'location',
+  assigneeId: 'assigneeId',
+  assigneeName: 'assigneeName',
+  status: 'status',
+  result: 'result',
+  description: 'description',
+  notes: 'notes',
+  attachments: 'attachments',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+} as const
+
+export type WitnessInspectionScalarFieldEnum = (typeof WitnessInspectionScalarFieldEnum)[keyof typeof WitnessInspectionScalarFieldEnum]
+
+
+export const WitnessVoCScalarFieldEnum = {
+  id: 'id',
+  inspectionId: 'inspectionId',
+  content: 'content',
+  category: 'category',
+  priority: 'priority',
+  status: 'status',
+  response: 'response',
+  dueDate: 'dueDate',
+  closedAt: 'closedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WitnessVoCScalarFieldEnum = (typeof WitnessVoCScalarFieldEnum)[keyof typeof WitnessVoCScalarFieldEnum]
+
+
 export const EquipmentScalarFieldEnum = {
   id: 'id',
   hallId: 'hallId',
@@ -3919,6 +4111,76 @@ export type ListEnumMeetingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
+ * Reference to a field of type 'WitnessStatus'
+ */
+export type EnumWitnessStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WitnessStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'WitnessStatus[]'
+ */
+export type ListEnumWitnessStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WitnessStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'InspectionResult'
+ */
+export type EnumInspectionResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InspectionResult'>
+    
+
+
+/**
+ * Reference to a field of type 'InspectionResult[]'
+ */
+export type ListEnumInspectionResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InspectionResult[]'>
+    
+
+
+/**
+ * Reference to a field of type 'VoCCategory'
+ */
+export type EnumVoCCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VoCCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'VoCCategory[]'
+ */
+export type ListEnumVoCCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VoCCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'VoCPriority'
+ */
+export type EnumVoCPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VoCPriority'>
+    
+
+
+/**
+ * Reference to a field of type 'VoCPriority[]'
+ */
+export type ListEnumVoCPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VoCPriority[]'>
+    
+
+
+/**
+ * Reference to a field of type 'VoCStatus'
+ */
+export type EnumVoCStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VoCStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'VoCStatus[]'
+ */
+export type ListEnumVoCStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VoCStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -4155,20 +4417,6 @@ export type EnumFindingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
 export type ListEnumFindingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FindingStatus[]'>
     
 
-
-/**
- * Reference to a field of type 'InspectionResult'
- */
-export type EnumInspectionResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InspectionResult'>
-    
-
-
-/**
- * Reference to a field of type 'InspectionResult[]'
- */
-export type ListEnumInspectionResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InspectionResult[]'>
-    
-
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -4286,6 +4534,8 @@ export type GlobalOmitConfig = {
   meeting?: Prisma.MeetingOmit
   meetingAction?: Prisma.MeetingActionOmit
   boardComment?: Prisma.BoardCommentOmit
+  witnessInspection?: Prisma.WitnessInspectionOmit
+  witnessVoC?: Prisma.WitnessVoCOmit
   equipment?: Prisma.EquipmentOmit
   equipmentOwnerHistory?: Prisma.EquipmentOwnerHistoryOmit
   testPlan?: Prisma.TestPlanOmit

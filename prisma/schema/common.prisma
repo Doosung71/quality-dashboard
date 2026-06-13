@@ -73,6 +73,9 @@ model User {
 
   // 협력업체 직접 등록
   vendorsCreated          Vendor[]                @relation("VendorCreator")
+
+  // 고객 품질 관리 — 입회검사
+  witnessInspections      WitnessInspection[]     @relation("WitnessInspectionCreator")
 }
 
 model Feedback {

@@ -1,0 +1,68 @@
+// 고객 품질 관리 — 입회검사 (Witness Inspection)
+
+enum WitnessStatus {
+  SCHEDULED    // 예정
+  IN_PROGRESS  // 진행중
+  COMPLETED    // 완료
+  CANCELLED    // 취소
+}
+
+enum VoCCategory {
+  DEFECT       // 불량/품질 결함
+  REQUIREMENT  // 기술/규격 요구사항
+  SCHEDULE     // 일정 요청
+  DOCUMENT     // 서류/문서 요청
+  OTHER        // 기타
+}
+
+enum VoCPriority {
+  HIGH
+  NORMAL
+  LOW
+}
+
+enum VoCStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+}
+
+model WitnessInspection {
+  id             String         @id @default(cuid())
+  inspNo         String         @unique              // WI-YYYY-NNN
+  customer       String                              // 고객사
+  projectName    String                              // 프로젝트명
+  projectNumber  String?                             // 수주번호
+  productName    String?                             // 제품명/품목
+  inspectionDate DateTime                            // 입회검사 일정
+  endDate        DateTime?                           // 종료 일정 (다일 검사)
+  location       String?                             // 검사 장소
+  assigneeId     String                              // 담당자 User.id
+  assigneeName   String                              // 담당자 이름 (비정규화)
+  status         WitnessStatus  @default(SCHEDULED)
+  result         InspectionResult?                   // PASS/FAIL/CONDITIONAL_PASS (완료 후)
+  description    String?                             // 검사 범위/내용
+  notes          String?                             // 비고
+  attachments    Json           @default("[]")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  createdBy      User           @relation("WitnessInspectionCreator", fields: [createdById], references: [id])
+  createdById    String
+
+  voCs           WitnessVoC[]
+}
+
+model WitnessVoC {
+  id           String             @id @default(cuid())
+  inspection   WitnessInspection  @relation(fields: [inspectionId], references: [id], onDelete: Cascade)
+  inspectionId String
+  content      String             // 고객 요청사항/VoC 내용
+  category     VoCCategory        @default(OTHER)
+  priority     VoCPriority        @default(NORMAL)
+  status       VoCStatus          @default(OPEN)
+  response     String?            // 대응 내용
+  dueDate      DateTime?
+  closedAt     DateTime?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+}
