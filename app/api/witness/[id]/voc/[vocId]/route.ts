@@ -17,7 +17,12 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "팀장 이상만 VoC를 수정할 수 있습니다." }, { status: 403 })
   }
 
-  const { vocId } = await params
+  const { id, vocId } = await params
+
+  const existing = await prisma.witnessVoC.findUnique({ where: { id: vocId }, select: { inspectionId: true } })
+  if (!existing || existing.inspectionId !== id) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
+  }
 
   const body = await req.json() as {
     content?: string; category?: string; priority?: string
@@ -58,7 +63,12 @@ export async function DELETE(_: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "팀장 이상만 VoC를 삭제할 수 있습니다." }, { status: 403 })
   }
 
-  const { vocId } = await params
+  const { id, vocId } = await params
+
+  const existing = await prisma.witnessVoC.findUnique({ where: { id: vocId }, select: { inspectionId: true } })
+  if (!existing || existing.inspectionId !== id) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
+  }
 
   await prisma.witnessVoC.delete({ where: { id: vocId } })
   return NextResponse.json({ ok: true })

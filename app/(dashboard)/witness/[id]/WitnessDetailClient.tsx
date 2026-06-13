@@ -94,6 +94,8 @@ export default function WitnessDetailClient({
   const [vocSaving, setVocSaving] = useState(false)
   const [editingVocId, setEditingVocId] = useState<string | null>(null)
   const [vocEditForm, setVocEditForm] = useState({ response: "", status: "" })
+  const [vocResponseError, setVocResponseError] = useState("")
+  const [vocDeleteError, setVocDeleteError] = useState("")
 
   const field = "w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
   const label = "text-xs font-semibold text-slate-700 block mb-1"
@@ -144,13 +146,14 @@ export default function WitnessDetailClient({
 
   // ── VoC 대응 저장
   async function saveVocResponse(vocId: string) {
+    setVocResponseError("")
     const res = await fetch(`/api/witness/${data.id}/voc/${vocId}`, {
       method: "PATCH", headers: { "Content-Type": "application/json" },
       body: JSON.stringify(vocEditForm),
     })
     if (!res.ok) {
       const j = await res.json() as { error?: string }
-      alert(j.error ?? "VoC 수정에 실패했습니다.")
+      setVocResponseError(j.error ?? "VoC 수정에 실패했습니다.")
       return
     }
     const updated = await res.json() as VoCData
@@ -161,10 +164,11 @@ export default function WitnessDetailClient({
   // ── VoC 삭제
   async function deleteVoC(vocId: string) {
     if (!confirm("이 VoC 항목을 삭제할까요?")) return
+    setVocDeleteError("")
     const res = await fetch(`/api/witness/${data.id}/voc/${vocId}`, { method: "DELETE" })
     if (!res.ok) {
       const j = await res.json() as { error?: string }
-      alert(j.error ?? "VoC 삭제에 실패했습니다.")
+      setVocDeleteError(j.error ?? "VoC 삭제에 실패했습니다.")
       return
     }
     setVoCs(v => v.filter(x => x.id !== vocId))
@@ -299,6 +303,10 @@ export default function WitnessDetailClient({
             </button>
           </div>
 
+          {vocDeleteError && (
+            <p className="text-xs text-rose-600 bg-rose-50 border border-rose-200 rounded-lg px-3 py-2">{vocDeleteError}</p>
+          )}
+
           {/* VoC 등록 폼 */}
           {vocAdding && (
             <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex flex-col gap-3">
@@ -384,8 +392,11 @@ export default function WitnessDetailClient({
                       <div><label className={label}>대응 내용</label>
                         <textarea value={vocEditForm.response} onChange={e => setVocEditForm(f => ({ ...f, response: e.target.value }))}
                           rows={2} className={field} placeholder="고객 요청에 대한 조치/대응 내용을 입력하세요..." /></div>
+                      {vocResponseError && editingVocId === voc.id && (
+                        <p className="text-xs text-rose-600">{vocResponseError}</p>
+                      )}
                       <div className="flex justify-end gap-2">
-                        <button onClick={() => setEditingVocId(null)} className="px-3 py-1.5 text-xs text-slate-500 border border-slate-200 rounded-lg hover:bg-slate-50">취소</button>
+                        <button onClick={() => { setEditingVocId(null); setVocResponseError("") }} className="px-3 py-1.5 text-xs text-slate-500 border border-slate-200 rounded-lg hover:bg-slate-50">취소</button>
                         <button onClick={() => saveVocResponse(voc.id)}
                           className="px-4 py-1.5 text-xs font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">저장</button>
                       </div>
