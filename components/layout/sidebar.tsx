@@ -7,6 +7,7 @@ import {
   LayoutDashboard, FlaskConical,
   X, MessageSquare, Newspaper,
   ClipboardList, ShieldAlert, Briefcase, Layers, Wrench, CheckSquare, UserCheck,
+  PanelLeftClose, PanelLeftOpen,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { Role } from "@/lib/generated/prisma/client"
@@ -115,9 +116,11 @@ interface SidebarProps {
   isOpen: boolean
   onClose: () => void
   role: Role
+  isCollapsed: boolean
+  onToggleCollapse: () => void
 }
 
-export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
+export function Sidebar({ isOpen, onClose, role, isCollapsed, onToggleCollapse }: SidebarProps) {
   const pathname = usePathname()
 
   const navItems = ALL_NAV
@@ -131,30 +134,79 @@ export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
     }))
     .filter(item => item.href !== undefined || (item.children && item.children.length > 0))
 
+  const iconOnlyLink = (href: string, label: string, Icon: LucideIcon, active: boolean) => (
+    <Link
+      href={href}
+      title={label}
+      className={cn(
+        "flex items-center justify-center w-10 h-10 mx-auto rounded-md transition-colors",
+        active ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
+      )}
+    >
+      <Icon className="w-5 h-5" />
+    </Link>
+  )
+
   return (
     <aside className={cn(
-      "fixed inset-y-0 left-0 w-56 bg-slate-900 text-white flex flex-col z-40 transition-transform duration-300 ease-in-out",
+      "fixed inset-y-0 left-0 bg-slate-900 text-white flex flex-col z-40 transition-all duration-300 ease-in-out",
+      isCollapsed ? "w-14" : "w-56",
       "lg:translate-x-0",
       isOpen ? "translate-x-0" : "-translate-x-full"
     )}>
-      <div className="px-6 py-5 border-b border-slate-700 flex items-center justify-between">
-        <div>
-          <p className="text-xs text-slate-400 leading-tight">LS전선</p>
-          <p className="text-sm font-semibold leading-tight mt-0.5">품질부문 대시보드</p>
-        </div>
+      {/* 헤더 */}
+      <div className={cn(
+        "py-5 border-b border-slate-700 flex items-center",
+        isCollapsed ? "justify-center px-2" : "justify-between px-6"
+      )}>
+        {isCollapsed ? (
+          <div className="w-8 h-8 bg-slate-700 rounded-md flex items-center justify-center shrink-0">
+            <span className="text-xs font-bold text-white">Q</span>
+          </div>
+        ) : (
+          <div>
+            <p className="text-xs text-slate-400 leading-tight">LS전선</p>
+            <p className="text-sm font-semibold leading-tight mt-0.5">품질부문 대시보드</p>
+          </div>
+        )}
         <button onClick={onClose} className="lg:hidden p-1 rounded text-slate-400 hover:text-white transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      {/* 네비게이션 */}
+      <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto overflow-x-hidden">
         {navItems.map(({ href, label, icon: Icon, isReadonly, children }) => {
           const hasActiveChild = children?.some(c => pathname === c.href || pathname.startsWith(c.href + "/")) ?? false
           const selfActive = href
             ? (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/"))
             : false
           const parentActive = selfActive || hasActiveChild
+          // 접힌 상태에서 이동할 대상: 자체 href 또는 첫 번째 자식 href
+          const targetHref = href ?? children?.[0]?.href
 
+          if (isCollapsed) {
+            return (
+              <div key={href ?? label} className="flex justify-center">
+                {targetHref
+                  ? iconOnlyLink(targetHref, label, Icon, parentActive)
+                  : (
+                    <div
+                      title={label}
+                      className={cn(
+                        "flex items-center justify-center w-10 h-10 rounded-md",
+                        parentActive ? "text-slate-300" : "text-slate-600"
+                      )}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </div>
+                  )
+                }
+              </div>
+            )
+          }
+
+          // 펼침 상태 — 기존 레이아웃
           const innerContent = (
             <>
               <Icon className="w-4 h-4 shrink-0" />
@@ -207,32 +259,66 @@ export function Sidebar({ isOpen, onClose, role }: SidebarProps) {
         })}
       </nav>
 
-      <div className="px-3 py-3 border-t border-slate-700 space-y-1">
-        <p className="px-3 pb-0.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">소통 채널</p>
-        <Link href="/my-job" onClick={onClose}
+      {/* 하단: 소통 채널 + 접기 토글 */}
+      <div className={cn(
+        "border-t border-slate-700",
+        isCollapsed ? "px-2 py-3 space-y-1" : "px-3 py-3 space-y-1"
+      )}>
+        {!isCollapsed && (
+          <p className="px-3 pb-0.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">소통 채널</p>
+        )}
+
+        {isCollapsed ? (
+          <>
+            {iconOnlyLink("/my-job", "내 할 일", CheckSquare, pathname === "/my-job")}
+            {iconOnlyLink("/board", "게시판", Newspaper, pathname === "/board")}
+            {iconOnlyLink("/feedback", "피드백", MessageSquare, pathname === "/feedback")}
+          </>
+        ) : (
+          <>
+            <Link href="/my-job" onClick={onClose}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                pathname === "/my-job" ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
+              )}>
+              <CheckSquare className="w-4 h-4 shrink-0" />
+              내 할 일
+            </Link>
+            <Link href="/board" onClick={onClose}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                pathname === "/board" ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
+              )}>
+              <Newspaper className="w-4 h-4 shrink-0" />
+              게시판
+            </Link>
+            <Link href="/feedback" onClick={onClose}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                pathname === "/feedback" ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
+              )}>
+              <MessageSquare className="w-4 h-4 shrink-0" />
+              피드백
+            </Link>
+          </>
+        )}
+
+        {/* 접기/펼치기 토글 — 데스크톱 전용 */}
+        <button
+          onClick={onToggleCollapse}
+          title={isCollapsed ? "사이드바 펼치기" : "사이드바 접기"}
           className={cn(
-            "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-            pathname === "/my-job" ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
-          )}>
-          <CheckSquare className="w-4 h-4 shrink-0" />
-          내 할 일
-        </Link>
-        <Link href="/board" onClick={onClose}
-          className={cn(
-            "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-            pathname === "/board" ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
-          )}>
-          <Newspaper className="w-4 h-4 shrink-0" />
-          게시판
-        </Link>
-        <Link href="/feedback" onClick={onClose}
-          className={cn(
-            "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-            pathname === "/feedback" ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
-          )}>
-          <MessageSquare className="w-4 h-4 shrink-0" />
-          피드백
-        </Link>
+            "hidden lg:flex transition-colors text-slate-400 hover:bg-slate-800 hover:text-white rounded-md",
+            isCollapsed
+              ? "items-center justify-center w-10 h-10 mx-auto"
+              : "items-center gap-3 px-3 py-2 w-full text-sm"
+          )}
+        >
+          {isCollapsed
+            ? <PanelLeftOpen className="w-5 h-5" />
+            : <><PanelLeftClose className="w-4 h-4" /><span>사이드바 접기</span></>
+          }
+        </button>
       </div>
     </aside>
   )
