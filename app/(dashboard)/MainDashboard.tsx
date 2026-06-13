@@ -704,7 +704,7 @@ export function MainDashboard({ role, userName, userId }: Props) {
                 </h4>
                 <div className="space-y-3 text-xs">
 
-                  {/* 내 할 일 & 회의록 */}
+                  {/* 업무 관리 — 최우선 */}
                   <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest">업무 관리</p>
                   <div className="space-y-1.5">
                     <Link href="/my-job" className="flex items-center justify-between p-2.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 hover:border-indigo-300 rounded-xl group transition-all">
@@ -713,91 +713,6 @@ export function MainDashboard({ role, userName, userId }: Props) {
                         <div>
                           <p className="font-bold text-slate-900 leading-tight">내 할 일</p>
                           <p className="text-[9px] text-slate-400">회의 액션 아이템 F/U</p>
-                        </div>
-                      </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-indigo-300 group-hover:translate-x-1 transition-transform shrink-0" />
-                    </Link>
-                    <Link href="/meetings" className="flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-400 rounded-xl group transition-all">
-                      <div className="flex items-center gap-2">
-                        <ClipboardList className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                        <div>
-                          <p className="font-bold text-slate-900 leading-tight">회의록</p>
-                          <p className="text-[9px] text-slate-400">회의 결과·액션 아이템 등록</p>
-                        </div>
-                      </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:translate-x-1 transition-transform shrink-0" />
-                    </Link>
-                  </div>
-
-                  {/* 품질 비용 관리 */}
-                  <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest pt-1">품질 비용 관리</p>
-                  <div className="space-y-1.5">
-                    <Link href="/claims" className="flex items-center justify-between p-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-100 hover:border-blue-300 rounded-xl group transition-all">
-                      <div className="flex items-center gap-2">
-                        <ShieldAlert className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-                        <div>
-                          <p className="font-bold text-slate-900 leading-tight">고객 클레임</p>
-                          <p className="text-[9px] text-slate-400">접수·조사·대책·검증·종결</p>
-                        </div>
-                      </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-blue-300 group-hover:translate-x-1 transition-transform shrink-0" />
-                    </Link>
-                    <Link href="/ncr" className="flex items-center justify-between p-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-100 hover:border-rose-300 rounded-xl group transition-all">
-                      <div className="flex items-center gap-2">
-                        <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-                        <div>
-                          <p className="font-bold text-slate-900 leading-tight">부적합품 (NCR)</p>
-                          <p className="text-[9px] text-slate-400">발행·처리방안·시정조치·검증</p>
-                        </div>
-                      </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-rose-300 group-hover:translate-x-1 transition-transform shrink-0" />
-                    </Link>
-                  </div>
-
-                  {/* 자산 관리 */}
-                  <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest pt-1">자산 관리</p>
-                  <div className="space-y-1.5">
-                    <Link href="/assets" className="flex items-center justify-between p-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-100 hover:border-amber-300 rounded-xl group transition-all">
-                      <div className="flex items-center gap-2">
-                        <Wrench className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                        <div>
-                          <p className="font-bold text-slate-900 leading-tight">자산 관리</p>
-                          <p className="text-[9px] text-slate-400">설비·자산 현황 조회</p>
-                        </div>
-                      </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-amber-300 group-hover:translate-x-1 transition-transform shrink-0" />
-                    </Link>
-                  </div>
-
-                  {/* 입고품질관리 */}
-                  <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest pt-1">입고품질관리</p>
-                  <div className="space-y-1.5">
-                    <Link href="/vendors/incoming" className="flex items-center justify-between p-2.5 bg-sky-50 hover:bg-sky-100 border border-sky-100 hover:border-sky-300 rounded-xl group transition-all">
-                      <div className="flex items-center gap-2">
-                        <Truck className="w-3.5 h-3.5 text-sky-500 shrink-0" />
-                        <div>
-                          <p className="font-bold text-slate-900 leading-tight">수입검사</p>
-                          <p className="text-[9px] text-slate-400">자재 입고 검사 결과 등록·조회</p>
-                        </div>
-                      </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-sky-300 group-hover:translate-x-1 transition-transform shrink-0" />
-                    </Link>
-                    <Link href="/vendors/inspections" className="flex items-center justify-between p-2.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 hover:border-emerald-300 rounded-xl group transition-all">
-                      <div className="flex items-center gap-2">
-                        <FlaskConical className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                        <div>
-                          <p className="font-bold text-slate-900 leading-tight">출장검사</p>
-                          <p className="text-[9px] text-slate-400">협력사 현장 출장 검사 결과 등록</p>
-                        </div>
-                      </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-emerald-300 group-hover:translate-x-1 transition-transform shrink-0" />
-                    </Link>
-                    <Link href="/vendors/audits" className="flex items-center justify-between p-2.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 hover:border-indigo-300 rounded-xl group transition-all">
-                      <div className="flex items-center gap-2">
-                        <Briefcase className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
-                        <div>
-                          <p className="font-bold text-slate-900 leading-tight">협력업체 감사</p>
-                          <p className="text-[9px] text-slate-400">Supplier Audit 결과 등록·이력</p>
                         </div>
                       </div>
                       <ChevronRight className="w-3.5 h-3.5 text-indigo-300 group-hover:translate-x-1 transition-transform shrink-0" />
@@ -829,6 +744,51 @@ export function MainDashboard({ role, userName, userId }: Props) {
                     </Link>
                   </div>
 
+                  {/* 공급망 품질관리 */}
+                  <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest pt-1">공급망 품질관리</p>
+                  <div className="space-y-1.5">
+                    <Link href="/vendors/qpa" className="flex items-center justify-between p-2.5 bg-violet-50 hover:bg-violet-100 border border-violet-100 hover:border-violet-300 rounded-xl group transition-all">
+                      <div className="flex items-center gap-2">
+                        <Briefcase className="w-3.5 h-3.5 text-violet-500 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">공정감사 (QPA)</p>
+                          <p className="text-[9px] text-slate-400">협력사 공정품질 감사·체크리스트</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-violet-300 group-hover:translate-x-1 transition-transform shrink-0" />
+                    </Link>
+                    <Link href="/vendors/inspections" className="flex items-center justify-between p-2.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 hover:border-emerald-300 rounded-xl group transition-all">
+                      <div className="flex items-center gap-2">
+                        <FlaskConical className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">출장검사</p>
+                          <p className="text-[9px] text-slate-400">협력사 현장 출장 검사 결과 등록</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-emerald-300 group-hover:translate-x-1 transition-transform shrink-0" />
+                    </Link>
+                    <Link href="/vendors/incoming" className="flex items-center justify-between p-2.5 bg-sky-50 hover:bg-sky-100 border border-sky-100 hover:border-sky-300 rounded-xl group transition-all">
+                      <div className="flex items-center gap-2">
+                        <Truck className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">수입검사</p>
+                          <p className="text-[9px] text-slate-400">자재 입고 검사 결과 등록·조회</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-sky-300 group-hover:translate-x-1 transition-transform shrink-0" />
+                    </Link>
+                    <Link href="/vendors/audits" className="flex items-center justify-between p-2.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 hover:border-indigo-300 rounded-xl group transition-all">
+                      <div className="flex items-center gap-2">
+                        <ClipboardList className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">협력업체 감사</p>
+                          <p className="text-[9px] text-slate-400">Supplier Audit 결과 등록·이력</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-indigo-300 group-hover:translate-x-1 transition-transform shrink-0" />
+                    </Link>
+                  </div>
+
                   {/* 시험 및 품질 보증 */}
                   <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest pt-1">시험 및 품질 보증</p>
                   <div className="space-y-1.5">
@@ -841,6 +801,71 @@ export function MainDashboard({ role, userName, userId }: Props) {
                         </div>
                       </div>
                       <ChevronRight className="w-3.5 h-3.5 text-violet-300 group-hover:translate-x-1 transition-transform shrink-0" />
+                    </Link>
+                  </div>
+
+                  {/* 시험설비/계측기 관리 */}
+                  <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest pt-1">시험설비/계측기 관리</p>
+                  <div className="space-y-1.5">
+                    <Link href="/assets" className="flex items-center justify-between p-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-100 hover:border-amber-300 rounded-xl group transition-all">
+                      <div className="flex items-center gap-2">
+                        <Wrench className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">전체 설비 현황</p>
+                          <p className="text-[9px] text-slate-400">설비·계측기 현황 조회</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-amber-300 group-hover:translate-x-1 transition-transform shrink-0" />
+                    </Link>
+                  </div>
+
+                  {/* 품질 이상/사후 관리 */}
+                  <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest pt-1">품질 이상/사후 관리</p>
+                  <div className="space-y-1.5">
+                    <Link href="/ncr" className="flex items-center justify-between p-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-100 hover:border-rose-300 rounded-xl group transition-all">
+                      <div className="flex items-center gap-2">
+                        <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">부적합품 (NCR)</p>
+                          <p className="text-[9px] text-slate-400">발행·처리방안·시정조치·검증</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-rose-300 group-hover:translate-x-1 transition-transform shrink-0" />
+                    </Link>
+                    <Link href="/claims" className="flex items-center justify-between p-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-100 hover:border-blue-300 rounded-xl group transition-all">
+                      <div className="flex items-center gap-2">
+                        <ShieldAlert className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">고객 클레임</p>
+                          <p className="text-[9px] text-slate-400">접수·조사·대책·검증·종결</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-blue-300 group-hover:translate-x-1 transition-transform shrink-0" />
+                    </Link>
+                    <Link href="/meetings" className="flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-400 rounded-xl group transition-all">
+                      <div className="flex items-center gap-2">
+                        <ClipboardList className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">회의록</p>
+                          <p className="text-[9px] text-slate-400">회의 결과·액션 아이템 등록</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:translate-x-1 transition-transform shrink-0" />
+                    </Link>
+                  </div>
+
+                  {/* 고객 품질 관리 */}
+                  <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest pt-1">고객 품질 관리</p>
+                  <div className="space-y-1.5">
+                    <Link href="/witness" className="flex items-center justify-between p-2.5 bg-purple-50 hover:bg-purple-100 border border-purple-100 hover:border-purple-300 rounded-xl group transition-all">
+                      <div className="flex items-center gap-2">
+                        <UserCheck className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+                        <div>
+                          <p className="font-bold text-slate-900 leading-tight">입회검사</p>
+                          <p className="text-[9px] text-slate-400">고객 입회검사 일정·결과 관리</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-purple-300 group-hover:translate-x-1 transition-transform shrink-0" />
                     </Link>
                   </div>
 
