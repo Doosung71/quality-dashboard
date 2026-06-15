@@ -465,19 +465,19 @@ ${rankLines}
 
           {/* 테이블 */}
           <div className="bg-white border border-slate-200 rounded-xl overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-xs">
               <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">#</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">이름</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">역할</th>
+                  <th className="text-left px-2 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">#</th>
+                  <th className="text-left px-3 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">이름</th>
+                  <th className="text-left px-2 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">역할</th>
                   {ACTIVITY_COLS.map(c => (
-                    <th key={c.key} className={`text-right px-3 py-3 text-xs font-medium whitespace-nowrap ${c.color}`}>
+                    <th key={c.key} className={`text-right px-2 py-3 text-xs font-medium whitespace-nowrap ${c.color}`}>
                       {c.label}
                     </th>
                   ))}
-                  <th className="text-right px-4 py-3 text-xs font-bold text-slate-700 whitespace-nowrap">합계</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">마지막 활동</th>
+                  <th className="text-right px-2 py-3 text-xs font-bold text-slate-700 whitespace-nowrap">합계</th>
+                  <th className="text-left px-3 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">마지막 활동</th>
                 </tr>
               </thead>
               <tbody>
@@ -497,30 +497,30 @@ ${rankLines}
                             : "hover:bg-slate-50 cursor-pointer"
                         }`}
                       >
-                        <td className="px-4 py-2.5 text-xs text-slate-400">{idx + 1}</td>
-                        <td className="px-4 py-2.5">
+                        <td className="px-2 py-2 text-xs text-slate-400">{idx + 1}</td>
+                        <td className="px-3 py-2">
                           <div className="flex items-center gap-1.5">
-                            <p className="font-medium text-slate-800">{r.name}</p>
+                            <p className="font-medium text-slate-800 text-xs">{r.name}</p>
                             {r.total > 0 && (
                               <span className="text-[10px] text-slate-400 select-none">{isSelected ? "▼" : "▶"}</span>
                             )}
                           </div>
                           <p className="text-[11px] text-slate-400">{r.department ?? r.email}</p>
                         </td>
-                        <td className="px-4 py-2.5 text-xs text-slate-500 whitespace-nowrap">
+                        <td className="px-2 py-2 text-xs text-slate-500 whitespace-nowrap">
                           {ROLE_LABEL[r.role] ?? r.role}
                         </td>
                         {ACTIVITY_COLS.map(c => (
-                          <td key={c.key} className={`px-3 py-2.5 text-right text-sm font-medium ${(r[c.key] as number) > 0 ? c.color : "text-slate-200"}`}>
+                          <td key={c.key} className={`px-2 py-2 text-right text-xs font-medium ${(r[c.key] as number) > 0 ? c.color : "text-slate-200"}`}>
                             {r[c.key] as number}
                           </td>
                         ))}
-                        <td className={`px-4 py-2.5 text-right text-sm font-bold ${
+                        <td className={`px-2 py-2 text-right text-xs font-bold ${
                           r.total >= 10 ? "text-slate-900" : r.total > 0 ? "text-slate-600" : "text-slate-200"
                         }`}>
                           {r.total}
                         </td>
-                        <td className="px-4 py-2.5 text-xs text-slate-400 whitespace-nowrap">
+                        <td className="px-3 py-2 text-xs text-slate-400 whitespace-nowrap">
                           {r.lastActivity
                             ? new Date(r.lastActivity).toLocaleString("ko-KR", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })
                             : "—"}
