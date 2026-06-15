@@ -46,16 +46,26 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "유효하지 않은 상태값입니다." }, { status: 400 })
   }
 
+  // BC-05: recoveredAmount 음수 검증
+  let recoveredAmount: number | null = null
+  if (body.recoveredAmount !== undefined && body.recoveredAmount !== null) {
+    const rec = Number(body.recoveredAmount)
+    if (!Number.isFinite(rec) || rec < 0) {
+      return NextResponse.json({ error: "회수 금액은 0 이상이어야 합니다." }, { status: 400 })
+    }
+    recoveredAmount = rec
+  }
+
   const backClaim = await prisma.backClaim.create({
     data: {
-      claimId:         id,
-      vendorName:      body.vendorName.trim(),
-      sentAt:          body.sentAt ? new Date(body.sentAt) : null,
-      replyDeadline:   body.replyDeadline ? new Date(body.replyDeadline) : null,
+      claimId:      id,
+      vendorName:   body.vendorName.trim(),
+      sentAt:       body.sentAt ? new Date(body.sentAt) : null,
+      replyDeadline: body.replyDeadline ? new Date(body.replyDeadline) : null,
       claimedAmount,
-      recoveredAmount: body.recoveredAmount ?? null,
-      status:          status as never,
-      notes:           body.notes?.trim() ?? null,
+      recoveredAmount,
+      status:       status as never,
+      notes:        body.notes?.trim() ?? null,
     },
   })
   return NextResponse.json(backClaim, { status: 201 })

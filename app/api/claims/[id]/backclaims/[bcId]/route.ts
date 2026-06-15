@@ -56,12 +56,19 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   return NextResponse.json(backClaim)
 }
 
+const ALLOWED_DELETE_ROLES = ["TEAM_LEAD", "DIRECTOR", "ADMIN"]
+
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string; bcId: string }> }) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
+
+  // BC-01: 삭제는 TEAM_LEAD 이상만 허용 (E2E-2에서 createdById 추가 후 본인 OR TEAM_LEAD+로 확장 예정)
+  if (!ALLOWED_DELETE_ROLES.includes(session.user.role)) {
+    return NextResponse.json({ error: "삭제 권한이 없습니다." }, { status: 403 })
+  }
+
   const { id, bcId } = await params
 
-  // BC-02: bcId가 이 claimId에 속하는지 교차 검증
   const result = await prisma.backClaim.deleteMany({ where: { id: bcId, claimId: id } })
   if (result.count === 0) return NextResponse.json({ error: "Not found" }, { status: 404 })
   return NextResponse.json({ ok: true })
