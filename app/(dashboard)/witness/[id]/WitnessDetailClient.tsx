@@ -10,6 +10,9 @@ type InspectionData = {
   id: string; inspNo: string; customer: string; projectName: string
   projectNumber?: string | null; productName?: string | null
   inspectionDate: string; endDate?: string | null; location?: string | null
+  region?: string | null
+  room?: { id: string; name: string; siteId: string } | null
+  roomId?: string | null
   assigneeId: string; assigneeName: string; status: string; result?: string | null
   description?: string | null; notes?: string | null
   attachments: { url: string; name: string; size: number; contentType: string }[]
@@ -21,6 +24,17 @@ type VoCData = {
 }
 
 // ─── 상수 ───────────────────────────────────────────────────────
+const REGION_OPTIONS = [
+  { value: "",            label: "미지정" },
+  { value: "DOMESTIC",   label: "국내" },
+  { value: "EUROPE",     label: "유럽" },
+  { value: "ASIA",       label: "아시아" },
+  { value: "MIDDLE_EAST",label: "중동" },
+  { value: "OTHER",      label: "기타" },
+]
+const REGION_LABEL: Record<string, string> = {
+  DOMESTIC: "국내", EUROPE: "유럽", ASIA: "아시아", MIDDLE_EAST: "중동", OTHER: "기타",
+}
 const STATUS_OPTIONS = [
   { value: "SCHEDULED",   label: "예정" },
   { value: "IN_PROGRESS", label: "진행중" },
@@ -235,7 +249,14 @@ export default function WitnessDetailClient({
                 <input type="date" value={form.inspectionDate.slice(0, 10)} onChange={e => setForm(f => ({ ...f, inspectionDate: e.target.value }))} className={field} /></div>
               <div><label className={label}>검사 종료일</label>
                 <input type="date" value={form.endDate?.slice(0, 10) ?? ""} onChange={e => setForm(f => ({ ...f, endDate: e.target.value || null }))} className={field} /></div>
-              <div><label className={label}>검사 장소</label>
+              <div><label className={label}>시험장</label>
+                <input value={form.room?.name ?? ""} readOnly className={`${field} bg-slate-50 text-slate-500`}
+                  placeholder="등록 시 선택한 시험장 (변경은 재등록)" /></div>
+              <div><label className={label}>고객 권역</label>
+                <select value={form.region ?? ""} onChange={e => setForm(f => ({ ...f, region: e.target.value || null }))} className={field}>
+                  {REGION_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                </select></div>
+              <div><label className={label}>상세 장소 메모</label>
                 <input value={form.location ?? ""} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} className={field} /></div>
               <div><label className={label}>담당자</label>
                 <input value={form.assigneeName} onChange={e => setForm(f => ({ ...f, assigneeName: e.target.value }))} className={field} /></div>
@@ -261,7 +282,9 @@ export default function WitnessDetailClient({
               <InfoRow label="검사 일정" value={
                 `${new Date(data.inspectionDate).toLocaleDateString("ko-KR")}${data.endDate ? " ~ " + new Date(data.endDate).toLocaleDateString("ko-KR") : ""}`
               } />
-              <InfoRow label="검사 장소" value={data.location} />
+              <InfoRow label="시험장" value={data.room?.name} />
+              <InfoRow label="고객 권역" value={data.region ? REGION_LABEL[data.region] ?? data.region : undefined} />
+              <InfoRow label="상세 장소" value={data.location} />
               <InfoRow label="담당자" value={data.assigneeName} />
               <InfoRow label="검사 범위/내용" value={data.description} span={3} />
               <InfoRow label="비고" value={data.notes} span={3} />

@@ -4,9 +4,10 @@ import { prisma } from "@/lib/prisma"
 
 type Params = { params: Promise<{ id: string }> }
 
-const WRITER_ROLES = ["TEAM_LEAD", "DIRECTOR", "ADMIN"]
-const VALID_STATUS = ["SCHEDULED", "IN_PROGRESS", "COMPLETED", "CANCELLED"]
-const VALID_RESULT = ["PASS", "FAIL", "CONDITIONAL_PASS"]
+const WRITER_ROLES  = ["TEAM_LEAD", "DIRECTOR", "ADMIN"]
+const VALID_STATUS  = ["SCHEDULED", "IN_PROGRESS", "COMPLETED", "CANCELLED"]
+const VALID_RESULT  = ["PASS", "FAIL", "CONDITIONAL_PASS"]
+const VALID_REGIONS = ["DOMESTIC", "EUROPE", "ASIA", "MIDDLE_EAST", "OTHER"]
 
 export async function GET(_: NextRequest, { params }: Params) {
   const session = await requireActiveSession()
@@ -17,7 +18,8 @@ export async function GET(_: NextRequest, { params }: Params) {
     where: { id },
     include: {
       createdBy: { select: { name: true, nickname: true } },
-      voCs: { orderBy: { createdAt: "asc" } },
+      room:      { select: { id: true, name: true, siteId: true } },
+      voCs:      { orderBy: { createdAt: "asc" } },
     },
   })
   if (!inspection) return NextResponse.json({ error: "Not found" }, { status: 404 })
@@ -37,7 +39,8 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   const body = await req.json() as {
     customer?: string; projectName?: string; projectNumber?: string
     productName?: string; inspectionDate?: string; endDate?: string
-    location?: string; assigneeId?: string; assigneeName?: string
+    location?: string; region?: string; roomId?: string | null
+    assigneeId?: string; assigneeName?: string
     status?: string; result?: string
     description?: string; notes?: string; attachments?: unknown
   }
@@ -48,6 +51,9 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   if (body.result !== undefined && body.result !== "" && !VALID_RESULT.includes(body.result)) {
     return NextResponse.json({ error: `유효하지 않은 result: ${body.result}` }, { status: 400 })
   }
+  if (body.region !== undefined && body.region !== "" && !VALID_REGIONS.includes(body.region)) {
+    return NextResponse.json({ error: `유효하지 않은 region: ${body.region}` }, { status: 400 })
+  }
 
   const data: Record<string, unknown> = {}
   if (body.customer       !== undefined) data.customer       = body.customer
@@ -57,6 +63,8 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   if (body.inspectionDate !== undefined) data.inspectionDate = new Date(body.inspectionDate)
   if (body.endDate        !== undefined) data.endDate        = body.endDate ? new Date(body.endDate) : null
   if (body.location       !== undefined) data.location       = body.location
+  if (body.region         !== undefined) data.region         = body.region || null
+  if (body.roomId         !== undefined) data.roomId         = body.roomId ?? null
   if (body.assigneeId     !== undefined) data.assigneeId     = body.assigneeId
   if (body.assigneeName   !== undefined) data.assigneeName   = body.assigneeName
   if (body.status         !== undefined) data.status         = body.status

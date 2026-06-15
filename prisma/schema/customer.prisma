@@ -1,5 +1,18 @@
 // 고객 품질 관리 — 입회검사 (Witness Inspection)
 
+model InspectionRoom {
+  id          String   @id
+  name        String
+  siteId      String   @default("gumi")   // gumi | donghae | indon | external
+  type        String   @default("AC")     // DC | AC | 복합
+  status      String   @default("가동중") // 가동중 | 건축중 | 점검중
+  notes       String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  inspections WitnessInspection[]
+}
+
 enum WitnessStatus {
   SCHEDULED    // 예정
   IN_PROGRESS  // 진행중
@@ -36,7 +49,10 @@ model WitnessInspection {
   productName    String?                             // 제품명/품목
   inspectionDate DateTime                            // 입회검사 일정
   endDate        DateTime?                           // 종료 일정 (다일 검사)
-  location       String?                             // 검사 장소
+  location       String?                             // 검사 장소 (자유 메모)
+  region         String?                             // 권역: DOMESTIC|EUROPE|ASIA|MIDDLE_EAST|OTHER
+  room           InspectionRoom? @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  roomId         String?                             // 시험장 FK
   assigneeId     String                              // 담당자 User.id
   assigneeName   String                              // 담당자 이름 (비정규화)
   status         WitnessStatus  @default(SCHEDULED)

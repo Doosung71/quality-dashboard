@@ -34,7 +34,10 @@ export async function GET(req: NextRequest) {
   const inspections = await prisma.witnessInspection.findMany({
     where,
     orderBy: { inspectionDate: "asc" },
-    include: { createdBy: { select: { name: true, nickname: true } } },
+    include: {
+      createdBy: { select: { name: true, nickname: true } },
+      room:      { select: { id: true, name: true, siteId: true } },
+    },
   })
   return NextResponse.json(inspections)
 }
@@ -43,15 +46,21 @@ export async function POST(req: NextRequest) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
 
+  const VALID_REGIONS = ["DOMESTIC", "EUROPE", "ASIA", "MIDDLE_EAST", "OTHER"]
+
   const body = await req.json() as {
     customer: string; projectName: string; projectNumber?: string
     productName?: string; inspectionDate: string; endDate?: string
-    location?: string; assigneeId: string; assigneeName: string
+    location?: string; region?: string; roomId?: string
+    assigneeId: string; assigneeName: string
     description?: string; notes?: string
   }
 
   if (!body.customer || !body.projectName || !body.inspectionDate || !body.assigneeName) {
     return NextResponse.json({ error: "필수 항목 누락 (고객사·프로젝트명·일정·담당자)" }, { status: 400 })
+  }
+  if (body.region && !VALID_REGIONS.includes(body.region)) {
+    return NextResponse.json({ error: "유효하지 않은 권역입니다." }, { status: 400 })
   }
 
   const inspNo = await generateInspNo()
@@ -66,6 +75,8 @@ export async function POST(req: NextRequest) {
       inspectionDate: new Date(body.inspectionDate),
       endDate:        body.endDate ? new Date(body.endDate) : null,
       location:       body.location,
+      region:         body.region    ?? null,
+      roomId:         body.roomId    ?? null,
       assigneeId:     body.assigneeId || session.user.id,
       assigneeName:   body.assigneeName,
       createdById:    session.user.id,

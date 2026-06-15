@@ -34,6 +34,8 @@ export type WitnessInspectionMinAggregateOutputType = {
   inspectionDate: Date | null
   endDate: Date | null
   location: string | null
+  region: string | null
+  roomId: string | null
   assigneeId: string | null
   assigneeName: string | null
   status: $Enums.WitnessStatus | null
@@ -55,6 +57,8 @@ export type WitnessInspectionMaxAggregateOutputType = {
   inspectionDate: Date | null
   endDate: Date | null
   location: string | null
+  region: string | null
+  roomId: string | null
   assigneeId: string | null
   assigneeName: string | null
   status: $Enums.WitnessStatus | null
@@ -76,6 +80,8 @@ export type WitnessInspectionCountAggregateOutputType = {
   inspectionDate: number
   endDate: number
   location: number
+  region: number
+  roomId: number
   assigneeId: number
   assigneeName: number
   status: number
@@ -100,6 +106,8 @@ export type WitnessInspectionMinAggregateInputType = {
   inspectionDate?: true
   endDate?: true
   location?: true
+  region?: true
+  roomId?: true
   assigneeId?: true
   assigneeName?: true
   status?: true
@@ -121,6 +129,8 @@ export type WitnessInspectionMaxAggregateInputType = {
   inspectionDate?: true
   endDate?: true
   location?: true
+  region?: true
+  roomId?: true
   assigneeId?: true
   assigneeName?: true
   status?: true
@@ -142,6 +152,8 @@ export type WitnessInspectionCountAggregateInputType = {
   inspectionDate?: true
   endDate?: true
   location?: true
+  region?: true
+  roomId?: true
   assigneeId?: true
   assigneeName?: true
   status?: true
@@ -237,6 +249,8 @@ export type WitnessInspectionGroupByOutputType = {
   inspectionDate: Date
   endDate: Date | null
   location: string | null
+  region: string | null
+  roomId: string | null
   assigneeId: string
   assigneeName: string
   status: $Enums.WitnessStatus
@@ -280,6 +294,8 @@ export type WitnessInspectionWhereInput = {
   inspectionDate?: Prisma.DateTimeFilter<"WitnessInspection"> | Date | string
   endDate?: Prisma.DateTimeNullableFilter<"WitnessInspection"> | Date | string | null
   location?: Prisma.StringNullableFilter<"WitnessInspection"> | string | null
+  region?: Prisma.StringNullableFilter<"WitnessInspection"> | string | null
+  roomId?: Prisma.StringNullableFilter<"WitnessInspection"> | string | null
   assigneeId?: Prisma.StringFilter<"WitnessInspection"> | string
   assigneeName?: Prisma.StringFilter<"WitnessInspection"> | string
   status?: Prisma.EnumWitnessStatusFilter<"WitnessInspection"> | $Enums.WitnessStatus
@@ -290,6 +306,7 @@ export type WitnessInspectionWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"WitnessInspection"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WitnessInspection"> | Date | string
   createdById?: Prisma.StringFilter<"WitnessInspection"> | string
+  room?: Prisma.XOR<Prisma.InspectionRoomNullableScalarRelationFilter, Prisma.InspectionRoomWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   voCs?: Prisma.WitnessVoCListRelationFilter
 }
@@ -304,6 +321,8 @@ export type WitnessInspectionOrderByWithRelationInput = {
   inspectionDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
+  region?: Prisma.SortOrderInput | Prisma.SortOrder
+  roomId?: Prisma.SortOrderInput | Prisma.SortOrder
   assigneeId?: Prisma.SortOrder
   assigneeName?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -314,6 +333,7 @@ export type WitnessInspectionOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
+  room?: Prisma.InspectionRoomOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
   voCs?: Prisma.WitnessVoCOrderByRelationAggregateInput
 }
@@ -331,6 +351,8 @@ export type WitnessInspectionWhereUniqueInput = Prisma.AtLeast<{
   inspectionDate?: Prisma.DateTimeFilter<"WitnessInspection"> | Date | string
   endDate?: Prisma.DateTimeNullableFilter<"WitnessInspection"> | Date | string | null
   location?: Prisma.StringNullableFilter<"WitnessInspection"> | string | null
+  region?: Prisma.StringNullableFilter<"WitnessInspection"> | string | null
+  roomId?: Prisma.StringNullableFilter<"WitnessInspection"> | string | null
   assigneeId?: Prisma.StringFilter<"WitnessInspection"> | string
   assigneeName?: Prisma.StringFilter<"WitnessInspection"> | string
   status?: Prisma.EnumWitnessStatusFilter<"WitnessInspection"> | $Enums.WitnessStatus
@@ -341,6 +363,7 @@ export type WitnessInspectionWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"WitnessInspection"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WitnessInspection"> | Date | string
   createdById?: Prisma.StringFilter<"WitnessInspection"> | string
+  room?: Prisma.XOR<Prisma.InspectionRoomNullableScalarRelationFilter, Prisma.InspectionRoomWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   voCs?: Prisma.WitnessVoCListRelationFilter
 }, "id" | "inspNo">
@@ -355,6 +378,8 @@ export type WitnessInspectionOrderByWithAggregationInput = {
   inspectionDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
+  region?: Prisma.SortOrderInput | Prisma.SortOrder
+  roomId?: Prisma.SortOrderInput | Prisma.SortOrder
   assigneeId?: Prisma.SortOrder
   assigneeName?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -383,6 +408,8 @@ export type WitnessInspectionScalarWhereWithAggregatesInput = {
   inspectionDate?: Prisma.DateTimeWithAggregatesFilter<"WitnessInspection"> | Date | string
   endDate?: Prisma.DateTimeNullableWithAggregatesFilter<"WitnessInspection"> | Date | string | null
   location?: Prisma.StringNullableWithAggregatesFilter<"WitnessInspection"> | string | null
+  region?: Prisma.StringNullableWithAggregatesFilter<"WitnessInspection"> | string | null
+  roomId?: Prisma.StringNullableWithAggregatesFilter<"WitnessInspection"> | string | null
   assigneeId?: Prisma.StringWithAggregatesFilter<"WitnessInspection"> | string
   assigneeName?: Prisma.StringWithAggregatesFilter<"WitnessInspection"> | string
   status?: Prisma.EnumWitnessStatusWithAggregatesFilter<"WitnessInspection"> | $Enums.WitnessStatus
@@ -405,6 +432,7 @@ export type WitnessInspectionCreateInput = {
   inspectionDate: Date | string
   endDate?: Date | string | null
   location?: string | null
+  region?: string | null
   assigneeId: string
   assigneeName: string
   status?: $Enums.WitnessStatus
@@ -414,6 +442,7 @@ export type WitnessInspectionCreateInput = {
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  room?: Prisma.InspectionRoomCreateNestedOneWithoutInspectionsInput
   createdBy: Prisma.UserCreateNestedOneWithoutWitnessInspectionsInput
   voCs?: Prisma.WitnessVoCCreateNestedManyWithoutInspectionInput
 }
@@ -428,6 +457,8 @@ export type WitnessInspectionUncheckedCreateInput = {
   inspectionDate: Date | string
   endDate?: Date | string | null
   location?: string | null
+  region?: string | null
+  roomId?: string | null
   assigneeId: string
   assigneeName: string
   status?: $Enums.WitnessStatus
@@ -451,6 +482,7 @@ export type WitnessInspectionUpdateInput = {
   inspectionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
   assigneeName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumWitnessStatusFieldUpdateOperationsInput | $Enums.WitnessStatus
@@ -460,6 +492,7 @@ export type WitnessInspectionUpdateInput = {
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  room?: Prisma.InspectionRoomUpdateOneWithoutInspectionsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutWitnessInspectionsNestedInput
   voCs?: Prisma.WitnessVoCUpdateManyWithoutInspectionNestedInput
 }
@@ -474,6 +507,8 @@ export type WitnessInspectionUncheckedUpdateInput = {
   inspectionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
   assigneeName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumWitnessStatusFieldUpdateOperationsInput | $Enums.WitnessStatus
@@ -497,6 +532,8 @@ export type WitnessInspectionCreateManyInput = {
   inspectionDate: Date | string
   endDate?: Date | string | null
   location?: string | null
+  region?: string | null
+  roomId?: string | null
   assigneeId: string
   assigneeName: string
   status?: $Enums.WitnessStatus
@@ -519,6 +556,7 @@ export type WitnessInspectionUpdateManyMutationInput = {
   inspectionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
   assigneeName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumWitnessStatusFieldUpdateOperationsInput | $Enums.WitnessStatus
@@ -540,6 +578,8 @@ export type WitnessInspectionUncheckedUpdateManyInput = {
   inspectionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
   assigneeName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumWitnessStatusFieldUpdateOperationsInput | $Enums.WitnessStatus
@@ -572,6 +612,8 @@ export type WitnessInspectionCountOrderByAggregateInput = {
   inspectionDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  region?: Prisma.SortOrder
+  roomId?: Prisma.SortOrder
   assigneeId?: Prisma.SortOrder
   assigneeName?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -594,6 +636,8 @@ export type WitnessInspectionMaxOrderByAggregateInput = {
   inspectionDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  region?: Prisma.SortOrder
+  roomId?: Prisma.SortOrder
   assigneeId?: Prisma.SortOrder
   assigneeName?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -615,6 +659,8 @@ export type WitnessInspectionMinOrderByAggregateInput = {
   inspectionDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  region?: Prisma.SortOrder
+  roomId?: Prisma.SortOrder
   assigneeId?: Prisma.SortOrder
   assigneeName?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -673,6 +719,48 @@ export type WitnessInspectionUncheckedUpdateManyWithoutCreatedByNestedInput = {
   deleteMany?: Prisma.WitnessInspectionScalarWhereInput | Prisma.WitnessInspectionScalarWhereInput[]
 }
 
+export type WitnessInspectionCreateNestedManyWithoutRoomInput = {
+  create?: Prisma.XOR<Prisma.WitnessInspectionCreateWithoutRoomInput, Prisma.WitnessInspectionUncheckedCreateWithoutRoomInput> | Prisma.WitnessInspectionCreateWithoutRoomInput[] | Prisma.WitnessInspectionUncheckedCreateWithoutRoomInput[]
+  connectOrCreate?: Prisma.WitnessInspectionCreateOrConnectWithoutRoomInput | Prisma.WitnessInspectionCreateOrConnectWithoutRoomInput[]
+  createMany?: Prisma.WitnessInspectionCreateManyRoomInputEnvelope
+  connect?: Prisma.WitnessInspectionWhereUniqueInput | Prisma.WitnessInspectionWhereUniqueInput[]
+}
+
+export type WitnessInspectionUncheckedCreateNestedManyWithoutRoomInput = {
+  create?: Prisma.XOR<Prisma.WitnessInspectionCreateWithoutRoomInput, Prisma.WitnessInspectionUncheckedCreateWithoutRoomInput> | Prisma.WitnessInspectionCreateWithoutRoomInput[] | Prisma.WitnessInspectionUncheckedCreateWithoutRoomInput[]
+  connectOrCreate?: Prisma.WitnessInspectionCreateOrConnectWithoutRoomInput | Prisma.WitnessInspectionCreateOrConnectWithoutRoomInput[]
+  createMany?: Prisma.WitnessInspectionCreateManyRoomInputEnvelope
+  connect?: Prisma.WitnessInspectionWhereUniqueInput | Prisma.WitnessInspectionWhereUniqueInput[]
+}
+
+export type WitnessInspectionUpdateManyWithoutRoomNestedInput = {
+  create?: Prisma.XOR<Prisma.WitnessInspectionCreateWithoutRoomInput, Prisma.WitnessInspectionUncheckedCreateWithoutRoomInput> | Prisma.WitnessInspectionCreateWithoutRoomInput[] | Prisma.WitnessInspectionUncheckedCreateWithoutRoomInput[]
+  connectOrCreate?: Prisma.WitnessInspectionCreateOrConnectWithoutRoomInput | Prisma.WitnessInspectionCreateOrConnectWithoutRoomInput[]
+  upsert?: Prisma.WitnessInspectionUpsertWithWhereUniqueWithoutRoomInput | Prisma.WitnessInspectionUpsertWithWhereUniqueWithoutRoomInput[]
+  createMany?: Prisma.WitnessInspectionCreateManyRoomInputEnvelope
+  set?: Prisma.WitnessInspectionWhereUniqueInput | Prisma.WitnessInspectionWhereUniqueInput[]
+  disconnect?: Prisma.WitnessInspectionWhereUniqueInput | Prisma.WitnessInspectionWhereUniqueInput[]
+  delete?: Prisma.WitnessInspectionWhereUniqueInput | Prisma.WitnessInspectionWhereUniqueInput[]
+  connect?: Prisma.WitnessInspectionWhereUniqueInput | Prisma.WitnessInspectionWhereUniqueInput[]
+  update?: Prisma.WitnessInspectionUpdateWithWhereUniqueWithoutRoomInput | Prisma.WitnessInspectionUpdateWithWhereUniqueWithoutRoomInput[]
+  updateMany?: Prisma.WitnessInspectionUpdateManyWithWhereWithoutRoomInput | Prisma.WitnessInspectionUpdateManyWithWhereWithoutRoomInput[]
+  deleteMany?: Prisma.WitnessInspectionScalarWhereInput | Prisma.WitnessInspectionScalarWhereInput[]
+}
+
+export type WitnessInspectionUncheckedUpdateManyWithoutRoomNestedInput = {
+  create?: Prisma.XOR<Prisma.WitnessInspectionCreateWithoutRoomInput, Prisma.WitnessInspectionUncheckedCreateWithoutRoomInput> | Prisma.WitnessInspectionCreateWithoutRoomInput[] | Prisma.WitnessInspectionUncheckedCreateWithoutRoomInput[]
+  connectOrCreate?: Prisma.WitnessInspectionCreateOrConnectWithoutRoomInput | Prisma.WitnessInspectionCreateOrConnectWithoutRoomInput[]
+  upsert?: Prisma.WitnessInspectionUpsertWithWhereUniqueWithoutRoomInput | Prisma.WitnessInspectionUpsertWithWhereUniqueWithoutRoomInput[]
+  createMany?: Prisma.WitnessInspectionCreateManyRoomInputEnvelope
+  set?: Prisma.WitnessInspectionWhereUniqueInput | Prisma.WitnessInspectionWhereUniqueInput[]
+  disconnect?: Prisma.WitnessInspectionWhereUniqueInput | Prisma.WitnessInspectionWhereUniqueInput[]
+  delete?: Prisma.WitnessInspectionWhereUniqueInput | Prisma.WitnessInspectionWhereUniqueInput[]
+  connect?: Prisma.WitnessInspectionWhereUniqueInput | Prisma.WitnessInspectionWhereUniqueInput[]
+  update?: Prisma.WitnessInspectionUpdateWithWhereUniqueWithoutRoomInput | Prisma.WitnessInspectionUpdateWithWhereUniqueWithoutRoomInput[]
+  updateMany?: Prisma.WitnessInspectionUpdateManyWithWhereWithoutRoomInput | Prisma.WitnessInspectionUpdateManyWithWhereWithoutRoomInput[]
+  deleteMany?: Prisma.WitnessInspectionScalarWhereInput | Prisma.WitnessInspectionScalarWhereInput[]
+}
+
 export type EnumWitnessStatusFieldUpdateOperationsInput = {
   set?: $Enums.WitnessStatus
 }
@@ -705,6 +793,7 @@ export type WitnessInspectionCreateWithoutCreatedByInput = {
   inspectionDate: Date | string
   endDate?: Date | string | null
   location?: string | null
+  region?: string | null
   assigneeId: string
   assigneeName: string
   status?: $Enums.WitnessStatus
@@ -714,6 +803,7 @@ export type WitnessInspectionCreateWithoutCreatedByInput = {
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  room?: Prisma.InspectionRoomCreateNestedOneWithoutInspectionsInput
   voCs?: Prisma.WitnessVoCCreateNestedManyWithoutInspectionInput
 }
 
@@ -727,6 +817,8 @@ export type WitnessInspectionUncheckedCreateWithoutCreatedByInput = {
   inspectionDate: Date | string
   endDate?: Date | string | null
   location?: string | null
+  region?: string | null
+  roomId?: string | null
   assigneeId: string
   assigneeName: string
   status?: $Enums.WitnessStatus
@@ -778,6 +870,8 @@ export type WitnessInspectionScalarWhereInput = {
   inspectionDate?: Prisma.DateTimeFilter<"WitnessInspection"> | Date | string
   endDate?: Prisma.DateTimeNullableFilter<"WitnessInspection"> | Date | string | null
   location?: Prisma.StringNullableFilter<"WitnessInspection"> | string | null
+  region?: Prisma.StringNullableFilter<"WitnessInspection"> | string | null
+  roomId?: Prisma.StringNullableFilter<"WitnessInspection"> | string | null
   assigneeId?: Prisma.StringFilter<"WitnessInspection"> | string
   assigneeName?: Prisma.StringFilter<"WitnessInspection"> | string
   status?: Prisma.EnumWitnessStatusFilter<"WitnessInspection"> | $Enums.WitnessStatus
@@ -790,6 +884,80 @@ export type WitnessInspectionScalarWhereInput = {
   createdById?: Prisma.StringFilter<"WitnessInspection"> | string
 }
 
+export type WitnessInspectionCreateWithoutRoomInput = {
+  id?: string
+  inspNo: string
+  customer: string
+  projectName: string
+  projectNumber?: string | null
+  productName?: string | null
+  inspectionDate: Date | string
+  endDate?: Date | string | null
+  location?: string | null
+  region?: string | null
+  assigneeId: string
+  assigneeName: string
+  status?: $Enums.WitnessStatus
+  result?: $Enums.InspectionResult | null
+  description?: string | null
+  notes?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy: Prisma.UserCreateNestedOneWithoutWitnessInspectionsInput
+  voCs?: Prisma.WitnessVoCCreateNestedManyWithoutInspectionInput
+}
+
+export type WitnessInspectionUncheckedCreateWithoutRoomInput = {
+  id?: string
+  inspNo: string
+  customer: string
+  projectName: string
+  projectNumber?: string | null
+  productName?: string | null
+  inspectionDate: Date | string
+  endDate?: Date | string | null
+  location?: string | null
+  region?: string | null
+  assigneeId: string
+  assigneeName: string
+  status?: $Enums.WitnessStatus
+  result?: $Enums.InspectionResult | null
+  description?: string | null
+  notes?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById: string
+  voCs?: Prisma.WitnessVoCUncheckedCreateNestedManyWithoutInspectionInput
+}
+
+export type WitnessInspectionCreateOrConnectWithoutRoomInput = {
+  where: Prisma.WitnessInspectionWhereUniqueInput
+  create: Prisma.XOR<Prisma.WitnessInspectionCreateWithoutRoomInput, Prisma.WitnessInspectionUncheckedCreateWithoutRoomInput>
+}
+
+export type WitnessInspectionCreateManyRoomInputEnvelope = {
+  data: Prisma.WitnessInspectionCreateManyRoomInput | Prisma.WitnessInspectionCreateManyRoomInput[]
+  skipDuplicates?: boolean
+}
+
+export type WitnessInspectionUpsertWithWhereUniqueWithoutRoomInput = {
+  where: Prisma.WitnessInspectionWhereUniqueInput
+  update: Prisma.XOR<Prisma.WitnessInspectionUpdateWithoutRoomInput, Prisma.WitnessInspectionUncheckedUpdateWithoutRoomInput>
+  create: Prisma.XOR<Prisma.WitnessInspectionCreateWithoutRoomInput, Prisma.WitnessInspectionUncheckedCreateWithoutRoomInput>
+}
+
+export type WitnessInspectionUpdateWithWhereUniqueWithoutRoomInput = {
+  where: Prisma.WitnessInspectionWhereUniqueInput
+  data: Prisma.XOR<Prisma.WitnessInspectionUpdateWithoutRoomInput, Prisma.WitnessInspectionUncheckedUpdateWithoutRoomInput>
+}
+
+export type WitnessInspectionUpdateManyWithWhereWithoutRoomInput = {
+  where: Prisma.WitnessInspectionScalarWhereInput
+  data: Prisma.XOR<Prisma.WitnessInspectionUpdateManyMutationInput, Prisma.WitnessInspectionUncheckedUpdateManyWithoutRoomInput>
+}
+
 export type WitnessInspectionCreateWithoutVoCsInput = {
   id?: string
   inspNo: string
@@ -800,6 +968,7 @@ export type WitnessInspectionCreateWithoutVoCsInput = {
   inspectionDate: Date | string
   endDate?: Date | string | null
   location?: string | null
+  region?: string | null
   assigneeId: string
   assigneeName: string
   status?: $Enums.WitnessStatus
@@ -809,6 +978,7 @@ export type WitnessInspectionCreateWithoutVoCsInput = {
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  room?: Prisma.InspectionRoomCreateNestedOneWithoutInspectionsInput
   createdBy: Prisma.UserCreateNestedOneWithoutWitnessInspectionsInput
 }
 
@@ -822,6 +992,8 @@ export type WitnessInspectionUncheckedCreateWithoutVoCsInput = {
   inspectionDate: Date | string
   endDate?: Date | string | null
   location?: string | null
+  region?: string | null
+  roomId?: string | null
   assigneeId: string
   assigneeName: string
   status?: $Enums.WitnessStatus
@@ -860,6 +1032,7 @@ export type WitnessInspectionUpdateWithoutVoCsInput = {
   inspectionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
   assigneeName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumWitnessStatusFieldUpdateOperationsInput | $Enums.WitnessStatus
@@ -869,6 +1042,7 @@ export type WitnessInspectionUpdateWithoutVoCsInput = {
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  room?: Prisma.InspectionRoomUpdateOneWithoutInspectionsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutWitnessInspectionsNestedInput
 }
 
@@ -882,6 +1056,8 @@ export type WitnessInspectionUncheckedUpdateWithoutVoCsInput = {
   inspectionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
   assigneeName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumWitnessStatusFieldUpdateOperationsInput | $Enums.WitnessStatus
@@ -904,6 +1080,8 @@ export type WitnessInspectionCreateManyCreatedByInput = {
   inspectionDate: Date | string
   endDate?: Date | string | null
   location?: string | null
+  region?: string | null
+  roomId?: string | null
   assigneeId: string
   assigneeName: string
   status?: $Enums.WitnessStatus
@@ -925,6 +1103,7 @@ export type WitnessInspectionUpdateWithoutCreatedByInput = {
   inspectionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
   assigneeName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumWitnessStatusFieldUpdateOperationsInput | $Enums.WitnessStatus
@@ -934,6 +1113,7 @@ export type WitnessInspectionUpdateWithoutCreatedByInput = {
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  room?: Prisma.InspectionRoomUpdateOneWithoutInspectionsNestedInput
   voCs?: Prisma.WitnessVoCUpdateManyWithoutInspectionNestedInput
 }
 
@@ -947,6 +1127,8 @@ export type WitnessInspectionUncheckedUpdateWithoutCreatedByInput = {
   inspectionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
   assigneeName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumWitnessStatusFieldUpdateOperationsInput | $Enums.WitnessStatus
@@ -969,6 +1151,8 @@ export type WitnessInspectionUncheckedUpdateManyWithoutCreatedByInput = {
   inspectionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
   assigneeName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumWitnessStatusFieldUpdateOperationsInput | $Enums.WitnessStatus
@@ -978,6 +1162,100 @@ export type WitnessInspectionUncheckedUpdateManyWithoutCreatedByInput = {
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type WitnessInspectionCreateManyRoomInput = {
+  id?: string
+  inspNo: string
+  customer: string
+  projectName: string
+  projectNumber?: string | null
+  productName?: string | null
+  inspectionDate: Date | string
+  endDate?: Date | string | null
+  location?: string | null
+  region?: string | null
+  assigneeId: string
+  assigneeName: string
+  status?: $Enums.WitnessStatus
+  result?: $Enums.InspectionResult | null
+  description?: string | null
+  notes?: string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById: string
+}
+
+export type WitnessInspectionUpdateWithoutRoomInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  inspNo?: Prisma.StringFieldUpdateOperationsInput | string
+  customer?: Prisma.StringFieldUpdateOperationsInput | string
+  projectName?: Prisma.StringFieldUpdateOperationsInput | string
+  projectNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  productName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inspectionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWitnessStatusFieldUpdateOperationsInput | $Enums.WitnessStatus
+  result?: Prisma.NullableEnumInspectionResultFieldUpdateOperationsInput | $Enums.InspectionResult | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutWitnessInspectionsNestedInput
+  voCs?: Prisma.WitnessVoCUpdateManyWithoutInspectionNestedInput
+}
+
+export type WitnessInspectionUncheckedUpdateWithoutRoomInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  inspNo?: Prisma.StringFieldUpdateOperationsInput | string
+  customer?: Prisma.StringFieldUpdateOperationsInput | string
+  projectName?: Prisma.StringFieldUpdateOperationsInput | string
+  projectNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  productName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inspectionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWitnessStatusFieldUpdateOperationsInput | $Enums.WitnessStatus
+  result?: Prisma.NullableEnumInspectionResultFieldUpdateOperationsInput | $Enums.InspectionResult | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  voCs?: Prisma.WitnessVoCUncheckedUpdateManyWithoutInspectionNestedInput
+}
+
+export type WitnessInspectionUncheckedUpdateManyWithoutRoomInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  inspNo?: Prisma.StringFieldUpdateOperationsInput | string
+  customer?: Prisma.StringFieldUpdateOperationsInput | string
+  projectName?: Prisma.StringFieldUpdateOperationsInput | string
+  projectNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  productName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inspectionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWitnessStatusFieldUpdateOperationsInput | $Enums.WitnessStatus
+  result?: Prisma.NullableEnumInspectionResultFieldUpdateOperationsInput | $Enums.InspectionResult | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -1021,6 +1299,8 @@ export type WitnessInspectionSelect<ExtArgs extends runtime.Types.Extensions.Int
   inspectionDate?: boolean
   endDate?: boolean
   location?: boolean
+  region?: boolean
+  roomId?: boolean
   assigneeId?: boolean
   assigneeName?: boolean
   status?: boolean
@@ -1031,6 +1311,7 @@ export type WitnessInspectionSelect<ExtArgs extends runtime.Types.Extensions.Int
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
+  room?: boolean | Prisma.WitnessInspection$roomArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   voCs?: boolean | Prisma.WitnessInspection$voCsArgs<ExtArgs>
   _count?: boolean | Prisma.WitnessInspectionCountOutputTypeDefaultArgs<ExtArgs>
@@ -1046,6 +1327,8 @@ export type WitnessInspectionSelectCreateManyAndReturn<ExtArgs extends runtime.T
   inspectionDate?: boolean
   endDate?: boolean
   location?: boolean
+  region?: boolean
+  roomId?: boolean
   assigneeId?: boolean
   assigneeName?: boolean
   status?: boolean
@@ -1056,6 +1339,7 @@ export type WitnessInspectionSelectCreateManyAndReturn<ExtArgs extends runtime.T
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
+  room?: boolean | Prisma.WitnessInspection$roomArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["witnessInspection"]>
 
@@ -1069,6 +1353,8 @@ export type WitnessInspectionSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   inspectionDate?: boolean
   endDate?: boolean
   location?: boolean
+  region?: boolean
+  roomId?: boolean
   assigneeId?: boolean
   assigneeName?: boolean
   status?: boolean
@@ -1079,6 +1365,7 @@ export type WitnessInspectionSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
+  room?: boolean | Prisma.WitnessInspection$roomArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["witnessInspection"]>
 
@@ -1092,6 +1379,8 @@ export type WitnessInspectionSelectScalar = {
   inspectionDate?: boolean
   endDate?: boolean
   location?: boolean
+  region?: boolean
+  roomId?: boolean
   assigneeId?: boolean
   assigneeName?: boolean
   status?: boolean
@@ -1104,22 +1393,26 @@ export type WitnessInspectionSelectScalar = {
   createdById?: boolean
 }
 
-export type WitnessInspectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "inspNo" | "customer" | "projectName" | "projectNumber" | "productName" | "inspectionDate" | "endDate" | "location" | "assigneeId" | "assigneeName" | "status" | "result" | "description" | "notes" | "attachments" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["witnessInspection"]>
+export type WitnessInspectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "inspNo" | "customer" | "projectName" | "projectNumber" | "productName" | "inspectionDate" | "endDate" | "location" | "region" | "roomId" | "assigneeId" | "assigneeName" | "status" | "result" | "description" | "notes" | "attachments" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["witnessInspection"]>
 export type WitnessInspectionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  room?: boolean | Prisma.WitnessInspection$roomArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   voCs?: boolean | Prisma.WitnessInspection$voCsArgs<ExtArgs>
   _count?: boolean | Prisma.WitnessInspectionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WitnessInspectionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  room?: boolean | Prisma.WitnessInspection$roomArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type WitnessInspectionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  room?: boolean | Prisma.WitnessInspection$roomArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $WitnessInspectionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "WitnessInspection"
   objects: {
+    room: Prisma.$InspectionRoomPayload<ExtArgs> | null
     createdBy: Prisma.$UserPayload<ExtArgs>
     voCs: Prisma.$WitnessVoCPayload<ExtArgs>[]
   }
@@ -1133,6 +1426,8 @@ export type $WitnessInspectionPayload<ExtArgs extends runtime.Types.Extensions.I
     inspectionDate: Date
     endDate: Date | null
     location: string | null
+    region: string | null
+    roomId: string | null
     assigneeId: string
     assigneeName: string
     status: $Enums.WitnessStatus
@@ -1537,6 +1832,7 @@ readonly fields: WitnessInspectionFieldRefs;
  */
 export interface Prisma__WitnessInspectionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  room<T extends Prisma.WitnessInspection$roomArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WitnessInspection$roomArgs<ExtArgs>>): Prisma.Prisma__InspectionRoomClient<runtime.Types.Result.GetResult<Prisma.$InspectionRoomPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   voCs<T extends Prisma.WitnessInspection$voCsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WitnessInspection$voCsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WitnessVoCPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1577,6 +1873,8 @@ export interface WitnessInspectionFieldRefs {
   readonly inspectionDate: Prisma.FieldRef<"WitnessInspection", 'DateTime'>
   readonly endDate: Prisma.FieldRef<"WitnessInspection", 'DateTime'>
   readonly location: Prisma.FieldRef<"WitnessInspection", 'String'>
+  readonly region: Prisma.FieldRef<"WitnessInspection", 'String'>
+  readonly roomId: Prisma.FieldRef<"WitnessInspection", 'String'>
   readonly assigneeId: Prisma.FieldRef<"WitnessInspection", 'String'>
   readonly assigneeName: Prisma.FieldRef<"WitnessInspection", 'String'>
   readonly status: Prisma.FieldRef<"WitnessInspection", 'WitnessStatus'>
@@ -1985,6 +2283,25 @@ export type WitnessInspectionDeleteManyArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many WitnessInspections to delete.
    */
   limit?: number
+}
+
+/**
+ * WitnessInspection.room
+ */
+export type WitnessInspection$roomArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the InspectionRoom
+   */
+  select?: Prisma.InspectionRoomSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the InspectionRoom
+   */
+  omit?: Prisma.InspectionRoomOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InspectionRoomInclude<ExtArgs> | null
+  where?: Prisma.InspectionRoomWhereInput
 }
 
 /**

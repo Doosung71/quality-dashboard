@@ -77,6 +77,11 @@ export type MeetingAction = Prisma.MeetingActionModel
  */
 export type BoardComment = Prisma.BoardCommentModel
 /**
+ * Model InspectionRoom
+ * 
+ */
+export type InspectionRoom = Prisma.InspectionRoomModel
+/**
  * Model WitnessInspection
  * 
  */

@@ -391,6 +391,7 @@ export const ModelName = {
   Meeting: 'Meeting',
   MeetingAction: 'MeetingAction',
   BoardComment: 'BoardComment',
+  InspectionRoom: 'InspectionRoom',
   WitnessInspection: 'WitnessInspection',
   WitnessVoC: 'WitnessVoC',
   Equipment: 'Equipment',
@@ -438,7 +439,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "meeting" | "meetingAction" | "boardComment" | "witnessInspection" | "witnessVoC" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "internalStandard" | "claim" | "backClaim" | "ncr" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "vendor" | "supplierAudit" | "auditFinding" | "incomingInspection" | "sourceInspection" | "qpaAudit" | "qpaAuditItem" | "qpaFinding"
+    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "meeting" | "meetingAction" | "boardComment" | "inspectionRoom" | "witnessInspection" | "witnessVoC" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "internalStandard" | "claim" | "backClaim" | "ncr" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "vendor" | "supplierAudit" | "auditFinding" | "incomingInspection" | "sourceInspection" | "qpaAudit" | "qpaAuditItem" | "qpaFinding"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -957,6 +958,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.BoardCommentCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.BoardCommentCountAggregateOutputType> | number
+        }
+      }
+    }
+    InspectionRoom: {
+      payload: Prisma.$InspectionRoomPayload<ExtArgs>
+      fields: Prisma.InspectionRoomFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.InspectionRoomFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InspectionRoomPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.InspectionRoomFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InspectionRoomPayload>
+        }
+        findFirst: {
+          args: Prisma.InspectionRoomFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InspectionRoomPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.InspectionRoomFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InspectionRoomPayload>
+        }
+        findMany: {
+          args: Prisma.InspectionRoomFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InspectionRoomPayload>[]
+        }
+        create: {
+          args: Prisma.InspectionRoomCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InspectionRoomPayload>
+        }
+        createMany: {
+          args: Prisma.InspectionRoomCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.InspectionRoomCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InspectionRoomPayload>[]
+        }
+        delete: {
+          args: Prisma.InspectionRoomDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InspectionRoomPayload>
+        }
+        update: {
+          args: Prisma.InspectionRoomUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InspectionRoomPayload>
+        }
+        deleteMany: {
+          args: Prisma.InspectionRoomDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.InspectionRoomUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.InspectionRoomUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InspectionRoomPayload>[]
+        }
+        upsert: {
+          args: Prisma.InspectionRoomUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InspectionRoomPayload>
+        }
+        aggregate: {
+          args: Prisma.InspectionRoomAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateInspectionRoom>
+        }
+        groupBy: {
+          args: Prisma.InspectionRoomGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InspectionRoomGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.InspectionRoomCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InspectionRoomCountAggregateOutputType> | number
         }
       }
     }
@@ -3470,6 +3545,20 @@ export const BoardCommentScalarFieldEnum = {
 export type BoardCommentScalarFieldEnum = (typeof BoardCommentScalarFieldEnum)[keyof typeof BoardCommentScalarFieldEnum]
 
 
+export const InspectionRoomScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  siteId: 'siteId',
+  type: 'type',
+  status: 'status',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InspectionRoomScalarFieldEnum = (typeof InspectionRoomScalarFieldEnum)[keyof typeof InspectionRoomScalarFieldEnum]
+
+
 export const WitnessInspectionScalarFieldEnum = {
   id: 'id',
   inspNo: 'inspNo',
@@ -3480,6 +3569,8 @@ export const WitnessInspectionScalarFieldEnum = {
   inspectionDate: 'inspectionDate',
   endDate: 'endDate',
   location: 'location',
+  region: 'region',
+  roomId: 'roomId',
   assigneeId: 'assigneeId',
   assigneeName: 'assigneeName',
   status: 'status',
@@ -4641,6 +4732,7 @@ export type GlobalOmitConfig = {
   meeting?: Prisma.MeetingOmit
   meetingAction?: Prisma.MeetingActionOmit
   boardComment?: Prisma.BoardCommentOmit
+  inspectionRoom?: Prisma.InspectionRoomOmit
   witnessInspection?: Prisma.WitnessInspectionOmit
   witnessVoC?: Prisma.WitnessVoCOmit
   equipment?: Prisma.EquipmentOmit

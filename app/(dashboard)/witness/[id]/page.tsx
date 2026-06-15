@@ -23,7 +23,8 @@ export default async function WitnessDetailPage({ params }: { params: Promise<{ 
     where: { id },
     include: {
       createdBy: { select: { name: true, nickname: true } },
-      voCs: { orderBy: { createdAt: "asc" } },
+      voCs:      { orderBy: { createdAt: "asc" } },
+      room:      { select: { id: true, name: true, siteId: true } },
     },
   })
   if (!inspection) redirect("/witness")
@@ -66,6 +67,9 @@ export default async function WitnessDetailPage({ params }: { params: Promise<{ 
           inspectionDate: inspection.inspectionDate.toISOString(),
           endDate:        inspection.endDate?.toISOString() ?? null,
           location:       inspection.location,
+          region:         inspection.region ?? null,
+          room:           inspection.room ?? null,
+          roomId:         inspection.roomId ?? null,
           assigneeId:     inspection.assigneeId,
           assigneeName:   inspection.assigneeName,
           status:         inspection.status,

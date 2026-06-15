@@ -58,6 +58,7 @@ export const ModelName = {
   Meeting: 'Meeting',
   MeetingAction: 'MeetingAction',
   BoardComment: 'BoardComment',
+  InspectionRoom: 'InspectionRoom',
   WitnessInspection: 'WitnessInspection',
   WitnessVoC: 'WitnessVoC',
   Equipment: 'Equipment',
@@ -211,6 +212,20 @@ export const BoardCommentScalarFieldEnum = {
 export type BoardCommentScalarFieldEnum = (typeof BoardCommentScalarFieldEnum)[keyof typeof BoardCommentScalarFieldEnum]
 
 
+export const InspectionRoomScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  siteId: 'siteId',
+  type: 'type',
+  status: 'status',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InspectionRoomScalarFieldEnum = (typeof InspectionRoomScalarFieldEnum)[keyof typeof InspectionRoomScalarFieldEnum]
+
+
 export const WitnessInspectionScalarFieldEnum = {
   id: 'id',
   inspNo: 'inspNo',
@@ -221,6 +236,8 @@ export const WitnessInspectionScalarFieldEnum = {
   inspectionDate: 'inspectionDate',
   endDate: 'endDate',
   location: 'location',
+  region: 'region',
+  roomId: 'roomId',
   assigneeId: 'assigneeId',
   assigneeName: 'assigneeName',
   status: 'status',
