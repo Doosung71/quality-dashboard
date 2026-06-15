@@ -24,7 +24,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const body = await req.json() as {
     title?: string; customer?: string; priority?: string; assignee?: string
     description?: string; status?: string; targetDate?: string | null; closedAt?: string | null
-    timeline?: unknown[]; attachments?: unknown[]
+    timeline?: unknown[]; attachments?: unknown[]; responsibleParty?: string | null
   }
 
   const existing = body.status === "Closed"
@@ -34,16 +34,17 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const claim = await prisma.claim.update({
     where: { id },
     data: {
-      ...(body.title       !== undefined && { title:       body.title }),
-      ...(body.customer    !== undefined && { customer:    body.customer }),
-      ...(body.priority    !== undefined && { priority:    body.priority as never }),
-      ...(body.assignee    !== undefined && { assignee:    body.assignee }),
-      ...(body.description !== undefined && { description: body.description }),
-      ...(body.status      !== undefined && { status:      body.status as never }),
-      ...(body.timeline    !== undefined && { timeline:    body.timeline as never }),
-      ...(body.attachments !== undefined && { attachments: body.attachments as never }),
-      ...(body.targetDate  !== undefined && { targetDate:  body.targetDate ? new Date(body.targetDate) : null }),
-      ...(body.closedAt    !== undefined && { closedAt:    body.closedAt ? new Date(body.closedAt) : null }),
+      ...(body.title             !== undefined && { title:            body.title }),
+      ...(body.customer          !== undefined && { customer:         body.customer }),
+      ...(body.priority          !== undefined && { priority:         body.priority as never }),
+      ...(body.assignee          !== undefined && { assignee:         body.assignee }),
+      ...(body.description       !== undefined && { description:      body.description }),
+      ...(body.status            !== undefined && { status:           body.status as never }),
+      ...(body.timeline          !== undefined && { timeline:         body.timeline as never }),
+      ...(body.attachments       !== undefined && { attachments:      body.attachments as never }),
+      ...(body.targetDate        !== undefined && { targetDate:       body.targetDate ? new Date(body.targetDate) : null }),
+      ...(body.closedAt          !== undefined && { closedAt:         body.closedAt ? new Date(body.closedAt) : null }),
+      ...(body.responsibleParty  !== undefined && { responsibleParty: body.responsibleParty }),
     },
   })
 

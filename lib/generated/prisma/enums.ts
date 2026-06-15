@@ -137,6 +137,17 @@ export const NcrDisposition = {
 export type NcrDisposition = (typeof NcrDisposition)[keyof typeof NcrDisposition]
 
 
+export const BackClaimStatus = {
+  DRAFT: 'DRAFT',
+  SENT: 'SENT',
+  REPLIED: 'REPLIED',
+  SETTLED: 'SETTLED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type BackClaimStatus = (typeof BackClaimStatus)[keyof typeof BackClaimStatus]
+
+
 export const AnalysisStatus = {
   DRAFT: 'DRAFT',
   REVIEWED: 'REVIEWED',

@@ -400,6 +400,7 @@ export const ModelName = {
   TestPlanOwnerHistory: 'TestPlanOwnerHistory',
   InternalStandard: 'InternalStandard',
   Claim: 'Claim',
+  BackClaim: 'BackClaim',
   Ncr: 'Ncr',
   Tender: 'Tender',
   TenderDocument: 'TenderDocument',
@@ -437,7 +438,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "meeting" | "meetingAction" | "boardComment" | "witnessInspection" | "witnessVoC" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "internalStandard" | "claim" | "ncr" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "vendor" | "supplierAudit" | "auditFinding" | "incomingInspection" | "sourceInspection" | "qpaAudit" | "qpaAuditItem" | "qpaFinding"
+    modelProps: "user" | "feedback" | "feedbackReply" | "boardPost" | "meeting" | "meetingAction" | "boardComment" | "witnessInspection" | "witnessVoC" | "equipment" | "equipmentOwnerHistory" | "testPlan" | "equipmentRepair" | "testPlanOwnerHistory" | "internalStandard" | "claim" | "backClaim" | "ncr" | "tender" | "tenderDocument" | "analysis" | "specRequirement" | "standard" | "reviewHistory" | "comment" | "awardedProject" | "contractDocument" | "contractAnalysis" | "contractGap" | "contractReviewHistory" | "contractComment" | "vendor" | "supplierAudit" | "auditFinding" | "incomingInspection" | "sourceInspection" | "qpaAudit" | "qpaAuditItem" | "qpaFinding"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1622,6 +1623,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ClaimCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ClaimCountAggregateOutputType> | number
+        }
+      }
+    }
+    BackClaim: {
+      payload: Prisma.$BackClaimPayload<ExtArgs>
+      fields: Prisma.BackClaimFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BackClaimFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BackClaimPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BackClaimFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BackClaimPayload>
+        }
+        findFirst: {
+          args: Prisma.BackClaimFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BackClaimPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BackClaimFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BackClaimPayload>
+        }
+        findMany: {
+          args: Prisma.BackClaimFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BackClaimPayload>[]
+        }
+        create: {
+          args: Prisma.BackClaimCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BackClaimPayload>
+        }
+        createMany: {
+          args: Prisma.BackClaimCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BackClaimCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BackClaimPayload>[]
+        }
+        delete: {
+          args: Prisma.BackClaimDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BackClaimPayload>
+        }
+        update: {
+          args: Prisma.BackClaimUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BackClaimPayload>
+        }
+        deleteMany: {
+          args: Prisma.BackClaimDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BackClaimUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BackClaimUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BackClaimPayload>[]
+        }
+        upsert: {
+          args: Prisma.BackClaimUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BackClaimPayload>
+        }
+        aggregate: {
+          args: Prisma.BackClaimAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBackClaim>
+        }
+        groupBy: {
+          args: Prisma.BackClaimGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BackClaimGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BackClaimCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BackClaimCountAggregateOutputType> | number
         }
       }
     }
@@ -3571,6 +3646,7 @@ export const ClaimScalarFieldEnum = {
   closedAt: 'closedAt',
   assignee: 'assignee',
   description: 'description',
+  responsibleParty: 'responsibleParty',
   timeline: 'timeline',
   attachments: 'attachments',
   createdAt: 'createdAt',
@@ -3579,6 +3655,23 @@ export const ClaimScalarFieldEnum = {
 } as const
 
 export type ClaimScalarFieldEnum = (typeof ClaimScalarFieldEnum)[keyof typeof ClaimScalarFieldEnum]
+
+
+export const BackClaimScalarFieldEnum = {
+  id: 'id',
+  claimId: 'claimId',
+  vendorName: 'vendorName',
+  sentAt: 'sentAt',
+  replyDeadline: 'replyDeadline',
+  claimedAmount: 'claimedAmount',
+  recoveredAmount: 'recoveredAmount',
+  status: 'status',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BackClaimScalarFieldEnum = (typeof BackClaimScalarFieldEnum)[keyof typeof BackClaimScalarFieldEnum]
 
 
 export const NcrScalarFieldEnum = {
@@ -4237,6 +4330,20 @@ export type ListEnumClaimStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
+ * Reference to a field of type 'BackClaimStatus'
+ */
+export type EnumBackClaimStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BackClaimStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'BackClaimStatus[]'
+ */
+export type ListEnumBackClaimStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BackClaimStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'NcrSeverity'
  */
 export type EnumNcrSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NcrSeverity'>
@@ -4543,6 +4650,7 @@ export type GlobalOmitConfig = {
   testPlanOwnerHistory?: Prisma.TestPlanOwnerHistoryOmit
   internalStandard?: Prisma.InternalStandardOmit
   claim?: Prisma.ClaimOmit
+  backClaim?: Prisma.BackClaimOmit
   ncr?: Prisma.NcrOmit
   tender?: Prisma.TenderOmit
   tenderDocument?: Prisma.TenderDocumentOmit

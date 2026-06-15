@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import type { Claim, ClaimStatus, ClaimPriority, ClaimTimelineItem, ClaimAttachment } from "@/types/claim";
-import { CLAIM_STATUSES } from "@/types/claim";
-import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTriangle, ShieldAlert, Paperclip } from "lucide-react";
+import type { Claim, ClaimStatus, ClaimPriority, ClaimTimelineItem, ClaimAttachment, BackClaim, BackClaimStatus } from "@/types/claim";
+import { CLAIM_STATUSES, RESPONSIBLE_PARTY_OPTIONS, BACK_CLAIM_STATUS_LABELS, BACK_CLAIM_STATUSES } from "@/types/claim";
+import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTriangle, ShieldAlert, Paperclip, ReceiptText } from "lucide-react";
 import { AttachmentUploader } from "@/components/ui/attachment-uploader";
 import { AiSuggestionPanel } from "@/components/ui/ai-suggestion-panel";
 import Link from "next/link";
@@ -55,13 +55,40 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
   const [deleting, setDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [editForm, setEditForm] = useState({
-    title:       claim.title,
-    customer:    claim.customer,
-    priority:    claim.priority,
-    assignee:    claim.assignee,
-    description: claim.description,
-    targetDate:  claim.targetDate ?? "",
+    title:            claim.title,
+    customer:         claim.customer,
+    priority:         claim.priority,
+    assignee:         claim.assignee,
+    description:      claim.description,
+    targetDate:       claim.targetDate ?? "",
+    responsibleParty: claim.responsibleParty ?? "",
   });
+  const [customParty, setCustomParty] = useState("");
+
+  // Back-claim 상태
+  const [backClaims, setBackClaims] = useState<BackClaim[]>([]);
+  const [bcLoading, setBcLoading] = useState(true);
+  const [showBcForm, setShowBcForm] = useState(false);
+  const [bcSaving, setBcSaving] = useState(false);
+  const [bcForm, setBcForm] = useState({
+    vendorName: "", sentAt: "", replyDeadline: "",
+    claimedAmount: "", recoveredAmount: "", status: "DRAFT" as BackClaimStatus, notes: "",
+  });
+  const [editingBcId, setEditingBcId] = useState<string | null>(null);
+  const [editBcForm, setEditBcForm] = useState<Partial<typeof bcForm & { id: string }>>({});
+
+  useEffect(() => {
+    fetch(`/api/claims/${claim.id}/backclaims`)
+      .then(r => r.ok ? r.json() : [])
+      .then((data: BackClaim[]) => {
+        setBackClaims(data.map(bc => ({
+          ...bc,
+          sentAt:        bc.sentAt ? bc.sentAt.slice(0, 10) : undefined,
+          replyDeadline: bc.replyDeadline ? bc.replyDeadline.slice(0, 10) : undefined,
+        })))
+      })
+      .finally(() => setBcLoading(false))
+  }, [claim.id])
   const [attachments, setAttachments] = useState<ClaimAttachment[]>(initial.attachments ?? []);
   const [savingAttachments, setSavingAttachments] = useState(false);
   const [newEntry, setNewEntry] = useState("");
@@ -83,26 +110,92 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
   async function handleSave() {
     setSaving(true);
     try {
+      const resolvedParty = editForm.responsibleParty === "__custom__"
+        ? customParty.trim()
+        : editForm.responsibleParty;
       const res = await fetch(`/api/claims/${claim.id}`, {
         method: "PUT", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editForm),
+        body: JSON.stringify({ ...editForm, responsibleParty: resolvedParty || null }),
       });
       if (!res.ok) throw new Error("저장 실패");
       await res.json();
       setClaim(prev => ({
         ...prev,
-        title:       editForm.title,
-        customer:    editForm.customer,
-        priority:    editForm.priority,
-        assignee:    editForm.assignee,
-        description: editForm.description,
-        targetDate:  editForm.targetDate || undefined,
+        title:            editForm.title,
+        customer:         editForm.customer,
+        priority:         editForm.priority,
+        assignee:         editForm.assignee,
+        description:      editForm.description,
+        targetDate:       editForm.targetDate || undefined,
+        responsibleParty: resolvedParty || undefined,
       }));
       setEditing(false);
       router.refresh();
     } finally {
       setSaving(false);
     }
+  }
+
+  async function handleCreateBackClaim() {
+    if (!bcForm.vendorName.trim() || !bcForm.claimedAmount) return;
+    setBcSaving(true);
+    try {
+      const res = await fetch(`/api/claims/${claim.id}/backclaims`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          vendorName:      bcForm.vendorName.trim(),
+          sentAt:          bcForm.sentAt || undefined,
+          replyDeadline:   bcForm.replyDeadline || undefined,
+          claimedAmount:   parseInt(bcForm.claimedAmount.replace(/,/g, "")),
+          recoveredAmount: bcForm.recoveredAmount ? parseInt(bcForm.recoveredAmount.replace(/,/g, "")) : undefined,
+          status:          bcForm.status,
+          notes:           bcForm.notes.trim() || undefined,
+        }),
+      });
+      if (!res.ok) return;
+      const created: BackClaim = await res.json();
+      setBackClaims(prev => [...prev, {
+        ...created,
+        sentAt:        created.sentAt?.slice(0, 10),
+        replyDeadline: created.replyDeadline?.slice(0, 10),
+      }]);
+      setShowBcForm(false);
+      setBcForm({ vendorName: "", sentAt: "", replyDeadline: "", claimedAmount: "", recoveredAmount: "", status: "DRAFT", notes: "" });
+    } finally {
+      setBcSaving(false);
+    }
+  }
+
+  async function handleUpdateBackClaim(bcId: string) {
+    if (!editBcForm.vendorName?.trim() || !editBcForm.claimedAmount) return;
+    try {
+      const res = await fetch(`/api/claims/${claim.id}/backclaims/${bcId}`, {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          vendorName:      editBcForm.vendorName?.trim(),
+          sentAt:          editBcForm.sentAt || null,
+          replyDeadline:   editBcForm.replyDeadline || null,
+          claimedAmount:   parseInt(String(editBcForm.claimedAmount ?? "0").replace(/,/g, "")),
+          recoveredAmount: editBcForm.recoveredAmount ? parseInt(String(editBcForm.recoveredAmount).replace(/,/g, "")) : null,
+          status:          editBcForm.status,
+          notes:           editBcForm.notes?.trim() || null,
+        }),
+      });
+      if (!res.ok) return;
+      const updated: BackClaim = await res.json();
+      setBackClaims(prev => prev.map(bc => bc.id === bcId ? {
+        ...updated,
+        sentAt:        updated.sentAt?.slice(0, 10),
+        replyDeadline: updated.replyDeadline?.slice(0, 10),
+      } : bc));
+      setEditingBcId(null);
+    } catch { /* ignore */ }
+  }
+
+  async function handleDeleteBackClaim(bcId: string) {
+    if (!confirm("이 Back-claim 건을 삭제하시겠습니까?")) return;
+    const res = await fetch(`/api/claims/${claim.id}/backclaims/${bcId}`, { method: "DELETE" });
+    if (res.ok) setBackClaims(prev => prev.filter(bc => bc.id !== bcId));
   }
 
   async function handleMoveStatus(newStatus: ClaimStatus) {
@@ -199,7 +292,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
               </>
             ) : (
               <>
-                <button onClick={() => { setEditForm({ title: claim.title, customer: claim.customer, priority: claim.priority, assignee: claim.assignee, description: claim.description, targetDate: claim.targetDate ?? "" }); setEditing(true); }}
+                <button onClick={() => { setEditForm({ title: claim.title, customer: claim.customer, priority: claim.priority, assignee: claim.assignee, description: claim.description, targetDate: claim.targetDate ?? "", responsibleParty: claim.responsibleParty ?? "" }); setCustomParty(""); setEditing(true); }}
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">
                   <Edit2 className="w-3.5 h-3.5" /> 수정
                 </button>
@@ -279,6 +372,36 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
         </div>
       </div>
 
+      {/* 귀책처 */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+        <h2 className="text-sm font-bold text-slate-700 mb-3">귀책처</h2>
+        {editing ? (
+          <div className="space-y-2">
+            <select
+              value={editForm.responsibleParty}
+              onChange={e => setEditForm(f => ({...f, responsibleParty: e.target.value}))}
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs bg-white"
+            >
+              <option value="">선택 안 함</option>
+              {RESPONSIBLE_PARTY_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+              <option value="__custom__">직접 입력...</option>
+            </select>
+            {editForm.responsibleParty === "__custom__" && (
+              <input type="text" placeholder="귀책처를 직접 입력하세요" value={customParty}
+                onChange={e => setCustomParty(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs" />
+            )}
+          </div>
+        ) : (
+          <p className="text-sm font-semibold text-slate-800">
+            {claim.responsibleParty
+              ? <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-700 border border-orange-200">{claim.responsibleParty}</span>
+              : <span className="text-slate-400 text-xs">미지정</span>
+            }
+          </p>
+        )}
+      </div>
+
       {/* 상세 내용 */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
         <h2 className="text-sm font-bold text-slate-700 mb-3">클레임 상세 내용</h2>
@@ -341,6 +464,214 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
           </div>
         </div>
       )}
+
+      {/* Back-claim 현황 */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold text-slate-700 flex items-center gap-2">
+            <ReceiptText className="w-4 h-4 text-orange-500" /> Back-claim 진행 현황
+          </h2>
+          {canEdit && (
+            <button onClick={() => setShowBcForm(v => !v)}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-xl border border-orange-200">
+              <Plus className="w-3.5 h-3.5" /> 청구 건 추가
+            </button>
+          )}
+        </div>
+
+        {/* 신규 등록 폼 */}
+        {showBcForm && (
+          <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 space-y-3">
+            <p className="text-xs font-bold text-orange-700">새 Back-claim 청구 건 등록</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2 space-y-1">
+                <label className="text-[10px] font-bold text-slate-500">청구 대상 업체명 *</label>
+                <input type="text" placeholder="예: ABC 협력업체" value={bcForm.vendorName}
+                  onChange={e => setBcForm(f => ({...f, vendorName: e.target.value}))}
+                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-orange-400" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-500">공문 발송일</label>
+                <input type="date" value={bcForm.sentAt}
+                  onChange={e => setBcForm(f => ({...f, sentAt: e.target.value}))}
+                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-orange-400" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-500">회신 기한</label>
+                <input type="date" value={bcForm.replyDeadline}
+                  onChange={e => setBcForm(f => ({...f, replyDeadline: e.target.value}))}
+                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-orange-400" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-500">청구 금액 (원) *</label>
+                <input type="text" placeholder="예: 50000000" value={bcForm.claimedAmount}
+                  onChange={e => setBcForm(f => ({...f, claimedAmount: e.target.value.replace(/[^0-9]/g, "")}))}
+                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-orange-400" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-500">회수 금액 (원)</label>
+                <input type="text" placeholder="예: 30000000" value={bcForm.recoveredAmount}
+                  onChange={e => setBcForm(f => ({...f, recoveredAmount: e.target.value.replace(/[^0-9]/g, "")}))}
+                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-orange-400" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-500">상태</label>
+                <select value={bcForm.status} onChange={e => setBcForm(f => ({...f, status: e.target.value as BackClaimStatus}))}
+                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-orange-400">
+                  {BACK_CLAIM_STATUSES.map(s => <option key={s} value={s}>{BACK_CLAIM_STATUS_LABELS[s]}</option>)}
+                </select>
+              </div>
+              <div className="col-span-2 space-y-1">
+                <label className="text-[10px] font-bold text-slate-500">비고</label>
+                <input type="text" placeholder="기타 메모" value={bcForm.notes}
+                  onChange={e => setBcForm(f => ({...f, notes: e.target.value}))}
+                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-orange-400" />
+              </div>
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button onClick={() => setShowBcForm(false)} className="px-3 py-1.5 text-xs text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50">취소</button>
+              <button onClick={handleCreateBackClaim} disabled={bcSaving || !bcForm.vendorName.trim() || !bcForm.claimedAmount}
+                className="px-4 py-1.5 text-xs font-bold text-white bg-orange-600 hover:bg-orange-700 rounded-lg disabled:opacity-50">
+                {bcSaving ? "등록 중..." : "등록"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Back-claim 목록 */}
+        {bcLoading ? (
+          <p className="text-xs text-slate-400 py-2">불러오는 중...</p>
+        ) : backClaims.length === 0 ? (
+          <p className="text-xs text-slate-400 py-2 text-center">등록된 Back-claim 청구 건이 없습니다.</p>
+        ) : (
+          <div className="space-y-3">
+            {backClaims.map(bc => {
+              const isEditing = editingBcId === bc.id;
+              const recoveryRate = bc.recoveredAmount && bc.claimedAmount
+                ? ((bc.recoveredAmount / bc.claimedAmount) * 100).toFixed(1)
+                : null;
+              return (
+                <div key={bc.id} className="border border-slate-100 rounded-xl p-4 space-y-2 hover:border-orange-200 transition-colors">
+                  {isEditing ? (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="col-span-2 space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500">청구 대상 업체명</label>
+                          <input type="text" value={editBcForm.vendorName ?? ""}
+                            onChange={e => setEditBcForm(f => ({...f, vendorName: e.target.value}))}
+                            className="w-full px-2 py-1.5 rounded border border-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-orange-400" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500">공문 발송일</label>
+                          <input type="date" value={editBcForm.sentAt ?? ""}
+                            onChange={e => setEditBcForm(f => ({...f, sentAt: e.target.value}))}
+                            className="w-full px-2 py-1.5 rounded border border-slate-200 text-xs bg-white focus:outline-none" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500">회신 기한</label>
+                          <input type="date" value={editBcForm.replyDeadline ?? ""}
+                            onChange={e => setEditBcForm(f => ({...f, replyDeadline: e.target.value}))}
+                            className="w-full px-2 py-1.5 rounded border border-slate-200 text-xs bg-white focus:outline-none" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500">청구 금액 (원)</label>
+                          <input type="text" value={editBcForm.claimedAmount ?? ""}
+                            onChange={e => setEditBcForm(f => ({...f, claimedAmount: e.target.value.replace(/[^0-9]/g, "")}))}
+                            className="w-full px-2 py-1.5 rounded border border-slate-200 text-xs focus:outline-none" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500">회수 금액 (원)</label>
+                          <input type="text" value={editBcForm.recoveredAmount ?? ""}
+                            onChange={e => setEditBcForm(f => ({...f, recoveredAmount: e.target.value.replace(/[^0-9]/g, "")}))}
+                            className="w-full px-2 py-1.5 rounded border border-slate-200 text-xs focus:outline-none" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500">상태</label>
+                          <select value={editBcForm.status ?? "DRAFT"}
+                            onChange={e => setEditBcForm(f => ({...f, status: e.target.value as BackClaimStatus}))}
+                            className="w-full px-2 py-1.5 rounded border border-slate-200 text-xs bg-white focus:outline-none">
+                            {BACK_CLAIM_STATUSES.map(s => <option key={s} value={s}>{BACK_CLAIM_STATUS_LABELS[s]}</option>)}
+                          </select>
+                        </div>
+                        <div className="col-span-2 space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500">비고</label>
+                          <input type="text" value={editBcForm.notes ?? ""}
+                            onChange={e => setEditBcForm(f => ({...f, notes: e.target.value}))}
+                            className="w-full px-2 py-1.5 rounded border border-slate-200 text-xs focus:outline-none" />
+                        </div>
+                      </div>
+                      <div className="flex gap-2 justify-end">
+                        <button onClick={() => setEditingBcId(null)} className="px-3 py-1 text-xs text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200">취소</button>
+                        <button onClick={() => handleUpdateBackClaim(bc.id)}
+                          className="px-3 py-1 text-xs font-bold text-white bg-orange-600 rounded-lg hover:bg-orange-700">저장</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-sm text-slate-800">{bc.vendorName}</span>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                            bc.status === "CLOSED"  ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
+                            bc.status === "SETTLED" ? "bg-blue-50 text-blue-700 border-blue-200" :
+                            bc.status === "REPLIED" ? "bg-purple-50 text-purple-700 border-purple-200" :
+                            bc.status === "SENT"    ? "bg-amber-50 text-amber-700 border-amber-200" :
+                                                      "bg-slate-100 text-slate-600 border-slate-200"
+                          }`}>{BACK_CLAIM_STATUS_LABELS[bc.status]}</span>
+                        </div>
+                        {canEdit && (
+                          <div className="flex gap-1 shrink-0">
+                            <button onClick={() => {
+                              setEditingBcId(bc.id);
+                              setEditBcForm({
+                                vendorName:      bc.vendorName,
+                                sentAt:          bc.sentAt ?? "",
+                                replyDeadline:   bc.replyDeadline ?? "",
+                                claimedAmount:   String(bc.claimedAmount),
+                                recoveredAmount: bc.recoveredAmount ? String(bc.recoveredAmount) : "",
+                                status:          bc.status,
+                                notes:           bc.notes ?? "",
+                              });
+                            }} className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button onClick={() => handleDeleteBackClaim(bc.id)}
+                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                        <div>
+                          <p className="text-[10px] text-slate-400">공문 발송일</p>
+                          <p className="font-medium text-slate-700">{bc.sentAt ?? "—"}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-slate-400">회신 기한</p>
+                          <p className="font-medium text-slate-700">{bc.replyDeadline ?? "—"}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-slate-400">청구 금액</p>
+                          <p className="font-bold text-orange-700">{bc.claimedAmount.toLocaleString()}원</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-slate-400">회수 현황</p>
+                          {bc.recoveredAmount
+                            ? <p className="font-bold text-emerald-700">{bc.recoveredAmount.toLocaleString()}원 <span className="text-slate-500 font-normal">({recoveryRate}%)</span></p>
+                            : <p className="text-slate-400">—</p>
+                          }
+                        </div>
+                      </div>
+                      {bc.notes && <p className="text-[11px] text-slate-500 bg-slate-50 rounded-lg px-2 py-1">{bc.notes}</p>}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       {/* AI 유사사례 분석 패널 */}
       <AiSuggestionPanel title={claim.title} description={claim.description} type="claim" />

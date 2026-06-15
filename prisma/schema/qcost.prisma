@@ -35,24 +35,50 @@ enum NcrDisposition {
   TBD
 }
 
+enum BackClaimStatus {
+  DRAFT     // 발송 전
+  SENT      // 공문 발송 완료
+  REPLIED   // 회신 수령
+  SETTLED   // 합의 완료
+  CLOSED    // 종결
+}
+
 model Claim {
-  id          String        @id @default(cuid())
-  claimNo     String        @unique   // CLM-YYYY-NNN
-  title       String
-  customer    String
-  priority    ClaimPriority @default(Mid)
-  status      ClaimStatus   @default(Received)
-  receivedAt  DateTime
-  targetDate  DateTime?
-  closedAt    DateTime?
-  assignee    String
-  description String
-  timeline    Json          @default("[]")
-  attachments Json          @default("[]")
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  createdBy   User          @relation("ClaimCreator", fields: [createdById], references: [id])
-  createdById String
+  id                String        @id @default(cuid())
+  claimNo           String        @unique   // CLM-YYYY-NNN
+  title             String
+  customer          String
+  priority          ClaimPriority @default(Mid)
+  status            ClaimStatus   @default(Received)
+  receivedAt        DateTime
+  targetDate        DateTime?
+  closedAt          DateTime?
+  assignee          String
+  description       String
+  responsibleParty  String?                 // 귀책처 (자유 텍스트)
+  timeline          Json          @default("[]")
+  attachments       Json          @default("[]")
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  createdBy         User          @relation("ClaimCreator", fields: [createdById], references: [id])
+  createdById       String
+
+  backClaims        BackClaim[]
+}
+
+model BackClaim {
+  id              String          @id @default(cuid())
+  claim           Claim           @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  claimId         String
+  vendorName      String          // 청구 대상 업체명
+  sentAt          DateTime?       // 공문 발송일
+  replyDeadline   DateTime?       // 회신 기한
+  claimedAmount   Int             // 청구 금액 (원 단위)
+  recoveredAmount Int?            // 실제 회수 금액 (원 단위)
+  status          BackClaimStatus @default(DRAFT)
+  notes           String?         // 비고
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 }
 
 model Ncr {

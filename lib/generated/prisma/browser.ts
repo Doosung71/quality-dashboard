@@ -98,6 +98,11 @@ export type InternalStandard = Prisma.InternalStandardModel
  */
 export type Claim = Prisma.ClaimModel
 /**
+ * Model BackClaim
+ * 
+ */
+export type BackClaim = Prisma.BackClaimModel
+/**
  * Model Ncr
  * 
  */

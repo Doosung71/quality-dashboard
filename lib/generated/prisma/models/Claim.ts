@@ -36,6 +36,7 @@ export type ClaimMinAggregateOutputType = {
   closedAt: Date | null
   assignee: string | null
   description: string | null
+  responsibleParty: string | null
   createdAt: Date | null
   updatedAt: Date | null
   createdById: string | null
@@ -53,6 +54,7 @@ export type ClaimMaxAggregateOutputType = {
   closedAt: Date | null
   assignee: string | null
   description: string | null
+  responsibleParty: string | null
   createdAt: Date | null
   updatedAt: Date | null
   createdById: string | null
@@ -70,6 +72,7 @@ export type ClaimCountAggregateOutputType = {
   closedAt: number
   assignee: number
   description: number
+  responsibleParty: number
   timeline: number
   attachments: number
   createdAt: number
@@ -91,6 +94,7 @@ export type ClaimMinAggregateInputType = {
   closedAt?: true
   assignee?: true
   description?: true
+  responsibleParty?: true
   createdAt?: true
   updatedAt?: true
   createdById?: true
@@ -108,6 +112,7 @@ export type ClaimMaxAggregateInputType = {
   closedAt?: true
   assignee?: true
   description?: true
+  responsibleParty?: true
   createdAt?: true
   updatedAt?: true
   createdById?: true
@@ -125,6 +130,7 @@ export type ClaimCountAggregateInputType = {
   closedAt?: true
   assignee?: true
   description?: true
+  responsibleParty?: true
   timeline?: true
   attachments?: true
   createdAt?: true
@@ -217,6 +223,7 @@ export type ClaimGroupByOutputType = {
   closedAt: Date | null
   assignee: string
   description: string
+  responsibleParty: string | null
   timeline: runtime.JsonValue
   attachments: runtime.JsonValue
   createdAt: Date
@@ -257,12 +264,14 @@ export type ClaimWhereInput = {
   closedAt?: Prisma.DateTimeNullableFilter<"Claim"> | Date | string | null
   assignee?: Prisma.StringFilter<"Claim"> | string
   description?: Prisma.StringFilter<"Claim"> | string
+  responsibleParty?: Prisma.StringNullableFilter<"Claim"> | string | null
   timeline?: Prisma.JsonFilter<"Claim">
   attachments?: Prisma.JsonFilter<"Claim">
   createdAt?: Prisma.DateTimeFilter<"Claim"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Claim"> | Date | string
   createdById?: Prisma.StringFilter<"Claim"> | string
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  backClaims?: Prisma.BackClaimListRelationFilter
 }
 
 export type ClaimOrderByWithRelationInput = {
@@ -277,12 +286,14 @@ export type ClaimOrderByWithRelationInput = {
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   assignee?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  responsibleParty?: Prisma.SortOrderInput | Prisma.SortOrder
   timeline?: Prisma.SortOrder
   attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdBy?: Prisma.UserOrderByWithRelationInput
+  backClaims?: Prisma.BackClaimOrderByRelationAggregateInput
 }
 
 export type ClaimWhereUniqueInput = Prisma.AtLeast<{
@@ -300,12 +311,14 @@ export type ClaimWhereUniqueInput = Prisma.AtLeast<{
   closedAt?: Prisma.DateTimeNullableFilter<"Claim"> | Date | string | null
   assignee?: Prisma.StringFilter<"Claim"> | string
   description?: Prisma.StringFilter<"Claim"> | string
+  responsibleParty?: Prisma.StringNullableFilter<"Claim"> | string | null
   timeline?: Prisma.JsonFilter<"Claim">
   attachments?: Prisma.JsonFilter<"Claim">
   createdAt?: Prisma.DateTimeFilter<"Claim"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Claim"> | Date | string
   createdById?: Prisma.StringFilter<"Claim"> | string
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  backClaims?: Prisma.BackClaimListRelationFilter
 }, "id" | "claimNo">
 
 export type ClaimOrderByWithAggregationInput = {
@@ -320,6 +333,7 @@ export type ClaimOrderByWithAggregationInput = {
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   assignee?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  responsibleParty?: Prisma.SortOrderInput | Prisma.SortOrder
   timeline?: Prisma.SortOrder
   attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -345,6 +359,7 @@ export type ClaimScalarWhereWithAggregatesInput = {
   closedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Claim"> | Date | string | null
   assignee?: Prisma.StringWithAggregatesFilter<"Claim"> | string
   description?: Prisma.StringWithAggregatesFilter<"Claim"> | string
+  responsibleParty?: Prisma.StringNullableWithAggregatesFilter<"Claim"> | string | null
   timeline?: Prisma.JsonWithAggregatesFilter<"Claim">
   attachments?: Prisma.JsonWithAggregatesFilter<"Claim">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Claim"> | Date | string
@@ -364,11 +379,13 @@ export type ClaimCreateInput = {
   closedAt?: Date | string | null
   assignee: string
   description: string
+  responsibleParty?: string | null
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutClaimsInput
+  backClaims?: Prisma.BackClaimCreateNestedManyWithoutClaimInput
 }
 
 export type ClaimUncheckedCreateInput = {
@@ -383,11 +400,13 @@ export type ClaimUncheckedCreateInput = {
   closedAt?: Date | string | null
   assignee: string
   description: string
+  responsibleParty?: string | null
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById: string
+  backClaims?: Prisma.BackClaimUncheckedCreateNestedManyWithoutClaimInput
 }
 
 export type ClaimUpdateInput = {
@@ -402,11 +421,13 @@ export type ClaimUpdateInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignee?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  responsibleParty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutClaimsNestedInput
+  backClaims?: Prisma.BackClaimUpdateManyWithoutClaimNestedInput
 }
 
 export type ClaimUncheckedUpdateInput = {
@@ -421,11 +442,13 @@ export type ClaimUncheckedUpdateInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignee?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  responsibleParty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  backClaims?: Prisma.BackClaimUncheckedUpdateManyWithoutClaimNestedInput
 }
 
 export type ClaimCreateManyInput = {
@@ -440,6 +463,7 @@ export type ClaimCreateManyInput = {
   closedAt?: Date | string | null
   assignee: string
   description: string
+  responsibleParty?: string | null
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -459,6 +483,7 @@ export type ClaimUpdateManyMutationInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignee?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  responsibleParty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -477,6 +502,7 @@ export type ClaimUncheckedUpdateManyInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignee?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  responsibleParty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -506,6 +532,7 @@ export type ClaimCountOrderByAggregateInput = {
   closedAt?: Prisma.SortOrder
   assignee?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  responsibleParty?: Prisma.SortOrder
   timeline?: Prisma.SortOrder
   attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -525,6 +552,7 @@ export type ClaimMaxOrderByAggregateInput = {
   closedAt?: Prisma.SortOrder
   assignee?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  responsibleParty?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -542,9 +570,15 @@ export type ClaimMinOrderByAggregateInput = {
   closedAt?: Prisma.SortOrder
   assignee?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  responsibleParty?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
+}
+
+export type ClaimScalarRelationFilter = {
+  is?: Prisma.ClaimWhereInput
+  isNot?: Prisma.ClaimWhereInput
 }
 
 export type ClaimCreateNestedManyWithoutCreatedByInput = {
@@ -597,6 +631,20 @@ export type EnumClaimStatusFieldUpdateOperationsInput = {
   set?: $Enums.ClaimStatus
 }
 
+export type ClaimCreateNestedOneWithoutBackClaimsInput = {
+  create?: Prisma.XOR<Prisma.ClaimCreateWithoutBackClaimsInput, Prisma.ClaimUncheckedCreateWithoutBackClaimsInput>
+  connectOrCreate?: Prisma.ClaimCreateOrConnectWithoutBackClaimsInput
+  connect?: Prisma.ClaimWhereUniqueInput
+}
+
+export type ClaimUpdateOneRequiredWithoutBackClaimsNestedInput = {
+  create?: Prisma.XOR<Prisma.ClaimCreateWithoutBackClaimsInput, Prisma.ClaimUncheckedCreateWithoutBackClaimsInput>
+  connectOrCreate?: Prisma.ClaimCreateOrConnectWithoutBackClaimsInput
+  upsert?: Prisma.ClaimUpsertWithoutBackClaimsInput
+  connect?: Prisma.ClaimWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClaimUpdateToOneWithWhereWithoutBackClaimsInput, Prisma.ClaimUpdateWithoutBackClaimsInput>, Prisma.ClaimUncheckedUpdateWithoutBackClaimsInput>
+}
+
 export type ClaimCreateWithoutCreatedByInput = {
   id?: string
   claimNo: string
@@ -609,10 +657,12 @@ export type ClaimCreateWithoutCreatedByInput = {
   closedAt?: Date | string | null
   assignee: string
   description: string
+  responsibleParty?: string | null
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  backClaims?: Prisma.BackClaimCreateNestedManyWithoutClaimInput
 }
 
 export type ClaimUncheckedCreateWithoutCreatedByInput = {
@@ -627,10 +677,12 @@ export type ClaimUncheckedCreateWithoutCreatedByInput = {
   closedAt?: Date | string | null
   assignee: string
   description: string
+  responsibleParty?: string | null
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  backClaims?: Prisma.BackClaimUncheckedCreateNestedManyWithoutClaimInput
 }
 
 export type ClaimCreateOrConnectWithoutCreatedByInput = {
@@ -674,11 +726,108 @@ export type ClaimScalarWhereInput = {
   closedAt?: Prisma.DateTimeNullableFilter<"Claim"> | Date | string | null
   assignee?: Prisma.StringFilter<"Claim"> | string
   description?: Prisma.StringFilter<"Claim"> | string
+  responsibleParty?: Prisma.StringNullableFilter<"Claim"> | string | null
   timeline?: Prisma.JsonFilter<"Claim">
   attachments?: Prisma.JsonFilter<"Claim">
   createdAt?: Prisma.DateTimeFilter<"Claim"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Claim"> | Date | string
   createdById?: Prisma.StringFilter<"Claim"> | string
+}
+
+export type ClaimCreateWithoutBackClaimsInput = {
+  id?: string
+  claimNo: string
+  title: string
+  customer: string
+  priority?: $Enums.ClaimPriority
+  status?: $Enums.ClaimStatus
+  receivedAt: Date | string
+  targetDate?: Date | string | null
+  closedAt?: Date | string | null
+  assignee: string
+  description: string
+  responsibleParty?: string | null
+  timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy: Prisma.UserCreateNestedOneWithoutClaimsInput
+}
+
+export type ClaimUncheckedCreateWithoutBackClaimsInput = {
+  id?: string
+  claimNo: string
+  title: string
+  customer: string
+  priority?: $Enums.ClaimPriority
+  status?: $Enums.ClaimStatus
+  receivedAt: Date | string
+  targetDate?: Date | string | null
+  closedAt?: Date | string | null
+  assignee: string
+  description: string
+  responsibleParty?: string | null
+  timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById: string
+}
+
+export type ClaimCreateOrConnectWithoutBackClaimsInput = {
+  where: Prisma.ClaimWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClaimCreateWithoutBackClaimsInput, Prisma.ClaimUncheckedCreateWithoutBackClaimsInput>
+}
+
+export type ClaimUpsertWithoutBackClaimsInput = {
+  update: Prisma.XOR<Prisma.ClaimUpdateWithoutBackClaimsInput, Prisma.ClaimUncheckedUpdateWithoutBackClaimsInput>
+  create: Prisma.XOR<Prisma.ClaimCreateWithoutBackClaimsInput, Prisma.ClaimUncheckedCreateWithoutBackClaimsInput>
+  where?: Prisma.ClaimWhereInput
+}
+
+export type ClaimUpdateToOneWithWhereWithoutBackClaimsInput = {
+  where?: Prisma.ClaimWhereInput
+  data: Prisma.XOR<Prisma.ClaimUpdateWithoutBackClaimsInput, Prisma.ClaimUncheckedUpdateWithoutBackClaimsInput>
+}
+
+export type ClaimUpdateWithoutBackClaimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  claimNo?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  customer?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.EnumClaimPriorityFieldUpdateOperationsInput | $Enums.ClaimPriority
+  status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  targetDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  assignee?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  responsibleParty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutClaimsNestedInput
+}
+
+export type ClaimUncheckedUpdateWithoutBackClaimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  claimNo?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  customer?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.EnumClaimPriorityFieldUpdateOperationsInput | $Enums.ClaimPriority
+  status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  targetDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  assignee?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  responsibleParty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ClaimCreateManyCreatedByInput = {
@@ -693,6 +842,7 @@ export type ClaimCreateManyCreatedByInput = {
   closedAt?: Date | string | null
   assignee: string
   description: string
+  responsibleParty?: string | null
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -711,10 +861,12 @@ export type ClaimUpdateWithoutCreatedByInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignee?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  responsibleParty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  backClaims?: Prisma.BackClaimUpdateManyWithoutClaimNestedInput
 }
 
 export type ClaimUncheckedUpdateWithoutCreatedByInput = {
@@ -729,10 +881,12 @@ export type ClaimUncheckedUpdateWithoutCreatedByInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignee?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  responsibleParty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  backClaims?: Prisma.BackClaimUncheckedUpdateManyWithoutClaimNestedInput
 }
 
 export type ClaimUncheckedUpdateManyWithoutCreatedByInput = {
@@ -747,12 +901,42 @@ export type ClaimUncheckedUpdateManyWithoutCreatedByInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignee?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  responsibleParty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timeline?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type ClaimCountOutputType
+ */
+
+export type ClaimCountOutputType = {
+  backClaims: number
+}
+
+export type ClaimCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  backClaims?: boolean | ClaimCountOutputTypeCountBackClaimsArgs
+}
+
+/**
+ * ClaimCountOutputType without action
+ */
+export type ClaimCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ClaimCountOutputType
+   */
+  select?: Prisma.ClaimCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ClaimCountOutputType without action
+ */
+export type ClaimCountOutputTypeCountBackClaimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BackClaimWhereInput
+}
 
 
 export type ClaimSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -767,12 +951,15 @@ export type ClaimSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   closedAt?: boolean
   assignee?: boolean
   description?: boolean
+  responsibleParty?: boolean
   timeline?: boolean
   attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  backClaims?: boolean | Prisma.Claim$backClaimsArgs<ExtArgs>
+  _count?: boolean | Prisma.ClaimCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["claim"]>
 
 export type ClaimSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -787,6 +974,7 @@ export type ClaimSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   closedAt?: boolean
   assignee?: boolean
   description?: boolean
+  responsibleParty?: boolean
   timeline?: boolean
   attachments?: boolean
   createdAt?: boolean
@@ -807,6 +995,7 @@ export type ClaimSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   closedAt?: boolean
   assignee?: boolean
   description?: boolean
+  responsibleParty?: boolean
   timeline?: boolean
   attachments?: boolean
   createdAt?: boolean
@@ -827,6 +1016,7 @@ export type ClaimSelectScalar = {
   closedAt?: boolean
   assignee?: boolean
   description?: boolean
+  responsibleParty?: boolean
   timeline?: boolean
   attachments?: boolean
   createdAt?: boolean
@@ -834,9 +1024,11 @@ export type ClaimSelectScalar = {
   createdById?: boolean
 }
 
-export type ClaimOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "claimNo" | "title" | "customer" | "priority" | "status" | "receivedAt" | "targetDate" | "closedAt" | "assignee" | "description" | "timeline" | "attachments" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["claim"]>
+export type ClaimOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "claimNo" | "title" | "customer" | "priority" | "status" | "receivedAt" | "targetDate" | "closedAt" | "assignee" | "description" | "responsibleParty" | "timeline" | "attachments" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["claim"]>
 export type ClaimInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  backClaims?: boolean | Prisma.Claim$backClaimsArgs<ExtArgs>
+  _count?: boolean | Prisma.ClaimCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClaimIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -849,6 +1041,7 @@ export type $ClaimPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Claim"
   objects: {
     createdBy: Prisma.$UserPayload<ExtArgs>
+    backClaims: Prisma.$BackClaimPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -862,6 +1055,7 @@ export type $ClaimPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     closedAt: Date | null
     assignee: string
     description: string
+    responsibleParty: string | null
     timeline: runtime.JsonValue
     attachments: runtime.JsonValue
     createdAt: Date
@@ -1262,6 +1456,7 @@ readonly fields: ClaimFieldRefs;
 export interface Prisma__ClaimClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  backClaims<T extends Prisma.Claim$backClaimsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Claim$backClaimsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BackClaimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1302,6 +1497,7 @@ export interface ClaimFieldRefs {
   readonly closedAt: Prisma.FieldRef<"Claim", 'DateTime'>
   readonly assignee: Prisma.FieldRef<"Claim", 'String'>
   readonly description: Prisma.FieldRef<"Claim", 'String'>
+  readonly responsibleParty: Prisma.FieldRef<"Claim", 'String'>
   readonly timeline: Prisma.FieldRef<"Claim", 'Json'>
   readonly attachments: Prisma.FieldRef<"Claim", 'Json'>
   readonly createdAt: Prisma.FieldRef<"Claim", 'DateTime'>
@@ -1705,6 +1901,30 @@ export type ClaimDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Claims to delete.
    */
   limit?: number
+}
+
+/**
+ * Claim.backClaims
+ */
+export type Claim$backClaimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BackClaim
+   */
+  select?: Prisma.BackClaimSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BackClaim
+   */
+  omit?: Prisma.BackClaimOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BackClaimInclude<ExtArgs> | null
+  where?: Prisma.BackClaimWhereInput
+  orderBy?: Prisma.BackClaimOrderByWithRelationInput | Prisma.BackClaimOrderByWithRelationInput[]
+  cursor?: Prisma.BackClaimWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BackClaimScalarFieldEnum | Prisma.BackClaimScalarFieldEnum[]
 }
 
 /**

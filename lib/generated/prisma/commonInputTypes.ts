@@ -467,6 +467,23 @@ export type EnumClaimStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumClaimStatusFilter<$PrismaModel>
 }
 
+export type EnumBackClaimStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.BackClaimStatus | Prisma.EnumBackClaimStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BackClaimStatus[] | Prisma.ListEnumBackClaimStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BackClaimStatus[] | Prisma.ListEnumBackClaimStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBackClaimStatusFilter<$PrismaModel> | $Enums.BackClaimStatus
+}
+
+export type EnumBackClaimStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BackClaimStatus | Prisma.EnumBackClaimStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BackClaimStatus[] | Prisma.ListEnumBackClaimStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BackClaimStatus[] | Prisma.ListEnumBackClaimStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBackClaimStatusWithAggregatesFilter<$PrismaModel> | $Enums.BackClaimStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBackClaimStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBackClaimStatusFilter<$PrismaModel>
+}
+
 export type EnumNcrSeverityFilter<$PrismaModel = never> = {
   equals?: $Enums.NcrSeverity | Prisma.EnumNcrSeverityFieldRefInput<$PrismaModel>
   in?: $Enums.NcrSeverity[] | Prisma.ListEnumNcrSeverityFieldRefInput<$PrismaModel>
@@ -1158,6 +1175,23 @@ export type NestedEnumClaimStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumClaimStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumClaimStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumBackClaimStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.BackClaimStatus | Prisma.EnumBackClaimStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BackClaimStatus[] | Prisma.ListEnumBackClaimStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BackClaimStatus[] | Prisma.ListEnumBackClaimStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBackClaimStatusFilter<$PrismaModel> | $Enums.BackClaimStatus
+}
+
+export type NestedEnumBackClaimStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BackClaimStatus | Prisma.EnumBackClaimStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BackClaimStatus[] | Prisma.ListEnumBackClaimStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BackClaimStatus[] | Prisma.ListEnumBackClaimStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBackClaimStatusWithAggregatesFilter<$PrismaModel> | $Enums.BackClaimStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBackClaimStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBackClaimStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumNcrSeverityFilter<$PrismaModel = never> = {

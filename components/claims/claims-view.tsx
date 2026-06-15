@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import type { ClaimsData, Claim, ClaimPriority } from "@/types/claim";
+import { RESPONSIBLE_PARTY_OPTIONS } from "@/types/claim";
 import { ClaimsKanban } from "./claims-kanban";
 import { X, Plus } from "lucide-react";
 import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader";
@@ -37,7 +38,9 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
   const today = new Date().toISOString().slice(0, 10);
   const [form, setForm] = useState({
     title: "", customer: "", priority: "Mid", assignee: userName ?? "", description: "", receivedAt: today,
+    responsibleParty: "",
   });
+  const [customParty, setCustomParty] = useState("");
 
   const setSearchTerm = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -65,13 +68,15 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
     }
     setSubmitting(true); setFormError("");
     try {
+      const resolvedParty = form.responsibleParty === "__custom__" ? customParty.trim() : form.responsibleParty;
       const res = await fetch("/api/claims", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, attachments }),
+        body: JSON.stringify({ ...form, responsibleParty: resolvedParty || undefined, attachments }),
       });
       if (!res.ok) throw new Error("등록 실패");
       setShowForm(false);
-      setForm({ title: "", customer: "", priority: "Mid", assignee: userName ?? "", description: "", receivedAt: today });
+      setForm({ title: "", customer: "", priority: "Mid", assignee: userName ?? "", description: "", receivedAt: today, responsibleParty: "" });
+      setCustomParty("");
       setAttachments([]);
       router.refresh();
     } catch {
@@ -172,6 +177,20 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
                   <input type="date" value={form.receivedAt}
                     onChange={e => setForm(f => ({...f, receivedAt: e.target.value}))} className={inputCls + " bg-white"} />
                 </div>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">귀책처</label>
+                <select value={form.responsibleParty}
+                  onChange={e => setForm(f => ({...f, responsibleParty: e.target.value}))}
+                  className={inputCls + " bg-white"}>
+                  <option value="">선택 안 함</option>
+                  {RESPONSIBLE_PARTY_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                  <option value="__custom__">직접 입력...</option>
+                </select>
+                {form.responsibleParty === "__custom__" && (
+                  <input type="text" placeholder="귀책처를 직접 입력하세요" value={customParty}
+                    onChange={e => setCustomParty(e.target.value)} className={inputCls} />
+                )}
               </div>
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700">상세 내용 <span className="text-rose-500">*</span></label>

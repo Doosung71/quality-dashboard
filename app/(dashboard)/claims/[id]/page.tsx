@@ -27,10 +27,11 @@ export default async function ClaimDetailRoute({ params }: Props) {
     receivedAt:  raw.receivedAt.toISOString().slice(0, 10),
     targetDate:  raw.targetDate?.toISOString().slice(0, 10),
     closedAt:    raw.closedAt?.toISOString().slice(0, 10),
-    assignee:    raw.assignee,
-    description: raw.description,
-    timeline:    (raw.timeline as unknown as ClaimTimelineItem[]) ?? [],
-    attachments: (raw.attachments as unknown as ClaimAttachment[]) ?? [],
+    assignee:         raw.assignee,
+    description:      raw.description,
+    responsibleParty: raw.responsibleParty ?? undefined,
+    timeline:         (raw.timeline as unknown as ClaimTimelineItem[]) ?? [],
+    attachments:      (raw.attachments as unknown as ClaimAttachment[]) ?? [],
   };
 
   return (

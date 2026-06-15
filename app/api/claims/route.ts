@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json() as {
     title: string; customer: string; priority: string
     assignee: string; description: string; receivedAt?: string
+    responsibleParty?: string
     attachments?: { url: string; name: string; size: number; contentType: string }[]
   }
 
@@ -33,15 +34,16 @@ export async function POST(req: NextRequest) {
   const claim = await prisma.claim.create({
     data: {
       claimNo,
-      title:       body.title,
-      customer:    body.customer,
-      priority:    body.priority as never,
-      assignee:    body.assignee,
-      description: body.description,
-      receivedAt:  body.receivedAt ? new Date(body.receivedAt) : new Date(),
-      timeline:    [{ date: today, action: "클레임 접수" }],
-      attachments: Array.isArray(body.attachments) ? body.attachments : [],
-      createdById: session.user.id,
+      title:            body.title,
+      customer:         body.customer,
+      priority:         body.priority as never,
+      assignee:         body.assignee,
+      description:      body.description,
+      receivedAt:       body.receivedAt ? new Date(body.receivedAt) : new Date(),
+      responsibleParty: body.responsibleParty ?? null,
+      timeline:         [{ date: today, action: "클레임 접수" }],
+      attachments:      Array.isArray(body.attachments) ? body.attachments : [],
+      createdById:      session.user.id,
     },
   })
   return NextResponse.json({ id: claim.id, claimNo: claim.claimNo }, { status: 201 })
