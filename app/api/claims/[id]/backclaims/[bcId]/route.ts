@@ -45,7 +45,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       ...(body.sentAt           !== undefined && { sentAt:           body.sentAt ? new Date(body.sentAt) : null }),
       ...(body.replyDeadline    !== undefined && { replyDeadline:    body.replyDeadline ? new Date(body.replyDeadline) : null }),
       ...(body.claimedAmount    !== undefined && { claimedAmount:    Number(body.claimedAmount) }),
-      ...(body.recoveredAmount  !== undefined && { recoveredAmount:  body.recoveredAmount }),
+      ...(body.recoveredAmount  !== undefined && { recoveredAmount:  body.recoveredAmount !== null ? Number(body.recoveredAmount) : null }),
       ...(body.status           !== undefined && { status:           body.status as never }),
       ...(body.notes            !== undefined && { notes:            body.notes }),
     },
