@@ -19,7 +19,9 @@ export async function GET(
   const { userId } = await params
   const { searchParams } = new URL(req.url)
   const period = searchParams.get("period") ?? "all"
-  const limit = Math.min(parseInt(searchParams.get("limit") ?? "100"), 500)
+  const raw = searchParams.get("limit") ?? "100"
+  const parsed = Number.parseInt(raw, 10)
+  const limit = Number.isFinite(parsed) ? Math.min(Math.max(parsed, 1), 500) : 100
 
   let since: Date | undefined
   if (period === "7")  since = new Date(Date.now() - 7  * 86400000)
