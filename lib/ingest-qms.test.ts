@@ -18,6 +18,15 @@ const mockNeonSql = Object.assign(mockSqlTagged, { transaction: mockSqlTransacti
 
 vi.mock('@neondatabase/serverless', () => ({
   neon: vi.fn(() => mockNeonSql),
+  neonConfig: {},
+}))
+
+// Anthropic SDK mock (레버1: LLM 구조화 요약)
+const mockMessagesCreate = vi.hoisted(() => vi.fn())
+vi.mock('@anthropic-ai/sdk', () => ({
+  default: class MockAnthropic {
+    messages = { create: mockMessagesCreate }
+  },
 }))
 
 // fetch 전역 mock (OpenAI Embeddings)
@@ -32,12 +41,17 @@ describe('ingest-qms', () => {
     vi.unstubAllEnvs()
     vi.stubEnv('DATABASE_URL_UNPOOLED', 'postgresql://test')
     vi.stubEnv('OPENAI_API_KEY', 'sk-test')
+    vi.stubEnv('ANTHROPIC_API_KEY', 'sk-ant-test')
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({ data: [{ embedding: Array(1536).fill(0.1) }] }),
     })
     mockSqlTagged.mockReturnValue({})
     mockSqlTransaction.mockResolvedValue(undefined)
+    // Anthropic 구조화 요약 기본 응답
+    mockMessagesCreate.mockResolvedValue({
+      content: [{ type: 'text', text: '## 근본원인\n절연체 결함\n\n## 핵심 대책\n입고 검사 강화\n\n## 교훈\n협력업체 공정 관리 필요' }],
+    })
   })
 
   describe('ingestClosedNcr', () => {
@@ -134,6 +148,77 @@ describe('ingest-qms', () => {
       mockFetch.mockResolvedValue({ ok: false, text: async () => 'rate limited', status: 429 })
       const { ingestClosedClaim } = await import('./ingest-qms')
       await expect(ingestClosedClaim('c2')).resolves.toBeUndefined()
+    })
+  })
+
+  // ── 레버1: QKM 선순환 구조화 요약 테스트 ──────────────────────────────
+  describe('레버1 — qms_summary 구조화 요약', () => {
+    const CLOSED_NCR = {
+      id: 'ncr-lv1', ncrNo: 'NCR-2026-LV1', title: '케이블 절연 불량', status: 'Closed',
+      source: '수입검사', severity: 'Major', disposition: 'Rework', assignee: '홍길동',
+      description: '절연 저항 기준치 미달 — 협력업체 공정 불량', timeline: [],
+      issuedDate: new Date('2026-01-01'), targetDate: new Date('2026-01-15'), closedDate: new Date('2026-01-14'),
+    }
+
+    // T1: Happy path — 원본 + qms_summary 모두 저장
+    it('T1 — Closed NCR: 원본 청크 + qms_summary 청크 (transaction 2회, Anthropic 1회)', async () => {
+      mockNcrFindUnique.mockResolvedValue(CLOSED_NCR)
+      const { ingestClosedNcr } = await import('./ingest-qms')
+      await ingestClosedNcr('ncr-lv1')
+
+      // 원본 ingestChunks 1회 + 요약 ingestSummaryChunk 1회 = 2회
+      expect(mockSqlTransaction).toHaveBeenCalledTimes(2)
+      // Anthropic 요약 생성 1회 호출 확인 (= qms_summary 청크가 만들어진 증거)
+      expect(mockMessagesCreate).toHaveBeenCalledTimes(1)
+    })
+
+    // T2: 잘못된 입력 — Open 상태
+    it('T2 — Open 상태 NCR은 요약 생성 없이 종료', async () => {
+      mockNcrFindUnique.mockResolvedValue({ ...CLOSED_NCR, status: 'Open' })
+      const { ingestClosedNcr } = await import('./ingest-qms')
+      await ingestClosedNcr('ncr-lv1')
+
+      expect(mockSqlTransaction).not.toHaveBeenCalled()
+      expect(mockMessagesCreate).not.toHaveBeenCalled()
+    })
+
+    // T3: 중복 방지 — 재호출 시 DELETE+INSERT 덮어쓰기
+    it('T3 — 동일 NCR 재호출 시 transaction 4회 (덮어쓰기 구조 유지)', async () => {
+      mockNcrFindUnique.mockResolvedValue(CLOSED_NCR)
+      const { ingestClosedNcr } = await import('./ingest-qms')
+      await ingestClosedNcr('ncr-lv1')
+      await ingestClosedNcr('ncr-lv1')
+
+      // 2호출 × (원본 1 + 요약 1) = 4회
+      expect(mockSqlTransaction).toHaveBeenCalledTimes(4)
+      // Anthropic도 2회 호출됨 (요약 재생성)
+      expect(mockMessagesCreate).toHaveBeenCalledTimes(2)
+    })
+
+    // T4: 상태 전환 전후 비교 — Anthropic에 전달된 markdown에 핵심 필드 포함
+    it('T4 — generateQmsSummary 호출 시 markdown에 NCR 번호·발생 내용 포함', async () => {
+      mockNcrFindUnique.mockResolvedValue(CLOSED_NCR)
+      const { ingestClosedNcr } = await import('./ingest-qms')
+      await ingestClosedNcr('ncr-lv1')
+
+      // Anthropic API에 전달된 content에 NCR 정보가 담겨있는지 확인
+      const callArg = mockMessagesCreate.mock.calls[0][0]
+      const userContent = callArg.messages[0].content as string
+      expect(userContent).toContain('NCR-2026-LV1')
+      expect(userContent).toContain('절연 저항 기준치 미달')
+    })
+
+    // T5: 환경변수 누락 — fail-open
+    it('T5 — ANTHROPIC_API_KEY 없으면 원본만 저장, 요약 스킵 (fail-open)', async () => {
+      vi.stubEnv('ANTHROPIC_API_KEY', '')
+      mockNcrFindUnique.mockResolvedValue(CLOSED_NCR)
+      const { ingestClosedNcr } = await import('./ingest-qms')
+      await ingestClosedNcr('ncr-lv1')
+
+      // 원본 청크 transaction 1회만 실행
+      expect(mockSqlTransaction).toHaveBeenCalledTimes(1)
+      // Anthropic API 호출 없음
+      expect(mockMessagesCreate).not.toHaveBeenCalled()
     })
   })
 })

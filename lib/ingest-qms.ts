@@ -3,6 +3,10 @@
 // TRA의 ingest-approved.ts 패턴을 그대로 따른다.
 import { neon } from "@neondatabase/serverless"
 import { prisma } from "@/lib/prisma"
+import Anthropic from "@anthropic-ai/sdk"
+
+// 설계 판단 ④: Haiku 사용 — 텍스트 정리·추출 목적이므로 충분. 상수로 관리해 변경 용이.
+const SUMMARY_MODEL = "claude-haiku-4-5-20251001"
 
 const CHUNK_CHARS = 3_000
 const OVERLAP_CHARS = 500
@@ -116,6 +120,65 @@ function buildClaimMarkdown(claim: {
   return lines.join("\n")
 }
 
+// 설계 판단 ⑤: 3개 필드 추출 (근본원인 / 핵심 대책 / 교훈)
+async function generateQmsSummary(markdown: string): Promise<string> {
+  const client = new Anthropic()
+  const message = await client.messages.create({
+    model: SUMMARY_MODEL,
+    max_tokens: 1024,
+    messages: [{
+      role: "user",
+      content: `아래 품질 이슈 보고서에서 핵심 내용을 추출하세요.
+
+${markdown}
+
+다음 3개 항목을 한국어로 간결하게 작성하세요:
+
+## 근본원인 (Root Cause)
+[근본원인을 1~3문장으로]
+
+## 핵심 대책 (Corrective Action)
+[핵심 대책을 1~3문장으로]
+
+## 교훈 (Lesson Learned)
+[유사 사례 재발 방지를 위한 교훈을 1~2문장으로]`,
+    }],
+  })
+  const block = message.content[0]
+  if (block.type !== "text") throw new Error("예상치 못한 응답 타입")
+  return block.text
+}
+
+// 설계 판단 ①: qms_summary 별도 행으로 저장
+// 설계 판단 ②: fail-open — LLM 실패 시 요약만 스킵, 호출부에서 try/catch 처리
+async function ingestSummaryChunk(
+  sourcePrefix: string,
+  title: string,
+  summaryText: string,
+): Promise<void> {
+  if (!process.env.DATABASE_URL_UNPOOLED) throw new Error("DATABASE_URL_UNPOOLED 없음")
+  if (!process.env.OPENAI_API_KEY) throw new Error("OPENAI_API_KEY 없음")
+
+  const embedding = await embedText(summaryText)
+  const sql = neon(process.env.DATABASE_URL_UNPOOLED)
+  const sourcePath = `${sourcePrefix}/summary`
+
+  await sql.transaction([
+    sql`DELETE FROM knowledge_chunks WHERE source_path = ${sourcePath}`,
+    sql`
+      INSERT INTO knowledge_chunks (content, embedding, source_path, source_type, title, metadata)
+      VALUES (
+        ${summaryText},
+        ${JSON.stringify(embedding)}::vector,
+        ${sourcePath},
+        'qms_summary',
+        ${title},
+        ${{ summary: true, ingested_at: new Date().toISOString() }}::jsonb
+      )
+    `,
+  ])
+}
+
 async function ingestChunks(
   sourcePrefix: string,
   sourceType: string,
@@ -168,14 +231,27 @@ export async function ingestClosedNcr(ncrId: string): Promise<void> {
     if (!ncr || ncr.status !== "Closed") return
 
     const markdown = buildNcrMarkdown(ncr)
+    const title = `[NCR] ${ncr.ncrNo} ${ncr.title}`
+    const sourcePrefix = `ncr_closed/${ncrId}`
+
     await ingestChunks(
-      `ncr_closed/${ncrId}`,
+      sourcePrefix,
       "ncr_closed",
-      `[NCR] ${ncr.ncrNo} ${ncr.title}`,
+      title,
       markdown,
       { ncr_id: ncrId, ncr_no: ncr.ncrNo, severity: ncr.severity, source: ncr.source },
     )
     console.log(`[ingest-qms] NCR 인제스트 완료 — ${ncr.ncrNo}`)
+
+    // 설계 판단 ②: fail-open — 요약 실패 시 원본 청크는 이미 저장됨
+    try {
+      if (!process.env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY 없음")
+      const summary = await generateQmsSummary(markdown)
+      await ingestSummaryChunk(sourcePrefix, `[요약] ${title}`, summary)
+      console.log(`[ingest-qms] NCR 요약 인제스트 완료 — ${ncr.ncrNo}`)
+    } catch (summaryError) {
+      console.error(`[ingest-qms] NCR 요약 스킵 (fail-open) — ${ncr.ncrNo}:`, summaryError)
+    }
   } catch (error) {
     console.error(`[ingest-qms] NCR 인제스트 실패 — ${ncrId}:`, error)
   }
@@ -187,14 +263,27 @@ export async function ingestClosedClaim(claimId: string): Promise<void> {
     if (!claim || claim.status !== "Closed") return
 
     const markdown = buildClaimMarkdown(claim)
+    const title = `[클레임] ${claim.claimNo} ${claim.title}`
+    const sourcePrefix = `claim_closed/${claimId}`
+
     await ingestChunks(
-      `claim_closed/${claimId}`,
+      sourcePrefix,
       "claim_closed",
-      `[클레임] ${claim.claimNo} ${claim.title}`,
+      title,
       markdown,
       { claim_id: claimId, claim_no: claim.claimNo, customer: claim.customer, priority: claim.priority },
     )
     console.log(`[ingest-qms] Claim 인제스트 완료 — ${claim.claimNo}`)
+
+    // 설계 판단 ②: fail-open — 요약 실패 시 원본 청크는 이미 저장됨
+    try {
+      if (!process.env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY 없음")
+      const summary = await generateQmsSummary(markdown)
+      await ingestSummaryChunk(sourcePrefix, `[요약] ${title}`, summary)
+      console.log(`[ingest-qms] Claim 요약 인제스트 완료 — ${claim.claimNo}`)
+    } catch (summaryError) {
+      console.error(`[ingest-qms] Claim 요약 스킵 (fail-open) — ${claim.claimNo}:`, summaryError)
+    }
   } catch (error) {
     console.error(`[ingest-qms] Claim 인제스트 실패 — ${claimId}:`, error)
   }
