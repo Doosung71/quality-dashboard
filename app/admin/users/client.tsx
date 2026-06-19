@@ -350,29 +350,38 @@ function TrendView() {
   const [period, setPeriod]           = useState<"week" | "month" | "all">("week")
   const [granularity, setGranularity] = useState<"day" | "week">("day")
   const [selectedIds, setSelectedIds] = useState<string[]>([])
-  const [isTopDefault, setIsTopDefault] = useState(true) // 첫 로드는 Top 7 자동
   const [data, setData]               = useState<TrendData | null>(null)
   const [loading, setLoading]         = useState(false)
 
-  const load = useCallback(async () => {
+  // 항상 최신 selectedIds를 ref로 추적 (useEffect 클로저 문제 방지)
+  const selectedIdsRef = React.useRef<string[]>([])
+  selectedIdsRef.current = selectedIds
+  const initializedRef  = React.useRef(false)
+
+  const doFetch = useCallback(async (
+    p: string, g: string, userIds: string, applyTop: boolean
+  ) => {
     setLoading(true)
-    const qs = new URLSearchParams({
-      period,
-      granularity,
-      // isTopDefault일 때는 userIds 비워서 서버가 top7 반환
-      userIds: isTopDefault ? "" : selectedIds.join(","),
-    })
+    const qs = new URLSearchParams({ period: p, granularity: g, userIds })
     const res = await fetch(`/api/admin/activity/trend?${qs}`)
     if (res.ok) {
       const d = await res.json() as TrendData
       setData(d)
-      // 첫 로드 또는 Top 7 모드: 서버가 반환한 top7로 selectedIds 동기화
-      if (isTopDefault) setSelectedIds(d.topUserIds)
+      if (applyTop) setSelectedIds(d.topUserIds) // selectedIds 변경이 useEffect를 재실행 안 함
     }
     setLoading(false)
-  }, [period, granularity, selectedIds, isTopDefault])
+  }, []) // 빈 deps — 외부 상태를 인자로 받으므로 클로저 의존성 없음
 
-  useEffect(() => { void load() }, [load])
+  // period/granularity 바뀔 때만 재fetch (selectedIds는 의도적으로 deps 제외)
+  useEffect(() => {
+    if (!initializedRef.current) {
+      initializedRef.current = true
+      void doFetch(period, granularity, "", true) // 최초: top7 자동 선택
+    } else {
+      void doFetch(period, granularity, selectedIdsRef.current.join(","), false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [period, granularity])
 
   // 기간 버튼 라벨 (활동 현황과 동일 로직)
   const periodLabels: Record<"week" | "month" | "all", string> = {
@@ -392,15 +401,17 @@ function TrendView() {
   }))
 
   const toggleUser = (id: string) => {
-    setIsTopDefault(false)
-    setSelectedIds(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : prev.length >= 10 ? prev : [...prev, id]
-    )
+    setSelectedIds(prev => {
+      const next = prev.includes(id)
+        ? prev.filter(x => x !== id)
+        : prev.length >= 10 ? prev : [...prev, id]
+      void doFetch(period, granularity, next.join(","), false)
+      return next
+    })
   }
 
   const resetToTop7 = () => {
-    setIsTopDefault(true)
-    // isTopDefault 변경 → useEffect 재실행 → 서버에서 top7 재계산
+    void doFetch(period, granularity, "", true)
   }
 
   return (
@@ -413,7 +424,10 @@ function TrendView() {
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-slate-400">기간</span>
             {(["all", "month", "week"] as const).map(v => (
-              <button key={v} onClick={() => setPeriod(v)}
+              <button key={v} onClick={() => {
+                setPeriod(v)
+                void doFetch(v, granularity, selectedIdsRef.current.join(","), false)
+              }}
                 className={`px-2.5 py-1 text-xs rounded-full border transition-colors whitespace-nowrap ${
                   period === v
                     ? "bg-slate-800 text-white border-slate-800"
@@ -428,7 +442,10 @@ function TrendView() {
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-slate-400">단위</span>
             {(["day", "week"] as const).map(v => (
-              <button key={v} onClick={() => setGranularity(v)}
+              <button key={v} onClick={() => {
+                setGranularity(v)
+                void doFetch(period, v, selectedIdsRef.current.join(","), false)
+              }}
                 className={`px-2.5 py-1 text-xs rounded-full border transition-colors ${
                   granularity === v
                     ? "bg-slate-800 text-white border-slate-800"
@@ -443,7 +460,7 @@ function TrendView() {
           <div className="flex items-center gap-2 ml-auto">
             <button
               onClick={resetToTop7}
-              disabled={isTopDefault}
+              disabled={loading}
               className="px-2.5 py-1 text-xs rounded-full border transition-colors disabled:opacity-40 border-amber-300 text-amber-700 hover:bg-amber-50 disabled:cursor-default"
             >
               Top 7 재설정
