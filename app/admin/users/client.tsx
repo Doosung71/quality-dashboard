@@ -262,7 +262,7 @@ type TrendUser = { id: string; name: string; department: string | null }
 type TrendSeries = TrendUser & { data: number[] }
 type TrendData = {
   dates: string[]
-  avgLine: number[]
+  avgLine: number[]   // 서버 반환값 (현재는 클라이언트에서 재계산)
   totalUsers: number
   allUsers: TrendUser[]
   series: TrendSeries[]
@@ -274,11 +274,18 @@ const TREND_COLORS = [
   "#8b5cf6", "#ec4899", "#14b8a6",
 ]
 
-function LineChart({ dates, avgLine, series }: {
+function LineChart({ dates, series, soloMode = false }: {
   dates: string[]
-  avgLine: number[]
   series: (TrendSeries & { color: string })[]
+  soloMode?: boolean // 1명 선택: 평균선 없음
 }) {
+  // 선택 인원 기준 평균 (2명 이상일 때만)
+  const avgLine: number[] = soloMode
+    ? []
+    : dates.map((_, i) => {
+        const total = series.reduce((s, ser) => s + (ser.data[i] ?? 0), 0)
+        return series.length > 0 ? Math.round((total / series.length) * 10) / 10 : 0
+      })
   const W = 800, H = 260
   const PAD = { t: 16, r: 16, b: 44, l: 44 }
   const gW = W - PAD.l - PAD.r
@@ -346,8 +353,8 @@ function LineChart({ dates, avgLine, series }: {
   )
 }
 
-function TrendView() {
-  const [period, setPeriod]           = useState<"week" | "month" | "all">("week")
+function TrendView({ defaultPeriod = "week" }: { defaultPeriod?: "all" | "month" | "week" }) {
+  const [period, setPeriod]           = useState<"week" | "month" | "all">(defaultPeriod)
   const [granularity, setGranularity] = useState<"day" | "week">("day")
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [data, setData]               = useState<TrendData | null>(null)
@@ -510,21 +517,33 @@ function TrendView() {
           <div className="h-48 flex items-center justify-center text-xs text-slate-400">
             이 기간에 활동 데이터가 없습니다.
           </div>
-        ) : (
-          <LineChart
-            dates={data.dates}
-            avgLine={data.avgLine}
-            series={coloredSeries}
-          />
-        )}
+        ) : (() => {
+          const soloMode = coloredSeries.length === 1
+          return (
+            <>
+              {soloMode && (
+                <p className="text-xs text-indigo-600 font-medium mb-2">
+                  {coloredSeries[0].name} 개인 활동 건수 추이
+                </p>
+              )}
+              <LineChart
+                dates={data.dates}
+                series={coloredSeries}
+                soloMode={soloMode}
+              />
+            </>
+          )
+        })()}
 
         {/* 범례 */}
         <div className="flex flex-wrap items-center gap-4 mt-4 pt-3 border-t border-slate-100">
-          <span className="flex items-center gap-1.5 text-xs text-slate-500">
-            <svg width="24" height="10"><line x1="0" y1="5" x2="24" y2="5"
-              stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="4 4" /></svg>
-            팀 평균 ({data?.totalUsers ?? 0}명 기준)
-          </span>
+          {coloredSeries.length > 1 && (
+            <span className="flex items-center gap-1.5 text-xs text-slate-500">
+              <svg width="24" height="10"><line x1="0" y1="5" x2="24" y2="5"
+                stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="4 4" /></svg>
+              선택 {coloredSeries.length}명 평균
+            </span>
+          )}
           {coloredSeries.map(s => (
             <span key={s.id} className="flex items-center gap-1.5 text-xs text-slate-600">
               <span className="w-5 h-0.5 rounded" style={{ backgroundColor: s.color }} />
@@ -543,7 +562,7 @@ function TrendView() {
 
 // ─── 활동 현황 ───────────────────────────────────────────────
 
-function ActivityView() {
+function ActivityView({ onPeriodChange }: { onPeriodChange?: (p: "all" | "month" | "week") => void }) {
   const [period, setPeriod] = useState<"all" | "month" | "week">("all")
   const [periodStartDate, setPeriodStartDate] = useState<string | null>(null)
   const [rows, setRows] = useState<ActivityRow[]>([])
@@ -668,7 +687,7 @@ ${rankLines}
         {(["all", "month", "week"] as const).map(v => (
           <button
             key={v}
-            onClick={() => setPeriod(v)}
+            onClick={() => { setPeriod(v); onPeriodChange?.(v) }}
             className={`px-3 py-1 text-xs rounded-full border transition-colors whitespace-nowrap ${
               period === v
                 ? "bg-slate-800 text-white border-slate-800"
@@ -963,7 +982,8 @@ function restrictedUntilLabel(until: Date | null | undefined): string {
 }
 
 export function AdminUsersClient({ users: initial }: { users: User[] }) {
-  const [activeTab, setActiveTab] = useState<"users" | "activity" | "trend" | "presence">("users")
+  const [activeTab, setActiveTab]     = useState<"users" | "activity" | "trend" | "presence">("users")
+  const [syncedPeriod, setSyncedPeriod] = useState<"all" | "month" | "week">("week")
 
   // /admin/users는 DashboardShell 밖이므로 여기서 직접 하트비트 전송
   useEffect(() => {
@@ -1276,10 +1296,10 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
       </div>
 
       {/* 활동 현황 탭 */}
-      {activeTab === "activity" && <ActivityView />}
+      {activeTab === "activity" && <ActivityView onPeriodChange={setSyncedPeriod} />}
 
-      {/* 활동 추이 탭 */}
-      {activeTab === "trend" && <TrendView />}
+      {/* 활동 추이 탭 — syncedPeriod를 key로 써서 기간 변경 시 Top 7 재계산 */}
+      {activeTab === "trend" && <TrendView key={syncedPeriod} defaultPeriod={syncedPeriod} />}
 
       {/* 접속 현황 탭 */}
       {activeTab === "presence" && <PresenceView />}
