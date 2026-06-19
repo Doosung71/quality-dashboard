@@ -6,6 +6,10 @@ import { searchKnowledge } from "@/lib/knowledge"
 import { parseRagThreshold, buildKnowledgeChunksXml } from "@/lib/rag"
 import Anthropic from "@anthropic-ai/sdk"
 import { naverSearchText } from "@/lib/naver-search"
+import { readBlobBuffer } from "@/lib/storage"
+import { extractTextFromPdf } from "@/lib/pdf"
+
+const TENDER_TEXT_MAX = 8_000
 
 async function searchWebForRequirement(query: string): Promise<string> {
   return naverSearchText(query, 5)
@@ -21,9 +25,26 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const analysis = await prisma.analysis.findFirst({
     where: { id: analysisId, tender: { createdById: session.user.id } },
-    include: { tender: { select: { title: true } } },
+    include: {
+      tender: { select: { title: true } },
+      document: { select: { storagePath: true } },
+      requirements: { select: { category: true, content: true }, orderBy: { category: "asc" } },
+    },
   })
   if (!analysis) return NextResponse.json({ error: "분석을 찾을 수 없습니다." }, { status: 404 })
+
+  // Tender 원문 텍스트 추출 (fail-open: 실패해도 기존 동작 유지)
+  let tenderTextContext: string | undefined
+  if (analysis.document?.storagePath) {
+    try {
+      const buf = await readBlobBuffer(analysis.document.storagePath)
+      if (buf) {
+        const { text } = await extractTextFromPdf(buf)
+        const snippet = text.slice(0, TENDER_TEXT_MAX)
+        if (snippet.trim()) tenderTextContext = snippet
+      }
+    } catch (e) { console.warn("[suggest] Tender PDF 추출 실패:", (e as Error).message) }
+  }
 
   let body: unknown
   try { body = await req.json() } catch {
@@ -59,7 +80,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   let suggestedContent: string
   let aiUsed = "Claude"
 
+  const existingReqsContext = analysis.requirements.length > 0
+    ? `\n<existing_requirements>\n${analysis.requirements.map((r) => `[${r.category}] ${r.content}`).join("\n")}\n</existing_requirements>`
+    : ""
+
   const contextSection = [
+    tenderTextContext ? `\n<tender_document excerpt="${TENDER_TEXT_MAX}chars">\n${tenderTextContext}\n</tender_document>` : "",
+    existingReqsContext,
     knowledgeContext ? `\n<knowledge_base>\n${knowledgeContext}\n</knowledge_base>` : "",
     webContext ? `\n<web_search_results>\n${webContext}\n</web_search_results>` : "",
   ].join("")
@@ -71,6 +98,7 @@ ${hint ? `참고 내용/키워드: ${hint}` : ""}
 ${contextSection}
 
 위 정보를 바탕으로, "${category}" 분류에 해당하는 기술 요구사항을 한국어로 작성하세요.
+tender_document가 제공된 경우 해당 Tender의 실제 요구사항을 우선 참조하고, existing_requirements에 이미 있는 항목은 중복 제안하지 마세요.
 
 [출력 규칙 — 반드시 준수]
 - 마크다운 문법을 절대 사용하지 마세요. 표(|), 헤더(#), 굵게(**), 기울기(_), 구분선(---) 금지.
