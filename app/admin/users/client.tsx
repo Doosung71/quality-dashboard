@@ -266,6 +266,7 @@ type TrendData = {
   totalUsers: number
   allUsers: TrendUser[]
   series: TrendSeries[]
+  topUserIds: string[]
 }
 
 const TREND_COLORS = [
@@ -346,9 +347,10 @@ function LineChart({ dates, avgLine, series }: {
 }
 
 function TrendView() {
-  const [period, setPeriod]           = useState<"week" | "month" | "all">("month")
+  const [period, setPeriod]           = useState<"week" | "month" | "all">("week")
   const [granularity, setGranularity] = useState<"day" | "week">("day")
   const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [isTopDefault, setIsTopDefault] = useState(true) // 첫 로드는 Top 7 자동
   const [data, setData]               = useState<TrendData | null>(null)
   const [loading, setLoading]         = useState(false)
 
@@ -357,12 +359,18 @@ function TrendView() {
     const qs = new URLSearchParams({
       period,
       granularity,
-      userIds: selectedIds.join(","),
+      // isTopDefault일 때는 userIds 비워서 서버가 top7 반환
+      userIds: isTopDefault ? "" : selectedIds.join(","),
     })
     const res = await fetch(`/api/admin/activity/trend?${qs}`)
-    if (res.ok) setData(await res.json() as TrendData)
+    if (res.ok) {
+      const d = await res.json() as TrendData
+      setData(d)
+      // 첫 로드 또는 Top 7 모드: 서버가 반환한 top7로 selectedIds 동기화
+      if (isTopDefault) setSelectedIds(d.topUserIds)
+    }
     setLoading(false)
-  }, [period, granularity, selectedIds])
+  }, [period, granularity, selectedIds, isTopDefault])
 
   useEffect(() => { void load() }, [load])
 
@@ -383,10 +391,17 @@ function TrendView() {
     color: TREND_COLORS[i % TREND_COLORS.length],
   }))
 
-  const toggleUser = (id: string) =>
+  const toggleUser = (id: string) => {
+    setIsTopDefault(false)
     setSelectedIds(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : prev.length >= 5 ? prev : [...prev, id]
+      prev.includes(id) ? prev.filter(x => x !== id) : prev.length >= 10 ? prev : [...prev, id]
     )
+  }
+
+  const resetToTop7 = () => {
+    setIsTopDefault(true)
+    // isTopDefault 변경 → useEffect 재실행 → 서버에서 top7 재계산
+  }
 
   return (
     <div className="space-y-4">
@@ -424,15 +439,23 @@ function TrendView() {
             ))}
           </div>
 
-          {/* 사용자 선택 드롭다운 */}
+          {/* 사용자 선택 드롭다운 + Top 7 재설정 */}
           <div className="flex items-center gap-2 ml-auto">
+            <button
+              onClick={resetToTop7}
+              disabled={isTopDefault}
+              className="px-2.5 py-1 text-xs rounded-full border transition-colors disabled:opacity-40 border-amber-300 text-amber-700 hover:bg-amber-50 disabled:cursor-default"
+            >
+              Top 7 재설정
+            </button>
             <span className="text-xs text-slate-400">사용자 추가</span>
             <select
               onChange={e => { if (e.target.value) { toggleUser(e.target.value); e.target.value = "" } }}
-              className="text-xs border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              disabled={selectedIds.length >= 10}
+              className="text-xs border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-40"
               defaultValue=""
             >
-              <option value="">선택...</option>
+              <option value="">{selectedIds.length >= 10 ? "최대 10명" : "선택..."}</option>
               {(data?.allUsers ?? [])
                 .filter(u => !selectedIds.includes(u.id))
                 .map(u => (
@@ -492,11 +515,9 @@ function TrendView() {
               {s.department && <span className="text-slate-400">({s.department})</span>}
             </span>
           ))}
-          {selectedIds.length === 0 && (
-            <span className="text-xs text-slate-400 italic">
-              ↑ 사용자를 추가하면 개인 추이를 비교할 수 있습니다
-            </span>
-          )}
+          <span className="text-xs text-slate-400 italic ml-auto">
+            {selectedIds.length >= 10 ? "최대 10명까지 선택 가능" : `${selectedIds.length}/10명 선택`}
+          </span>
         </div>
       </div>
     </div>

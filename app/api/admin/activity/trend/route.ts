@@ -134,9 +134,21 @@ export async function GET(req: Request) {
     return totalUsers > 0 ? Math.round((dayTotal / totalUsers) * 10) / 10 : 0
   })
 
-  // 선택된 사용자 series
+  // 기간 내 활동 합산 (ADMIN 제외) → Top N 계산
+  const userTotals: Record<string, number> = {}
+  for (const item of items) {
+    userTotals[item.userId] = (userTotals[item.userId] ?? 0) + 1
+  }
+  const topUserIds = [...allUsers]
+    .sort((a, b) => (userTotals[b.id] ?? 0) - (userTotals[a.id] ?? 0))
+    .filter(u => (userTotals[u.id] ?? 0) > 0)
+    .slice(0, 7)
+    .map(u => u.id)
+
+  // 선택된 사용자 series (selectedIds가 없으면 top7 사용)
+  const seriesIds = selectedIds.length > 0 ? selectedIds : topUserIds
   const series = allUsers
-    .filter(u => selectedIds.includes(u.id))
+    .filter(u => seriesIds.includes(u.id))
     .map(u => ({
       id: u.id,
       name: u.name,
@@ -150,5 +162,6 @@ export async function GET(req: Request) {
     totalUsers,
     allUsers: allUsers.map(u => ({ id: u.id, name: u.name, department: u.department })),
     series,
+    topUserIds,
   })
 }
