@@ -18,14 +18,25 @@ export async function GET(
 
   const { userId } = await params
   const { searchParams } = new URL(req.url)
-  const period = searchParams.get("period") ?? "all"
+  const period = searchParams.get("period") ?? "all" // "week" | "month" | "all"
   const raw = searchParams.get("limit") ?? "100"
   const parsed = Number.parseInt(raw, 10)
   const limit = Number.isFinite(parsed) ? Math.min(Math.max(parsed, 1), 500) : 100
 
+  // ISO 주 기준: 이번 주 월요일 00:00
   let since: Date | undefined
-  if (period === "7")  since = new Date(Date.now() - 7  * 86400000)
-  if (period === "30") since = new Date(Date.now() - 30 * 86400000)
+  if (period === "week") {
+    const now = new Date()
+    const day = now.getDay()
+    const monday = new Date(now)
+    monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1))
+    monday.setHours(0, 0, 0, 0)
+    since = monday
+  }
+  if (period === "month") {
+    const now = new Date()
+    since = new Date(now.getFullYear(), now.getMonth(), 1)
+  }
   const dateFilter = since ? { createdAt: { gte: since } } : {}
 
   const [

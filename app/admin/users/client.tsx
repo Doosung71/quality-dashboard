@@ -222,8 +222,45 @@ const TYPE_BADGE: Record<string, string> = {
   수주PJT: "bg-lime-100 text-lime-700",
 }
 
+// ─── ISO 주차 헬퍼 ────────────────────────────────────────────
+
+function getISOMonday(date: Date): Date {
+  const day = date.getDay()
+  const d = new Date(date)
+  d.setDate(date.getDate() - (day === 0 ? 6 : day - 1))
+  d.setHours(0, 0, 0, 0)
+  return d
+}
+
+function getWeekOfMonth(monday: Date): number {
+  const y = monday.getFullYear(), m = monday.getMonth()
+  const firstOfMonth = new Date(y, m, 1)
+  const fd = firstOfMonth.getDay()
+  // 해당 달의 첫 번째 월요일
+  const firstMonday = new Date(firstOfMonth)
+  firstMonday.setDate(firstOfMonth.getDate() + (fd === 0 ? 1 : fd === 1 ? 0 : 8 - fd))
+  return Math.floor((monday.getTime() - firstMonday.getTime()) / 604800000) + 1
+}
+
+function getPeriodLabel(period: "all" | "month" | "week", startDate?: string | null): string {
+  const now = new Date()
+  if (period === "week") {
+    const monday = getISOMonday(now)
+    return `${monday.getMonth() + 1}월 ${getWeekOfMonth(monday)}주차`
+  }
+  if (period === "month") return `${now.getMonth() + 1}월`
+  if (startDate) {
+    const d = new Date(startDate)
+    return `전체 (${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}~)`
+  }
+  return "전체"
+}
+
+// ─── 활동 현황 ───────────────────────────────────────────────
+
 function ActivityView() {
-  const [period, setPeriod] = useState<"all" | "30" | "7">("all")
+  const [period, setPeriod] = useState<"all" | "month" | "week">("all")
+  const [periodStartDate, setPeriodStartDate] = useState<string | null>(null)
   const [rows, setRows] = useState<ActivityRow[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
@@ -237,7 +274,11 @@ function ActivityView() {
     setLoading(true)
     setSelectedUserId(null)
     const res = await fetch(`/api/admin/activity?period=${period}`)
-    if (res.ok) setRows(await res.json())
+    if (res.ok) {
+      const data = await res.json() as { rows: ActivityRow[]; periodStart?: string }
+      setRows(data.rows ?? [])
+      if (data.periodStart) setPeriodStartDate(data.periodStart)
+    }
     setLoading(false)
   }, [period])
 
@@ -264,16 +305,13 @@ function ActivityView() {
     PRACTITIONER: "실무자", TEAM_LEAD: "팀장", DIRECTOR: "임원", ADMIN: "관리자"
   }
 
-  const PERIOD_LABEL: Record<string, string> = { all: "누적 전체", "30": "최근 30일", "7": "이번 주" }
-  const LB_TITLE: Record<string, string> = {
-    all: "🏆 QMS E2E-1 누적 활동 Top 3",
-    "30": "🏆 QMS E2E-1 이달의 활동 Top 3",
-    "7": "🏆 QMS E2E-1 이번 주 활동 Top 3",
-  }
+  const currentPeriodLabel = getPeriodLabel(period, periodStartDate)
+  const lbTitle = `🏆 ${currentPeriodLabel} Top 7`
 
-  function buildLeaderboardContent(top3: ActivityRow[]): string {
-    const medals = ["🥇", "🥈", "🥉"]
-    const rankLines = top3.map((r, i) => {
+  const MEDALS = ["🥇", "🥈", "🥉", "4위", "5위", "6위", "7위"]
+
+  function buildLeaderboardContent(top7: ActivityRow[]): string {
+    const rankLines = top7.map((r, i) => {
       const parts = [
         r.posts > 0 && `게시글 ${r.posts}`,
         r.comments > 0 && `댓글 ${r.comments}`,
@@ -289,14 +327,15 @@ function ActivityView() {
         r.awardedProjects > 0 && `수주PJT ${r.awardedProjects}`,
       ].filter(Boolean).join(" · ")
       const dept = r.department ? ` (${r.department})` : ""
-      return `${medals[i]} **${i + 1}위** ${r.name}${dept} — **${r.total}건**\n> ${parts}`
+      const medal = MEDALS[i] ?? `${i + 1}위`
+      return `${medal} **${i + 1}위** ${r.name}${dept} — **${r.total}건**\n> ${parts}`
     }).join("\n\n")
 
-    return `## ${LB_TITLE[period].replace("🏆 ", "")}
+    return `## ${lbTitle.replace("🏆 ", "")}
 
 품질부문 여러분의 열정적인 참여에 감사드립니다!
 
-${PERIOD_LABEL[period]} QMS 2.0 시스템을 가장 활발하게 활용하신 분들을 소개합니다.
+${currentPeriodLabel} QMS 2.0 시스템을 가장 활발하게 활용하신 분들을 소개합니다.
 
 ---
 
@@ -309,8 +348,8 @@ ${rankLines}
   }
 
   async function postLeaderboard() {
-    const top3 = rows.filter(r => r.total > 0 && r.role !== "ADMIN").slice(0, 3)
-    if (top3.length === 0) return
+    const top7 = rows.filter(r => r.total > 0 && r.role !== "ADMIN").slice(0, 7)
+    if (top7.length === 0) return
     setLbPosting(true)
     setLbResult(null)
     try {
@@ -320,8 +359,8 @@ ${rankLines}
         body: JSON.stringify({
           category: "NOTICE",
           pinned: true,
-          title: LB_TITLE[period],
-          content: buildLeaderboardContent(top3),
+          title: lbTitle,
+          content: buildLeaderboardContent(top7),
           displayMode: "REAL",
           visibility: "ALL",
           attachments: [],
@@ -341,21 +380,21 @@ ${rankLines}
       {/* 기간 필터 */}
       <div className="flex items-center gap-2">
         <span className="text-xs text-slate-500">기간:</span>
-        {([["all", "전체"], ["30", "최근 30일"], ["7", "최근 7일"]] as const).map(([v, l]) => (
+        {(["all", "month", "week"] as const).map(v => (
           <button
             key={v}
             onClick={() => setPeriod(v)}
-            className={`px-3 py-1 text-xs rounded-full border transition-colors ${
+            className={`px-3 py-1 text-xs rounded-full border transition-colors whitespace-nowrap ${
               period === v
                 ? "bg-slate-800 text-white border-slate-800"
                 : "border-slate-200 text-slate-600 hover:border-slate-400"
             }`}
           >
-            {l}
+            {getPeriodLabel(v, periodStartDate)}
           </button>
         ))}
         <div className="ml-auto flex items-center gap-3">
-          <span className="text-xs text-slate-400 hidden sm:block">이름 클릭 시 상세 내역</span>
+          <span className="text-xs text-slate-400 hidden sm:block">이름 클릭 시 날짜별 활동 상세</span>
           <button
             onClick={() => { setLbOpen(v => !v); setLbResult(null) }}
             disabled={rows.filter(r => r.total > 0).length === 0}
@@ -372,25 +411,24 @@ ${rankLines}
         <>
           {/* 리더보드 공지 패널 */}
           {lbOpen && (() => {
-            const top3 = rows.filter(r => r.total > 0 && r.role !== "ADMIN").slice(0, 3)
-            const medals = ["🥇", "🥈", "🥉"]
+            const top7 = rows.filter(r => r.total > 0 && r.role !== "ADMIN").slice(0, 7)
             return (
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-3">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <h3 className="text-sm font-semibold text-amber-800">🏆 리더보드 게시판 공지 작성</h3>
+                    <h3 className="text-sm font-semibold text-amber-800">{lbTitle} 게시판 공지 작성</h3>
                     <p className="text-xs text-amber-600 mt-0.5">
-                      {PERIOD_LABEL[period]} 기준 · 게시판에 핀 고정 공지로 등록됩니다
+                      {currentPeriodLabel} 기준 · 게시판에 핀 고정 공지로 등록됩니다
                     </p>
                   </div>
                   <button onClick={() => setLbOpen(false)} className="text-amber-400 hover:text-amber-600 text-xl leading-none mt-0.5">×</button>
                 </div>
 
-                {top3.length === 0 ? (
+                {top7.length === 0 ? (
                   <p className="text-xs text-amber-600 py-1">현재 기간에 활동 데이터가 없습니다.</p>
                 ) : (
                   <div className="space-y-2">
-                    {top3.map((r, i) => {
+                    {top7.map((r, i) => {
                       const parts = [
                         r.posts > 0 && `게시글 ${r.posts}`,
                         r.comments > 0 && `댓글 ${r.comments}`,
@@ -407,7 +445,9 @@ ${rankLines}
                       ].filter(Boolean).join(" · ")
                       return (
                         <div key={r.id} className="flex items-center gap-3 bg-white rounded-lg px-3 py-2.5 border border-amber-100">
-                          <span className="text-2xl shrink-0">{medals[i]}</span>
+                          <span className={`shrink-0 ${i < 3 ? "text-2xl" : "text-xs font-bold text-slate-500 w-8 text-center"}`}>
+                            {MEDALS[i]}
+                          </span>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-baseline gap-1.5">
                               <span className="text-sm font-semibold text-slate-800">{r.name}</span>
@@ -432,7 +472,7 @@ ${rankLines}
                 <div className="flex gap-2 pt-1">
                   <button
                     onClick={postLeaderboard}
-                    disabled={lbPosting || top3.length === 0 || lbResult === "success"}
+                    disabled={lbPosting || top7.length === 0 || lbResult === "success"}
                     className="px-4 py-1.5 text-xs font-medium bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50 transition-colors"
                   >
                     {lbPosting ? "등록 중..." : "게시판에 공지 등록"}
@@ -534,32 +574,49 @@ ${rankLines}
                               <p className="text-xs text-slate-400 py-1">불러오는 중...</p>
                             ) : detailItems.length === 0 ? (
                               <p className="text-xs text-slate-400 py-1">이 기간에 활동 없음</p>
-                            ) : (
-                              <div>
-                                <p className="text-[11px] text-slate-400 mb-2">
-                                  총 <span className="font-semibold text-slate-600">{detailItems.length}</span>건의 활동 내역 (최근순)
-                                </p>
-                                <div className="max-h-72 overflow-y-auto divide-y divide-slate-100">
-                                  {detailItems.map((item, i) => (
-                                    <div key={i} className="flex items-center gap-3 py-1.5">
-                                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium shrink-0 min-w-[52px] text-center ${TYPE_BADGE[item.type] ?? "bg-slate-100 text-slate-700"}`}>
-                                        {item.type}
-                                      </span>
-                                      <div className="flex-1 min-w-0">
-                                        <p className="text-xs text-slate-700 truncate">{item.label}</p>
-                                        {item.detail && <p className="text-[10px] text-slate-400 truncate">{item.detail}</p>}
+                            ) : (() => {
+                              // 날짜별 그룹핑 (KST 기준)
+                              const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"]
+                              const grouped = detailItems.reduce<Record<string, ActivityItem[]>>((acc, item) => {
+                                const d = new Date(item.createdAt)
+                                const key = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")} (${WEEKDAYS[d.getDay()]})`
+                                ;(acc[key] ??= []).push(item)
+                                return acc
+                              }, {})
+                              const dateKeys = Object.keys(grouped).sort((a, b) => b.localeCompare(a))
+                              return (
+                                <div>
+                                  <p className="text-[11px] text-slate-400 mb-2">
+                                    총 <span className="font-semibold text-slate-600">{detailItems.length}</span>건 · {dateKeys.length}일간 활동
+                                  </p>
+                                  <div className="max-h-80 overflow-y-auto space-y-3">
+                                    {dateKeys.map(dateKey => (
+                                      <div key={dateKey}>
+                                        <p className="text-[10px] font-bold text-slate-500 bg-slate-100 rounded px-2 py-0.5 mb-1.5 inline-block">
+                                          {dateKey}
+                                        </p>
+                                        <div className="divide-y divide-slate-100">
+                                          {grouped[dateKey].map((item, i) => (
+                                            <div key={i} className="flex items-center gap-3 py-1.5">
+                                              <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium shrink-0 min-w-[52px] text-center ${TYPE_BADGE[item.type] ?? "bg-slate-100 text-slate-700"}`}>
+                                                {item.type}
+                                              </span>
+                                              <div className="flex-1 min-w-0">
+                                                <p className="text-xs text-slate-700 truncate">{item.label}</p>
+                                                {item.detail && <p className="text-[10px] text-slate-400 truncate">{item.detail}</p>}
+                                              </div>
+                                              <time className="text-[10px] text-slate-400 whitespace-nowrap shrink-0">
+                                                {new Date(item.createdAt).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}
+                                              </time>
+                                            </div>
+                                          ))}
+                                        </div>
                                       </div>
-                                      <time className="text-[10px] text-slate-400 whitespace-nowrap shrink-0">
-                                        {new Date(item.createdAt).toLocaleString("ko-KR", {
-                                          year: "2-digit", month: "2-digit", day: "2-digit",
-                                          hour: "2-digit", minute: "2-digit",
-                                        })}
-                                      </time>
-                                    </div>
-                                  ))}
+                                    ))}
+                                  </div>
                                 </div>
-                              </div>
-                            )}
+                              )
+                            })()}
                           </td>
                         </tr>
                       )}

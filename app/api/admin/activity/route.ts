@@ -3,6 +3,22 @@ import { isAdmin } from "@/lib/admin"
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
 
+// ISO 주 기준: 이번 주 월요일 00:00 KST
+function calcSince(period: string): Date | undefined {
+  const now = new Date()
+  if (period === "week") {
+    const day = now.getDay() // 0=일, 1=월, ..., 6=토
+    const monday = new Date(now)
+    monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1))
+    monday.setHours(0, 0, 0, 0)
+    return monday
+  }
+  if (period === "month") {
+    return new Date(now.getFullYear(), now.getMonth(), 1)
+  }
+  return undefined
+}
+
 export async function GET(req: Request) {
   const session = await auth()
   if (!session || !isAdmin(session.user.email)) {
@@ -10,11 +26,9 @@ export async function GET(req: Request) {
   }
 
   const { searchParams } = new URL(req.url)
-  const period = searchParams.get("period") ?? "all" // "7" | "30" | "all"
+  const period = searchParams.get("period") ?? "all" // "week" | "month" | "all"
 
-  let since: Date | undefined
-  if (period === "7")  since = new Date(Date.now() - 7  * 86400000)
-  if (period === "30") since = new Date(Date.now() - 30 * 86400000)
+  const since = calcSince(period)
   const dateFilter = since ? { createdAt: { gte: since } } : {}
 
   const [
@@ -27,7 +41,7 @@ export async function GET(req: Request) {
   ] = await Promise.all([
     prisma.user.findMany({
       orderBy: { createdAt: "asc" },
-      select: { id: true, name: true, email: true, role: true, status: true, department: true },
+      select: { id: true, name: true, email: true, role: true, status: true, department: true, createdAt: true },
     }),
     prisma.boardPost.groupBy({
       by: ["authorId"], where: dateFilter,
@@ -87,7 +101,6 @@ export async function GET(req: Request) {
     }),
   ])
 
-  // userId → { count, last } 맵으로 변환
   const toMap = (rows: { _count: { _all: number }; _max: { createdAt: Date | null } }[], key: string) =>
     Object.fromEntries(
       rows.map(r => [(r as Record<string, unknown>)[key] as string, { count: r._count._all, last: r._max.createdAt }])
@@ -108,7 +121,7 @@ export async function GET(req: Request) {
   const qpaMap               = toMap(qpaAudits,         "createdById")
   const awardedMap           = toMap(awardedProjects,   "createdById")
 
-  const result = users.map(u => {
+  const rows = users.map(u => {
     const pc  = (postMap[u.id]?.count      ?? 0) + (feedPostMap[u.id]?.count  ?? 0)
     const cc  = (commentMap[u.id]?.count   ?? 0) + (feedReplyMap[u.id]?.count ?? 0)
     const cl  = claimMap[u.id]?.count    ?? 0
@@ -124,20 +137,13 @@ export async function GET(req: Request) {
     const total = pc + cc + cl + nc + ic + sc + ac + tc + wc + mc + qc + arc
 
     const dates = [
-      postMap[u.id]?.last,
-      commentMap[u.id]?.last,
-      feedPostMap[u.id]?.last,
-      feedReplyMap[u.id]?.last,
-      claimMap[u.id]?.last,
-      ncrMap[u.id]?.last,
-      incomingMap[u.id]?.last,
-      sourceMap[u.id]?.last,
-      auditMap[u.id]?.last,
-      tenderMap[u.id]?.last,
-      witnessMap[u.id]?.last,
-      meetingMap[u.id]?.last,
-      qpaMap[u.id]?.last,
-      awardedMap[u.id]?.last,
+      postMap[u.id]?.last, commentMap[u.id]?.last,
+      feedPostMap[u.id]?.last, feedReplyMap[u.id]?.last,
+      claimMap[u.id]?.last, ncrMap[u.id]?.last,
+      incomingMap[u.id]?.last, sourceMap[u.id]?.last,
+      auditMap[u.id]?.last, tenderMap[u.id]?.last,
+      witnessMap[u.id]?.last, meetingMap[u.id]?.last,
+      qpaMap[u.id]?.last, awardedMap[u.id]?.last,
     ].filter(Boolean) as Date[]
 
     const lastActivity = dates.length > 0
@@ -145,28 +151,21 @@ export async function GET(req: Request) {
       : null
 
     return {
-      id: u.id,
-      name: u.name,
-      email: u.email,
-      role: u.role,
-      status: u.status,
-      department: u.department,
-      posts: pc,
-      comments: cc,
-      claims: cl,
-      ncrs: nc,
-      incomingInspections: ic,
-      sourceInspections: sc,
-      audits: ac,
-      tenders: tc,
-      witnessInspections: wc,
-      meetings: mc,
-      qpaAudits: qc,
-      awardedProjects: arc,
+      id: u.id, name: u.name, email: u.email,
+      role: u.role, status: u.status, department: u.department,
+      posts: pc, comments: cc,
+      claims: cl, ncrs: nc,
+      incomingInspections: ic, sourceInspections: sc, audits: ac,
+      tenders: tc, witnessInspections: wc, meetings: mc, qpaAudits: qc, awardedProjects: arc,
       total,
       lastActivity: lastActivity?.toISOString() ?? null,
     }
   }).sort((a, b) => b.total - a.total)
 
-  return NextResponse.json(result)
+  // 전체 기간의 경우 가장 오래된 사용자 등록일 반환 → 프론트에서 "전체 (YYYY.MM~)" 표시에 활용
+  const periodStart = period === "all" && users.length > 0
+    ? users[0].createdAt.toISOString()
+    : undefined
+
+  return NextResponse.json({ rows, periodStart })
 }
