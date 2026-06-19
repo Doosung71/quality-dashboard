@@ -72,6 +72,7 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
   });
   const [newEntry, setNewEntry] = useState("");
   const [addingEntry, setAddingEntry] = useState(false);
+  const [deletingEntryIdx, setDeletingEntryIdx] = useState<number | null>(null);
   const [attachments, setAttachments] = useState<AttachmentItem[]>(
     (ncr.attachments ?? []) as AttachmentItem[]
   );
@@ -136,6 +137,23 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
       router.refresh();
     } finally {
       setAddingEntry(false);
+    }
+  }
+
+  async function handleDeleteTimelineEntry(originalIndex: number) {
+    setDeletingEntryIdx(originalIndex);
+    const newTimeline = (ncr.timeline ?? []).filter((_, idx) => idx !== originalIndex);
+    try {
+      const res = await fetch(`/api/ncr/${ncr.id}`, {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ timeline: newTimeline }),
+      });
+      if (!res.ok) throw new Error("삭제 실패");
+      const updated = await res.json();
+      setNcr(prev => ({ ...prev, ...updated }));
+      router.refresh();
+    } finally {
+      setDeletingEntryIdx(null);
     }
   }
 
@@ -371,18 +389,31 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
           {(ncr.timeline ?? []).length === 0 ? (
             <p className="text-xs text-slate-400 text-center py-4">처리 이력이 없습니다.</p>
           ) : (
-            [...(ncr.timeline ?? [])].reverse().map((item, i) => (
-              <div key={i} className="flex gap-3 items-start">
-                <div className="w-2 h-2 rounded-full bg-slate-400 mt-1.5 shrink-0" />
-                <div>
-                  <p className="text-xs text-slate-700 font-medium">{item.action}</p>
-                  <p className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1">
-                    <Clock className="w-3 h-3" /> {item.date}
-                    {item.user && <> · <span className="font-medium text-slate-500">{item.user}</span></>}
-                  </p>
+            [...(ncr.timeline ?? [])].reverse().map((item, i) => {
+              const originalIndex = (ncr.timeline ?? []).length - 1 - i;
+              return (
+                <div key={i} className="flex gap-3 items-start group">
+                  <div className="w-2 h-2 rounded-full bg-slate-400 mt-1.5 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-slate-700 font-medium wrap-break-word">{item.action}</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1">
+                      <Clock className="w-3 h-3" /> {item.date}
+                      {item.user && <> · <span className="font-medium text-slate-500">{item.user}</span></>}
+                    </p>
+                  </div>
+                  {canEdit && (
+                    <button
+                      onClick={() => handleDeleteTimelineEntry(originalIndex)}
+                      disabled={deletingEntryIdx === originalIndex}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-50 text-slate-300 hover:text-red-400 shrink-0"
+                      title="이력 삭제"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
