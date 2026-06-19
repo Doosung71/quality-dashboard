@@ -28,6 +28,7 @@ export default function WitnessForm({ defaultAssigneeName, defaultAssigneeId }: 
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState("")
+  const [successMsg, setSuccessMsg] = useState("")
 
   const [form, setForm] = useState({
     customer:       "",
@@ -158,6 +159,8 @@ export default function WitnessForm({ defaultAssigneeName, defaultAssigneeId }: 
         throw new Error(j.error ?? "등록 실패")
       }
       const { id } = await res.json() as { id: string }
+      setSuccessMsg("입회검사가 등록되었습니다.")
+      await new Promise(r => setTimeout(r, 1500))
       router.push(`/witness/${id}`)
     } catch (err) {
       setError((err as Error).message)
@@ -308,6 +311,13 @@ export default function WitnessForm({ defaultAssigneeName, defaultAssigneeId }: 
           </button>
         </div>
       </form>
+
+      {/* 등록 성공 토스트 */}
+      {successMsg && (
+        <div className="fixed bottom-6 right-6 z-50 px-5 py-3 rounded-2xl shadow-xl text-sm font-bold text-white bg-emerald-600">
+          ✓ {successMsg}
+        </div>
+      )}
 
       {/* 신규 시험장 등록 모달 */}
       {showRoomModal && (

@@ -529,7 +529,7 @@ ${rankLines}
 
                       {isSelected && (
                         <tr className="border-b border-indigo-100 bg-slate-50/80">
-                          <td colSpan={12} className="px-6 py-3">
+                          <td colSpan={3 + ACTIVITY_COLS.length + 2} className="px-6 py-3">
                             {detailLoading === r.id ? (
                               <p className="text-xs text-slate-400 py-1">불러오는 중...</p>
                             ) : detailItems.length === 0 ? (
