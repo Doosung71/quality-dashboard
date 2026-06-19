@@ -120,7 +120,15 @@ export default function KnowledgeSearchPage() {
                   <input
                     type="text"
                     value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    onChange={(e) => {
+                      setQuery(e.target.value);
+                      if (!e.target.value.trim()) {
+                        setChunks([]);
+                        setWebResults([]);
+                        setSynthesizedReport(null);
+                        setSearched(false);
+                      }
+                    }}
                     placeholder="예: 초고압 케이블 PD 측정 방법, 합격 기준"
                     disabled={loading}
                     className="w-full pl-9 pr-3 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white"
