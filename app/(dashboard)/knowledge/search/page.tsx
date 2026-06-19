@@ -162,7 +162,7 @@ export default function KnowledgeSearchPage() {
             {error && <p className="text-rose-600 font-bold">{error}</p>}
 
             {synthesizedReport && (
-              <div className="bg-gradient-to-br from-indigo-50/50 to-slate-50 border border-indigo-100 p-5 rounded-2xl space-y-4 shadow-sm">
+              <div className="bg-linear-to-br from-indigo-50/50 to-slate-50 border border-indigo-100 p-5 rounded-2xl space-y-4 shadow-sm">
                 <div className="flex items-center justify-between border-b border-indigo-100 pb-2">
                   <h4 className="text-xs font-black text-indigo-950 flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4 text-indigo-500 animate-pulse" />
