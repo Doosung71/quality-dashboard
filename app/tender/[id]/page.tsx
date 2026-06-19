@@ -415,7 +415,7 @@ export default async function TenderPage({
                   {analysis.history.map((h) => (
                     <li key={h.id} className="space-y-1 relative pl-4">
                       {/* 타임라인 점 */}
-                      <span className="absolute -left-[5.5px] top-1.5 w-2 h-2 rounded-full bg-slate-300 border border-white" />
+                      <span className="absolute left-[5.5px] top-1.5 w-2 h-2 rounded-full bg-slate-300 border border-white" />
                       
                       <div className="flex items-center justify-between text-[10px] text-slate-400">
                         <span className="font-mono">{new Date(h.createdAt).toLocaleString("ko-KR")}</span>
