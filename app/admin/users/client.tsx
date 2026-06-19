@@ -256,6 +256,253 @@ function getPeriodLabel(period: "all" | "month" | "week", startDate?: string | n
   return "전체"
 }
 
+// ─── 활동 추이 ───────────────────────────────────────────────
+
+type TrendUser = { id: string; name: string; department: string | null }
+type TrendSeries = TrendUser & { data: number[] }
+type TrendData = {
+  dates: string[]
+  avgLine: number[]
+  totalUsers: number
+  allUsers: TrendUser[]
+  series: TrendSeries[]
+}
+
+const TREND_COLORS = [
+  "#6366f1", "#f59e0b", "#10b981", "#ef4444",
+  "#8b5cf6", "#ec4899", "#14b8a6",
+]
+
+function LineChart({ dates, avgLine, series }: {
+  dates: string[]
+  avgLine: number[]
+  series: (TrendSeries & { color: string })[]
+}) {
+  const W = 800, H = 260
+  const PAD = { t: 16, r: 16, b: 44, l: 44 }
+  const gW = W - PAD.l - PAD.r
+  const gH = H - PAD.t - PAD.b
+
+  const allVals = [...avgLine, ...series.flatMap(s => s.data)]
+  const maxVal = Math.max(...allVals, 1)
+  const n = dates.length
+
+  const xScale = (i: number) => PAD.l + (n <= 1 ? gW / 2 : (i / (n - 1)) * gW)
+  const yScale = (v: number) => PAD.t + gH - (v / maxVal) * gH
+
+  const toPoints = (data: number[]) =>
+    data.map((v, i) => `${xScale(i).toFixed(1)},${yScale(v).toFixed(1)}`).join(" ")
+
+  const labelStep = Math.max(1, Math.ceil(n / 10))
+
+  const yTicks = [0, 0.25, 0.5, 0.75, 1].map(t => ({
+    y: PAD.t + gH * (1 - t),
+    val: Math.round(maxVal * t * 10) / 10,
+  }))
+
+  const fmtDate = (d: string) => {
+    const parts = d.split("-") // YYYY-MM-DD
+    return parts.length === 3 ? `${parts[1]}/${parts[2]}` : d
+  }
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto select-none">
+      {/* 그리드 */}
+      {yTicks.map(({ y, val }) => (
+        <g key={val}>
+          <line x1={PAD.l} y1={y} x2={W - PAD.r} y2={y}
+            stroke="#e2e8f0" strokeWidth="1" />
+          <text x={PAD.l - 6} y={y + 4} textAnchor="end" fontSize="10" fill="#94a3b8">
+            {val}
+          </text>
+        </g>
+      ))}
+      {/* X 라벨 */}
+      {dates.map((d, i) => i % labelStep !== 0 ? null : (
+        <text key={d} x={xScale(i)} y={H - PAD.b + 14}
+          textAnchor="middle" fontSize="10" fill="#94a3b8">
+          {fmtDate(d)}
+        </text>
+      ))}
+      {/* 평균 선 (회색 점선) */}
+      {avgLine.length > 0 && (
+        <polyline points={toPoints(avgLine)} fill="none"
+          stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="4 4" />
+      )}
+      {/* 사용자 선 */}
+      {series.map(s => (
+        <g key={s.id}>
+          <polyline points={toPoints(s.data)} fill="none"
+            stroke={s.color} strokeWidth="2"
+            strokeLinecap="round" strokeLinejoin="round" />
+          {s.data.map((v, i) => (
+            <circle key={i} cx={xScale(i)} cy={yScale(v)} r="3"
+              fill={s.color} />
+          ))}
+        </g>
+      ))}
+    </svg>
+  )
+}
+
+function TrendView() {
+  const [period, setPeriod]           = useState<"week" | "month" | "all">("month")
+  const [granularity, setGranularity] = useState<"day" | "week">("day")
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [data, setData]               = useState<TrendData | null>(null)
+  const [loading, setLoading]         = useState(false)
+
+  const load = useCallback(async () => {
+    setLoading(true)
+    const qs = new URLSearchParams({
+      period,
+      granularity,
+      userIds: selectedIds.join(","),
+    })
+    const res = await fetch(`/api/admin/activity/trend?${qs}`)
+    if (res.ok) setData(await res.json() as TrendData)
+    setLoading(false)
+  }, [period, granularity, selectedIds])
+
+  useEffect(() => { void load() }, [load])
+
+  // 기간 버튼 라벨 (활동 현황과 동일 로직)
+  const periodLabels: Record<"week" | "month" | "all", string> = {
+    week:  (() => {
+      const now = new Date(); const mon = new Date(now)
+      const day = now.getDay()
+      mon.setDate(now.getDate() - (day === 0 ? 6 : day - 1))
+      return `${mon.getMonth() + 1}월 ${Math.floor((mon.getDate() - 1) / 7) + 1}주차`
+    })(),
+    month: `${new Date().getMonth() + 1}월`,
+    all:   data?.dates[0] ? `전체 (${data.dates[0].slice(0, 7).replace("-", ".")}~)` : "전체",
+  }
+
+  const coloredSeries = (data?.series ?? []).map((s, i) => ({
+    ...s,
+    color: TREND_COLORS[i % TREND_COLORS.length],
+  }))
+
+  const toggleUser = (id: string) =>
+    setSelectedIds(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : prev.length >= 5 ? prev : [...prev, id]
+    )
+
+  return (
+    <div className="space-y-4">
+      {/* 컨트롤 바 */}
+      <div className="bg-white rounded-xl border border-slate-200 p-4">
+        <div className="flex flex-wrap items-center gap-3">
+
+          {/* 기간 필터 */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-slate-400">기간</span>
+            {(["all", "month", "week"] as const).map(v => (
+              <button key={v} onClick={() => setPeriod(v)}
+                className={`px-2.5 py-1 text-xs rounded-full border transition-colors whitespace-nowrap ${
+                  period === v
+                    ? "bg-slate-800 text-white border-slate-800"
+                    : "border-slate-200 text-slate-600 hover:border-slate-400"
+                }`}>
+                {periodLabels[v]}
+              </button>
+            ))}
+          </div>
+
+          {/* 단위 */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-slate-400">단위</span>
+            {(["day", "week"] as const).map(v => (
+              <button key={v} onClick={() => setGranularity(v)}
+                className={`px-2.5 py-1 text-xs rounded-full border transition-colors ${
+                  granularity === v
+                    ? "bg-slate-800 text-white border-slate-800"
+                    : "border-slate-200 text-slate-600 hover:border-slate-400"
+                }`}>
+                {v === "day" ? "일별" : "주별"}
+              </button>
+            ))}
+          </div>
+
+          {/* 사용자 선택 드롭다운 */}
+          <div className="flex items-center gap-2 ml-auto">
+            <span className="text-xs text-slate-400">사용자 추가</span>
+            <select
+              onChange={e => { if (e.target.value) { toggleUser(e.target.value); e.target.value = "" } }}
+              className="text-xs border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              defaultValue=""
+            >
+              <option value="">선택...</option>
+              {(data?.allUsers ?? [])
+                .filter(u => !selectedIds.includes(u.id))
+                .map(u => (
+                  <option key={u.id} value={u.id}>
+                    {u.name}{u.department ? ` (${u.department})` : ""}
+                  </option>
+                ))}
+            </select>
+          </div>
+        </div>
+
+        {/* 선택된 사용자 태그 */}
+        {selectedIds.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-slate-100">
+            {coloredSeries.map(s => (
+              <span key={s.id}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium text-white"
+                style={{ backgroundColor: s.color }}>
+                {s.name}
+                <button onClick={() => toggleUser(s.id)}
+                  className="hover:opacity-75 leading-none text-base">×</button>
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 차트 */}
+      <div className="bg-white rounded-xl border border-slate-200 p-5">
+        {loading ? (
+          <div className="h-48 flex items-center justify-center text-xs text-slate-400">
+            불러오는 중...
+          </div>
+        ) : !data || data.dates.length === 0 ? (
+          <div className="h-48 flex items-center justify-center text-xs text-slate-400">
+            이 기간에 활동 데이터가 없습니다.
+          </div>
+        ) : (
+          <LineChart
+            dates={data.dates}
+            avgLine={data.avgLine}
+            series={coloredSeries}
+          />
+        )}
+
+        {/* 범례 */}
+        <div className="flex flex-wrap items-center gap-4 mt-4 pt-3 border-t border-slate-100">
+          <span className="flex items-center gap-1.5 text-xs text-slate-500">
+            <svg width="24" height="10"><line x1="0" y1="5" x2="24" y2="5"
+              stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="4 4" /></svg>
+            팀 평균 ({data?.totalUsers ?? 0}명 기준)
+          </span>
+          {coloredSeries.map(s => (
+            <span key={s.id} className="flex items-center gap-1.5 text-xs text-slate-600">
+              <span className="w-5 h-0.5 rounded" style={{ backgroundColor: s.color }} />
+              {s.name}
+              {s.department && <span className="text-slate-400">({s.department})</span>}
+            </span>
+          ))}
+          {selectedIds.length === 0 && (
+            <span className="text-xs text-slate-400 italic">
+              ↑ 사용자를 추가하면 개인 추이를 비교할 수 있습니다
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── 활동 현황 ───────────────────────────────────────────────
 
 function ActivityView() {
@@ -678,7 +925,7 @@ function restrictedUntilLabel(until: Date | null | undefined): string {
 }
 
 export function AdminUsersClient({ users: initial }: { users: User[] }) {
-  const [activeTab, setActiveTab] = useState<"users" | "activity" | "presence">("users")
+  const [activeTab, setActiveTab] = useState<"users" | "activity" | "trend" | "presence">("users")
 
   // /admin/users는 DashboardShell 밖이므로 여기서 직접 하트비트 전송
   useEffect(() => {
@@ -970,7 +1217,7 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
     <div className="space-y-4">
       {/* 탭 바 */}
       <div className="flex gap-1 bg-slate-100 p-1 rounded-xl w-fit">
-        {([["users", "사용자 목록"], ["activity", "활동 현황"], ["presence", "접속 현황"]] as const).map(([tab, label]) => (
+        {([["users", "사용자 목록"], ["activity", "활동 현황"], ["trend", "활동 추이"], ["presence", "접속 현황"]] as const).map(([tab, label]) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -992,6 +1239,9 @@ export function AdminUsersClient({ users: initial }: { users: User[] }) {
 
       {/* 활동 현황 탭 */}
       {activeTab === "activity" && <ActivityView />}
+
+      {/* 활동 추이 탭 */}
+      {activeTab === "trend" && <TrendView />}
 
       {/* 접속 현황 탭 */}
       {activeTab === "presence" && <PresenceView />}
