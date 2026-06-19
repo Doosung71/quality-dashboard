@@ -10,7 +10,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (session instanceof NextResponse) return session
 
   const role = session.user.role
-  if (role !== "PRACTITIONER" && role !== "TEAM_LEAD" && role !== "DIRECTOR") {
+  if (role !== "PRACTITIONER" && role !== "TEAM_LEAD" && role !== "DIRECTOR" && role !== "ADMIN") {
     return NextResponse.json({ error: "권한이 없습니다." }, { status: 403 })
   }
 
