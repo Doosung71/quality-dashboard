@@ -247,7 +247,7 @@ export async function ingestClosedNcr(ncrId: string): Promise<void> {
     try {
       if (!process.env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY 없음")
       const summary = await generateQmsSummary(markdown)
-      await ingestSummaryChunk(sourcePrefix, `[요약] ${title}`, summary)
+      await ingestSummaryChunk(sourcePrefix, `[요약] ${title}`, `${title}\n\n${summary}`)
       console.log(`[ingest-qms] NCR 요약 인제스트 완료 — ${ncr.ncrNo}`)
     } catch (summaryError) {
       console.error(`[ingest-qms] NCR 요약 스킵 (fail-open) — ${ncr.ncrNo}:`, summaryError)
@@ -279,7 +279,7 @@ export async function ingestClosedClaim(claimId: string): Promise<void> {
     try {
       if (!process.env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY 없음")
       const summary = await generateQmsSummary(markdown)
-      await ingestSummaryChunk(sourcePrefix, `[요약] ${title}`, summary)
+      await ingestSummaryChunk(sourcePrefix, `[요약] ${title}`, `${title}\n\n${summary}`)
       console.log(`[ingest-qms] Claim 요약 인제스트 완료 — ${claim.claimNo}`)
     } catch (summaryError) {
       console.error(`[ingest-qms] Claim 요약 스킵 (fail-open) — ${claim.claimNo}:`, summaryError)
