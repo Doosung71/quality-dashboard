@@ -64,7 +64,7 @@ type EditFields = { category: string; content: string; isRisk: boolean; isVE: bo
 
 type Props = { analysisId: string; requirements: Req[] }
 
-const EMPTY_NEW = { category: "", content: "", isRisk: false, isVE: false, sourcePage: "" }
+const EMPTY_NEW = { category: "", content: "", isRisk: false, isVE: false }
 
 export default function RequirementsEdit({ analysisId, requirements: initial }: Props) {
   const router = useRouter()
@@ -142,7 +142,6 @@ export default function RequirementsEdit({ analysisId, requirements: initial }: 
       content: newReq.content,
       isRisk: newReq.isRisk,
       isVE: newReq.isVE,
-      sourcePage: newReq.sourcePage ? parseInt(newReq.sourcePage) : null,
     }
     const ok = await apiCall(`/api/analysis/${analysisId}/requirements`, "POST", body)
     if (ok) { setShowAdd(false); setNewReq(EMPTY_NEW) }
@@ -253,17 +252,10 @@ export default function RequirementsEdit({ analysisId, requirements: initial }: 
       {showAdd ? (
         <div className="border rounded-lg p-3 bg-zinc-50 space-y-2 mt-2">
           <p className="text-sm font-medium text-zinc-700">요구사항 추가</p>
-          <div className="flex gap-2">
-            <div className="flex-1">
-              <label className="text-xs text-zinc-500">분류</label>
-              <input className="w-full border rounded px-2 py-1 text-sm mt-0.5" placeholder="예: 케이블, QA"
-                value={newReq.category} onChange={(e) => setNewReq((v) => ({ ...v, category: e.target.value }))} />
-            </div>
-            <div className="w-20">
-              <label className="text-xs text-zinc-500">페이지</label>
-              <input className="w-full border rounded px-2 py-1 text-sm mt-0.5" type="number" placeholder="선택"
-                value={newReq.sourcePage} onChange={(e) => setNewReq((v) => ({ ...v, sourcePage: e.target.value }))} />
-            </div>
+          <div>
+            <label className="text-xs text-zinc-500">분류</label>
+            <input className="w-full border rounded px-2 py-1 text-sm mt-0.5" placeholder="예: 케이블, QA"
+              value={newReq.category} onChange={(e) => setNewReq((v) => ({ ...v, category: e.target.value }))} />
           </div>
           <div>
             <div className="flex items-center justify-between mb-0.5">
