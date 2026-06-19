@@ -39,8 +39,16 @@ export async function GET(req: Request) {
   }
 
   const { searchParams } = new URL(req.url)
-  const period      = searchParams.get("period")      ?? "month"
-  const granularity = (searchParams.get("granularity") ?? "day") as "day" | "week"
+  const rawPeriod = searchParams.get("period") ?? "month"
+  if (rawPeriod !== "week" && rawPeriod !== "month" && rawPeriod !== "all") {
+    return NextResponse.json({ error: "period는 week, month, all만 허용됩니다." }, { status: 400 })
+  }
+  const period = rawPeriod
+  const rawGranularity = searchParams.get("granularity") ?? "day"
+  if (rawGranularity !== "day" && rawGranularity !== "week") {
+    return NextResponse.json({ error: "granularity는 day 또는 week만 허용됩니다." }, { status: 400 })
+  }
+  const granularity = rawGranularity as "day" | "week"
   const userIdsParam = searchParams.get("userIds") ?? ""
   const selectedIds  = userIdsParam ? userIdsParam.split(",").filter(Boolean) : []
 

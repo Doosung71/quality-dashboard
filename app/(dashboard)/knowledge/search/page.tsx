@@ -127,6 +127,7 @@ export default function KnowledgeSearchPage() {
                         setWebResults([]);
                         setSynthesizedReport(null);
                         setSearched(false);
+                        setError("");
                       }
                     }}
                     placeholder="예: 초고압 케이블 PD 측정 방법, 합격 기준"

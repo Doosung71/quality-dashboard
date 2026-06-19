@@ -431,10 +431,7 @@ function TrendView({ defaultPeriod = "week" }: { defaultPeriod?: "all" | "month"
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-slate-400">기간</span>
             {(["all", "month", "week"] as const).map(v => (
-              <button key={v} onClick={() => {
-                setPeriod(v)
-                void doFetch(v, granularity, selectedIdsRef.current.join(","), false)
-              }}
+              <button key={v} onClick={() => setPeriod(v)}
                 className={`px-2.5 py-1 text-xs rounded-full border transition-colors whitespace-nowrap ${
                   period === v
                     ? "bg-slate-800 text-white border-slate-800"
@@ -449,10 +446,7 @@ function TrendView({ defaultPeriod = "week" }: { defaultPeriod?: "all" | "month"
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-slate-400">단위</span>
             {(["day", "week"] as const).map(v => (
-              <button key={v} onClick={() => {
-                setGranularity(v)
-                void doFetch(period, v, selectedIdsRef.current.join(","), false)
-              }}
+              <button key={v} onClick={() => setGranularity(v)}
                 className={`px-2.5 py-1 text-xs rounded-full border transition-colors ${
                   granularity === v
                     ? "bg-slate-800 text-white border-slate-800"
