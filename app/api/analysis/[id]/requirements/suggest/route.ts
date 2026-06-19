@@ -9,7 +9,7 @@ import { naverSearchText } from "@/lib/naver-search"
 import { readBlobBuffer } from "@/lib/storage"
 import { extractTextFromPdf } from "@/lib/pdf"
 
-const TENDER_TEXT_MAX = 8_000
+const TENDER_TEXT_MAX = 40_000
 
 async function searchWebForRequirement(query: string): Promise<string> {
   return naverSearchText(query, 5)
