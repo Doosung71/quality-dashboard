@@ -354,6 +354,7 @@ export default async function TenderPage({
                     sourceText: r.sourceText,
                     isRisk: r.isRisk,
                     isVE: r.isVE,
+                    isManual: r.isManual,
                     comply: r.comply as "COMPLY" | "NON_COMPLY" | "TBD" | null,
                     remark: r.remark,
                     deviationType: r.deviationType as "DEVIATION" | "CLARIFICATION" | "ASSUMPTION" | null,

@@ -81,6 +81,7 @@ model SpecRequirement {
   remark         String?
   isRisk         Boolean          @default(false)
   isVE           Boolean          @default(false)
+  isManual       Boolean          @default(false)
   deviationType  DeviationType?
   deviationText  String?
 

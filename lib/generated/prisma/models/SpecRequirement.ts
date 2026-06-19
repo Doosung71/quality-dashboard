@@ -45,6 +45,7 @@ export type SpecRequirementMinAggregateOutputType = {
   remark: string | null
   isRisk: boolean | null
   isVE: boolean | null
+  isManual: boolean | null
   deviationType: $Enums.DeviationType | null
   deviationText: string | null
 }
@@ -60,6 +61,7 @@ export type SpecRequirementMaxAggregateOutputType = {
   remark: string | null
   isRisk: boolean | null
   isVE: boolean | null
+  isManual: boolean | null
   deviationType: $Enums.DeviationType | null
   deviationText: string | null
 }
@@ -75,6 +77,7 @@ export type SpecRequirementCountAggregateOutputType = {
   remark: number
   isRisk: number
   isVE: number
+  isManual: number
   deviationType: number
   deviationText: number
   _all: number
@@ -100,6 +103,7 @@ export type SpecRequirementMinAggregateInputType = {
   remark?: true
   isRisk?: true
   isVE?: true
+  isManual?: true
   deviationType?: true
   deviationText?: true
 }
@@ -115,6 +119,7 @@ export type SpecRequirementMaxAggregateInputType = {
   remark?: true
   isRisk?: true
   isVE?: true
+  isManual?: true
   deviationType?: true
   deviationText?: true
 }
@@ -130,6 +135,7 @@ export type SpecRequirementCountAggregateInputType = {
   remark?: true
   isRisk?: true
   isVE?: true
+  isManual?: true
   deviationType?: true
   deviationText?: true
   _all?: true
@@ -232,6 +238,7 @@ export type SpecRequirementGroupByOutputType = {
   remark: string | null
   isRisk: boolean
   isVE: boolean
+  isManual: boolean
   deviationType: $Enums.DeviationType | null
   deviationText: string | null
   _count: SpecRequirementCountAggregateOutputType | null
@@ -270,6 +277,7 @@ export type SpecRequirementWhereInput = {
   remark?: Prisma.StringNullableFilter<"SpecRequirement"> | string | null
   isRisk?: Prisma.BoolFilter<"SpecRequirement"> | boolean
   isVE?: Prisma.BoolFilter<"SpecRequirement"> | boolean
+  isManual?: Prisma.BoolFilter<"SpecRequirement"> | boolean
   deviationType?: Prisma.EnumDeviationTypeNullableFilter<"SpecRequirement"> | $Enums.DeviationType | null
   deviationText?: Prisma.StringNullableFilter<"SpecRequirement"> | string | null
   analysis?: Prisma.XOR<Prisma.AnalysisScalarRelationFilter, Prisma.AnalysisWhereInput>
@@ -287,6 +295,7 @@ export type SpecRequirementOrderByWithRelationInput = {
   remark?: Prisma.SortOrderInput | Prisma.SortOrder
   isRisk?: Prisma.SortOrder
   isVE?: Prisma.SortOrder
+  isManual?: Prisma.SortOrder
   deviationType?: Prisma.SortOrderInput | Prisma.SortOrder
   deviationText?: Prisma.SortOrderInput | Prisma.SortOrder
   analysis?: Prisma.AnalysisOrderByWithRelationInput
@@ -307,6 +316,7 @@ export type SpecRequirementWhereUniqueInput = Prisma.AtLeast<{
   remark?: Prisma.StringNullableFilter<"SpecRequirement"> | string | null
   isRisk?: Prisma.BoolFilter<"SpecRequirement"> | boolean
   isVE?: Prisma.BoolFilter<"SpecRequirement"> | boolean
+  isManual?: Prisma.BoolFilter<"SpecRequirement"> | boolean
   deviationType?: Prisma.EnumDeviationTypeNullableFilter<"SpecRequirement"> | $Enums.DeviationType | null
   deviationText?: Prisma.StringNullableFilter<"SpecRequirement"> | string | null
   analysis?: Prisma.XOR<Prisma.AnalysisScalarRelationFilter, Prisma.AnalysisWhereInput>
@@ -324,6 +334,7 @@ export type SpecRequirementOrderByWithAggregationInput = {
   remark?: Prisma.SortOrderInput | Prisma.SortOrder
   isRisk?: Prisma.SortOrder
   isVE?: Prisma.SortOrder
+  isManual?: Prisma.SortOrder
   deviationType?: Prisma.SortOrderInput | Prisma.SortOrder
   deviationText?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.SpecRequirementCountOrderByAggregateInput
@@ -347,6 +358,7 @@ export type SpecRequirementScalarWhereWithAggregatesInput = {
   remark?: Prisma.StringNullableWithAggregatesFilter<"SpecRequirement"> | string | null
   isRisk?: Prisma.BoolWithAggregatesFilter<"SpecRequirement"> | boolean
   isVE?: Prisma.BoolWithAggregatesFilter<"SpecRequirement"> | boolean
+  isManual?: Prisma.BoolWithAggregatesFilter<"SpecRequirement"> | boolean
   deviationType?: Prisma.EnumDeviationTypeNullableWithAggregatesFilter<"SpecRequirement"> | $Enums.DeviationType | null
   deviationText?: Prisma.StringNullableWithAggregatesFilter<"SpecRequirement"> | string | null
 }
@@ -361,6 +373,7 @@ export type SpecRequirementCreateInput = {
   remark?: string | null
   isRisk?: boolean
   isVE?: boolean
+  isManual?: boolean
   deviationType?: $Enums.DeviationType | null
   deviationText?: string | null
   analysis: Prisma.AnalysisCreateNestedOneWithoutRequirementsInput
@@ -378,6 +391,7 @@ export type SpecRequirementUncheckedCreateInput = {
   remark?: string | null
   isRisk?: boolean
   isVE?: boolean
+  isManual?: boolean
   deviationType?: $Enums.DeviationType | null
   deviationText?: string | null
   standards?: Prisma.StandardUncheckedCreateNestedManyWithoutRequirementsInput
@@ -393,6 +407,7 @@ export type SpecRequirementUpdateInput = {
   remark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isRisk?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVE?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isManual?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deviationType?: Prisma.NullableEnumDeviationTypeFieldUpdateOperationsInput | $Enums.DeviationType | null
   deviationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analysis?: Prisma.AnalysisUpdateOneRequiredWithoutRequirementsNestedInput
@@ -410,6 +425,7 @@ export type SpecRequirementUncheckedUpdateInput = {
   remark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isRisk?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVE?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isManual?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deviationType?: Prisma.NullableEnumDeviationTypeFieldUpdateOperationsInput | $Enums.DeviationType | null
   deviationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standards?: Prisma.StandardUncheckedUpdateManyWithoutRequirementsNestedInput
@@ -426,6 +442,7 @@ export type SpecRequirementCreateManyInput = {
   remark?: string | null
   isRisk?: boolean
   isVE?: boolean
+  isManual?: boolean
   deviationType?: $Enums.DeviationType | null
   deviationText?: string | null
 }
@@ -440,6 +457,7 @@ export type SpecRequirementUpdateManyMutationInput = {
   remark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isRisk?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVE?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isManual?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deviationType?: Prisma.NullableEnumDeviationTypeFieldUpdateOperationsInput | $Enums.DeviationType | null
   deviationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -455,6 +473,7 @@ export type SpecRequirementUncheckedUpdateManyInput = {
   remark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isRisk?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVE?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isManual?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deviationType?: Prisma.NullableEnumDeviationTypeFieldUpdateOperationsInput | $Enums.DeviationType | null
   deviationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -480,6 +499,7 @@ export type SpecRequirementCountOrderByAggregateInput = {
   remark?: Prisma.SortOrder
   isRisk?: Prisma.SortOrder
   isVE?: Prisma.SortOrder
+  isManual?: Prisma.SortOrder
   deviationType?: Prisma.SortOrder
   deviationText?: Prisma.SortOrder
 }
@@ -499,6 +519,7 @@ export type SpecRequirementMaxOrderByAggregateInput = {
   remark?: Prisma.SortOrder
   isRisk?: Prisma.SortOrder
   isVE?: Prisma.SortOrder
+  isManual?: Prisma.SortOrder
   deviationType?: Prisma.SortOrder
   deviationText?: Prisma.SortOrder
 }
@@ -514,6 +535,7 @@ export type SpecRequirementMinOrderByAggregateInput = {
   remark?: Prisma.SortOrder
   isRisk?: Prisma.SortOrder
   isVE?: Prisma.SortOrder
+  isManual?: Prisma.SortOrder
   deviationType?: Prisma.SortOrder
   deviationText?: Prisma.SortOrder
 }
@@ -620,6 +642,7 @@ export type SpecRequirementCreateWithoutAnalysisInput = {
   remark?: string | null
   isRisk?: boolean
   isVE?: boolean
+  isManual?: boolean
   deviationType?: $Enums.DeviationType | null
   deviationText?: string | null
   standards?: Prisma.StandardCreateNestedManyWithoutRequirementsInput
@@ -635,6 +658,7 @@ export type SpecRequirementUncheckedCreateWithoutAnalysisInput = {
   remark?: string | null
   isRisk?: boolean
   isVE?: boolean
+  isManual?: boolean
   deviationType?: $Enums.DeviationType | null
   deviationText?: string | null
   standards?: Prisma.StandardUncheckedCreateNestedManyWithoutRequirementsInput
@@ -680,6 +704,7 @@ export type SpecRequirementScalarWhereInput = {
   remark?: Prisma.StringNullableFilter<"SpecRequirement"> | string | null
   isRisk?: Prisma.BoolFilter<"SpecRequirement"> | boolean
   isVE?: Prisma.BoolFilter<"SpecRequirement"> | boolean
+  isManual?: Prisma.BoolFilter<"SpecRequirement"> | boolean
   deviationType?: Prisma.EnumDeviationTypeNullableFilter<"SpecRequirement"> | $Enums.DeviationType | null
   deviationText?: Prisma.StringNullableFilter<"SpecRequirement"> | string | null
 }
@@ -694,6 +719,7 @@ export type SpecRequirementCreateWithoutStandardsInput = {
   remark?: string | null
   isRisk?: boolean
   isVE?: boolean
+  isManual?: boolean
   deviationType?: $Enums.DeviationType | null
   deviationText?: string | null
   analysis: Prisma.AnalysisCreateNestedOneWithoutRequirementsInput
@@ -710,6 +736,7 @@ export type SpecRequirementUncheckedCreateWithoutStandardsInput = {
   remark?: string | null
   isRisk?: boolean
   isVE?: boolean
+  isManual?: boolean
   deviationType?: $Enums.DeviationType | null
   deviationText?: string | null
 }
@@ -745,6 +772,7 @@ export type SpecRequirementCreateManyAnalysisInput = {
   remark?: string | null
   isRisk?: boolean
   isVE?: boolean
+  isManual?: boolean
   deviationType?: $Enums.DeviationType | null
   deviationText?: string | null
 }
@@ -759,6 +787,7 @@ export type SpecRequirementUpdateWithoutAnalysisInput = {
   remark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isRisk?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVE?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isManual?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deviationType?: Prisma.NullableEnumDeviationTypeFieldUpdateOperationsInput | $Enums.DeviationType | null
   deviationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standards?: Prisma.StandardUpdateManyWithoutRequirementsNestedInput
@@ -774,6 +803,7 @@ export type SpecRequirementUncheckedUpdateWithoutAnalysisInput = {
   remark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isRisk?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVE?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isManual?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deviationType?: Prisma.NullableEnumDeviationTypeFieldUpdateOperationsInput | $Enums.DeviationType | null
   deviationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standards?: Prisma.StandardUncheckedUpdateManyWithoutRequirementsNestedInput
@@ -789,6 +819,7 @@ export type SpecRequirementUncheckedUpdateManyWithoutAnalysisInput = {
   remark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isRisk?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVE?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isManual?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deviationType?: Prisma.NullableEnumDeviationTypeFieldUpdateOperationsInput | $Enums.DeviationType | null
   deviationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -803,6 +834,7 @@ export type SpecRequirementUpdateWithoutStandardsInput = {
   remark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isRisk?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVE?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isManual?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deviationType?: Prisma.NullableEnumDeviationTypeFieldUpdateOperationsInput | $Enums.DeviationType | null
   deviationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analysis?: Prisma.AnalysisUpdateOneRequiredWithoutRequirementsNestedInput
@@ -819,6 +851,7 @@ export type SpecRequirementUncheckedUpdateWithoutStandardsInput = {
   remark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isRisk?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVE?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isManual?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deviationType?: Prisma.NullableEnumDeviationTypeFieldUpdateOperationsInput | $Enums.DeviationType | null
   deviationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -834,6 +867,7 @@ export type SpecRequirementUncheckedUpdateManyWithoutStandardsInput = {
   remark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isRisk?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVE?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isManual?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deviationType?: Prisma.NullableEnumDeviationTypeFieldUpdateOperationsInput | $Enums.DeviationType | null
   deviationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -880,6 +914,7 @@ export type SpecRequirementSelect<ExtArgs extends runtime.Types.Extensions.Inter
   remark?: boolean
   isRisk?: boolean
   isVE?: boolean
+  isManual?: boolean
   deviationType?: boolean
   deviationText?: boolean
   analysis?: boolean | Prisma.AnalysisDefaultArgs<ExtArgs>
@@ -898,6 +933,7 @@ export type SpecRequirementSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   remark?: boolean
   isRisk?: boolean
   isVE?: boolean
+  isManual?: boolean
   deviationType?: boolean
   deviationText?: boolean
   analysis?: boolean | Prisma.AnalysisDefaultArgs<ExtArgs>
@@ -914,6 +950,7 @@ export type SpecRequirementSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   remark?: boolean
   isRisk?: boolean
   isVE?: boolean
+  isManual?: boolean
   deviationType?: boolean
   deviationText?: boolean
   analysis?: boolean | Prisma.AnalysisDefaultArgs<ExtArgs>
@@ -930,11 +967,12 @@ export type SpecRequirementSelectScalar = {
   remark?: boolean
   isRisk?: boolean
   isVE?: boolean
+  isManual?: boolean
   deviationType?: boolean
   deviationText?: boolean
 }
 
-export type SpecRequirementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "analysisId" | "category" | "content" | "sourcePage" | "sourceText" | "comply" | "remark" | "isRisk" | "isVE" | "deviationType" | "deviationText", ExtArgs["result"]["specRequirement"]>
+export type SpecRequirementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "analysisId" | "category" | "content" | "sourcePage" | "sourceText" | "comply" | "remark" | "isRisk" | "isVE" | "isManual" | "deviationType" | "deviationText", ExtArgs["result"]["specRequirement"]>
 export type SpecRequirementInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   analysis?: boolean | Prisma.AnalysisDefaultArgs<ExtArgs>
   standards?: boolean | Prisma.SpecRequirement$standardsArgs<ExtArgs>
@@ -964,6 +1002,7 @@ export type $SpecRequirementPayload<ExtArgs extends runtime.Types.Extensions.Int
     remark: string | null
     isRisk: boolean
     isVE: boolean
+    isManual: boolean
     deviationType: $Enums.DeviationType | null
     deviationText: string | null
   }, ExtArgs["result"]["specRequirement"]>
@@ -1401,6 +1440,7 @@ export interface SpecRequirementFieldRefs {
   readonly remark: Prisma.FieldRef<"SpecRequirement", 'String'>
   readonly isRisk: Prisma.FieldRef<"SpecRequirement", 'Boolean'>
   readonly isVE: Prisma.FieldRef<"SpecRequirement", 'Boolean'>
+  readonly isManual: Prisma.FieldRef<"SpecRequirement", 'Boolean'>
   readonly deviationType: Prisma.FieldRef<"SpecRequirement", 'DeviationType'>
   readonly deviationText: Prisma.FieldRef<"SpecRequirement", 'String'>
 }

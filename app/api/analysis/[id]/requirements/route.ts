@@ -40,6 +40,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       content: b.content.trim(),
       isRisk: b.isRisk === true,
       isVE: b.isVE === true,
+      isManual: true,
       sourcePage: typeof b.sourcePage === "number" ? b.sourcePage : null,
       sourceText: typeof b.sourceText === "string" && b.sourceText.trim() ? b.sourceText.trim() : null,
     },

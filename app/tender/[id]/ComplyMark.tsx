@@ -27,9 +27,10 @@ type Props = {
   initialComply: ComplianceStatus | null
   initialRemark: string | null
   canEdit: boolean
+  onComplyChange?: (status: ComplianceStatus | null) => void
 }
 
-export default function ComplyMark({ requirementId, initialComply, initialRemark, canEdit }: Props) {
+export default function ComplyMark({ requirementId, initialComply, initialRemark, canEdit, onComplyChange }: Props) {
   const [comply, setComply] = useState<ComplianceStatus | null>(initialComply)
   const [remark, setRemark] = useState(initialRemark ?? "")
   const [saving, setSaving] = useState(false)
@@ -51,6 +52,7 @@ export default function ComplyMark({ requirementId, initialComply, initialRemark
     const next = comply === value ? null : value
     await patch({ comply: next })
     setComply(next)
+    onComplyChange?.(next)
     if (next !== "NON_COMPLY") setRemark("")
   }
 

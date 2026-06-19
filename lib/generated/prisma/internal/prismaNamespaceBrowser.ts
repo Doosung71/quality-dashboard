@@ -513,6 +513,7 @@ export const SpecRequirementScalarFieldEnum = {
   remark: 'remark',
   isRisk: 'isRisk',
   isVE: 'isVE',
+  isManual: 'isManual',
   deviationType: 'deviationType',
   deviationText: 'deviationText'
 } as const

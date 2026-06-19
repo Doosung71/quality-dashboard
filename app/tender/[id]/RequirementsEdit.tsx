@@ -53,6 +53,7 @@ type Req = {
   sourceText: string | null
   isRisk: boolean
   isVE: boolean
+  isManual: boolean
   comply: ComplianceStatus | null
   remark: string | null
   deviationType: DeviationType | null
@@ -74,6 +75,9 @@ export default function RequirementsEdit({ analysisId, requirements: initial }: 
   const [showAdd, setShowAdd] = useState(false)
   const [newReq, setNewReq] = useState(EMPTY_NEW)
   const [busy, setBusy] = useState(false)
+  const [complyMap, setComplyMap] = useState<Record<string, ComplianceStatus | null>>(
+    () => Object.fromEntries(initial.map((r) => [r.id, r.comply]))
+  )
   const [searchWebAdd, setSearchWebAdd] = useState(false)
   const [searchWebEdit, setSearchWebEdit] = useState(false)
   const [suggesting, setSuggesting] = useState(false)
@@ -215,6 +219,7 @@ export default function RequirementsEdit({ analysisId, requirements: initial }: 
                   <span className="text-xs px-1.5 py-0.5 bg-zinc-100 rounded text-zinc-500">{r.category}</span>
                   {r.isRisk && <span className="text-xs px-1.5 py-0.5 bg-red-100 rounded text-red-600">RISK</span>}
                   {r.isVE && <span className="text-xs px-1.5 py-0.5 bg-blue-100 rounded text-blue-600">VE</span>}
+                  {r.isManual && <span className="text-xs px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-amber-700">✏ 수동 추가</span>}
                   {r.sourcePage && <span className="text-xs text-zinc-400">p.{r.sourcePage}</span>}
                 </div>
                 <p className="text-sm text-zinc-800">{r.content}</p>
@@ -223,12 +228,16 @@ export default function RequirementsEdit({ analysisId, requirements: initial }: 
                   initialComply={r.comply}
                   initialRemark={r.remark}
                   canEdit={true}
+                  onComplyChange={(status) =>
+                    setComplyMap((prev) => ({ ...prev, [r.id]: status }))
+                  }
                 />
                 <DeviationMark
                   requirementId={r.id}
                   initialType={r.deviationType}
                   initialText={r.deviationText}
                   canEdit={true}
+                  complyStatus={complyMap[r.id] ?? null}
                 />
               </div>
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
