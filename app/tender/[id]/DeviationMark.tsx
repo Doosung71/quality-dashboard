@@ -53,7 +53,7 @@ export default function DeviationMark({ requirementId, initialType, initialText,
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  async function patch(payload: Record<string, unknown>) {
+  async function patch(payload: Record<string, unknown>): Promise<boolean> {
     setSaving(true)
     setError(null)
     try {
@@ -65,7 +65,9 @@ export default function DeviationMark({ requirementId, initialType, initialText,
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
         setError((data as { error?: string }).error ?? "저장 실패")
+        return false
       }
+      return true
     } finally {
       setSaving(false)
     }
@@ -73,8 +75,8 @@ export default function DeviationMark({ requirementId, initialType, initialText,
 
   async function handleToggle(value: DeviationType) {
     const next = deviationType === value ? null : value
-    await patch({ deviationType: next, deviationText: next ? deviationText || null : null })
-    if (!error) {
+    const ok = await patch({ deviationType: next, deviationText: next ? deviationText || null : null })
+    if (ok) {
       setDeviationType(next)
       if (next === null) setDeviationText("")
     }
