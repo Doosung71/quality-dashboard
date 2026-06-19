@@ -27,7 +27,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     assignee?: string; description?: string; timeline?: unknown[]; attachments?: unknown[]
   }
 
-  const existing = body.status === "Closed"
+  // Closed 전환 감지 또는 Closed 상태에서 timeline 변경 시 re-ingest 필요
+  const needsIngestCheck = body.status === "Closed" || body.timeline !== undefined
+  const existing = needsIngestCheck
     ? await prisma.ncr.findUnique({ where: { id }, select: { status: true } })
     : null
 
@@ -48,7 +50,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     },
   })
 
-  if (body.status === "Closed" && existing?.status !== "Closed") {
+  const isClosingNow = body.status === "Closed" && existing?.status !== "Closed"
+  const isClosedTimelineUpdate = body.timeline !== undefined && existing?.status === "Closed"
+  if (isClosingNow || isClosedTimelineUpdate) {
     after(async () => { await ingestClosedNcr(id) })
   }
 
