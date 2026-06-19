@@ -10,7 +10,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (session instanceof NextResponse) return session
 
   const role = session.user.role
-  if (role !== "PRACTITIONER" && role !== "TEAM_LEAD") {
+  if (role !== "PRACTITIONER" && role !== "TEAM_LEAD" && role !== "DIRECTOR") {
     return NextResponse.json({ error: "권한이 없습니다." }, { status: 403 })
   }
 
@@ -38,7 +38,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const requirement = await prisma.specRequirement.findFirst({
     where: role === "PRACTITIONER"
       ? { id, analysis: { status: "DRAFT", submittedAt: null, tender: { createdById: session.user.id } } }
-      : { id, analysis: { status: "DRAFT", submittedAt: { not: null } } },
+      : role === "TEAM_LEAD"
+      ? { id, analysis: { status: "DRAFT", submittedAt: { not: null } } }
+      : { id, analysis: { status: "DRAFT" } },
     select: { id: true },
   })
   if (!requirement) return NextResponse.json({ error: "수정할 수 없는 상태입니다." }, { status: 409 })
