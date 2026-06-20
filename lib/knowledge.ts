@@ -30,7 +30,7 @@ const DEFAULT_SOURCE_TYPES = [
   'obsidian', 'standards', 'pdf_inbox',
   'ncr_closed', 'claim_closed',
   'incoming_inspection', 'source_inspection', 'supplier_audit',
-  'qms_summary',
+  'qms_summary', 'verified_lesson',
 ]
 // tra_approved는 TRA 전용 RAG 경로에서만 사용. 일반 검색에서 항상 차단.
 const BLOCKED_SOURCE_TYPES = new Set(['tra_approved'])

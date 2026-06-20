@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireActivePageSession } from "@/lib/session-guard";
-import { canWrite } from "@/lib/permissions";
+import { canWrite, canVerifyLesson } from "@/lib/permissions";
 import { NCRDetailPage } from "./NCRDetailPage";
 import type { NCR, NCRTimelineItem, NCRAttachment } from "@/types/ncr";
 
@@ -13,6 +13,7 @@ export default async function NCRDetailRoute({ params }: Props) {
   const { id } = await params;
   const session = await requireActivePageSession();
   const editable = canWrite(session.user.role, "/ncr");
+  const verifyLesson = canVerifyLesson(session.user.role);
 
   const raw = await prisma.ncr.findUnique({ where: { id } });
   if (!raw) notFound();
@@ -39,6 +40,7 @@ export default async function NCRDetailRoute({ params }: Props) {
       <NCRDetailPage
         ncr={ncr}
         canEdit={editable}
+        canVerifyLesson={verifyLesson}
         userName={session.user.name ?? undefined}
       />
     </div>

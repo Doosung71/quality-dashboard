@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import useSWR from "swr"
-import { BookOpen, ChevronDown, ChevronUp, Sparkles, FileText, Library } from "lucide-react"
+import { BookOpen, ChevronDown, ChevronUp, Sparkles, FileText, Library, ShieldCheck } from "lucide-react"
 
 interface SuggestResult {
   title: string | null
@@ -27,6 +27,14 @@ function SourceBadge({ type }: { type: string }) {
       <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-50 text-blue-600 border border-blue-100">
         <Library className="w-2.5 h-2.5" />
         표준
+      </span>
+    )
+  }
+  if (type === "verified_lesson") {
+    return (
+      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+        <ShieldCheck className="w-2.5 h-2.5" />
+        확정 교훈
       </span>
     )
   }

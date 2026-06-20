@@ -8,6 +8,7 @@ import { NCR_STATUSES } from "@/types/ncr";
 import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
 import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader";
 import { AiSuggestionPanel } from "@/components/ui/ai-suggestion-panel";
+import { VerifiedLessonPanel } from "@/components/ui/verified-lesson-panel";
 
 const STATUS_LABELS: Record<NCRStatus, string> = {
   Issued:          "발행",
@@ -47,6 +48,8 @@ const DISPOSITION_LABELS: Record<NCRDispositionType, string> = {
 interface Props {
   ncr: NCR;
   canEdit?: boolean;
+  /** verified_lesson 확정 권한 (TEAM_LEAD+). canEdit과 별개. */
+  canVerifyLesson?: boolean;
   userName?: string;
 }
 
@@ -54,7 +57,7 @@ function getToday() {
   return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
 }
 
-export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props) {
+export function NCRDetailPage({ ncr: initial, canEdit = true, canVerifyLesson = false, userName }: Props) {
   const router = useRouter();
   const [ncr, setNcr] = useState(initial);
   const [editing, setEditing] = useState(false);
@@ -381,6 +384,11 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, userName }: Props)
 
       {/* AI 유사사례 분석 패널 */}
       <AiSuggestionPanel title={ncr.title} description={ncr.description} type="ncr" />
+
+      {/* 교훈 확정 패널 — 종결된 NCR만 (Q4 지식 선순환 producer) */}
+      {ncr.status === "Closed" && (
+        <VerifiedLessonPanel type="ncr" id={ncr.id} canVerify={canVerifyLesson} />
+      )}
 
       {/* 타임라인 */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">

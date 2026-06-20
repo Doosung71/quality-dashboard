@@ -7,6 +7,7 @@ import { CLAIM_STATUSES, RESPONSIBLE_PARTY_OPTIONS, BACK_CLAIM_STATUS_LABELS, BA
 import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTriangle, ShieldAlert, Paperclip, ReceiptText } from "lucide-react";
 import { AttachmentUploader } from "@/components/ui/attachment-uploader";
 import { AiSuggestionPanel } from "@/components/ui/ai-suggestion-panel";
+import { VerifiedLessonPanel } from "@/components/ui/verified-lesson-panel";
 import Link from "next/link";
 
 const STATUS_LABELS: Record<ClaimStatus, string> = {
@@ -40,6 +41,8 @@ const PRIORITY_LABELS: Record<ClaimPriority, string> = {
 interface Props {
   claim: Claim;
   canEdit?: boolean;
+  /** verified_lesson 확정 권한 (TEAM_LEAD+). canEdit과 별개. */
+  canVerifyLesson?: boolean;
   userName?: string;
 }
 
@@ -47,7 +50,7 @@ function getToday() {
   return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
 }
 
-export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Props) {
+export function ClaimDetailPage({ claim: initial, canEdit = true, canVerifyLesson = false, userName }: Props) {
   const router = useRouter();
   const [claim, setClaim] = useState(initial);
   const [editing, setEditing] = useState(false);
@@ -675,6 +678,11 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, userName }: Pr
 
       {/* AI 유사사례 분석 패널 */}
       <AiSuggestionPanel title={claim.title} description={claim.description} type="claim" />
+
+      {/* 교훈 확정 패널 — 종결된 클레임만 (Q4 지식 선순환 producer) */}
+      {claim.status === "Closed" && (
+        <VerifiedLessonPanel type="claim" id={claim.id} canVerify={canVerifyLesson} />
+      )}
 
       {/* 타임라인 */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">

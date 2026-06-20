@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireActivePageSession } from "@/lib/session-guard";
-import { canWrite } from "@/lib/permissions";
+import { canWrite, canVerifyLesson } from "@/lib/permissions";
 import { ClaimDetailPage } from "./ClaimDetailPage";
 import type { Claim, ClaimTimelineItem, ClaimAttachment } from "@/types/claim";
 
@@ -13,6 +13,7 @@ export default async function ClaimDetailRoute({ params }: Props) {
   const { id } = await params;
   const session = await requireActivePageSession();
   const editable = canWrite(session.user.role, "/claims");
+  const verifyLesson = canVerifyLesson(session.user.role);
 
   const raw = await prisma.claim.findUnique({ where: { id } });
   if (!raw) notFound();
@@ -39,6 +40,7 @@ export default async function ClaimDetailRoute({ params }: Props) {
       <ClaimDetailPage
         claim={claim}
         canEdit={editable}
+        canVerifyLesson={verifyLesson}
         userName={session.user.name ?? undefined}
       />
     </div>

@@ -59,3 +59,12 @@ export function canWriteRepair(role: string | null | undefined): boolean {
   if (!role) return false;
   return (REPAIR_WRITE_ROLES as readonly string[]).includes(role);
 }
+
+// verified_lesson(가중치 1.5, 최상위 신뢰 지식)은 감독 행위로 확정한다.
+// 산출물 쓰기 권한(canWrite)은 PRACTITIONER까지 통과하므로 별도 게이트로 TEAM_LEAD 이상만 허용.
+const VERIFY_LESSON_ROLES = ["DIRECTOR", "ADMIN", "TEAM_LEAD"] as const;
+
+export function canVerifyLesson(role: string | null | undefined): boolean {
+  if (!role) return false;
+  return (VERIFY_LESSON_ROLES as readonly string[]).includes(role);
+}

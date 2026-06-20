@@ -34,17 +34,24 @@ export function SearchCard({ chunk }: SearchCardProps) {
   }
 
   const isAiSummary = chunk.source_type === "qms_summary"
+  const isVerifiedLesson = chunk.source_type === "verified_lesson"
 
   return (
     <div className={cn(
       "border rounded-lg p-4 space-y-2 hover:border-slate-400 transition-colors",
-      isAiSummary && "border-violet-200 bg-violet-50/40"
+      isAiSummary && "border-violet-200 bg-violet-50/40",
+      isVerifiedLesson && "border-emerald-200 bg-emerald-50/40"
     )}>
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-1.5 min-w-0">
           {isAiSummary && (
             <span className="shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded bg-violet-100 text-violet-700 border border-violet-200 uppercase tracking-wide">
               AI 요약 · 미검토
+            </span>
+          )}
+          {isVerifiedLesson && (
+            <span className="shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 border border-emerald-200 uppercase tracking-wide">
+              확정 교훈 · 사람 검증
             </span>
           )}
           <h3 className="font-medium text-sm leading-snug truncate">{chunk.title ?? filename}</h3>
