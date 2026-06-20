@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { requireActiveSession } from "@/lib/session-guard"
 import { checkRateLimit } from "@/lib/rate-limit"
 import { prisma } from "@/lib/prisma"
-import { extractTextFromPdf } from "@/lib/pdf"
+import { extractTextFromPdf, PdfRangeError, type PageRange } from "@/lib/pdf"
 import { extractTenderSpec } from "@/lib/ai/extract"
 import { searchKnowledge } from "@/lib/knowledge"
 import { readBlobBuffer } from "@/lib/storage"
@@ -54,6 +54,21 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "documentIds 배열이 필요합니다." }, { status: 400 })
   }
 
+  // TDS 페이지 범위 (선택) — documentId별 { startPage, endPage }
+  const rawRanges: unknown = (body as Record<string, unknown>).ranges
+  const rangeMap = new Map<string, PageRange>()
+  if (rawRanges !== undefined) {
+    if (!Array.isArray(rawRanges)) {
+      return NextResponse.json({ error: "ranges는 배열이어야 합니다." }, { status: 400 })
+    }
+    for (const r of rawRanges) {
+      if (r && typeof r === "object" && typeof (r as Record<string, unknown>).documentId === "string") {
+        const { documentId, startPage, endPage } = r as { documentId: string; startPage?: number; endPage?: number }
+        rangeMap.set(documentId, { startPage, endPage })
+      }
+    }
+  }
+
   const documents = await prisma.tenderDocument.findMany({
     where: {
       id: { in: documentIds as string[] },
@@ -71,10 +86,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   for (const doc of documents) {
     const buffer = await readBlobBuffer(doc.storagePath)
     if (!buffer) return NextResponse.json({ error: "PDF를 읽을 수 없습니다." }, { status: 502 })
-    const { text, truncated } = await extractTextFromPdf(buffer)
+    let extractResult
+    try {
+      extractResult = await extractTextFromPdf(buffer, rangeMap.get(doc.id))
+    } catch (e) {
+      if (e instanceof PdfRangeError) return NextResponse.json({ error: e.message }, { status: 400 })
+      throw e
+    }
     if (combinedText) combinedText += "\n\n---\n\n"
-    combinedText += text
-    if (truncated) anyTruncated = true
+    combinedText += extractResult.text
+    if (extractResult.truncated) anyTruncated = true
   }
 
   // 1. 내부 RAG 지식 검색

@@ -3,7 +3,7 @@ import { requireActiveSession } from "@/lib/session-guard"
 import { checkRateLimit } from "@/lib/rate-limit"
 import { prisma } from "@/lib/prisma"
 import { deleteBlob, readBlobBuffer } from "@/lib/storage"
-import { extractTextFromPdf } from "@/lib/pdf"
+import { extractTextFromPdf, PdfRangeError } from "@/lib/pdf"
 import { extractTenderSpec } from "@/lib/ai/extract"
 import { searchKnowledge } from "@/lib/knowledge"
 import { parseRagThreshold, buildKnowledgeChunksXml } from "@/lib/rag"
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!Array.isArray(rawFiles) || rawFiles.length === 0) {
     return NextResponse.json({ error: "files 배열이 필요합니다." }, { status: 400 })
   }
-  const files = rawFiles as { blobUrl: string; filename: string }[]
+  const files = rawFiles as { blobUrl: string; filename: string; startPage?: number; endPage?: number }[]
   for (const f of files) {
     if (typeof f.blobUrl !== "string" || !f.blobUrl.startsWith("https://"))
       return NextResponse.json({ error: "올바른 blobUrl이 필요합니다." }, { status: 400 })
@@ -65,12 +65,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     try {
       const buffer = await readBlobBuffer(f.blobUrl)
       if (!buffer) throw new Error("blob fetch failed")
-      const result = await extractTextFromPdf(buffer)
+      const result = await extractTextFromPdf(buffer, { startPage: f.startPage, endPage: f.endPage })
       if (pdfText) pdfText += "\n\n---\n\n"
       pdfText += result.text
       if (result.truncated) truncated = true
-    } catch {
+    } catch (e) {
       await deleteBlob(f.blobUrl)
+      if (e instanceof PdfRangeError) return NextResponse.json({ error: e.message }, { status: 400 })
       return NextResponse.json({ error: "분석 중 오류가 발생했습니다." }, { status: 500 })
     }
   }

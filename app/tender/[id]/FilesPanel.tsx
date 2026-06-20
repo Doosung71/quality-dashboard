@@ -30,7 +30,21 @@ type Doc = {
   category: string | null
 }
 type Props = { tenderId: string; documents: Doc[]; canManage: boolean; canAnalyze: boolean; canDeleteFiles: boolean }
-type FileEntry = { id: string; file: File | null; type: "analyze" | "ref"; category: string }
+type FileEntry = { id: string; file: File | null; type: "analyze" | "ref"; category: string; startPage?: number; endPage?: number }
+type FirstFile = { id: string; file: File; startPage?: number; endPage?: number }
+
+// TDS 페이지 범위 클라이언트 검증 (fail-closed) — 서버 validatePageRange와 동일 규칙.
+// 둘 다 비면 null(전체), 문제 있으면 에러 메시지 반환.
+function validateRangeClient(startPage?: number, endPage?: number): string | null {
+  const hasStart = startPage !== undefined
+  const hasEnd = endPage !== undefined
+  if (!hasStart && !hasEnd) return null
+  if (hasStart !== hasEnd) return "TDS 페이지는 시작·끝을 모두 입력하거나 모두 비워주세요."
+  if (!Number.isInteger(startPage) || !Number.isInteger(endPage) || (startPage as number) < 1 || (endPage as number) < 1)
+    return "TDS 페이지 번호는 1 이상의 정수여야 합니다."
+  if ((startPage as number) > (endPage as number)) return "TDS 시작 페이지가 끝 페이지보다 큽니다."
+  return null
+}
 
 function makeEntryId() { return crypto.randomUUID() }
 function makeBlobPath(file: File) {
@@ -45,6 +59,33 @@ function makeBlobPath(file: File) {
 
 const EMPTY_ENTRY = (): FileEntry => ({ id: makeEntryId(), file: null, type: "analyze", category: "" })
 
+// 파일별 TDS 페이지 범위 입력 행 — 비우면 전체 추출
+function TdsRangeRow({ startPage, endPage, disabled, onChange }: {
+  startPage?: number
+  endPage?: number
+  disabled: boolean
+  onChange: (start?: number, end?: number) => void
+}) {
+  const bothFilled = startPage !== undefined && endPage !== undefined
+  const valid = bothFilled && (endPage as number) >= (startPage as number)
+  const pages = valid ? (endPage as number) - (startPage as number) + 1 : null
+  return (
+    <div className="flex items-center gap-1.5">
+      <span className="text-[10px] font-bold text-indigo-400 shrink-0">TDS 페이지</span>
+      <input type="number" min={1} placeholder="시작" value={startPage ?? ""} disabled={disabled}
+        onChange={(e) => onChange(e.target.value === "" ? undefined : parseInt(e.target.value, 10), endPage)}
+        className="w-14 border border-indigo-200 rounded px-1.5 py-0.5 text-[11px] text-indigo-800 bg-white text-center disabled:opacity-40" />
+      <span className="text-[10px] text-indigo-300">~</span>
+      <input type="number" min={1} placeholder="끝" value={endPage ?? ""} disabled={disabled}
+        onChange={(e) => onChange(startPage, e.target.value === "" ? undefined : parseInt(e.target.value, 10))}
+        className="w-14 border border-indigo-200 rounded px-1.5 py-0.5 text-[11px] text-indigo-800 bg-white text-center disabled:opacity-40" />
+      <span className={`text-[10px] ${bothFilled && !valid ? "text-rose-500 font-bold" : "text-indigo-400"}`}>
+        {pages ? `(${pages}페이지)` : bothFilled && !valid ? "범위 확인" : "비우면 전체"}
+      </span>
+    </div>
+  )
+}
+
 export default function FilesPanel({ tenderId, documents, canManage, canAnalyze, canDeleteFiles }: Props) {
   const router = useRouter()
   const analyzeRef = useRef<HTMLInputElement>(null)
@@ -54,6 +95,7 @@ export default function FilesPanel({ tenderId, documents, canManage, canAnalyze,
   const [analyzing, setAnalyzing] = useState(false)
   const [analyzeElapsed, setAnalyzeElapsed] = useState(0)
   const [firstCategory, setFirstCategory] = useState("")
+  const [firstFiles, setFirstFiles] = useState<FirstFile[]>([])
 
   // 새 버전 분석 추가 (canManage) — 인라인 폼
   const [showReanalyzeForm, setShowReanalyzeForm] = useState(false)
@@ -66,28 +108,47 @@ export default function FilesPanel({ tenderId, documents, canManage, canAnalyze,
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
   // ── 최초 분석 ─────────────────────────────────────────
-  async function handleFirstAnalyze(files: FileList) {
-    if (files.length === 0) return
+  function addFirstFiles(files: FileList | null) {
+    if (!files) return
+    const added: FirstFile[] = Array.from(files).map((file) => ({ id: makeEntryId(), file }))
+    setFirstFiles((prev) => [...prev, ...added])
+  }
+  function setFirstRange(id: string, startPage?: number, endPage?: number) {
+    setFirstFiles((p) => p.map((ff) => ff.id === id ? { ...ff, startPage, endPage } : ff))
+  }
+  function removeFirstFile(id: string) { setFirstFiles((p) => p.filter((ff) => ff.id !== id)) }
+
+  async function handleFirstAnalyze() {
+    if (firstFiles.length === 0 || analyzing) return
+    // 클라이언트 검증 (fail-closed) — 잘못된 범위면 업로드 전에 차단
+    for (const ff of firstFiles) {
+      const err = validateRangeClient(ff.startPage, ff.endPage)
+      if (err) { alert(`"${ff.file.name}": ${err}`); return }
+    }
     setAnalyzing(true); setAnalyzeElapsed(0)
     const start = Date.now()
     const timer = setInterval(() => setAnalyzeElapsed(Math.floor((Date.now() - start) / 1000)), 1000)
     try {
       const docIds: string[] = []
-      for (const file of Array.from(files)) {
-        const blob = await uploadPresigned(makeBlobPath(file), file, { access: "private", handleUploadUrl: "/api/blob-upload" })
+      const ranges: { documentId: string; startPage: number; endPage: number }[] = []
+      for (const ff of firstFiles) {
+        const blob = await uploadPresigned(makeBlobPath(ff.file), ff.file, { access: "private", handleUploadUrl: "/api/blob-upload" })
         const res = await fetch(`/api/tenders/${tenderId}/documents`, {
           method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ blobUrl: blob.url, filename: file.name, isAnalysisSource: true, category: firstCategory || null }),
+          body: JSON.stringify({ blobUrl: blob.url, filename: ff.file.name, isAnalysisSource: true, category: firstCategory || null }),
         })
         if (!res.ok) { alert("문서 등록 실패"); return }
-        docIds.push((await res.json() as { documentId: string }).documentId)
+        const documentId = (await res.json() as { documentId: string }).documentId
+        docIds.push(documentId)
+        if (ff.startPage && ff.endPage) ranges.push({ documentId, startPage: ff.startPage, endPage: ff.endPage })
       }
       const res = await fetch(`/api/tenders/${tenderId}/analyze`, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ documentIds: docIds }),
+        body: JSON.stringify({ documentIds: docIds, ranges }),
       })
       if (!res.ok) { alert((await res.json().catch(() => ({}))).error ?? "분석 실패"); return }
       const { truncated } = await res.json() as { truncated: boolean }
+      setFirstFiles([])
       router.push(`/tender/${tenderId}${truncated ? "?truncated=1" : ""}`); router.refresh()
     } catch { alert("네트워크 오류가 발생했습니다.") }
     finally { clearInterval(timer); setAnalyzing(false) }
@@ -99,12 +160,19 @@ export default function FilesPanel({ tenderId, documents, canManage, canAnalyze,
   function setFile(id: string, file: File | null) { setEntries((p) => p.map((e) => e.id === id ? { ...e, file } : e)) }
   function setType(id: string, type: "analyze" | "ref") { setEntries((p) => p.map((e) => e.id === id ? { ...e, type } : e)) }
   function setCategory(id: string, category: string) { setEntries((p) => p.map((e) => e.id === id ? { ...e, category } : e)) }
+  function setRange(id: string, startPage?: number, endPage?: number) { setEntries((p) => p.map((e) => e.id === id ? { ...e, startPage, endPage } : e)) }
   function resetForm() { setEntries([EMPTY_ENTRY()]); setSearchWeb(false); setReanalyzeProgress(0); setShowReanalyzeForm(false) }
 
   async function handleReanalyze() {
     const analyzeEntries = entries.filter((e) => e.file && e.type === "analyze")
     const refEntries = entries.filter((e) => e.file && e.type === "ref")
     if (analyzeEntries.length === 0 && refEntries.length === 0) { alert("파일을 하나 이상 선택해주세요."); return }
+
+    // TDS 범위 클라이언트 검증 (fail-closed) — 분석용 파일만
+    for (const entry of analyzeEntries) {
+      const err = validateRangeClient(entry.startPage, entry.endPage)
+      if (err) { alert(`"${entry.file?.name}": ${err}`); return }
+    }
 
     setReanalyzing(true); setReanalyzeElapsed(0); setReanalyzeProgress(5)
     const start = Date.now()
@@ -126,11 +194,15 @@ export default function FilesPanel({ tenderId, documents, canManage, canAnalyze,
         router.refresh(); resetForm(); return
       }
 
-      const analyzeFiles: { blobUrl: string; filename: string }[] = []
+      const analyzeFiles: { blobUrl: string; filename: string; startPage?: number; endPage?: number }[] = []
       for (const entry of analyzeEntries) {
         if (!entry.file) continue
         const blob = await uploadPresigned(makeBlobPath(entry.file), entry.file, { access: "private", handleUploadUrl: "/api/blob-upload" })
-        analyzeFiles.push({ blobUrl: blob.url, filename: entry.file.name })
+        analyzeFiles.push({
+          blobUrl: blob.url,
+          filename: entry.file.name,
+          ...(entry.startPage && entry.endPage ? { startPage: entry.startPage, endPage: entry.endPage } : {}),
+        })
         // 분석용도 category 저장 (reanalyze 라우트가 별도 document 생성하므로 여기선 등록 생략)
       }
 
@@ -197,7 +269,7 @@ export default function FilesPanel({ tenderId, documents, canManage, canAnalyze,
 
       <div className="pt-1 border-t space-y-3">
 
-        {/* 최초 분석 버튼 */}
+        {/* 최초 분석 */}
         {canAnalyze && (
           <div className="space-y-2">
             {/* 카테고리 선택 */}
@@ -211,13 +283,49 @@ export default function FilesPanel({ tenderId, documents, canManage, canAnalyze,
                 <option key={o.value} value={o.value}>{o.label}</option>
               ))}
             </select>
+
+            {/* 스테이징된 분석 파일 — PDF는 TDS 페이지 범위 지정 가능 */}
+            {firstFiles.length > 0 && (
+              <ul className="space-y-2">
+                {firstFiles.map((ff) => (
+                  <li key={ff.id} className="bg-indigo-50 border border-indigo-100 rounded-xl px-3 py-2 space-y-1.5">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                      <span className="text-xs text-indigo-800 font-medium flex-1 truncate">{ff.file.name}</span>
+                      <button onClick={() => removeFirstFile(ff.id)} disabled={analyzing}
+                        className="text-indigo-300 hover:text-indigo-600 disabled:opacity-40 transition-colors">
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    {ff.file.name.toLowerCase().endsWith(".pdf") && (
+                      <div className="pl-5">
+                        <TdsRangeRow startPage={ff.startPage} endPage={ff.endPage} disabled={analyzing}
+                          onChange={(s, e) => setFirstRange(ff.id, s, e)} />
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+
             <input ref={analyzeRef} type="file" accept={ACCEPT_TYPES} multiple className="hidden"
-              onChange={(e) => { if (e.target.files?.length) handleFirstAnalyze(e.target.files); e.target.value = "" }} />
-            <Button size="sm" disabled={analyzing} onClick={() => analyzeRef.current?.click()}>
-              {analyzing ? `분석 중… ${analyzeElapsed}초` : "분석 시작"}
-            </Button>
+              onChange={(e) => { addFirstFiles(e.target.files); e.target.value = "" }} />
+            <div className="flex gap-2 flex-wrap">
+              <Button size="sm" variant="outline" disabled={analyzing} onClick={() => analyzeRef.current?.click()}>
+                <Plus className="w-3.5 h-3.5 mr-1" /> 분석 파일 추가
+              </Button>
+              {firstFiles.length > 0 && (
+                <Button size="sm" disabled={analyzing} onClick={handleFirstAnalyze}>
+                  {analyzing ? `분석 중… ${analyzeElapsed}초` : `${firstFiles.length}개 파일로 분석 시작`}
+                </Button>
+              )}
+            </div>
             <p className="text-xs text-zinc-400">
-              {analyzing ? "파일 추출 + AI 분석 중입니다 (30~90초 소요)" : "PDF·Excel·Word 파일을 선택하세요"}
+              {analyzing
+                ? "파일 추출 + AI 분석 중입니다 (30~90초 소요)"
+                : firstFiles.length > 0
+                  ? "PDF는 TDS 페이지 범위를 지정할 수 있습니다 (비우면 전체)"
+                  : "PDF·Excel·Word 파일을 선택하세요"}
             </p>
           </div>
         )}
@@ -273,6 +381,11 @@ export default function FilesPanel({ tenderId, documents, canManage, canAnalyze,
                       <option key={o.value} value={o.value}>{o.label}</option>
                     ))}
                   </select>
+                  {/* TDS 페이지 범위 — 분석용 PDF에만 노출 */}
+                  {entry.type === "analyze" && entry.file?.name.toLowerCase().endsWith(".pdf") && (
+                    <TdsRangeRow startPage={entry.startPage} endPage={entry.endPage} disabled={reanalyzing}
+                      onChange={(s, e) => setRange(entry.id, s, e)} />
+                  )}
                 </div>
               ))}
             </div>
