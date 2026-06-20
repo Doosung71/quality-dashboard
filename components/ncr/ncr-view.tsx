@@ -9,6 +9,7 @@ import {
   MapPin, Search, SlidersHorizontal, X, Plus
 } from "lucide-react";
 import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader";
+import { ProjectKeyInput } from "@/components/ui/project-key-input";
 
 interface NCRViewProps {
   data: NCRsData;
@@ -56,7 +57,7 @@ export function NCRView({ data, canEdit = true, userName }: NCRViewProps) {
   const getDefaultForm = () => {
     const d = new Date(); d.setDate(d.getDate() + 14);
     const targetDate = d.toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
-    return { title: "", source: "", severity: "Major" as NCRSeverity, disposition: "TBD" as NCRDispositionType, targetDate, description: "" };
+    return { title: "", source: "", severity: "Major" as NCRSeverity, disposition: "TBD" as NCRDispositionType, targetDate, description: "", projectKey: "" };
   };
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState(getDefaultForm);
@@ -257,6 +258,12 @@ export function NCRView({ data, canEdit = true, userName }: NCRViewProps) {
                 <input type="text" placeholder="예: 구미 1공장, 수입검사 등" value={formData.source}
                   onChange={e => setFormData(p => ({...p, source: e.target.value}))}
                   className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 text-xs" />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">프로젝트 키 <span className="text-slate-400 font-normal">(Tender 연결용·선택)</span></label>
+                <ProjectKeyInput id="ncr-project-key" value={formData.projectKey}
+                  onChange={v => setFormData(p => ({...p, projectKey: v}))}
+                  inputClassName="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 text-xs" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">

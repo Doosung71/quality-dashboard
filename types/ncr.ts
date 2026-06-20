@@ -28,6 +28,7 @@ export interface NCR {
   ncrNo: string;      // "NCR-2026-001" — display number
   title: string;
   source: string;
+  projectKey?: string | null;
   severity: NCRSeverity;
   status: NCRStatus;
   disposition: NCRDispositionType;

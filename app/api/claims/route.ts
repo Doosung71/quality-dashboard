@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireActiveSession } from "@/lib/session-guard"
+import { parseProjectKeyInput } from "@/lib/project-key"
 
 export async function GET() {
   const session = await requireActiveSession()
@@ -20,8 +21,16 @@ export async function POST(req: NextRequest) {
   const body = await req.json() as {
     title: string; customer: string; priority: string
     assignee: string; description: string; receivedAt?: string
-    responsibleParty?: string
+    responsibleParty?: string; projectKey?: string
     attachments?: { url: string; name: string; size: number; contentType: string }[]
+  }
+
+  const pk = parseProjectKeyInput(body.projectKey)
+  if (pk.invalid) {
+    return NextResponse.json(
+      { error: "project_key 형식이 올바르지 않습니다 (kebab-case: 소문자·숫자·하이픈)" },
+      { status: 400 },
+    )
   }
 
   // 채번: CLM-YYYY-NNN
@@ -36,6 +45,7 @@ export async function POST(req: NextRequest) {
       claimNo,
       title:            body.title,
       customer:         body.customer,
+      projectKey:       pk.value,
       priority:         body.priority as never,
       assignee:         body.assignee,
       description:      body.description,

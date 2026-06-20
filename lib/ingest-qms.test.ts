@@ -221,4 +221,35 @@ describe('ingest-qms', () => {
       expect(mockMessagesCreate).not.toHaveBeenCalled()
     })
   })
+
+  // ── Q1: project_key 전파 (entity-linking) ──────────────────────────────
+  describe('Q1 — project_key metadata 전파', () => {
+    // sql 태그 호출 전체에 전달된 값(values)을 직렬화해 키 포함 여부 확인
+    const allSqlValues = () =>
+      JSON.stringify(mockSqlTagged.mock.calls.flatMap((c) => c.slice(1)))
+
+    it('projectKey가 있으면 NCR 원본·요약 metadata에 project_key가 흐름', async () => {
+      mockNcrFindUnique.mockResolvedValue({
+        id: 'ncr-pk', ncrNo: 'NCR-2026-PK', title: '연결키 테스트', status: 'Closed',
+        source: '수입검사', severity: 'Major', disposition: 'Rework', assignee: '홍길동',
+        description: '내용', timeline: [], projectKey: 'qat-gtc-3001',
+        issuedDate: new Date('2026-01-01'), targetDate: new Date('2026-01-15'), closedDate: new Date('2026-01-14'),
+      })
+      const { ingestClosedNcr } = await import('./ingest-qms')
+      await ingestClosedNcr('ncr-pk')
+      expect(allSqlValues()).toContain('qat-gtc-3001')
+    })
+
+    it('projectKey가 null이면 metadata에 project_key 키가 들어가지 않음', async () => {
+      mockClaimFindUnique.mockResolvedValue({
+        id: 'claim-nopk', claimNo: 'CLM-2026-NOPK', title: '키 없음', status: 'Closed',
+        customer: '한국전력', priority: 'Mid', assignee: '이영희',
+        description: '내용', timeline: [], projectKey: null,
+        receivedAt: new Date('2026-02-01'), targetDate: null, closedAt: new Date('2026-02-20'),
+      })
+      const { ingestClosedClaim } = await import('./ingest-qms')
+      await ingestClosedClaim('claim-nopk')
+      expect(allSqlValues()).not.toContain('project_key')
+    })
+  })
 })

@@ -65,6 +65,7 @@ export interface Claim {
   claimNo: string;
   title: string;
   customer: string;
+  projectKey?: string | null;
   priority: ClaimPriority;
   status: ClaimStatus;
   receivedAt: string;

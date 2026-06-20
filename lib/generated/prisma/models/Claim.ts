@@ -29,6 +29,7 @@ export type ClaimMinAggregateOutputType = {
   claimNo: string | null
   title: string | null
   customer: string | null
+  projectKey: string | null
   priority: $Enums.ClaimPriority | null
   status: $Enums.ClaimStatus | null
   receivedAt: Date | null
@@ -47,6 +48,7 @@ export type ClaimMaxAggregateOutputType = {
   claimNo: string | null
   title: string | null
   customer: string | null
+  projectKey: string | null
   priority: $Enums.ClaimPriority | null
   status: $Enums.ClaimStatus | null
   receivedAt: Date | null
@@ -65,6 +67,7 @@ export type ClaimCountAggregateOutputType = {
   claimNo: number
   title: number
   customer: number
+  projectKey: number
   priority: number
   status: number
   receivedAt: number
@@ -87,6 +90,7 @@ export type ClaimMinAggregateInputType = {
   claimNo?: true
   title?: true
   customer?: true
+  projectKey?: true
   priority?: true
   status?: true
   receivedAt?: true
@@ -105,6 +109,7 @@ export type ClaimMaxAggregateInputType = {
   claimNo?: true
   title?: true
   customer?: true
+  projectKey?: true
   priority?: true
   status?: true
   receivedAt?: true
@@ -123,6 +128,7 @@ export type ClaimCountAggregateInputType = {
   claimNo?: true
   title?: true
   customer?: true
+  projectKey?: true
   priority?: true
   status?: true
   receivedAt?: true
@@ -216,6 +222,7 @@ export type ClaimGroupByOutputType = {
   claimNo: string
   title: string
   customer: string
+  projectKey: string | null
   priority: $Enums.ClaimPriority
   status: $Enums.ClaimStatus
   receivedAt: Date
@@ -257,6 +264,7 @@ export type ClaimWhereInput = {
   claimNo?: Prisma.StringFilter<"Claim"> | string
   title?: Prisma.StringFilter<"Claim"> | string
   customer?: Prisma.StringFilter<"Claim"> | string
+  projectKey?: Prisma.StringNullableFilter<"Claim"> | string | null
   priority?: Prisma.EnumClaimPriorityFilter<"Claim"> | $Enums.ClaimPriority
   status?: Prisma.EnumClaimStatusFilter<"Claim"> | $Enums.ClaimStatus
   receivedAt?: Prisma.DateTimeFilter<"Claim"> | Date | string
@@ -279,6 +287,7 @@ export type ClaimOrderByWithRelationInput = {
   claimNo?: Prisma.SortOrder
   title?: Prisma.SortOrder
   customer?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrderInput | Prisma.SortOrder
   priority?: Prisma.SortOrder
   status?: Prisma.SortOrder
   receivedAt?: Prisma.SortOrder
@@ -304,6 +313,7 @@ export type ClaimWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ClaimWhereInput | Prisma.ClaimWhereInput[]
   title?: Prisma.StringFilter<"Claim"> | string
   customer?: Prisma.StringFilter<"Claim"> | string
+  projectKey?: Prisma.StringNullableFilter<"Claim"> | string | null
   priority?: Prisma.EnumClaimPriorityFilter<"Claim"> | $Enums.ClaimPriority
   status?: Prisma.EnumClaimStatusFilter<"Claim"> | $Enums.ClaimStatus
   receivedAt?: Prisma.DateTimeFilter<"Claim"> | Date | string
@@ -326,6 +336,7 @@ export type ClaimOrderByWithAggregationInput = {
   claimNo?: Prisma.SortOrder
   title?: Prisma.SortOrder
   customer?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrderInput | Prisma.SortOrder
   priority?: Prisma.SortOrder
   status?: Prisma.SortOrder
   receivedAt?: Prisma.SortOrder
@@ -352,6 +363,7 @@ export type ClaimScalarWhereWithAggregatesInput = {
   claimNo?: Prisma.StringWithAggregatesFilter<"Claim"> | string
   title?: Prisma.StringWithAggregatesFilter<"Claim"> | string
   customer?: Prisma.StringWithAggregatesFilter<"Claim"> | string
+  projectKey?: Prisma.StringNullableWithAggregatesFilter<"Claim"> | string | null
   priority?: Prisma.EnumClaimPriorityWithAggregatesFilter<"Claim"> | $Enums.ClaimPriority
   status?: Prisma.EnumClaimStatusWithAggregatesFilter<"Claim"> | $Enums.ClaimStatus
   receivedAt?: Prisma.DateTimeWithAggregatesFilter<"Claim"> | Date | string
@@ -372,6 +384,7 @@ export type ClaimCreateInput = {
   claimNo: string
   title: string
   customer: string
+  projectKey?: string | null
   priority?: $Enums.ClaimPriority
   status?: $Enums.ClaimStatus
   receivedAt: Date | string
@@ -393,6 +406,7 @@ export type ClaimUncheckedCreateInput = {
   claimNo: string
   title: string
   customer: string
+  projectKey?: string | null
   priority?: $Enums.ClaimPriority
   status?: $Enums.ClaimStatus
   receivedAt: Date | string
@@ -414,6 +428,7 @@ export type ClaimUpdateInput = {
   claimNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   customer?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priority?: Prisma.EnumClaimPriorityFieldUpdateOperationsInput | $Enums.ClaimPriority
   status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -435,6 +450,7 @@ export type ClaimUncheckedUpdateInput = {
   claimNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   customer?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priority?: Prisma.EnumClaimPriorityFieldUpdateOperationsInput | $Enums.ClaimPriority
   status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -456,6 +472,7 @@ export type ClaimCreateManyInput = {
   claimNo: string
   title: string
   customer: string
+  projectKey?: string | null
   priority?: $Enums.ClaimPriority
   status?: $Enums.ClaimStatus
   receivedAt: Date | string
@@ -476,6 +493,7 @@ export type ClaimUpdateManyMutationInput = {
   claimNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   customer?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priority?: Prisma.EnumClaimPriorityFieldUpdateOperationsInput | $Enums.ClaimPriority
   status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -495,6 +513,7 @@ export type ClaimUncheckedUpdateManyInput = {
   claimNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   customer?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priority?: Prisma.EnumClaimPriorityFieldUpdateOperationsInput | $Enums.ClaimPriority
   status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -525,6 +544,7 @@ export type ClaimCountOrderByAggregateInput = {
   claimNo?: Prisma.SortOrder
   title?: Prisma.SortOrder
   customer?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   status?: Prisma.SortOrder
   receivedAt?: Prisma.SortOrder
@@ -545,6 +565,7 @@ export type ClaimMaxOrderByAggregateInput = {
   claimNo?: Prisma.SortOrder
   title?: Prisma.SortOrder
   customer?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   status?: Prisma.SortOrder
   receivedAt?: Prisma.SortOrder
@@ -563,6 +584,7 @@ export type ClaimMinOrderByAggregateInput = {
   claimNo?: Prisma.SortOrder
   title?: Prisma.SortOrder
   customer?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   status?: Prisma.SortOrder
   receivedAt?: Prisma.SortOrder
@@ -650,6 +672,7 @@ export type ClaimCreateWithoutCreatedByInput = {
   claimNo: string
   title: string
   customer: string
+  projectKey?: string | null
   priority?: $Enums.ClaimPriority
   status?: $Enums.ClaimStatus
   receivedAt: Date | string
@@ -670,6 +693,7 @@ export type ClaimUncheckedCreateWithoutCreatedByInput = {
   claimNo: string
   title: string
   customer: string
+  projectKey?: string | null
   priority?: $Enums.ClaimPriority
   status?: $Enums.ClaimStatus
   receivedAt: Date | string
@@ -719,6 +743,7 @@ export type ClaimScalarWhereInput = {
   claimNo?: Prisma.StringFilter<"Claim"> | string
   title?: Prisma.StringFilter<"Claim"> | string
   customer?: Prisma.StringFilter<"Claim"> | string
+  projectKey?: Prisma.StringNullableFilter<"Claim"> | string | null
   priority?: Prisma.EnumClaimPriorityFilter<"Claim"> | $Enums.ClaimPriority
   status?: Prisma.EnumClaimStatusFilter<"Claim"> | $Enums.ClaimStatus
   receivedAt?: Prisma.DateTimeFilter<"Claim"> | Date | string
@@ -739,6 +764,7 @@ export type ClaimCreateWithoutBackClaimsInput = {
   claimNo: string
   title: string
   customer: string
+  projectKey?: string | null
   priority?: $Enums.ClaimPriority
   status?: $Enums.ClaimStatus
   receivedAt: Date | string
@@ -759,6 +785,7 @@ export type ClaimUncheckedCreateWithoutBackClaimsInput = {
   claimNo: string
   title: string
   customer: string
+  projectKey?: string | null
   priority?: $Enums.ClaimPriority
   status?: $Enums.ClaimStatus
   receivedAt: Date | string
@@ -795,6 +822,7 @@ export type ClaimUpdateWithoutBackClaimsInput = {
   claimNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   customer?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priority?: Prisma.EnumClaimPriorityFieldUpdateOperationsInput | $Enums.ClaimPriority
   status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -815,6 +843,7 @@ export type ClaimUncheckedUpdateWithoutBackClaimsInput = {
   claimNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   customer?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priority?: Prisma.EnumClaimPriorityFieldUpdateOperationsInput | $Enums.ClaimPriority
   status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -835,6 +864,7 @@ export type ClaimCreateManyCreatedByInput = {
   claimNo: string
   title: string
   customer: string
+  projectKey?: string | null
   priority?: $Enums.ClaimPriority
   status?: $Enums.ClaimStatus
   receivedAt: Date | string
@@ -854,6 +884,7 @@ export type ClaimUpdateWithoutCreatedByInput = {
   claimNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   customer?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priority?: Prisma.EnumClaimPriorityFieldUpdateOperationsInput | $Enums.ClaimPriority
   status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -874,6 +905,7 @@ export type ClaimUncheckedUpdateWithoutCreatedByInput = {
   claimNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   customer?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priority?: Prisma.EnumClaimPriorityFieldUpdateOperationsInput | $Enums.ClaimPriority
   status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -894,6 +926,7 @@ export type ClaimUncheckedUpdateManyWithoutCreatedByInput = {
   claimNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   customer?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priority?: Prisma.EnumClaimPriorityFieldUpdateOperationsInput | $Enums.ClaimPriority
   status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -944,6 +977,7 @@ export type ClaimSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   claimNo?: boolean
   title?: boolean
   customer?: boolean
+  projectKey?: boolean
   priority?: boolean
   status?: boolean
   receivedAt?: boolean
@@ -967,6 +1001,7 @@ export type ClaimSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   claimNo?: boolean
   title?: boolean
   customer?: boolean
+  projectKey?: boolean
   priority?: boolean
   status?: boolean
   receivedAt?: boolean
@@ -988,6 +1023,7 @@ export type ClaimSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   claimNo?: boolean
   title?: boolean
   customer?: boolean
+  projectKey?: boolean
   priority?: boolean
   status?: boolean
   receivedAt?: boolean
@@ -1009,6 +1045,7 @@ export type ClaimSelectScalar = {
   claimNo?: boolean
   title?: boolean
   customer?: boolean
+  projectKey?: boolean
   priority?: boolean
   status?: boolean
   receivedAt?: boolean
@@ -1024,7 +1061,7 @@ export type ClaimSelectScalar = {
   createdById?: boolean
 }
 
-export type ClaimOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "claimNo" | "title" | "customer" | "priority" | "status" | "receivedAt" | "targetDate" | "closedAt" | "assignee" | "description" | "responsibleParty" | "timeline" | "attachments" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["claim"]>
+export type ClaimOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "claimNo" | "title" | "customer" | "projectKey" | "priority" | "status" | "receivedAt" | "targetDate" | "closedAt" | "assignee" | "description" | "responsibleParty" | "timeline" | "attachments" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["claim"]>
 export type ClaimInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   backClaims?: boolean | Prisma.Claim$backClaimsArgs<ExtArgs>
@@ -1048,6 +1085,7 @@ export type $ClaimPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     claimNo: string
     title: string
     customer: string
+    projectKey: string | null
     priority: $Enums.ClaimPriority
     status: $Enums.ClaimStatus
     receivedAt: Date
@@ -1490,6 +1528,7 @@ export interface ClaimFieldRefs {
   readonly claimNo: Prisma.FieldRef<"Claim", 'String'>
   readonly title: Prisma.FieldRef<"Claim", 'String'>
   readonly customer: Prisma.FieldRef<"Claim", 'String'>
+  readonly projectKey: Prisma.FieldRef<"Claim", 'String'>
   readonly priority: Prisma.FieldRef<"Claim", 'ClaimPriority'>
   readonly status: Prisma.FieldRef<"Claim", 'ClaimStatus'>
   readonly receivedAt: Prisma.FieldRef<"Claim", 'DateTime'>

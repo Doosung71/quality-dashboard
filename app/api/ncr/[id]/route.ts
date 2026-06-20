@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireActiveSession } from "@/lib/session-guard"
 import { ingestClosedNcr } from "@/lib/ingest-qms"
+import { parseProjectKeyInput } from "@/lib/project-key"
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
@@ -25,6 +26,19 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     title?: string; source?: string; severity?: string; disposition?: string
     status?: string; targetDate?: string; closedDate?: string | null
     assignee?: string; description?: string; timeline?: unknown[]; attachments?: unknown[]
+    projectKey?: string | null
+  }
+
+  let projectKeyUpdate: { projectKey?: string | null } = {}
+  if (body.projectKey !== undefined) {
+    const pk = parseProjectKeyInput(body.projectKey)
+    if (pk.invalid) {
+      return NextResponse.json(
+        { error: "project_key 형식이 올바르지 않습니다 (kebab-case: 소문자·숫자·하이픈)" },
+        { status: 400 },
+      )
+    }
+    projectKeyUpdate = { projectKey: pk.value }
   }
 
   // Closed 전환 감지 또는 Closed 상태에서 timeline 변경 시 re-ingest 필요
@@ -47,6 +61,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       ...(body.attachments !== undefined && { attachments: body.attachments as never }),
       ...(body.targetDate  !== undefined && { targetDate:  new Date(body.targetDate) }),
       ...(body.closedDate  !== undefined && { closedDate:  body.closedDate ? new Date(body.closedDate) : null }),
+      ...projectKeyUpdate,
     },
   })
 

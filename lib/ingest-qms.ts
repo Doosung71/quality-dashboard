@@ -158,6 +158,7 @@ async function ingestSummaryChunk(
   sourcePrefix: string,
   title: string,
   summaryText: string,
+  projectKey: string | null,
 ): Promise<void> {
   if (!process.env.DATABASE_URL_UNPOOLED) throw new Error("DATABASE_URL_UNPOOLED 없음")
   if (!process.env.OPENAI_API_KEY) throw new Error("OPENAI_API_KEY 없음")
@@ -165,6 +166,11 @@ async function ingestSummaryChunk(
   const embedding = await embedText(summaryText)
   const sql = neon(process.env.DATABASE_URL_UNPOOLED)
   const sourcePath = `${sourcePrefix}/summary`
+  const metadata = {
+    summary: true,
+    ingested_at: new Date().toISOString(),
+    ...(projectKey ? { project_key: projectKey } : {}),
+  }
 
   await sql.transaction([
     sql`DELETE FROM knowledge_chunks WHERE source_path = ${sourcePath}`,
@@ -176,7 +182,7 @@ async function ingestSummaryChunk(
         ${sourcePath},
         'qms_summary',
         ${title},
-        ${{ summary: true, ingested_at: new Date().toISOString() }}::jsonb
+        ${metadata}::jsonb
       )
     `,
   ])
@@ -242,7 +248,13 @@ export async function ingestClosedNcr(ncrId: string): Promise<void> {
       "ncr_closed",
       title,
       markdown,
-      { ncr_id: ncrId, ncr_no: ncr.ncrNo, severity: ncr.severity, source: ncr.source },
+      {
+        ncr_id: ncrId,
+        ncr_no: ncr.ncrNo,
+        severity: ncr.severity,
+        source: ncr.source,
+        ...(ncr.projectKey ? { project_key: ncr.projectKey } : {}),
+      },
     )
     console.log(`[ingest-qms] NCR 인제스트 완료 — ${ncr.ncrNo}`)
 
@@ -250,7 +262,7 @@ export async function ingestClosedNcr(ncrId: string): Promise<void> {
     try {
       if (!process.env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY 없음")
       const summary = await generateQmsSummary(markdown)
-      await ingestSummaryChunk(sourcePrefix, `[요약] ${title}`, `${title}\n\n${summary}`)
+      await ingestSummaryChunk(sourcePrefix, `[요약] ${title}`, `${title}\n\n${summary}`, ncr.projectKey)
       console.log(`[ingest-qms] NCR 요약 인제스트 완료 — ${ncr.ncrNo}`)
     } catch (summaryError) {
       console.error(`[ingest-qms] NCR 요약 스킵 (fail-open) — ${ncr.ncrNo}:`, summaryError)
@@ -274,7 +286,13 @@ export async function ingestClosedClaim(claimId: string): Promise<void> {
       "claim_closed",
       title,
       markdown,
-      { claim_id: claimId, claim_no: claim.claimNo, customer: claim.customer, priority: claim.priority },
+      {
+        claim_id: claimId,
+        claim_no: claim.claimNo,
+        customer: claim.customer,
+        priority: claim.priority,
+        ...(claim.projectKey ? { project_key: claim.projectKey } : {}),
+      },
     )
     console.log(`[ingest-qms] Claim 인제스트 완료 — ${claim.claimNo}`)
 
@@ -282,7 +300,7 @@ export async function ingestClosedClaim(claimId: string): Promise<void> {
     try {
       if (!process.env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY 없음")
       const summary = await generateQmsSummary(markdown)
-      await ingestSummaryChunk(sourcePrefix, `[요약] ${title}`, `${title}\n\n${summary}`)
+      await ingestSummaryChunk(sourcePrefix, `[요약] ${title}`, `${title}\n\n${summary}`, claim.projectKey)
       console.log(`[ingest-qms] Claim 요약 인제스트 완료 — ${claim.claimNo}`)
     } catch (summaryError) {
       console.error(`[ingest-qms] Claim 요약 스킵 (fail-open) — ${claim.claimNo}:`, summaryError)
@@ -540,15 +558,15 @@ export function parseLessonSections(content: string): LessonDraft | null {
 async function loadClosedReport(
   type: LessonRefType,
   id: string,
-): Promise<{ markdown: string; title: string; refNo: string } | null> {
+): Promise<{ markdown: string; title: string; refNo: string; projectKey: string | null } | null> {
   if (type === "ncr") {
     const ncr = await prisma.ncr.findUnique({ where: { id } })
     if (!ncr || ncr.status !== "Closed") return null
-    return { markdown: buildNcrMarkdown(ncr), title: `[교훈] ${ncr.ncrNo} ${ncr.title}`, refNo: ncr.ncrNo }
+    return { markdown: buildNcrMarkdown(ncr), title: `[교훈] ${ncr.ncrNo} ${ncr.title}`, refNo: ncr.ncrNo, projectKey: ncr.projectKey }
   }
   const claim = await prisma.claim.findUnique({ where: { id } })
   if (!claim || claim.status !== "Closed") return null
-  return { markdown: buildClaimMarkdown(claim), title: `[교훈] ${claim.claimNo} ${claim.title}`, refNo: claim.claimNo }
+  return { markdown: buildClaimMarkdown(claim), title: `[교훈] ${claim.claimNo} ${claim.title}`, refNo: claim.claimNo, projectKey: claim.projectKey }
 }
 
 async function getExistingLesson(
@@ -617,6 +635,7 @@ export async function ingestVerifiedLesson(args: {
     tender_checklist_item: parsed.tenderChecklistItem,
     ref_type: args.type,
     ref_no: report.refNo,
+    ...(report.projectKey ? { project_key: report.projectKey } : {}),
   })
 
   await sql.transaction([

@@ -29,6 +29,7 @@ export type NcrMinAggregateOutputType = {
   ncrNo: string | null
   title: string | null
   source: string | null
+  projectKey: string | null
   severity: $Enums.NcrSeverity | null
   status: $Enums.NcrStatus | null
   disposition: $Enums.NcrDisposition | null
@@ -47,6 +48,7 @@ export type NcrMaxAggregateOutputType = {
   ncrNo: string | null
   title: string | null
   source: string | null
+  projectKey: string | null
   severity: $Enums.NcrSeverity | null
   status: $Enums.NcrStatus | null
   disposition: $Enums.NcrDisposition | null
@@ -65,6 +67,7 @@ export type NcrCountAggregateOutputType = {
   ncrNo: number
   title: number
   source: number
+  projectKey: number
   severity: number
   status: number
   disposition: number
@@ -87,6 +90,7 @@ export type NcrMinAggregateInputType = {
   ncrNo?: true
   title?: true
   source?: true
+  projectKey?: true
   severity?: true
   status?: true
   disposition?: true
@@ -105,6 +109,7 @@ export type NcrMaxAggregateInputType = {
   ncrNo?: true
   title?: true
   source?: true
+  projectKey?: true
   severity?: true
   status?: true
   disposition?: true
@@ -123,6 +128,7 @@ export type NcrCountAggregateInputType = {
   ncrNo?: true
   title?: true
   source?: true
+  projectKey?: true
   severity?: true
   status?: true
   disposition?: true
@@ -216,6 +222,7 @@ export type NcrGroupByOutputType = {
   ncrNo: string
   title: string
   source: string
+  projectKey: string | null
   severity: $Enums.NcrSeverity
   status: $Enums.NcrStatus
   disposition: $Enums.NcrDisposition
@@ -257,6 +264,7 @@ export type NcrWhereInput = {
   ncrNo?: Prisma.StringFilter<"Ncr"> | string
   title?: Prisma.StringFilter<"Ncr"> | string
   source?: Prisma.StringFilter<"Ncr"> | string
+  projectKey?: Prisma.StringNullableFilter<"Ncr"> | string | null
   severity?: Prisma.EnumNcrSeverityFilter<"Ncr"> | $Enums.NcrSeverity
   status?: Prisma.EnumNcrStatusFilter<"Ncr"> | $Enums.NcrStatus
   disposition?: Prisma.EnumNcrDispositionFilter<"Ncr"> | $Enums.NcrDisposition
@@ -278,6 +286,7 @@ export type NcrOrderByWithRelationInput = {
   ncrNo?: Prisma.SortOrder
   title?: Prisma.SortOrder
   source?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrderInput | Prisma.SortOrder
   severity?: Prisma.SortOrder
   status?: Prisma.SortOrder
   disposition?: Prisma.SortOrder
@@ -302,6 +311,7 @@ export type NcrWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.NcrWhereInput | Prisma.NcrWhereInput[]
   title?: Prisma.StringFilter<"Ncr"> | string
   source?: Prisma.StringFilter<"Ncr"> | string
+  projectKey?: Prisma.StringNullableFilter<"Ncr"> | string | null
   severity?: Prisma.EnumNcrSeverityFilter<"Ncr"> | $Enums.NcrSeverity
   status?: Prisma.EnumNcrStatusFilter<"Ncr"> | $Enums.NcrStatus
   disposition?: Prisma.EnumNcrDispositionFilter<"Ncr"> | $Enums.NcrDisposition
@@ -323,6 +333,7 @@ export type NcrOrderByWithAggregationInput = {
   ncrNo?: Prisma.SortOrder
   title?: Prisma.SortOrder
   source?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrderInput | Prisma.SortOrder
   severity?: Prisma.SortOrder
   status?: Prisma.SortOrder
   disposition?: Prisma.SortOrder
@@ -349,6 +360,7 @@ export type NcrScalarWhereWithAggregatesInput = {
   ncrNo?: Prisma.StringWithAggregatesFilter<"Ncr"> | string
   title?: Prisma.StringWithAggregatesFilter<"Ncr"> | string
   source?: Prisma.StringWithAggregatesFilter<"Ncr"> | string
+  projectKey?: Prisma.StringNullableWithAggregatesFilter<"Ncr"> | string | null
   severity?: Prisma.EnumNcrSeverityWithAggregatesFilter<"Ncr"> | $Enums.NcrSeverity
   status?: Prisma.EnumNcrStatusWithAggregatesFilter<"Ncr"> | $Enums.NcrStatus
   disposition?: Prisma.EnumNcrDispositionWithAggregatesFilter<"Ncr"> | $Enums.NcrDisposition
@@ -369,6 +381,7 @@ export type NcrCreateInput = {
   ncrNo: string
   title: string
   source: string
+  projectKey?: string | null
   severity?: $Enums.NcrSeverity
   status?: $Enums.NcrStatus
   disposition?: $Enums.NcrDisposition
@@ -389,6 +402,7 @@ export type NcrUncheckedCreateInput = {
   ncrNo: string
   title: string
   source: string
+  projectKey?: string | null
   severity?: $Enums.NcrSeverity
   status?: $Enums.NcrStatus
   disposition?: $Enums.NcrDisposition
@@ -409,6 +423,7 @@ export type NcrUpdateInput = {
   ncrNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   severity?: Prisma.EnumNcrSeverityFieldUpdateOperationsInput | $Enums.NcrSeverity
   status?: Prisma.EnumNcrStatusFieldUpdateOperationsInput | $Enums.NcrStatus
   disposition?: Prisma.EnumNcrDispositionFieldUpdateOperationsInput | $Enums.NcrDisposition
@@ -429,6 +444,7 @@ export type NcrUncheckedUpdateInput = {
   ncrNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   severity?: Prisma.EnumNcrSeverityFieldUpdateOperationsInput | $Enums.NcrSeverity
   status?: Prisma.EnumNcrStatusFieldUpdateOperationsInput | $Enums.NcrStatus
   disposition?: Prisma.EnumNcrDispositionFieldUpdateOperationsInput | $Enums.NcrDisposition
@@ -449,6 +465,7 @@ export type NcrCreateManyInput = {
   ncrNo: string
   title: string
   source: string
+  projectKey?: string | null
   severity?: $Enums.NcrSeverity
   status?: $Enums.NcrStatus
   disposition?: $Enums.NcrDisposition
@@ -469,6 +486,7 @@ export type NcrUpdateManyMutationInput = {
   ncrNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   severity?: Prisma.EnumNcrSeverityFieldUpdateOperationsInput | $Enums.NcrSeverity
   status?: Prisma.EnumNcrStatusFieldUpdateOperationsInput | $Enums.NcrStatus
   disposition?: Prisma.EnumNcrDispositionFieldUpdateOperationsInput | $Enums.NcrDisposition
@@ -488,6 +506,7 @@ export type NcrUncheckedUpdateManyInput = {
   ncrNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   severity?: Prisma.EnumNcrSeverityFieldUpdateOperationsInput | $Enums.NcrSeverity
   status?: Prisma.EnumNcrStatusFieldUpdateOperationsInput | $Enums.NcrStatus
   disposition?: Prisma.EnumNcrDispositionFieldUpdateOperationsInput | $Enums.NcrDisposition
@@ -518,6 +537,7 @@ export type NcrCountOrderByAggregateInput = {
   ncrNo?: Prisma.SortOrder
   title?: Prisma.SortOrder
   source?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrder
   severity?: Prisma.SortOrder
   status?: Prisma.SortOrder
   disposition?: Prisma.SortOrder
@@ -538,6 +558,7 @@ export type NcrMaxOrderByAggregateInput = {
   ncrNo?: Prisma.SortOrder
   title?: Prisma.SortOrder
   source?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrder
   severity?: Prisma.SortOrder
   status?: Prisma.SortOrder
   disposition?: Prisma.SortOrder
@@ -556,6 +577,7 @@ export type NcrMinOrderByAggregateInput = {
   ncrNo?: Prisma.SortOrder
   title?: Prisma.SortOrder
   source?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrder
   severity?: Prisma.SortOrder
   status?: Prisma.SortOrder
   disposition?: Prisma.SortOrder
@@ -628,6 +650,7 @@ export type NcrCreateWithoutCreatedByInput = {
   ncrNo: string
   title: string
   source: string
+  projectKey?: string | null
   severity?: $Enums.NcrSeverity
   status?: $Enums.NcrStatus
   disposition?: $Enums.NcrDisposition
@@ -647,6 +670,7 @@ export type NcrUncheckedCreateWithoutCreatedByInput = {
   ncrNo: string
   title: string
   source: string
+  projectKey?: string | null
   severity?: $Enums.NcrSeverity
   status?: $Enums.NcrStatus
   disposition?: $Enums.NcrDisposition
@@ -695,6 +719,7 @@ export type NcrScalarWhereInput = {
   ncrNo?: Prisma.StringFilter<"Ncr"> | string
   title?: Prisma.StringFilter<"Ncr"> | string
   source?: Prisma.StringFilter<"Ncr"> | string
+  projectKey?: Prisma.StringNullableFilter<"Ncr"> | string | null
   severity?: Prisma.EnumNcrSeverityFilter<"Ncr"> | $Enums.NcrSeverity
   status?: Prisma.EnumNcrStatusFilter<"Ncr"> | $Enums.NcrStatus
   disposition?: Prisma.EnumNcrDispositionFilter<"Ncr"> | $Enums.NcrDisposition
@@ -715,6 +740,7 @@ export type NcrCreateManyCreatedByInput = {
   ncrNo: string
   title: string
   source: string
+  projectKey?: string | null
   severity?: $Enums.NcrSeverity
   status?: $Enums.NcrStatus
   disposition?: $Enums.NcrDisposition
@@ -734,6 +760,7 @@ export type NcrUpdateWithoutCreatedByInput = {
   ncrNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   severity?: Prisma.EnumNcrSeverityFieldUpdateOperationsInput | $Enums.NcrSeverity
   status?: Prisma.EnumNcrStatusFieldUpdateOperationsInput | $Enums.NcrStatus
   disposition?: Prisma.EnumNcrDispositionFieldUpdateOperationsInput | $Enums.NcrDisposition
@@ -753,6 +780,7 @@ export type NcrUncheckedUpdateWithoutCreatedByInput = {
   ncrNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   severity?: Prisma.EnumNcrSeverityFieldUpdateOperationsInput | $Enums.NcrSeverity
   status?: Prisma.EnumNcrStatusFieldUpdateOperationsInput | $Enums.NcrStatus
   disposition?: Prisma.EnumNcrDispositionFieldUpdateOperationsInput | $Enums.NcrDisposition
@@ -772,6 +800,7 @@ export type NcrUncheckedUpdateManyWithoutCreatedByInput = {
   ncrNo?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   severity?: Prisma.EnumNcrSeverityFieldUpdateOperationsInput | $Enums.NcrSeverity
   status?: Prisma.EnumNcrStatusFieldUpdateOperationsInput | $Enums.NcrStatus
   disposition?: Prisma.EnumNcrDispositionFieldUpdateOperationsInput | $Enums.NcrDisposition
@@ -793,6 +822,7 @@ export type NcrSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   ncrNo?: boolean
   title?: boolean
   source?: boolean
+  projectKey?: boolean
   severity?: boolean
   status?: boolean
   disposition?: boolean
@@ -814,6 +844,7 @@ export type NcrSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   ncrNo?: boolean
   title?: boolean
   source?: boolean
+  projectKey?: boolean
   severity?: boolean
   status?: boolean
   disposition?: boolean
@@ -835,6 +866,7 @@ export type NcrSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   ncrNo?: boolean
   title?: boolean
   source?: boolean
+  projectKey?: boolean
   severity?: boolean
   status?: boolean
   disposition?: boolean
@@ -856,6 +888,7 @@ export type NcrSelectScalar = {
   ncrNo?: boolean
   title?: boolean
   source?: boolean
+  projectKey?: boolean
   severity?: boolean
   status?: boolean
   disposition?: boolean
@@ -871,7 +904,7 @@ export type NcrSelectScalar = {
   createdById?: boolean
 }
 
-export type NcrOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ncrNo" | "title" | "source" | "severity" | "status" | "disposition" | "issuedDate" | "targetDate" | "closedDate" | "assignee" | "description" | "timeline" | "attachments" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["ncr"]>
+export type NcrOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ncrNo" | "title" | "source" | "projectKey" | "severity" | "status" | "disposition" | "issuedDate" | "targetDate" | "closedDate" | "assignee" | "description" | "timeline" | "attachments" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["ncr"]>
 export type NcrInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -892,6 +925,7 @@ export type $NcrPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     ncrNo: string
     title: string
     source: string
+    projectKey: string | null
     severity: $Enums.NcrSeverity
     status: $Enums.NcrStatus
     disposition: $Enums.NcrDisposition
@@ -1333,6 +1367,7 @@ export interface NcrFieldRefs {
   readonly ncrNo: Prisma.FieldRef<"Ncr", 'String'>
   readonly title: Prisma.FieldRef<"Ncr", 'String'>
   readonly source: Prisma.FieldRef<"Ncr", 'String'>
+  readonly projectKey: Prisma.FieldRef<"Ncr", 'String'>
   readonly severity: Prisma.FieldRef<"Ncr", 'NcrSeverity'>
   readonly status: Prisma.FieldRef<"Ncr", 'NcrStatus'>
   readonly disposition: Prisma.FieldRef<"Ncr", 'NcrDisposition'>

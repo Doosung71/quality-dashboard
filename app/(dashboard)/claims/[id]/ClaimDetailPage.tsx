@@ -8,6 +8,7 @@ import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTria
 import { AttachmentUploader } from "@/components/ui/attachment-uploader";
 import { AiSuggestionPanel } from "@/components/ui/ai-suggestion-panel";
 import { VerifiedLessonPanel } from "@/components/ui/verified-lesson-panel";
+import { ProjectKeyInput } from "@/components/ui/project-key-input";
 import Link from "next/link";
 
 const STATUS_LABELS: Record<ClaimStatus, string> = {
@@ -60,6 +61,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, canVerifyLesso
   const [editForm, setEditForm] = useState({
     title:            claim.title,
     customer:         claim.customer,
+    projectKey:       claim.projectKey ?? "",
     priority:         claim.priority,
     assignee:         claim.assignee,
     description:      claim.description,
@@ -126,6 +128,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, canVerifyLesso
         ...prev,
         title:            editForm.title,
         customer:         editForm.customer,
+        projectKey:       editForm.projectKey || null,
         priority:         editForm.priority,
         assignee:         editForm.assignee,
         description:      editForm.description,
@@ -295,7 +298,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, canVerifyLesso
               </>
             ) : (
               <>
-                <button onClick={() => { setEditForm({ title: claim.title, customer: claim.customer, priority: claim.priority, assignee: claim.assignee, description: claim.description, targetDate: claim.targetDate ?? "", responsibleParty: claim.responsibleParty ?? "" }); setCustomParty(""); setEditing(true); }}
+                <button onClick={() => { setEditForm({ title: claim.title, customer: claim.customer, projectKey: claim.projectKey ?? "", priority: claim.priority, assignee: claim.assignee, description: claim.description, targetDate: claim.targetDate ?? "", responsibleParty: claim.responsibleParty ?? "" }); setCustomParty(""); setEditing(true); }}
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">
                   <Edit2 className="w-3.5 h-3.5" /> 수정
                 </button>
@@ -318,6 +321,16 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, canVerifyLesso
               className="w-full text-sm font-semibold text-slate-800 border-b border-slate-300 focus:outline-none focus:border-blue-500" />
           ) : (
             <p className="text-sm font-semibold text-slate-800 wrap-break-word">{claim.customer}</p>
+          )}
+        </div>
+        <div>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">프로젝트 키</p>
+          {editing ? (
+            <ProjectKeyInput id="claim-detail-project-key" value={editForm.projectKey}
+              onChange={v => setEditForm(f => ({...f, projectKey: v}))}
+              inputClassName="w-full text-sm font-semibold text-slate-800 border-b border-slate-300 focus:outline-none focus:border-blue-500" />
+          ) : (
+            <p className="text-sm font-semibold text-slate-800 wrap-break-word">{claim.projectKey || "—"}</p>
           )}
         </div>
         <div>

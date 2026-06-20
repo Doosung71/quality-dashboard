@@ -8,6 +8,7 @@ import { RESPONSIBLE_PARTY_OPTIONS } from "@/types/claim";
 import { ClaimsKanban } from "./claims-kanban";
 import { X, Plus } from "lucide-react";
 import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader";
+import { ProjectKeyInput } from "@/components/ui/project-key-input";
 
 const VALID_PRIORITIES: (ClaimPriority | "All")[] = ["All", "High", "Mid", "Low"];
 
@@ -38,7 +39,7 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
   const today = new Date().toISOString().slice(0, 10);
   const [form, setForm] = useState({
     title: "", customer: "", priority: "Mid", assignee: userName ?? "", description: "", receivedAt: today,
-    responsibleParty: "",
+    responsibleParty: "", projectKey: "",
   });
   const [customParty, setCustomParty] = useState("");
 
@@ -75,7 +76,7 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
       });
       if (!res.ok) throw new Error("등록 실패");
       setShowForm(false);
-      setForm({ title: "", customer: "", priority: "Mid", assignee: userName ?? "", description: "", receivedAt: today, responsibleParty: "" });
+      setForm({ title: "", customer: "", priority: "Mid", assignee: userName ?? "", description: "", receivedAt: today, responsibleParty: "", projectKey: "" });
       setCustomParty("");
       setAttachments([]);
       router.refresh();
@@ -191,6 +192,11 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
                   <input type="text" placeholder="귀책처를 직접 입력하세요" value={customParty}
                     onChange={e => setCustomParty(e.target.value)} className={inputCls} />
                 )}
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">프로젝트 키 <span className="text-slate-400 font-normal">(Tender 연결용·선택)</span></label>
+                <ProjectKeyInput id="claim-project-key" value={form.projectKey}
+                  onChange={v => setForm(f => ({...f, projectKey: v}))} inputClassName={inputCls} />
               </div>
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700">상세 내용 <span className="text-rose-500">*</span></label>

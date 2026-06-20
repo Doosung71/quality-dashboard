@@ -23,6 +23,7 @@ export default async function NCRDetailRoute({ params }: Props) {
     ncrNo:       raw.ncrNo,
     title:       raw.title,
     source:      raw.source,
+    projectKey:  raw.projectKey,
     severity:    raw.severity    as NCR["severity"],
     status:      raw.status      as NCR["status"],
     disposition: raw.disposition as NCR["disposition"],

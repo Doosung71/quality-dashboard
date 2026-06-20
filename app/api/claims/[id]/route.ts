@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireActiveSession } from "@/lib/session-guard"
 import { ingestClosedClaim } from "@/lib/ingest-qms"
+import { parseProjectKeyInput } from "@/lib/project-key"
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireActiveSession()
@@ -25,6 +26,19 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     title?: string; customer?: string; priority?: string; assignee?: string
     description?: string; status?: string; targetDate?: string | null; closedAt?: string | null
     timeline?: unknown[]; attachments?: unknown[]; responsibleParty?: string | null
+    projectKey?: string | null
+  }
+
+  let projectKeyUpdate: { projectKey?: string | null } = {}
+  if (body.projectKey !== undefined) {
+    const pk = parseProjectKeyInput(body.projectKey)
+    if (pk.invalid) {
+      return NextResponse.json(
+        { error: "project_key 형식이 올바르지 않습니다 (kebab-case: 소문자·숫자·하이픈)" },
+        { status: 400 },
+      )
+    }
+    projectKeyUpdate = { projectKey: pk.value }
   }
 
   const existing = body.status === "Closed"
@@ -45,6 +59,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       ...(body.targetDate        !== undefined && { targetDate:       body.targetDate ? new Date(body.targetDate) : null }),
       ...(body.closedAt          !== undefined && { closedAt:         body.closedAt ? new Date(body.closedAt) : null }),
       ...(body.responsibleParty  !== undefined && { responsibleParty: body.responsibleParty }),
+      ...projectKeyUpdate,
     },
   })
 

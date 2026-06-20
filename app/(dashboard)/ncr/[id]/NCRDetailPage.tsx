@@ -9,6 +9,7 @@ import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTria
 import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader";
 import { AiSuggestionPanel } from "@/components/ui/ai-suggestion-panel";
 import { VerifiedLessonPanel } from "@/components/ui/verified-lesson-panel";
+import { ProjectKeyInput } from "@/components/ui/project-key-input";
 
 const STATUS_LABELS: Record<NCRStatus, string> = {
   Issued:          "발행",
@@ -67,6 +68,7 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, canVerifyLesson = 
   const [editForm, setEditForm] = useState({
     title:       ncr.title,
     source:      ncr.source,
+    projectKey:  ncr.projectKey ?? "",
     severity:    ncr.severity,
     disposition: ncr.disposition,
     targetDate:  ncr.targetDate,
@@ -238,7 +240,7 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, canVerifyLesson = 
               </>
             ) : (
               <>
-                <button onClick={() => { setEditForm({ title: ncr.title, source: ncr.source, severity: ncr.severity, disposition: ncr.disposition, targetDate: ncr.targetDate, assignee: ncr.assignee, description: ncr.description }); setEditing(true); }}
+                <button onClick={() => { setEditForm({ title: ncr.title, source: ncr.source, projectKey: ncr.projectKey ?? "", severity: ncr.severity, disposition: ncr.disposition, targetDate: ncr.targetDate, assignee: ncr.assignee, description: ncr.description }); setEditing(true); }}
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">
                   <Edit2 className="w-3.5 h-3.5" /> 수정
                 </button>
@@ -261,6 +263,16 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, canVerifyLesson = 
               className="w-full text-sm font-semibold text-slate-800 border-b border-slate-300 focus:outline-none focus:border-slate-900" />
           ) : (
             <p className="text-sm font-semibold text-slate-800 wrap-break-word">{ncr.source}</p>
+          )}
+        </div>
+        <div>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">프로젝트 키</p>
+          {editing ? (
+            <ProjectKeyInput id="ncr-detail-project-key" value={editForm.projectKey}
+              onChange={v => setEditForm(f => ({...f, projectKey: v}))}
+              inputClassName="w-full text-sm font-semibold text-slate-800 border-b border-slate-300 focus:outline-none focus:border-slate-900" />
+          ) : (
+            <p className="text-sm font-semibold text-slate-800 wrap-break-word">{ncr.projectKey || "—"}</p>
           )}
         </div>
         <div>
