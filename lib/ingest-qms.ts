@@ -188,6 +188,32 @@ async function ingestSummaryChunk(
   ])
 }
 
+// RE-02 보강: 요약 재생성(LLM)이 실패해 ingestSummaryChunk가 스킵될 때,
+// 기존 qms_summary row의 project_key만 현재 값에 동기화(또는 제거)해 stale entity-linking을 막는다.
+// 요약 본문·임베딩은 건드리지 않는 metadata-only UPDATE. row가 없으면 no-op. fail-open.
+async function syncSummaryProjectKey(sourcePrefix: string, projectKey: string | null): Promise<void> {
+  if (!process.env.DATABASE_URL_UNPOOLED) return
+  try {
+    const sql = neon(process.env.DATABASE_URL_UNPOOLED)
+    const sourcePath = `${sourcePrefix}/summary`
+    if (projectKey) {
+      await sql`
+        UPDATE knowledge_chunks
+        SET metadata = COALESCE(metadata, '{}'::jsonb) || ${JSON.stringify({ project_key: projectKey })}::jsonb
+        WHERE source_path = ${sourcePath}
+      `
+    } else {
+      await sql`
+        UPDATE knowledge_chunks
+        SET metadata = COALESCE(metadata, '{}'::jsonb) - 'project_key'
+        WHERE source_path = ${sourcePath}
+      `
+    }
+  } catch (e) {
+    console.error(`[ingest-qms] summary project_key 동기화 실패 (fail-open) — ${sourcePrefix}:`, e)
+  }
+}
+
 async function ingestChunks(
   sourcePrefix: string,
   sourceType: string,
@@ -266,6 +292,8 @@ export async function ingestClosedNcr(ncrId: string): Promise<void> {
       console.log(`[ingest-qms] NCR 요약 인제스트 완료 — ${ncr.ncrNo}`)
     } catch (summaryError) {
       console.error(`[ingest-qms] NCR 요약 스킵 (fail-open) — ${ncr.ncrNo}:`, summaryError)
+      // 요약 갱신 실패 시에도 기존 summary의 project_key는 동기화 (stale 방지)
+      await syncSummaryProjectKey(sourcePrefix, ncr.projectKey)
     }
   } catch (error) {
     console.error(`[ingest-qms] NCR 인제스트 실패 — ${ncrId}:`, error)
@@ -304,6 +332,8 @@ export async function ingestClosedClaim(claimId: string): Promise<void> {
       console.log(`[ingest-qms] Claim 요약 인제스트 완료 — ${claim.claimNo}`)
     } catch (summaryError) {
       console.error(`[ingest-qms] Claim 요약 스킵 (fail-open) — ${claim.claimNo}:`, summaryError)
+      // 요약 갱신 실패 시에도 기존 summary의 project_key는 동기화 (stale 방지)
+      await syncSummaryProjectKey(sourcePrefix, claim.projectKey)
     }
   } catch (error) {
     console.error(`[ingest-qms] Claim 인제스트 실패 — ${claimId}:`, error)

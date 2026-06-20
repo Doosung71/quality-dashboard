@@ -251,5 +251,21 @@ describe('ingest-qms', () => {
       await ingestClosedClaim('claim-nopk')
       expect(allSqlValues()).not.toContain('project_key')
     })
+
+    // RE-02 보강: 요약 LLM 실패 시에도 기존 summary의 project_key 동기화 (stale 방지)
+    it('ANTHROPIC 실패 시 summary project_key를 현재 값으로 동기화 UPDATE', async () => {
+      vi.stubEnv('ANTHROPIC_API_KEY', '')
+      mockNcrFindUnique.mockResolvedValue({
+        id: 'ncr-sync', ncrNo: 'NCR-2026-SYNC', title: '키 동기화', status: 'Closed',
+        source: '수입검사', severity: 'Major', disposition: 'Rework', assignee: '홍길동',
+        description: '내용', timeline: [], projectKey: 'proj-sync-1',
+        issuedDate: new Date('2026-01-01'), targetDate: new Date('2026-01-15'), closedDate: new Date('2026-01-14'),
+      })
+      const { ingestClosedNcr } = await import('./ingest-qms')
+      await ingestClosedNcr('ncr-sync')
+      // 요약 transaction은 스킵(1회만), 대신 summary 동기화 UPDATE에 현재 키가 실림
+      expect(mockSqlTransaction).toHaveBeenCalledTimes(1)
+      expect(allSqlValues()).toContain('proj-sync-1')
+    })
   })
 })
