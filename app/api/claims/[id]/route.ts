@@ -41,7 +41,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     projectKeyUpdate = { projectKey: pk.value }
   }
 
-  const existing = body.status === "Closed"
+  // Closed 전환 / Closed 상태에서 projectKey 변경 시 re-ingest 필요
+  // (Q1-03: 종결 후 projectKey 부여·수정·삭제도 knowledge_chunks metadata에 반영돼야 함)
+  const needsIngestCheck = body.status === "Closed" || body.projectKey !== undefined
+  const existing = needsIngestCheck
     ? await prisma.claim.findUnique({ where: { id }, select: { status: true } })
     : null
 
@@ -63,7 +66,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     },
   })
 
-  if (body.status === "Closed" && existing?.status !== "Closed") {
+  const isClosingNow = body.status === "Closed" && existing?.status !== "Closed"
+  const isClosedProjectKeyUpdate = body.projectKey !== undefined && existing?.status === "Closed"
+  if (isClosingNow || isClosedProjectKeyUpdate) {
     after(async () => { await ingestClosedClaim(id) })
   }
 
