@@ -74,6 +74,27 @@ describe('GET /api/witness', () => {
     const body = await res.json() as unknown[]
     expect(body).toHaveLength(1)
   })
+
+  it('year·month 지정 시 이 달과 겹치는 검사 조회 (③-3 월 경계)', async () => {
+    mockRequireActiveSession.mockResolvedValue(practitionerSession)
+    mockFindMany.mockResolvedValue([])
+    const { GET } = await import('./route')
+    await GET(new NextRequest('http://localhost/api/witness?year=2026&month=7', { method: 'GET' }))
+    const where = mockFindMany.mock.calls[0][0].where as {
+      AND: [
+        { inspectionDate: { lt: Date } },
+        { OR: [{ endDate: { gte: Date } }, { endDate: null; inspectionDate: { gte: Date } }] },
+      ]
+    }
+    // 시작일 < 다음 달(8월) AND (종료일>=7월 시작 OR (종료일 없고 시작일>=7월 시작))
+    const monthStart = new Date(2026, 6, 1)  // 7월 1일
+    const nextMonth  = new Date(2026, 7, 1)  // 8월 1일
+    expect(where.AND[0].inspectionDate.lt).toEqual(nextMonth)
+    expect(where.AND[1].OR).toHaveLength(2)
+    expect(where.AND[1].OR[0].endDate.gte).toEqual(monthStart)              // 다일: 종료일이 이 달 이후
+    expect(where.AND[1].OR[1].endDate).toBeNull()                           // 단일: 종료일 없음
+    expect(where.AND[1].OR[1].inspectionDate.gte).toEqual(monthStart)      // 단일: 시작일이 이 달 이후
+  })
 })
 
 describe('POST /api/witness', () => {
@@ -127,15 +148,34 @@ describe('PATCH /api/witness/[id]', () => {
   const params = { params: Promise.resolve({ id: 'wi-1' }) }
   beforeEach(() => vi.clearAllMocks())
 
-  it('PRACTITIONER는 403', async () => {
-    mockRequireActiveSession.mockResolvedValue(practitionerSession)
+  it('PRACTITIONER가 타인 등록 건 수정 시도 → 403', async () => {
+    mockRequireActiveSession.mockResolvedValue(practitionerSession) // id: u1
+    mockFindUnique.mockResolvedValue({ createdById: 'u-other' })
     const { PATCH } = await import('./[id]/route')
     const res = await PATCH(makeIdReq('PATCH', { status: 'COMPLETED' }), params)
     expect(res.status).toBe(403)
   })
 
+  it('PRACTITIONER가 본인 등록 건 상태 변경 → 200 (③-1 핵심)', async () => {
+    mockRequireActiveSession.mockResolvedValue(practitionerSession) // id: u1
+    mockFindUnique.mockResolvedValue({ createdById: 'u1' })
+    mockUpdate.mockResolvedValue({ id: 'wi-1', status: 'COMPLETED' })
+    const { PATCH } = await import('./[id]/route')
+    const res = await PATCH(makeIdReq('PATCH', { status: 'COMPLETED' }), params)
+    expect(res.status).toBe(200)
+  })
+
+  it('존재하지 않는 건 → 404', async () => {
+    mockRequireActiveSession.mockResolvedValue(practitionerSession)
+    mockFindUnique.mockResolvedValue(null)
+    const { PATCH } = await import('./[id]/route')
+    const res = await PATCH(makeIdReq('PATCH', { status: 'COMPLETED' }), params)
+    expect(res.status).toBe(404)
+  })
+
   it('유효하지 않은 status는 400', async () => {
     mockRequireActiveSession.mockResolvedValue(teamLeadSession)
+    mockFindUnique.mockResolvedValue({ createdById: 'u-other' })
     const { PATCH } = await import('./[id]/route')
     const res = await PATCH(makeIdReq('PATCH', { status: 'INVALID_STATUS' }), params)
     expect(res.status).toBe(400)
@@ -143,16 +183,28 @@ describe('PATCH /api/witness/[id]', () => {
 
   it('유효하지 않은 result는 400', async () => {
     mockRequireActiveSession.mockResolvedValue(teamLeadSession)
+    mockFindUnique.mockResolvedValue({ createdById: 'u-other' })
     const { PATCH } = await import('./[id]/route')
     const res = await PATCH(makeIdReq('PATCH', { result: 'UNKNOWN' }), params)
     expect(res.status).toBe(400)
   })
 
-  it('TEAM_LEAD + 유효 status → 200', async () => {
-    mockRequireActiveSession.mockResolvedValue(teamLeadSession)
+  it('TEAM_LEAD가 타인 등록 건 + 유효 status → 200 (팀장 전권)', async () => {
+    mockRequireActiveSession.mockResolvedValue(teamLeadSession) // id: u2
+    mockFindUnique.mockResolvedValue({ createdById: 'u-other' })
     mockUpdate.mockResolvedValue({ id: 'wi-1', status: 'COMPLETED' })
     const { PATCH } = await import('./[id]/route')
     const res = await PATCH(makeIdReq('PATCH', { status: 'COMPLETED' }), params)
+    expect(res.status).toBe(200)
+  })
+
+  it('result·region이 null이어도 200 (결과 미입력 검사 상태변경 — ③-1 실 버그)', async () => {
+    mockRequireActiveSession.mockResolvedValue(practitionerSession) // id: u1
+    mockFindUnique.mockResolvedValue({ createdById: 'u1' })
+    mockUpdate.mockResolvedValue({ id: 'wi-1', status: 'COMPLETED' })
+    const { PATCH } = await import('./[id]/route')
+    // 폼이 전체 필드를 보내며 result·region은 null (결과 미입력 예정 검사)
+    const res = await PATCH(makeIdReq('PATCH', { status: 'COMPLETED', result: null, region: null }), params)
     expect(res.status).toBe(200)
   })
 })

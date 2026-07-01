@@ -22,13 +22,24 @@ export async function GET(req: NextRequest) {
   const year  = searchParams.get("year")
   const month = searchParams.get("month") // 1-based
 
+  // 이 달과 기간이 "겹치는" 모든 검사 조회 (월 경계 다일 일정 포함)
+  // 겹침 조건: 시작일 < 다음 달  AND  (종료일 ?? 시작일) >= 이 달 시작
   const where = year && month
-    ? {
-        inspectionDate: {
-          gte: new Date(parseInt(year), parseInt(month) - 1, 1),
-          lt:  new Date(parseInt(year), parseInt(month), 1),
-        },
-      }
+    ? (() => {
+        const monthStart = new Date(parseInt(year), parseInt(month) - 1, 1)
+        const nextMonth  = new Date(parseInt(year), parseInt(month), 1)
+        return {
+          AND: [
+            { inspectionDate: { lt: nextMonth } },
+            {
+              OR: [
+                { endDate: { gte: monthStart } },
+                { endDate: null, inspectionDate: { gte: monthStart } },
+              ],
+            },
+          ],
+        }
+      })()
     : {}
 
   const inspections = await prisma.witnessInspection.findMany({

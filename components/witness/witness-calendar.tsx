@@ -124,9 +124,17 @@ export default function WitnessCalendar() {
   while (cells.length % 7 !== 0) cells.push(null)
 
   function getDayItems(day: number): Inspection[] {
+    // 검사 기간(시작일~종료일) 전체에 걸쳐 표시. endDate 없으면 시작일만.
+    const cellT = new Date(year, month - 1, day).setHours(0, 0, 0, 0)
     return filtered.filter(item => {
-      const d = new Date(item.inspectionDate)
-      return d.getDate() === day && d.getMonth() + 1 === month && d.getFullYear() === year
+      const start = new Date(item.inspectionDate); start.setHours(0, 0, 0, 0)
+      const startT = start.getTime()
+      let endT = startT
+      if (item.endDate) {
+        const end = new Date(item.endDate); end.setHours(0, 0, 0, 0)
+        endT = Math.max(end.getTime(), startT) // 잘못된 endDate(<시작일) 방어
+      }
+      return cellT >= startT && cellT <= endT
     })
   }
   const isToday = (day: number) =>

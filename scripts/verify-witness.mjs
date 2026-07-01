@@ -1,9 +1,14 @@
 // Playwright 브라우저 테스트 — 입회검사 신규 기능 검증
 import { chromium } from "@playwright/test"
 
-const BASE = "http://localhost:3000"
-const EMAIL = "doosung71@gmail.com"
-const PASS  = "admin1234!"
+const BASE = process.env.BASE_URL || "http://localhost:3000"
+// 자격증명은 환경변수로만 주입 (하드코딩 금지 — 코라 H-01)
+const EMAIL = process.env.WITNESS_VERIFY_EMAIL
+const PASS  = process.env.WITNESS_VERIFY_PASSWORD
+if (!EMAIL || !PASS) {
+  console.error("❌ 환경변수 WITNESS_VERIFY_EMAIL / WITNESS_VERIFY_PASSWORD 를 설정하세요.")
+  process.exit(1)
+}
 const TODAY = new Date().toISOString().slice(0, 10)
 
 const results = []

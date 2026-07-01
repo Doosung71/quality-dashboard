@@ -30,11 +30,20 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
 
-  if (!WRITER_ROLES.includes(session.user.role)) {
-    return NextResponse.json({ error: "팀장 이상만 수정할 수 있습니다." }, { status: 403 })
-  }
-
   const { id } = await params
+
+  // 본인이 등록한 검사 OR 팀장+ 만 수정 (DELETE 소유권 패턴과 통일)
+  const existing = await prisma.witnessInspection.findUnique({
+    where: { id },
+    select: { createdById: true },
+  })
+  if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 })
+
+  const isOwner  = existing.createdById === session.user.id
+  const isWriter = WRITER_ROLES.includes(session.user.role)
+  if (!isOwner && !isWriter) {
+    return NextResponse.json({ error: "본인이 등록한 입회검사만 수정할 수 있습니다." }, { status: 403 })
+  }
 
   const body = await req.json() as {
     customer?: string; projectName?: string; projectNumber?: string
@@ -48,10 +57,11 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   if (body.status !== undefined && !VALID_STATUS.includes(body.status)) {
     return NextResponse.json({ error: `유효하지 않은 status: ${body.status}` }, { status: 400 })
   }
-  if (body.result !== undefined && body.result !== "" && !VALID_RESULT.includes(body.result)) {
+  // result·region은 nullable — null/""(비움)은 허용, 값이 있을 때만 화이트리스트 검증
+  if (body.result != null && body.result !== "" && !VALID_RESULT.includes(body.result)) {
     return NextResponse.json({ error: `유효하지 않은 result: ${body.result}` }, { status: 400 })
   }
-  if (body.region !== undefined && body.region !== "" && !VALID_REGIONS.includes(body.region)) {
+  if (body.region != null && body.region !== "" && !VALID_REGIONS.includes(body.region)) {
     return NextResponse.json({ error: `유효하지 않은 region: ${body.region}` }, { status: 400 })
   }
 
