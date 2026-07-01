@@ -27,6 +27,7 @@ export type AggregateTender = {
 export type TenderMinAggregateOutputType = {
   id: string | null
   title: string | null
+  projectKey: string | null
   createdAt: Date | null
   createdById: string | null
 }
@@ -34,6 +35,7 @@ export type TenderMinAggregateOutputType = {
 export type TenderMaxAggregateOutputType = {
   id: string | null
   title: string | null
+  projectKey: string | null
   createdAt: Date | null
   createdById: string | null
 }
@@ -41,6 +43,7 @@ export type TenderMaxAggregateOutputType = {
 export type TenderCountAggregateOutputType = {
   id: number
   title: number
+  projectKey: number
   createdAt: number
   createdById: number
   _all: number
@@ -50,6 +53,7 @@ export type TenderCountAggregateOutputType = {
 export type TenderMinAggregateInputType = {
   id?: true
   title?: true
+  projectKey?: true
   createdAt?: true
   createdById?: true
 }
@@ -57,6 +61,7 @@ export type TenderMinAggregateInputType = {
 export type TenderMaxAggregateInputType = {
   id?: true
   title?: true
+  projectKey?: true
   createdAt?: true
   createdById?: true
 }
@@ -64,6 +69,7 @@ export type TenderMaxAggregateInputType = {
 export type TenderCountAggregateInputType = {
   id?: true
   title?: true
+  projectKey?: true
   createdAt?: true
   createdById?: true
   _all?: true
@@ -144,6 +150,7 @@ export type TenderGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 export type TenderGroupByOutputType = {
   id: string
   title: string
+  projectKey: string | null
   createdAt: Date
   createdById: string
   _count: TenderCountAggregateOutputType | null
@@ -172,6 +179,7 @@ export type TenderWhereInput = {
   NOT?: Prisma.TenderWhereInput | Prisma.TenderWhereInput[]
   id?: Prisma.StringFilter<"Tender"> | string
   title?: Prisma.StringFilter<"Tender"> | string
+  projectKey?: Prisma.StringNullableFilter<"Tender"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Tender"> | Date | string
   createdById?: Prisma.StringFilter<"Tender"> | string
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -183,6 +191,7 @@ export type TenderWhereInput = {
 export type TenderOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdBy?: Prisma.UserOrderByWithRelationInput
@@ -197,6 +206,7 @@ export type TenderWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.TenderWhereInput[]
   NOT?: Prisma.TenderWhereInput | Prisma.TenderWhereInput[]
   title?: Prisma.StringFilter<"Tender"> | string
+  projectKey?: Prisma.StringNullableFilter<"Tender"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Tender"> | Date | string
   createdById?: Prisma.StringFilter<"Tender"> | string
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -208,6 +218,7 @@ export type TenderWhereUniqueInput = Prisma.AtLeast<{
 export type TenderOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   _count?: Prisma.TenderCountOrderByAggregateInput
@@ -221,6 +232,7 @@ export type TenderScalarWhereWithAggregatesInput = {
   NOT?: Prisma.TenderScalarWhereWithAggregatesInput | Prisma.TenderScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Tender"> | string
   title?: Prisma.StringWithAggregatesFilter<"Tender"> | string
+  projectKey?: Prisma.StringNullableWithAggregatesFilter<"Tender"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Tender"> | Date | string
   createdById?: Prisma.StringWithAggregatesFilter<"Tender"> | string
 }
@@ -228,6 +240,7 @@ export type TenderScalarWhereWithAggregatesInput = {
 export type TenderCreateInput = {
   id?: string
   title: string
+  projectKey?: string | null
   createdAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutTendersInput
   documents?: Prisma.TenderDocumentCreateNestedManyWithoutTenderInput
@@ -238,6 +251,7 @@ export type TenderCreateInput = {
 export type TenderUncheckedCreateInput = {
   id?: string
   title: string
+  projectKey?: string | null
   createdAt?: Date | string
   createdById: string
   documents?: Prisma.TenderDocumentUncheckedCreateNestedManyWithoutTenderInput
@@ -248,6 +262,7 @@ export type TenderUncheckedCreateInput = {
 export type TenderUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutTendersNestedInput
   documents?: Prisma.TenderDocumentUpdateManyWithoutTenderNestedInput
@@ -258,6 +273,7 @@ export type TenderUpdateInput = {
 export type TenderUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   documents?: Prisma.TenderDocumentUncheckedUpdateManyWithoutTenderNestedInput
@@ -268,6 +284,7 @@ export type TenderUncheckedUpdateInput = {
 export type TenderCreateManyInput = {
   id?: string
   title: string
+  projectKey?: string | null
   createdAt?: Date | string
   createdById: string
 }
@@ -275,12 +292,14 @@ export type TenderCreateManyInput = {
 export type TenderUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TenderUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -298,6 +317,7 @@ export type TenderOrderByRelationAggregateInput = {
 export type TenderCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
 }
@@ -305,6 +325,7 @@ export type TenderCountOrderByAggregateInput = {
 export type TenderMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
 }
@@ -312,6 +333,7 @@ export type TenderMaxOrderByAggregateInput = {
 export type TenderMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  projectKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
 }
@@ -415,6 +437,7 @@ export type TenderUpdateOneWithoutAwardedProjectNestedInput = {
 export type TenderCreateWithoutCreatedByInput = {
   id?: string
   title: string
+  projectKey?: string | null
   createdAt?: Date | string
   documents?: Prisma.TenderDocumentCreateNestedManyWithoutTenderInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutTenderInput
@@ -424,6 +447,7 @@ export type TenderCreateWithoutCreatedByInput = {
 export type TenderUncheckedCreateWithoutCreatedByInput = {
   id?: string
   title: string
+  projectKey?: string | null
   createdAt?: Date | string
   documents?: Prisma.TenderDocumentUncheckedCreateNestedManyWithoutTenderInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutTenderInput
@@ -462,6 +486,7 @@ export type TenderScalarWhereInput = {
   NOT?: Prisma.TenderScalarWhereInput | Prisma.TenderScalarWhereInput[]
   id?: Prisma.StringFilter<"Tender"> | string
   title?: Prisma.StringFilter<"Tender"> | string
+  projectKey?: Prisma.StringNullableFilter<"Tender"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Tender"> | Date | string
   createdById?: Prisma.StringFilter<"Tender"> | string
 }
@@ -469,6 +494,7 @@ export type TenderScalarWhereInput = {
 export type TenderCreateWithoutDocumentsInput = {
   id?: string
   title: string
+  projectKey?: string | null
   createdAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutTendersInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutTenderInput
@@ -478,6 +504,7 @@ export type TenderCreateWithoutDocumentsInput = {
 export type TenderUncheckedCreateWithoutDocumentsInput = {
   id?: string
   title: string
+  projectKey?: string | null
   createdAt?: Date | string
   createdById: string
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutTenderInput
@@ -503,6 +530,7 @@ export type TenderUpdateToOneWithWhereWithoutDocumentsInput = {
 export type TenderUpdateWithoutDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutTendersNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutTenderNestedInput
@@ -512,6 +540,7 @@ export type TenderUpdateWithoutDocumentsInput = {
 export type TenderUncheckedUpdateWithoutDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutTenderNestedInput
@@ -521,6 +550,7 @@ export type TenderUncheckedUpdateWithoutDocumentsInput = {
 export type TenderCreateWithoutAnalysesInput = {
   id?: string
   title: string
+  projectKey?: string | null
   createdAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutTendersInput
   documents?: Prisma.TenderDocumentCreateNestedManyWithoutTenderInput
@@ -530,6 +560,7 @@ export type TenderCreateWithoutAnalysesInput = {
 export type TenderUncheckedCreateWithoutAnalysesInput = {
   id?: string
   title: string
+  projectKey?: string | null
   createdAt?: Date | string
   createdById: string
   documents?: Prisma.TenderDocumentUncheckedCreateNestedManyWithoutTenderInput
@@ -555,6 +586,7 @@ export type TenderUpdateToOneWithWhereWithoutAnalysesInput = {
 export type TenderUpdateWithoutAnalysesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutTendersNestedInput
   documents?: Prisma.TenderDocumentUpdateManyWithoutTenderNestedInput
@@ -564,6 +596,7 @@ export type TenderUpdateWithoutAnalysesInput = {
 export type TenderUncheckedUpdateWithoutAnalysesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   documents?: Prisma.TenderDocumentUncheckedUpdateManyWithoutTenderNestedInput
@@ -573,6 +606,7 @@ export type TenderUncheckedUpdateWithoutAnalysesInput = {
 export type TenderCreateWithoutAwardedProjectInput = {
   id?: string
   title: string
+  projectKey?: string | null
   createdAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutTendersInput
   documents?: Prisma.TenderDocumentCreateNestedManyWithoutTenderInput
@@ -582,6 +616,7 @@ export type TenderCreateWithoutAwardedProjectInput = {
 export type TenderUncheckedCreateWithoutAwardedProjectInput = {
   id?: string
   title: string
+  projectKey?: string | null
   createdAt?: Date | string
   createdById: string
   documents?: Prisma.TenderDocumentUncheckedCreateNestedManyWithoutTenderInput
@@ -607,6 +642,7 @@ export type TenderUpdateToOneWithWhereWithoutAwardedProjectInput = {
 export type TenderUpdateWithoutAwardedProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutTendersNestedInput
   documents?: Prisma.TenderDocumentUpdateManyWithoutTenderNestedInput
@@ -616,6 +652,7 @@ export type TenderUpdateWithoutAwardedProjectInput = {
 export type TenderUncheckedUpdateWithoutAwardedProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   documents?: Prisma.TenderDocumentUncheckedUpdateManyWithoutTenderNestedInput
@@ -625,12 +662,14 @@ export type TenderUncheckedUpdateWithoutAwardedProjectInput = {
 export type TenderCreateManyCreatedByInput = {
   id?: string
   title: string
+  projectKey?: string | null
   createdAt?: Date | string
 }
 
 export type TenderUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.TenderDocumentUpdateManyWithoutTenderNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutTenderNestedInput
@@ -640,6 +679,7 @@ export type TenderUpdateWithoutCreatedByInput = {
 export type TenderUncheckedUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.TenderDocumentUncheckedUpdateManyWithoutTenderNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutTenderNestedInput
@@ -649,6 +689,7 @@ export type TenderUncheckedUpdateWithoutCreatedByInput = {
 export type TenderUncheckedUpdateManyWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  projectKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -695,6 +736,7 @@ export type TenderCountOutputTypeCountAnalysesArgs<ExtArgs extends runtime.Types
 export type TenderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  projectKey?: boolean
   createdAt?: boolean
   createdById?: boolean
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -707,6 +749,7 @@ export type TenderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type TenderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  projectKey?: boolean
   createdAt?: boolean
   createdById?: boolean
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -715,6 +758,7 @@ export type TenderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type TenderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  projectKey?: boolean
   createdAt?: boolean
   createdById?: boolean
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -723,11 +767,12 @@ export type TenderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type TenderSelectScalar = {
   id?: boolean
   title?: boolean
+  projectKey?: boolean
   createdAt?: boolean
   createdById?: boolean
 }
 
-export type TenderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "createdAt" | "createdById", ExtArgs["result"]["tender"]>
+export type TenderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "projectKey" | "createdAt" | "createdById", ExtArgs["result"]["tender"]>
 export type TenderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   documents?: boolean | Prisma.Tender$documentsArgs<ExtArgs>
@@ -753,6 +798,7 @@ export type $TenderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     title: string
+    projectKey: string | null
     createdAt: Date
     createdById: string
   }, ExtArgs["result"]["tender"]>
@@ -1184,6 +1230,7 @@ export interface Prisma__TenderClient<T, Null = never, ExtArgs extends runtime.T
 export interface TenderFieldRefs {
   readonly id: Prisma.FieldRef<"Tender", 'String'>
   readonly title: Prisma.FieldRef<"Tender", 'String'>
+  readonly projectKey: Prisma.FieldRef<"Tender", 'String'>
   readonly createdAt: Prisma.FieldRef<"Tender", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"Tender", 'String'>
 }

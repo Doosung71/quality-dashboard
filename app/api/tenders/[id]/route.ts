@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { requireActiveSession } from "@/lib/session-guard"
 import { prisma } from "@/lib/prisma"
 import { deleteBlob } from "@/lib/storage"
+import { parseProjectKeyInput } from "@/lib/project-key"
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -11,15 +12,37 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
 
   const { id } = await params
 
-  let title: unknown
+  let body: Record<string, unknown>
   try {
-    const body = await req.json()
-    title = (body as Record<string, unknown>).title
+    body = (await req.json()) as Record<string, unknown>
   } catch {
     return NextResponse.json({ error: "요청 형식이 올바르지 않습니다." }, { status: 400 })
   }
-  if (typeof title !== "string" || !title.trim()) {
-    return NextResponse.json({ error: "입찰명을 입력해주세요." }, { status: 400 })
+
+  // title·projectKey 각각 선택적 부분 수정 지원.
+  const data: { title?: string; projectKey?: string | null } = {}
+
+  if (body.title !== undefined) {
+    if (typeof body.title !== "string" || !body.title.trim()) {
+      return NextResponse.json({ error: "입찰명을 입력해주세요." }, { status: 400 })
+    }
+    data.title = body.title.trim()
+  }
+
+  // Q1 project_key — 고리④ 과거이력 surface 매칭 키. 선택 필드(fail-open), 형식 오류는 400.
+  if (body.projectKey !== undefined) {
+    const pk = parseProjectKeyInput(body.projectKey)
+    if (pk.invalid) {
+      return NextResponse.json(
+        { error: "프로젝트 키 형식이 올바르지 않습니다 (소문자·숫자·하이픈)." },
+        { status: 400 },
+      )
+    }
+    data.projectKey = pk.value
+  }
+
+  if (Object.keys(data).length === 0) {
+    return NextResponse.json({ error: "수정할 항목이 없습니다." }, { status: 400 })
   }
 
   const tender = await prisma.tender.findFirst({
@@ -27,7 +50,7 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
   })
   if (!tender) return NextResponse.json({ error: "입찰을 찾을 수 없습니다." }, { status: 404 })
 
-  await prisma.tender.update({ where: { id }, data: { title: title.trim() } })
+  await prisma.tender.update({ where: { id }, data })
   return NextResponse.json({ ok: true })
 }
 

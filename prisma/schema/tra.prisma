@@ -5,6 +5,7 @@
 model Tender {
   id          String   @id @default(cuid())
   title       String
+  projectKey  String?                 // Tender 생애주기 연결 키 (kebab-case, Q1 entity-linking — 고리④ 과거이력 surface 매칭)
   createdAt   DateTime @default(now())
   createdBy   User     @relation(fields: [createdById], references: [id])
   createdById String

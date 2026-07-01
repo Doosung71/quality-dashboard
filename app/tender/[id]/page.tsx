@@ -14,6 +14,9 @@ import ComplyMark from "./ComplyMark"
 import DeviationMark from "./DeviationMark"
 import CommentSection from "./CommentSection"
 import AnalysisHistory from "./AnalysisHistory"
+import ProjectKeyEdit from "./ProjectKeyEdit"
+import ProjectHistoryPanel from "./ProjectHistoryPanel"
+import { loadProjectHistory } from "@/lib/project-history"
 import { displayName } from "@/lib/display-name"
 import { Button } from "@/components/ui/button"
 import {
@@ -98,6 +101,10 @@ export default async function TenderPage({
   })
 
   if (!tender) redirect("/dashboard")
+
+  // 고리④ surface — 입찰의 project_key로 같은 프로젝트의 과거 이력 조회 (fail-open, 외부 전송 0).
+  const isOwner = tender.createdById === session.user.id
+  const projectHistory = await loadProjectHistory(tender.projectKey)
 
   const analysis = tender.analyses[0]
   const canEdit =
@@ -232,6 +239,11 @@ export default async function TenderPage({
                   </span>
                 )}
               </div>
+
+              {/* 고리④ — 프로젝트 연결 키 (같은 키의 과거 이력을 아래 패널에 surface) */}
+              <div className="pt-1">
+                <ProjectKeyEdit tenderId={id} projectKey={tender.projectKey} canEdit={isOwner} />
+              </div>
             </div>
             
             {/* 파일 내보내기 */}
@@ -261,6 +273,9 @@ export default async function TenderPage({
             문서 분량이 너무 길어 상위 약 30만 자까지만 분석되었습니다. 후반부 항목이 누락될 수 있으니 주의해 주십시오.
           </div>
         )}
+
+        {/* 고리④ surface — 같은 project_key의 과거 이력 (키가 설정된 경우에만) */}
+        {projectHistory && <ProjectHistoryPanel history={projectHistory} />}
 
         {!analysis ? (
           <p className="text-slate-400 italic text-center py-12">분석 결과가 없습니다.</p>

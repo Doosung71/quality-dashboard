@@ -3793,6 +3793,7 @@ export type NcrScalarFieldEnum = (typeof NcrScalarFieldEnum)[keyof typeof NcrSca
 export const TenderScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  projectKey: 'projectKey',
   createdAt: 'createdAt',
   createdById: 'createdById'
 } as const
