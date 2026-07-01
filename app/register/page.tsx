@@ -12,8 +12,13 @@ export default function RegisterPage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError("")
-    setLoading(true)
     const fd = new FormData(e.currentTarget)
+    const department = String(fd.get("department") ?? "").trim()
+    if (!department) {
+      setError("부서명을 입력해주세요.")
+      return
+    }
+    setLoading(true)
     const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -21,7 +26,7 @@ export default function RegisterPage() {
         name: fd.get("name"),
         email: fd.get("email"),
         password: fd.get("password"),
-        department: fd.get("department"),
+        department,
         employeeId: fd.get("employeeId"),
       }),
     })
@@ -47,7 +52,7 @@ export default function RegisterPage() {
               { name: "name", label: "이름", type: "text", required: true },
               { name: "email", label: "이메일", type: "email", required: true },
               { name: "password", label: "비밀번호", type: "password", required: true },
-              { name: "department", label: "부서", type: "text", required: false },
+              { name: "department", label: "부서", type: "text", required: true },
               { name: "employeeId", label: "사번", type: "text", required: false },
             ].map(({ name, label, type, required }) => (
               <div key={name}>

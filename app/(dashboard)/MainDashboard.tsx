@@ -42,13 +42,31 @@ function roleToView(role: string): "executive" | "team_leader" | "operator" {
   return "operator";
 }
 
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+}
+
 interface Props {
   role: string;
   userName: string;
   userId: string;
+  department: string;
+  teamMembers: TeamMember[];
 }
 
-export function MainDashboard({ role, userName, userId }: Props) {
+const ROLE_LABEL: Record<string, string> = {
+  PRACTITIONER: "실무자",
+  TEAM_LEAD: "팀장",
+  DIRECTOR: "부문장",
+  ADMIN: "관리자",
+};
+const roleLabel = (r: string) => ROLE_LABEL[r] ?? r;
+
+export function MainDashboard({ role, userName, userId, department, teamMembers }: Props) {
+  // 부서명이 비어있으면(기존 계정) 관리자가 채우도록 안내 문구를 노출한다.
+  const deptLabel = department || "부서명 입력 필요";
   const [userRole, setUserRole] = useState<"executive" | "team_leader" | "operator">(
     () => roleToView(role)
   );
@@ -529,7 +547,7 @@ export function MainDashboard({ role, userName, userId }: Props) {
           <div className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-3xl p-6 md:p-8 border border-slate-800 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="space-y-2">
               <span className="px-2.5 py-0.5 bg-indigo-500/30 text-indigo-300 border border-indigo-500/20 rounded-md text-[10px] font-extrabold uppercase tracking-widest">
-                Team Leader View — 지중가공QA팀
+                Team Leader View — {deptLabel}
               </span>
               <h2 className="text-xl md:text-2xl font-black tracking-tight">
                 안녕하세요, <span className="text-indigo-400">{displayName}</span> 팀장님
@@ -616,23 +634,27 @@ export function MainDashboard({ role, userName, userId }: Props) {
 
             <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
               <h4 className="text-xs font-extrabold text-slate-800 tracking-wide flex items-center gap-1.5 border-b pb-2">
-                <Users className="w-4 h-4 text-indigo-500" /> 지중가공QA팀원 리소스 풀
+                <Users className="w-4 h-4 text-indigo-500" /> 팀원 리소스 풀
               </h4>
               <div className="space-y-3">
-                {hrData.employees.filter(e => e.department === "지중가공QA팀").map(emp => (
-                  <div key={emp.id} className="p-3 rounded-xl border border-slate-50 bg-slate-50/30 flex justify-between items-center text-xs">
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-1.5">
+                {teamMembers.length === 0 ? (
+                  <p className="text-[10px] text-slate-400 py-2">
+                    {department
+                      ? "같은 부서에 등록된 활성 팀원이 없습니다."
+                      : "부서 정보를 입력하면 같은 부서 팀원이 표시됩니다."}
+                  </p>
+                ) : (
+                  teamMembers.map(emp => (
+                    <div key={emp.id} className="p-3 rounded-xl border border-slate-50 bg-slate-50/30 flex justify-between items-center text-xs">
+                      <div className="space-y-0.5">
                         <span className="font-bold text-slate-900">{emp.name}</span>
-                        <span className="text-[9px] text-slate-500 font-medium">{emp.rank}</span>
                       </div>
-                      <p className="text-[9px] text-slate-400 truncate max-w-[150px]">{emp.role}</p>
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold border bg-slate-50 text-slate-600 border-slate-200">
+                        {roleLabel(emp.role)}
+                      </span>
                     </div>
-                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border ${emp.workload === "High" ? "bg-rose-50 text-rose-700 border-rose-100 animate-pulse font-extrabold" : "bg-slate-50 text-slate-600 border-slate-200"}`}>
-                      {emp.workload === "High" ? "과부하" : "보통"}
-                    </span>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -645,7 +667,7 @@ export function MainDashboard({ role, userName, userId }: Props) {
           <div className="bg-gradient-to-r from-slate-900 to-indigo-900 text-white rounded-3xl p-6 md:p-8 border border-slate-800 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="space-y-2">
               <span className="px-2.5 py-0.5 bg-indigo-500/30 text-indigo-300 border border-indigo-500/20 rounded-md text-[10px] font-extrabold uppercase tracking-widest">
-                My Active Workbench — 지중가공QA팀
+                My Active Workbench — {deptLabel}
               </span>
               <h2 className="text-xl md:text-2xl font-black tracking-tight">
                 안녕하세요, <span className="text-indigo-400">{displayName}</span> 님
