@@ -9,7 +9,7 @@ export async function PUT(
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
 
-  const writerRoles = ["TEAM_LEAD", "DIRECTOR", "ADMIN"]
+  const writerRoles = ["PRACTITIONER", "TEAM_LEAD", "DIRECTOR", "ADMIN"]
   if (!writerRoles.includes(session.user.role)) {
     return NextResponse.json({ error: "권한 없음" }, { status: 403 })
   }
@@ -47,7 +47,7 @@ export async function DELETE(
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
 
-  const writerRoles = ["TEAM_LEAD", "DIRECTOR", "ADMIN"]
+  const writerRoles = ["PRACTITIONER", "TEAM_LEAD", "DIRECTOR", "ADMIN"]
   if (!writerRoles.includes(session.user.role)) {
     return NextResponse.json({ error: "권한 없음" }, { status: 403 })
   }

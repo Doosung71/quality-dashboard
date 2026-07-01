@@ -21,7 +21,7 @@ export async function PATCH(
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
 
-  const writerRoles = ["TEAM_LEAD", "DIRECTOR", "ADMIN"]
+  const writerRoles = ["PRACTITIONER", "TEAM_LEAD", "DIRECTOR", "ADMIN"]
   if (!writerRoles.includes(session.user.role)) {
     return NextResponse.json({ error: "권한 없음" }, { status: 403 })
   }

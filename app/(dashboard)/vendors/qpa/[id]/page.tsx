@@ -19,7 +19,7 @@ export default async function QpaDetailPage({ params }: { params: Promise<{ id: 
   })
   if (!audit) redirect("/vendors/qpa")
 
-  const canWrite = ["TEAM_LEAD", "DIRECTOR", "ADMIN"].includes(session.user.role)
+  const canWrite = ["PRACTITIONER", "TEAM_LEAD", "DIRECTOR", "ADMIN"].includes(session.user.role)
 
   return (
     <div className="flex flex-col gap-5">
