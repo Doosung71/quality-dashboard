@@ -75,9 +75,17 @@ export async function extractTextFromPdf(buffer: Buffer, range?: PageRange): Pro
     // first/last 둘 다 주면 inclusive 범위(first..last). 없으면 전체.
     const getTextParams = validated ? { first: validated.startPage, last: validated.endPage } : undefined
     const { text: raw, total } = await parser.getText(getTextParams) as { text: string; total: number }
-    // 시작 페이지가 문서 총 페이지를 초과하면 추출 결과가 비므로 fail-closed
-    if (validated && typeof total === "number" && validated.startPage > total) {
-      throw new PdfRangeError(`TDS 시작 페이지(${validated.startPage})가 문서 총 페이지(${total})를 초과합니다.`)
+    // 지정 범위가 문서 총 페이지를 벗어나면 fail-closed.
+    // startPage 초과: 추출 결과가 비어 사실상 오작동.
+    // endPage 초과(M-02): pdf-parse가 오류 없이 가능한 페이지만 조용히 축소 추출하므로,
+    //   "지정 범위대로 추출된다"는 사용자 기대와 어긋난다 → 명시적으로 막는다.
+    if (validated && typeof total === "number") {
+      if (validated.startPage > total) {
+        throw new PdfRangeError(`TDS 시작 페이지(${validated.startPage})가 문서 총 페이지(${total})를 초과합니다.`)
+      }
+      if (validated.endPage > total) {
+        throw new PdfRangeError(`TDS 끝 페이지(${validated.endPage})가 문서 총 페이지(${total})를 초과합니다.`)
+      }
     }
     const full = raw.trim()
     const truncated = full.length > MAX_CHARS

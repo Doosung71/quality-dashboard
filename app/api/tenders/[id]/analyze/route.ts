@@ -55,6 +55,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   }
 
   // TDS 페이지 범위 (선택) — documentId별 { startPage, endPage }
+  // H-01: malformed/unknown range를 조용히 무시하면 "전체 추출 fallback"으로 fail-open 되므로,
+  //       요청에 ranges가 있으면 각 항목을 엄격 검증하고 실패 시 400(fail-closed)으로 막는다.
+  const documentIdSet = new Set(documentIds as string[])
   const rawRanges: unknown = (body as Record<string, unknown>).ranges
   const rangeMap = new Map<string, PageRange>()
   if (rawRanges !== undefined) {
@@ -62,10 +65,18 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: "ranges는 배열이어야 합니다." }, { status: 400 })
     }
     for (const r of rawRanges) {
-      if (r && typeof r === "object" && typeof (r as Record<string, unknown>).documentId === "string") {
-        const { documentId, startPage, endPage } = r as { documentId: string; startPage?: number; endPage?: number }
-        rangeMap.set(documentId, { startPage, endPage })
+      if (!r || typeof r !== "object") {
+        return NextResponse.json({ error: "ranges 항목은 객체여야 합니다." }, { status: 400 })
       }
+      const documentId = (r as Record<string, unknown>).documentId
+      if (typeof documentId !== "string" || !documentIdSet.has(documentId)) {
+        return NextResponse.json(
+          { error: "ranges 항목의 documentId가 유효하지 않습니다." },
+          { status: 400 },
+        )
+      }
+      const { startPage, endPage } = r as { startPage?: number; endPage?: number }
+      rangeMap.set(documentId, { startPage, endPage })
     }
   }
 
@@ -90,7 +101,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     try {
       extractResult = await extractTextFromPdf(buffer, rangeMap.get(doc.id))
     } catch (e) {
-      if (e instanceof PdfRangeError) return NextResponse.json({ error: e.message }, { status: 400 })
+      // L-01: 다중 문서 중 어느 파일의 범위가 잘못됐는지 식별 가능하도록 filename 포함
+      if (e instanceof PdfRangeError) return NextResponse.json({ error: `[${doc.filename}] ${e.message}` }, { status: 400 })
       throw e
     }
     if (combinedText) combinedText += "\n\n---\n\n"

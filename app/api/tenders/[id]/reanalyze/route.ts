@@ -3,7 +3,7 @@ import { requireActiveSession } from "@/lib/session-guard"
 import { checkRateLimit } from "@/lib/rate-limit"
 import { prisma } from "@/lib/prisma"
 import { deleteBlob, readBlobBuffer } from "@/lib/storage"
-import { extractTextFromPdf, PdfRangeError } from "@/lib/pdf"
+import { extractTextFromPdf, validatePageRange, PdfRangeError } from "@/lib/pdf"
 import { extractTenderSpec } from "@/lib/ai/extract"
 import { searchKnowledge } from "@/lib/knowledge"
 import { parseRagThreshold, buildKnowledgeChunksXml } from "@/lib/rag"
@@ -58,6 +58,17 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   })
   if (!tender) return NextResponse.json({ error: "입찰을 찾을 수 없습니다." }, { status: 404 })
 
+  // M-01: 순수 페이지 범위 검증을 blob I/O 전에 먼저 수행한다. 입력 오류(PdfRangeError)는
+  //       업로드 blob을 건드리지 않고 400으로 차단 → analyze와 정리 정책 일치.
+  for (const f of files) {
+    try {
+      validatePageRange({ startPage: f.startPage, endPage: f.endPage })
+    } catch (e) {
+      if (e instanceof PdfRangeError) return NextResponse.json({ error: `[${f.filename}] ${e.message}` }, { status: 400 })
+      throw e
+    }
+  }
+
   // 여러 PDF 텍스트 합산
   let pdfText = ""
   let truncated = false
@@ -70,8 +81,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       pdfText += result.text
       if (result.truncated) truncated = true
     } catch (e) {
+      // 순수 입력 오류는 위에서 이미 걸러짐. 여기 도달하는 PdfRangeError는 endPage>total 등
+      // PDF를 읽어야 아는 범위 초과 → blob은 유지하고 400만 반환(재시도 시 재업로드 불필요).
+      if (e instanceof PdfRangeError) return NextResponse.json({ error: `[${f.filename}] ${e.message}` }, { status: 400 })
       await deleteBlob(f.blobUrl)
-      if (e instanceof PdfRangeError) return NextResponse.json({ error: e.message }, { status: 400 })
       return NextResponse.json({ error: "분석 중 오류가 발생했습니다." }, { status: 500 })
     }
   }
