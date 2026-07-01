@@ -7,6 +7,7 @@ import type { NCR, NCRStatus, NCRSeverity, NCRDispositionType, NCRTimelineItem, 
 import { NCR_STATUSES } from "@/types/ncr";
 import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
 import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader";
+import { buildStageMoveTimeline, isSystemTimelineEntry } from "@/lib/ncr-timeline";
 import { AiSuggestionPanel } from "@/components/ui/ai-suggestion-panel";
 import { VerifiedLessonPanel } from "@/components/ui/verified-lesson-panel";
 import { ProjectKeyInput } from "@/components/ui/project-key-input";
@@ -103,12 +104,14 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, canVerifyLesson = 
   async function handleMoveStatus(newStatus: NCRStatus) {
     const closedDate = newStatus === "Closed" ? getToday() : null;
     const user = userName || "담당자";
-    const timelineEntry: NCRTimelineItem = {
-      date: getToday(),
-      action: `단계 이동: ${STATUS_LABELS[ncr.status]} → ${STATUS_LABELS[newStatus]}`,
+    // #63: 직전 이동의 정확한 역방향이면 왕복 로그를 정리(dedup), 아니면 시스템 로그 추가
+    const newTimeline = buildStageMoveTimeline(
+      ncr.timeline ?? [],
+      STATUS_LABELS[ncr.status],
+      STATUS_LABELS[newStatus],
       user,
-    };
-    const newTimeline = [...(ncr.timeline ?? []), timelineEntry];
+      getToday(),
+    );
     try {
       const res = await fetch(`/api/ncr/${ncr.id}`, {
         method: "PUT", headers: { "Content-Type": "application/json" },
@@ -128,6 +131,7 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, canVerifyLesson = 
       date: getToday(),
       action: newEntry.trim(),
       user: userName || "담당자",
+      kind: "user",
     };
     const newTimeline = [...(ncr.timeline ?? []), timelineEntry];
     try {
@@ -411,11 +415,17 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, canVerifyLesson = 
           ) : (
             [...(ncr.timeline ?? [])].reverse().map((item, i) => {
               const originalIndex = (ncr.timeline ?? []).length - 1 - i;
+              const isSystem = isSystemTimelineEntry(item);
               return (
                 <div key={i} className="flex gap-3 items-start group">
-                  <div className="w-2 h-2 rounded-full bg-slate-400 mt-1.5 shrink-0" />
+                  <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${isSystem ? "bg-slate-300" : "bg-slate-600"}`} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-slate-700 font-medium wrap-break-word">{item.action}</p>
+                    <p className={`text-xs wrap-break-word flex items-center gap-1.5 ${isSystem ? "text-slate-500 font-normal italic" : "text-slate-700 font-medium"}`}>
+                      {isSystem && (
+                        <span className="not-italic shrink-0 px-1.5 py-0.5 rounded bg-slate-100 text-slate-400 text-[9px] font-bold tracking-wide">시스템</span>
+                      )}
+                      <span className="min-w-0 wrap-break-word">{item.action}</span>
+                    </p>
                     <p className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1">
                       <Clock className="w-3 h-3" /> {item.date}
                       {item.user && <> · <span className="font-medium text-slate-500">{item.user}</span></>}

@@ -14,6 +14,13 @@ export interface NCRTimelineItem {
   date: string;
   action: string;
   user: string;
+  /**
+   * 항목 출처 구분 (2026-07-01 #63).
+   * - "system": 단계 이동 등 앱이 자동 기록한 감사 로그
+   * - "user":   사용자가 직접 입력한 처리 메모
+   * 레거시 데이터(필드 없음)는 action prefix로 폴백 판별한다. lib/ncr-timeline.ts 참고.
+   */
+  kind?: "system" | "user";
 }
 
 export interface NCRAttachment {

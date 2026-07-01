@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
       targetDate:  new Date(body.targetDate),
       assignee,
       description: body.description,
-      timeline:    [{ date: today, action: "부적합 발행 (Issued)", user: assignee }],
+      timeline:    [{ date: today, action: "부적합 발행 (Issued)", user: assignee, kind: "system" }],
       attachments: Array.isArray(body.attachments) ? body.attachments : [],
       createdById: session.user.id,
     },
