@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireActiveSession } from "@/lib/session-guard"
 import { prisma } from "@/lib/prisma"
+import { validateInspectionQuantities } from "@/lib/inspection-quantities"
 
 export async function GET() {
   const session = await requireActiveSession()
@@ -28,6 +29,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "필수 항목 누락" }, { status: 400 })
   }
 
+  // 수량 정합성 검증 (fail-closed) — 클라이언트 우회·직접 호출 방어
+  const qtyError = validateInspectionQuantities(body.quantity, body.sampleSize ?? null, body.defectCount ?? null)
+  if (qtyError) return NextResponse.json({ error: qtyError }, { status: 400 })
+
+  // 불량률은 클라이언트 값 무시하고 서버에서 재계산 (데이터 무결성)
+  const defectRate = (body.defectCount != null && body.sampleSize)
+    ? (body.defectCount / body.sampleSize) * 100 : null
+
   const inspection = await prisma.sourceInspection.create({
     data: {
       vendorId:       body.vendorId,
@@ -40,7 +49,7 @@ export async function POST(req: NextRequest) {
       sampleSize:     body.sampleSize,
       result:         body.result as never,
       defectCount:    body.defectCount,
-      defectRate:     body.defectRate,
+      defectRate:     defectRate,
       inspector:      body.inspector,
       notes:          body.notes,
       status:         "CONFIRMED",
