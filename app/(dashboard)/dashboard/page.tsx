@@ -1,6 +1,4 @@
-import { signOut } from "@/auth"
 import { prisma } from "@/lib/prisma"
-import { isAdmin } from "@/lib/admin"
 import { requireActivePageSession, TEST_MODE } from "@/lib/session-guard"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -8,24 +6,8 @@ import { displayName } from "@/lib/display-name"
 import UploadForm from "./UploadForm"
 import TenderList from "./TenderList"
 import { type TenderRow } from "./TenderList"
-import BackButton from "./BackButton"
 import Image from "next/image"
-import {
-  FileSearch,
-  LayoutDashboard,
-  LogOut,
-  HelpCircle,
-  MessageSquare,
-  UserCheck,
-  CheckCircle2,
-  Clock,
-} from "lucide-react"
-
-const roleLabel: Record<string, string> = {
-  PRACTITIONER: "실무자",
-  TEAM_LEAD: "팀장",
-  DIRECTOR: "부문장",
-}
+import { CheckCircle2, Clock } from "lucide-react"
 
 function analysisStatusLabel(status: string, submittedAt: Date | null, lastAction?: string): string {
   if (status === "DRAFT" && submittedAt) return "검토 요청됨"
@@ -78,10 +60,6 @@ export default async function DashboardPage() {
     },
   })
 
-  const pendingUserCount = isAdmin(session.user.email)
-    ? await prisma.user.count({ where: { status: "PENDING" } })
-    : 0
-
   const pendingReviews =
     (TEST_MODE || session.user.role === "TEAM_LEAD")
       ? await prisma.analysis.findMany({
@@ -101,64 +79,7 @@ export default async function DashboardPage() {
       : []
 
   return (
-    <main className="min-h-screen bg-slate-50/50 pb-12">
-      {/* 프리미엄 헤더바 */}
-      <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur sticky top-0 z-50 px-3 md:px-6 py-3 flex items-center justify-between gap-2 shadow-sm overflow-hidden">
-        {/* 좌측: 뒤로가기 + 제목 */}
-        <div className="flex items-center gap-2 min-w-0">
-          <BackButton />
-          <div className="flex items-center gap-1.5 min-w-0">
-            <FileSearch className="w-4 h-4 text-indigo-600 shrink-0" />
-            <h1 className="font-extrabold text-sm text-slate-900 tracking-tight truncate">AI 입찰검토 시스템</h1>
-          </div>
-        </div>
-
-        {/* 우측: 아이콘 전용 (모바일) / 텍스트 포함 (md 이상) */}
-        <div className="flex items-center gap-1 md:gap-3 text-xs font-bold shrink-0">
-          {/* md 이상에서만 텍스트 표시 */}
-          <Link href="/" className="hidden md:flex text-slate-500 hover:text-slate-800 items-center gap-1">
-            <LayoutDashboard className="w-4 h-4" /> 전사대시보드
-          </Link>
-          <Link href="/help" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors" title="도움말">
-            <HelpCircle className="w-4 h-4" />
-          </Link>
-          <Link href="/feedback" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors" title="피드백">
-            <MessageSquare className="w-4 h-4" />
-          </Link>
-
-          {isAdmin(session.user.email) && (
-            <Link href="/admin/users" className="hidden md:flex text-slate-600 hover:text-slate-900 items-center gap-1 bg-slate-100 px-2.5 py-1.5 rounded-lg border">
-              <UserCheck className="w-3.5 h-3.5" />
-              사용자 관리
-              {pendingUserCount > 0 && (
-                <span className="inline-flex items-center justify-center rounded-full bg-rose-500 text-white text-[10px] font-extrabold w-4 h-4 animate-pulse">
-                  {pendingUserCount}
-                </span>
-              )}
-            </Link>
-          )}
-
-          <div className="hidden md:block h-4 w-px bg-slate-200" />
-
-          {/* 이름+역할: md 이상에서만 표시 */}
-          <span className="hidden md:flex text-slate-600 font-semibold items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <Link href="/profile" className="hover:underline">
-              {displayName({ name: session.user.name!, nickname: session.user.nickname })}
-            </Link>
-            <span className="text-[10px] text-slate-400 font-extrabold bg-slate-100 px-1.5 py-0.5 rounded border">{roleLabel[session.user.role] ?? session.user.role}</span>
-          </span>
-
-          <form action={async () => { "use server"; await signOut({ redirectTo: "/login" }) }}>
-            <Button variant="ghost" size="sm" type="submit" className="text-slate-400 hover:text-rose-600 p-1.5">
-              <LogOut className="w-4 h-4" />
-            </Button>
-          </form>
-        </div>
-      </header>
-
-      {/* 메인 레이아웃 본문 */}
-      <div className="max-w-5xl mx-auto p-4 md:p-8">
+    <div className="max-w-5xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
 
           {/* 좌측: 대표 이미지 + 케이블 히어로 카드 + 실무자 업로드 폼 */}
@@ -286,7 +207,6 @@ export default async function DashboardPage() {
 
         </div>{/* /grid */}
       </div>
-    </main>
   )
 }
 
