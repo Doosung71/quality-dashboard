@@ -25,8 +25,16 @@ function makeBlobPath(file: File) {
   return `tender-documents/${crypto.randomUUID()}${ext}`
 }
 
-export default function UploadForm() {
+export default function UploadForm({
+  spgOptions = [],
+  marketRegionOptions = [],
+}: {
+  spgOptions?: string[]
+  marketRegionOptions?: string[]
+}) {
   const router = useRouter()
+  const [spg, setSpg] = useState("")
+  const [marketRegion, setMarketRegion] = useState("")
 
   const [entries, setEntries] = useState<FileEntry[]>(() => [
     { id: makeEntryId(), file: null, type: "analyze" },
@@ -99,7 +107,7 @@ export default function UploadForm() {
       const tenderRes = await fetch("/api/tenders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title }),
+        body: JSON.stringify({ title, spg: spg.trim() || undefined, marketRegion: marketRegion.trim() || undefined }),
       })
       if (!tenderRes.ok) {
         const { error: msg } = await tenderRes.json()
@@ -196,6 +204,38 @@ export default function UploadForm() {
             disabled={isPending} 
             className="rounded-xl border-slate-200 focus:ring-slate-950 focus:border-slate-950 text-xs px-3 py-2 bg-slate-50/50"
           />
+        </div>
+
+        {/* SPG·시장 권역 (선택, 자유입력 — 향후 고정목록화 예정) */}
+        <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-1">
+            <label className="font-bold text-slate-600 block">SPG (선택)</label>
+            <input
+              list="spg-options"
+              value={spg}
+              disabled={isPending}
+              onChange={(e) => setSpg(e.target.value)}
+              placeholder="예: 지중케이블"
+              className="w-full rounded-xl border border-slate-200 focus:ring-2 focus:ring-slate-950 focus:border-slate-950 text-xs px-3 py-2 bg-slate-50/50 outline-none"
+            />
+            <datalist id="spg-options">
+              {spgOptions.map((o) => <option key={o} value={o} />)}
+            </datalist>
+          </div>
+          <div className="space-y-1">
+            <label className="font-bold text-slate-600 block">시장 권역 (선택)</label>
+            <input
+              list="market-region-options"
+              value={marketRegion}
+              disabled={isPending}
+              onChange={(e) => setMarketRegion(e.target.value)}
+              placeholder="예: 대만"
+              className="w-full rounded-xl border border-slate-200 focus:ring-2 focus:ring-slate-950 focus:border-slate-950 text-xs px-3 py-2 bg-slate-50/50 outline-none"
+            />
+            <datalist id="market-region-options">
+              {marketRegionOptions.map((o) => <option key={o} value={o} />)}
+            </datalist>
+          </div>
         </div>
 
         {/* 파일 선택 리스트 */}
@@ -354,6 +394,7 @@ export default function UploadForm() {
               setPendingRedirect(null)
               setError(undefined)
               setEntries([{ id: makeEntryId(), file: null, type: "analyze" }])
+              setSpg(""); setMarketRegion("")
             }}
             className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold rounded-xl py-2.5 shadow-sm transition-all border border-slate-200"
           >

@@ -3740,6 +3740,7 @@ export const ClaimScalarFieldEnum = {
   assignee: 'assignee',
   description: 'description',
   responsibleParty: 'responsibleParty',
+  spg: 'spg',
   timeline: 'timeline',
   attachments: 'attachments',
   createdAt: 'createdAt',
@@ -3795,6 +3796,8 @@ export const TenderScalarFieldEnum = {
   id: 'id',
   title: 'title',
   projectKey: 'projectKey',
+  spg: 'spg',
+  marketRegion: 'marketRegion',
   createdAt: 'createdAt',
   createdById: 'createdById'
 } as const

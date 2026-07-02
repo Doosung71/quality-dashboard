@@ -15,6 +15,7 @@ import DeviationMark from "./DeviationMark"
 import CommentSection from "./CommentSection"
 import AnalysisHistory from "./AnalysisHistory"
 import ProjectKeyEdit from "./ProjectKeyEdit"
+import SpgMarketEdit from "./SpgMarketEdit"
 import ProjectHistoryPanel from "./ProjectHistoryPanel"
 import { loadProjectHistory } from "@/lib/project-history"
 import { displayName } from "@/lib/display-name"
@@ -243,6 +244,11 @@ export default async function TenderPage({
               {/* 고리④ — 프로젝트 연결 키 (같은 키의 과거 이력을 아래 패널에 surface) */}
               <div className="pt-1">
                 <ProjectKeyEdit tenderId={id} projectKey={tender.projectKey} canEdit={isOwner} />
+              </div>
+
+              {/* SPG·시장 권역 (E2E-1 피드백 #28) */}
+              <div className="pt-1">
+                <SpgMarketEdit tenderId={id} spg={tender.spg} marketRegion={tender.marketRegion} canEdit={isOwner} />
               </div>
             </div>
             

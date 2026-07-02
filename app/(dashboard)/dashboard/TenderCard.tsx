@@ -29,11 +29,14 @@ type Props = {
   riskCount?: number
   nonComplyCount?: number
   creatorName?: string
+  spg?: string
+  marketRegion?: string
 }
 
 export default function TenderCard({
   id, title, createdAt, statusLabel, statusClass, canEdit, canDelete,
   analysisId, threadHistory, threadComments, riskCount, nonComplyCount, creatorName,
+  spg, marketRegion,
 }: Props) {
   const router = useRouter()
   const [deleting, setDeleting] = useState(false)
@@ -75,6 +78,18 @@ export default function TenderCard({
           {(nonComplyCount ?? 0) > 0 && (
             <span className="px-2 py-0.5 rounded-md text-[9px] font-extrabold bg-amber-50 text-amber-700 border border-amber-100 flex items-center gap-1">
               <FileX className="w-3 h-3 text-amber-500" /> 불부합 {nonComplyCount}
+            </span>
+          )}
+
+          {/* SPG·시장 권역 뱃지 */}
+          {spg && (
+            <span className="px-2 py-0.5 rounded-md text-[9px] font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-100">
+              {spg}
+            </span>
+          )}
+          {marketRegion && (
+            <span className="px-2 py-0.5 rounded-md text-[9px] font-extrabold bg-sky-50 text-sky-700 border border-sky-100">
+              {marketRegion}
             </span>
           )}
         </div>

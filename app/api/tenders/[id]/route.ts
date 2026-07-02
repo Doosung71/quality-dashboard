@@ -19,14 +19,22 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
     return NextResponse.json({ error: "요청 형식이 올바르지 않습니다." }, { status: 400 })
   }
 
-  // title·projectKey 각각 선택적 부분 수정 지원.
-  const data: { title?: string; projectKey?: string | null } = {}
+  // title·projectKey·spg·marketRegion 각각 선택적 부분 수정 지원.
+  const data: { title?: string; projectKey?: string | null; spg?: string | null; marketRegion?: string | null } = {}
 
   if (body.title !== undefined) {
     if (typeof body.title !== "string" || !body.title.trim()) {
       return NextResponse.json({ error: "입찰명을 입력해주세요." }, { status: 400 })
     }
     data.title = body.title.trim()
+  }
+
+  // SPG·시장 권역 — 자유입력 선택 필드(fail-open), 비우면 null로 저장
+  if (body.spg !== undefined) {
+    data.spg = typeof body.spg === "string" && body.spg.trim() ? body.spg.trim() : null
+  }
+  if (body.marketRegion !== undefined) {
+    data.marketRegion = typeof body.marketRegion === "string" && body.marketRegion.trim() ? body.marketRegion.trim() : null
   }
 
   // Q1 project_key — 고리④ 과거이력 surface 매칭 키. 선택 필드(fail-open), 형식 오류는 400.

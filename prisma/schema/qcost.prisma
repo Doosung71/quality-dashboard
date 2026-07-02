@@ -57,6 +57,7 @@ model Claim {
   assignee          String
   description       String
   responsibleParty  String?                 // 귀책처 (자유 텍스트)
+  spg               String?                 // 제품군(SPG) — 자유입력, E2E-1 피드백 #39 (Tender와 동일 개념, 향후 고정목록화 예정)
   timeline          Json          @default("[]")
   attachments       Json          @default("[]")
   createdAt         DateTime      @default(now())

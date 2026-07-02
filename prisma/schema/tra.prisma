@@ -3,12 +3,14 @@
 
 // ─── 입찰 ────────────────────────────────────────────────
 model Tender {
-  id          String   @id @default(cuid())
-  title       String
-  projectKey  String?                 // Tender 생애주기 연결 키 (kebab-case, Q1 entity-linking — 고리④ 과거이력 surface 매칭)
-  createdAt   DateTime @default(now())
-  createdBy   User     @relation(fields: [createdById], references: [id])
-  createdById String
+  id           String   @id @default(cuid())
+  title        String
+  projectKey   String?                 // Tender 생애주기 연결 키 (kebab-case, Q1 entity-linking — 고리④ 과거이력 surface 매칭)
+  spg          String?                 // 제품군(SPG) — 자유입력, E2E-1 피드백 #28 (지중케이블·접속재·가공선 등 사업부별 표기, 향후 고정목록화 예정)
+  marketRegion String?                 // 시장 권역 — 자유입력, E2E-1 피드백 #28 (향후 고정목록화 예정)
+  createdAt    DateTime @default(now())
+  createdBy    User     @relation(fields: [createdById], references: [id])
+  createdById  String
 
   documents       TenderDocument[]
   analyses        Analysis[]

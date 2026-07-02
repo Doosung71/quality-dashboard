@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "요청 형식이 올바르지 않습니다." }, { status: 400 })
   }
 
-  const { title } = body as Record<string, unknown>
+  const { title, spg, marketRegion } = body as Record<string, unknown>
   if (typeof title !== "string" || !title.trim()) {
     return NextResponse.json({ error: "입찰명을 입력해주세요." }, { status: 400 })
   }
@@ -23,6 +23,8 @@ export async function POST(req: NextRequest) {
   const tender = await prisma.tender.create({
     data: {
       title: title.trim(),
+      spg: typeof spg === "string" && spg.trim() ? spg.trim() : null,
+      marketRegion: typeof marketRegion === "string" && marketRegion.trim() ? marketRegion.trim() : null,
       createdById: session.user.id,
     },
   })

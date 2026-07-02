@@ -60,6 +60,9 @@ export default async function DashboardPage() {
     },
   })
 
+  const spgOptions = [...new Set(tenders.map((t) => t.spg).filter((v): v is string => !!v))].sort()
+  const marketRegionOptions = [...new Set(tenders.map((t) => t.marketRegion).filter((v): v is string => !!v))].sort()
+
   const pendingReviews =
     (TEST_MODE || session.user.role === "TEAM_LEAD")
       ? await prisma.analysis.findMany({
@@ -95,7 +98,7 @@ export default async function DashboardPage() {
             </div>
             <CableHeroCard />
             <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-              <UploadForm />
+              <UploadForm spgOptions={spgOptions} marketRegionOptions={marketRegionOptions} />
             </div>
           </div>
 
@@ -200,6 +203,8 @@ export default async function DashboardPage() {
                   riskCount: riskCount > 0 ? riskCount : undefined,
                   nonComplyCount: nonComplyCount > 0 ? nonComplyCount : undefined,
                   creatorName,
+                  spg: t.spg ?? undefined,
+                  marketRegion: t.marketRegion ?? undefined,
                 } satisfies TenderRow
               })} />
             </div>
