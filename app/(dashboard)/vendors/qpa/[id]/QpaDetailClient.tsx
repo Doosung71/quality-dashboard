@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useCallback } from "react"
-import { CheckCircle2, Plus, Trash2, ChevronDown, ChevronRight, Star } from "lucide-react"
+import { useState, useCallback, useRef } from "react"
+import { CheckCircle2, AlertCircle, Plus, Trash2, ChevronDown, ChevronRight, Star } from "lucide-react"
 import { calcQpaScores, QPA_CATEGORIES } from "@/lib/qpa-template"
 
 // ─── types ──────────────────────────────────────────────────────
@@ -204,22 +204,39 @@ function ChecklistTab({
 }: {
   auditId: string; items: Item[]; setItems: React.Dispatch<React.SetStateAction<Item[]>>; canWrite: boolean
 }) {
-  const [openCats, setOpenCats]   = useState<Set<string>>(new Set(QPA_CATEGORIES.map(c => c.name)))
-  const [saving,   setSaving]     = useState<Set<number>>(new Set())
+  const [openCats, setOpenCats]     = useState<Set<string>>(new Set(QPA_CATEGORIES.map(c => c.name)))
+  type FieldStatus = "saving" | "success" | "error"
+  const [fieldStatus, setFieldStatus] = useState<Map<string, FieldStatus>>(new Map())
+  const successTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map())
 
   function toggleCat(cat: string) {
     setOpenCats(prev => { const n = new Set(prev); n.has(cat) ? n.delete(cat) : n.add(cat); return n })
   }
 
-  const saveItem = useCallback(async (itemNo: number, patch: Partial<Item>) => {
-    setSaving(prev => new Set(prev).add(itemNo))
+  function setStatus(key: string, status: FieldStatus | null) {
+    setFieldStatus(prev => {
+      const n = new Map(prev)
+      if (status) n.set(key, status); else n.delete(key)
+      return n
+    })
+  }
+
+  const saveItem = useCallback(async (itemNo: number, field: keyof Item, patch: Partial<Item>) => {
+    const key = `${itemNo}:${field}`
+    const existingTimer = successTimers.current.get(key)
+    if (existingTimer) { clearTimeout(existingTimer); successTimers.current.delete(key) }
+    setStatus(key, "saving")
     try {
-      await fetch(`/api/qpa-audits/${auditId}/items/${itemNo}`, {
+      const res = await fetch(`/api/qpa-audits/${auditId}/items/${itemNo}`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(patch),
       })
-    } finally {
-      setSaving(prev => { const n = new Set(prev); n.delete(itemNo); return n })
+      if (!res.ok) throw new Error(`저장 실패 (${res.status})`)
+      setStatus(key, "success")
+      const t = setTimeout(() => { setStatus(key, null); successTimers.current.delete(key) }, 2000)
+      successTimers.current.set(key, t)
+    } catch {
+      setStatus(key, "error")
     }
   }, [auditId])
 
@@ -233,6 +250,23 @@ function ChecklistTab({
   }))
 
   const field = "text-xs border border-slate-200 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-400 w-full"
+
+  function statusBorder(status: FieldStatus | undefined) {
+    if (status === "error") return "border-rose-400 focus:ring-rose-400 pr-6"
+    if (status === "saving" || status === "success") return "pr-6"
+    return ""
+  }
+
+  function StatusIcon({ status }: { status: FieldStatus | undefined }) {
+    if (!status) return null
+    return (
+      <span className="absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" title={status === "error" ? "저장 실패, 다시 입력해 주세요" : undefined}>
+        {status === "saving"  && <span className="block w-2.5 h-2.5 rounded-full border-2 border-indigo-300 border-t-indigo-500 animate-spin" />}
+        {status === "success" && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}
+        {status === "error"   && <AlertCircle className="w-3.5 h-3.5 text-rose-500" />}
+      </span>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-3">
@@ -296,25 +330,28 @@ function ChecklistTab({
                               </td>
                               <td className="text-center px-2 py-2 text-slate-500">{item.potential}</td>
                               <td className="px-2 py-2">
-                                <input
-                                  type="number"
-                                  min={0}
-                                  max={item.potential}
-                                  disabled={!canWrite || item.isNA}
-                                  value={item.isNA ? "" : item.score}
-                                  onChange={e => {
-                                    const v = Math.min(Math.max(parseInt(e.target.value) || 0, 0), item.potential)
-                                    updateItem(item.itemNo, { score: v })
-                                  }}
-                                  onBlur={e => {
-                                    if (!item.isNA) {
+                                <div className="relative">
+                                  <input
+                                    type="number"
+                                    min={0}
+                                    max={item.potential}
+                                    disabled={!canWrite || item.isNA}
+                                    value={item.isNA ? "" : item.score}
+                                    onChange={e => {
                                       const v = Math.min(Math.max(parseInt(e.target.value) || 0, 0), item.potential)
-                                      saveItem(item.itemNo, { score: v })
-                                    }
-                                  }}
-                                  className={`${field} text-center ${saving.has(item.itemNo) ? "bg-indigo-50" : ""}`}
-                                  placeholder={item.isNA ? "N/A" : `0~${item.potential}`}
-                                />
+                                      updateItem(item.itemNo, { score: v })
+                                    }}
+                                    onBlur={e => {
+                                      if (!item.isNA) {
+                                        const v = Math.min(Math.max(parseInt(e.target.value) || 0, 0), item.potential)
+                                        saveItem(item.itemNo, "score", { score: v })
+                                      }
+                                    }}
+                                    className={`${field} text-center ${statusBorder(fieldStatus.get(`${item.itemNo}:score`))}`}
+                                    placeholder={item.isNA ? "N/A" : `0~${item.potential}`}
+                                  />
+                                  <StatusIcon status={fieldStatus.get(`${item.itemNo}:score`)} />
+                                </div>
                               </td>
                               <td className="text-center px-2 py-2">
                                 <input
@@ -324,32 +361,38 @@ function ChecklistTab({
                                   onChange={e => {
                                     const isNA = e.target.checked
                                     updateItem(item.itemNo, { isNA, score: isNA ? 0 : item.score })
-                                    saveItem(item.itemNo, { isNA, score: isNA ? 0 : item.score })
+                                    saveItem(item.itemNo, "isNA", { isNA, score: isNA ? 0 : item.score })
                                   }}
                                   className="accent-indigo-600"
                                 />
                               </td>
                               <td className="px-2 py-2">
-                                <input
-                                  type="text"
-                                  disabled={!canWrite}
-                                  value={item.comment}
-                                  onChange={e => updateItem(item.itemNo, { comment: e.target.value })}
-                                  onBlur={e => saveItem(item.itemNo, { comment: e.target.value })}
-                                  className={field}
-                                  placeholder="의견 입력"
-                                />
+                                <div className="relative">
+                                  <input
+                                    type="text"
+                                    disabled={!canWrite}
+                                    value={item.comment}
+                                    onChange={e => updateItem(item.itemNo, { comment: e.target.value })}
+                                    onBlur={e => saveItem(item.itemNo, "comment", { comment: e.target.value })}
+                                    className={`${field} ${statusBorder(fieldStatus.get(`${item.itemNo}:comment`))}`}
+                                    placeholder="의견 입력"
+                                  />
+                                  <StatusIcon status={fieldStatus.get(`${item.itemNo}:comment`)} />
+                                </div>
                               </td>
                               <td className="px-2 py-2">
-                                <input
-                                  type="text"
-                                  disabled={!canWrite}
-                                  value={item.evidence}
-                                  onChange={e => updateItem(item.itemNo, { evidence: e.target.value })}
-                                  onBlur={e => saveItem(item.itemNo, { evidence: e.target.value })}
-                                  className={field}
-                                  placeholder="근거"
-                                />
+                                <div className="relative">
+                                  <input
+                                    type="text"
+                                    disabled={!canWrite}
+                                    value={item.evidence}
+                                    onChange={e => updateItem(item.itemNo, { evidence: e.target.value })}
+                                    onBlur={e => saveItem(item.itemNo, "evidence", { evidence: e.target.value })}
+                                    className={`${field} ${statusBorder(fieldStatus.get(`${item.itemNo}:evidence`))}`}
+                                    placeholder="근거"
+                                  />
+                                  <StatusIcon status={fieldStatus.get(`${item.itemNo}:evidence`)} />
+                                </div>
                               </td>
                             </tr>
                           ))}
