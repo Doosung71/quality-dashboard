@@ -79,9 +79,16 @@ try {
   })
   if (withContent) {
     await page.goto(`${BASE}/knowledge/status/${encodeURIComponent(withContent)}`)
+    // 전체 로드 시 공지 모달이 다시 뜨면 클릭을 가로채므로 닫는다
+    await page.waitForSelector(".fixed.inset-0.z-50", { state: "visible", timeout: 5000 }).catch(() => {})
+    for (const btn of [page.getByRole("button", { name: "확인했습니다" }), page.locator('[aria-label="닫기"]').first()]) {
+      if (await btn.isVisible().catch(() => false)) { await btn.click().catch(() => {}); break }
+    }
+    await page.waitForSelector(".fixed.inset-0.z-50", { state: "detached", timeout: 8000 }).catch(() => {})
   }
   const viewBtn = page.getByRole("button", { name: /내용 보기/ })
-  if (withContent && await viewBtn.isVisible({ timeout: 15000 }).catch(() => false)) {
+  // 프로덕션 자산 API(1,200건+)가 콜드스타트에서 느릴 수 있어 여유 있게 대기
+  if (withContent && await viewBtn.waitFor({ timeout: 45000 }).then(() => true).catch(() => false)) {
     await viewBtn.click()
     await page.waitForFunction(() => {
       const b = [...document.querySelectorAll("button")].find(x => x.textContent?.includes("내용 접기"))
