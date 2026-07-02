@@ -74,12 +74,13 @@ function resolveTitle(pathname: string): string {
   return "대시보드"
 }
 
-export function Header({ onMenuOpen, session }: { onMenuOpen: () => void; session: Session }) {
+export function Header({ onMenuOpen, session, isAdminUser }: {
+  onMenuOpen: () => void; session: Session; isAdminUser: boolean
+}) {
   const pathname = usePathname()
   const title = resolveTitle(pathname)
   const name = displayName({ nickname: session.user.nickname, name: session.user.name })
   const role = session.user.role as Role
-  const isAdmin = role === "ADMIN" || role === "DIRECTOR"
 
   return (
     <header className="h-14 border-b border-slate-200 bg-white flex items-center px-3 lg:px-6 gap-2 shrink-0 overflow-hidden">
@@ -104,7 +105,7 @@ export function Header({ onMenuOpen, session }: { onMenuOpen: () => void; sessio
 
         <NavBtn href="/profile"     icon={CircleUserRound} label={name}        active={pathname === "/profile"} />
         <NavBtn href="/help"        icon={HelpCircle}      label="가이드"       active={pathname === "/help"} />
-        {isAdmin && (
+        {isAdminUser && (
           <NavBtn href="/admin/users" icon={ShieldCheck}   label="사용자 관리"  active={pathname.startsWith("/admin")} />
         )}
 

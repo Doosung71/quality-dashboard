@@ -11,9 +11,11 @@ import type { Session } from "next-auth"
 export function DashboardShell({
   children,
   session,
+  isAdminUser,
 }: {
   children: React.ReactNode
   session: Session
+  isAdminUser: boolean
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -68,6 +70,7 @@ export function DashboardShell({
         <Header
           onMenuOpen={() => setIsMobileMenuOpen(true)}
           session={session}
+          isAdminUser={isAdminUser}
         />
         <NoticeModal />
         <main className="flex-1 p-4 lg:p-6">{children}</main>

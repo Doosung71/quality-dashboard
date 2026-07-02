@@ -1,5 +1,6 @@
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
+import { isAdmin } from "@/lib/admin"
 import { DashboardShell } from "@/components/layout/dashboard-shell"
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -7,7 +8,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!session) redirect("/login")
 
   return (
-    <DashboardShell session={session}>
+    <DashboardShell session={session} isAdminUser={isAdmin(session.user.email, session.user.role)}>
       {children}
     </DashboardShell>
   )

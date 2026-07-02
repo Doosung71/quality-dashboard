@@ -14,7 +14,7 @@ function getRedis() {
 
 export async function GET() {
   const session = await auth()
-  if (!session || !isAdmin(session.user.email)) {
+  if (!session || !isAdmin(session.user.email, session.user.role)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 

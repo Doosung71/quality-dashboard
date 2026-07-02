@@ -12,7 +12,7 @@ export async function GET(
   { params }: { params: Promise<{ userId: string }> }
 ) {
   const session = await auth()
-  if (!session || !isAdmin(session.user.email)) {
+  if (!session || !isAdmin(session.user.email, session.user.role)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 

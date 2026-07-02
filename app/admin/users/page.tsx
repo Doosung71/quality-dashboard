@@ -7,7 +7,7 @@ import Link from "next/link"
 
 export default async function AdminUsersPage() {
   const session = await auth()
-  if (!session || !isAdmin(session.user.email)) redirect("/")
+  if (!session || !isAdmin(session.user.email, session.user.role)) redirect("/")
 
   const users = await prisma.user.findMany({
     orderBy: { createdAt: "desc" },
