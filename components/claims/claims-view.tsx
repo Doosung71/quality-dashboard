@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import type { ClaimsData, Claim, ClaimPriority } from "@/types/claim";
@@ -23,7 +23,19 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const searchTerm = searchParams.get("q") ?? "";
+  // 검색어는 로컬 state로 즉시 입력 반영 + URL은 디바운스 동기화.
+  // 키 입력마다 router.replace()를 호출하면 한글 조합(IME) 중 리렌더링이 끼어들어 글자가 씹히는 문제가 있었음.
+  const [searchTerm, setSearchTermLocal] = useState(searchParams.get("q") ?? "");
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (searchTerm) params.set("q", searchTerm); else params.delete("q");
+      router.replace(`${pathname}?${params.toString()}`);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, 300);
+    return () => clearTimeout(t);
+  }, [searchTerm]);
+
   const rawPriority = searchParams.get("priority");
   const priorityFilter: ClaimPriority | "All" = VALID_PRIORITIES.includes(rawPriority as ClaimPriority | "All")
     ? (rawPriority as ClaimPriority | "All")
@@ -46,12 +58,6 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
   });
   const [customParty, setCustomParty] = useState("");
 
-  const setSearchTerm = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (value) params.set("q", value); else params.delete("q");
-    router.replace(`${pathname}?${params.toString()}`);
-  };
-
   const setPriorityFilter = (value: ClaimPriority | "All") => {
     const params = new URLSearchParams(searchParams.toString());
     if (value !== "All") params.set("priority", value); else params.delete("priority");
@@ -67,7 +73,8 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
   const filteredClaims = claims.filter(c => {
     const matchesSearch = !searchTerm ||
       c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.customer.toLowerCase().includes(searchTerm.toLowerCase());
+      c.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (c.spg ?? "").toLowerCase().includes(searchTerm.toLowerCase());
     const matchesPriority = priorityFilter === "All" || c.priority === priorityFilter;
     const matchesSpg = spgFilter === "All" || c.spg === spgFilter;
     return matchesSearch && matchesPriority && matchesSpg;
@@ -114,8 +121,8 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
-                type="text" placeholder="클레임명, 고객사 검색..."
-                value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+                type="text" placeholder="클레임명·고객사·SPG 검색..."
+                value={searchTerm} onChange={(e) => setSearchTermLocal(e.target.value)}
                 className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all min-w-[220px]"
               />
             </div>

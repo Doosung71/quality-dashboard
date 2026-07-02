@@ -37,7 +37,13 @@ export default function TenderList({ tenders }: { tenders: TenderRow[] }) {
   const creatorOptions = [...new Set(tenders.map((t) => t.creatorName).filter((v): v is string => !!v))].sort()
 
   const filtered = tenders.filter((t) => {
-    if (query.trim() && !t.title.toLowerCase().includes(query.trim().toLowerCase())) return false
+    if (query.trim()) {
+      const q = query.trim().toLowerCase()
+      const matches = t.title.toLowerCase().includes(q) ||
+        (t.spg ?? "").toLowerCase().includes(q) ||
+        (t.marketRegion ?? "").toLowerCase().includes(q)
+      if (!matches) return false
+    }
     if (spgFilter !== ALL && t.spg !== spgFilter) return false
     if (regionFilter !== ALL && t.marketRegion !== regionFilter) return false
     if (creatorFilter !== ALL && t.creatorName !== creatorFilter) return false
@@ -64,7 +70,7 @@ export default function TenderList({ tenders }: { tenders: TenderRow[] }) {
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="search"
-            placeholder="입찰명 실시간 필터..."
+            placeholder="입찰명·SPG·권역 검색..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full md:w-56 pl-9 pr-3 py-1.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-950 bg-white transition-all text-xs"
