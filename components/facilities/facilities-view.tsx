@@ -10,7 +10,7 @@ import { TestCategoryChip, TestStatusBadge } from "./badges";
 import { TestPlanForm } from "@/components/assets/test-plan-form";
 import {
   Edit2, Trash2, Plus, X, Save, ChevronDown, Clock,
-  AlertTriangle, CheckCircle2, CircleDot,
+  AlertTriangle, CheckCircle2, CircleDot, Search,
 } from "lucide-react";
 
 const SITE_LABEL: Record<string, string> = {
@@ -425,6 +425,7 @@ export function FacilitiesView({
   const tests = testsData.tests;
 
   const [filter,           setFilter]           = useState<FilterValue>("전체");
+  const [search,           setSearch]           = useState("");
   const [showCreate,       setShowCreate]       = useState(false);
   const [editTarget,       setEditTarget]       = useState<Test | null>(null);
   const [editForm,         setEditForm]         = useState<EditForm | null>(null);
@@ -443,7 +444,13 @@ export function FacilitiesView({
     완료:   tests.filter(t => t.status === "완료").length,
   };
 
-  const filtered = filter === "전체" ? tests : tests.filter(t => t.status === filter);
+  const byStatus = filter === "전체" ? tests : tests.filter(t => t.status === filter);
+  const q = search.trim().toLowerCase();
+  const filtered = q
+    ? byStatus.filter(t =>
+        (t.projectName ?? "").toLowerCase().includes(q) ||
+        (t.sampleDescription ?? "").toLowerCase().includes(q))
+    : byStatus;
 
   const hasKeyChange = editTarget && editForm && (
     editForm.plannedStart !== editTarget.plannedStart ||
@@ -537,6 +544,17 @@ export function FacilitiesView({
           className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold bg-violet-600 text-white rounded-xl hover:bg-violet-700 transition-colors">
           <Plus className="w-4 h-4" /> 시험 계획 등록
         </button>
+      </div>
+
+      {/* ── 검색 ─────────────────────────────────────────────── */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <input
+          className="w-full pl-9 pr-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-300"
+          placeholder="프로젝트명, 시료 설명으로 검색"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
       </div>
 
       {/* ── 등록 모달 ─────────────────────────────────────────── */}
@@ -711,7 +729,9 @@ export function FacilitiesView({
       {filtered.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">
           <p className="text-sm text-slate-400">
-            {filter === "전체" ? "등록된 시험 계획이 없습니다." : `"${filter}" 상태의 시험 계획이 없습니다.`}
+            {q
+              ? "검색 결과가 없습니다."
+              : filter === "전체" ? "등록된 시험 계획이 없습니다." : `"${filter}" 상태의 시험 계획이 없습니다.`}
           </p>
         </div>
       ) : (
