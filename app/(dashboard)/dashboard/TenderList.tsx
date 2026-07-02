@@ -45,7 +45,7 @@ export default function TenderList({ tenders }: { tenders: TenderRow[] }) {
   })
 
   const hasActiveFilter = query.trim() || spgFilter !== ALL || regionFilter !== ALL || creatorFilter !== ALL
-  const filterSelectClass = "text-xs border border-slate-200 rounded-xl px-2 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-slate-950 max-w-[9rem]"
+  const filterSelectClass = "text-xs border border-slate-200 rounded-xl px-2 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-slate-950 max-w-36"
 
   return (
     <section className="space-y-4">

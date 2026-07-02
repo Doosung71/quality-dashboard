@@ -26,7 +26,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     title?: string; customer?: string; priority?: string; assignee?: string
     description?: string; status?: string; targetDate?: string | null; closedAt?: string | null
     timeline?: unknown[]; attachments?: unknown[]; responsibleParty?: string | null
-    projectKey?: string | null
+    spg?: string | null; projectKey?: string | null
   }
 
   let projectKeyUpdate: { projectKey?: string | null } = {}
@@ -64,6 +64,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       ...(body.targetDate        !== undefined && { targetDate:       body.targetDate ? new Date(body.targetDate) : null }),
       ...(body.closedAt          !== undefined && { closedAt:         body.closedAt ? new Date(body.closedAt) : null }),
       ...(body.responsibleParty  !== undefined && { responsibleParty: body.responsibleParty }),
+      ...(body.spg               !== undefined && { spg: body.spg }),
       ...projectKeyUpdate,
     },
   })

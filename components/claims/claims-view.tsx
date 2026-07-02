@@ -28,8 +28,11 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
   const priorityFilter: ClaimPriority | "All" = VALID_PRIORITIES.includes(rawPriority as ClaimPriority | "All")
     ? (rawPriority as ClaimPriority | "All")
     : "All";
+  const spgFilter = searchParams.get("spg") ?? "All";
 
   const claims = data.claims;
+  // SPG 필터 옵션 — 실제 등록된 값에서만 자동 구성(고정 목록 없음, 자유입력 필드)
+  const spgOptions = [...new Set(claims.map(c => c.spg).filter((v): v is string => !!v))].sort();
 
   // 신규 클레임 등록 폼
   const [showForm, setShowForm] = useState(false);
@@ -39,7 +42,7 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
   const today = new Date().toISOString().slice(0, 10);
   const [form, setForm] = useState({
     title: "", customer: "", priority: "Mid", assignee: userName ?? "", description: "", receivedAt: today,
-    responsibleParty: "", projectKey: "",
+    responsibleParty: "", spg: "", projectKey: "",
   });
   const [customParty, setCustomParty] = useState("");
 
@@ -55,12 +58,19 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
     router.replace(`${pathname}?${params.toString()}`);
   };
 
+  const setSpgFilter = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value !== "All") params.set("spg", value); else params.delete("spg");
+    router.replace(`${pathname}?${params.toString()}`);
+  };
+
   const filteredClaims = claims.filter(c => {
     const matchesSearch = !searchTerm ||
       c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.customer.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesPriority = priorityFilter === "All" || c.priority === priorityFilter;
-    return matchesSearch && matchesPriority;
+    const matchesSpg = spgFilter === "All" || c.spg === spgFilter;
+    return matchesSearch && matchesPriority && matchesSpg;
   });
 
   async function handleCreate() {
@@ -72,11 +82,11 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
       const resolvedParty = form.responsibleParty === "__custom__" ? customParty.trim() : form.responsibleParty;
       const res = await fetch("/api/claims", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, responsibleParty: resolvedParty || undefined, attachments }),
+        body: JSON.stringify({ ...form, responsibleParty: resolvedParty || undefined, spg: form.spg.trim() || undefined, attachments }),
       });
       if (!res.ok) throw new Error("등록 실패");
       setShowForm(false);
-      setForm({ title: "", customer: "", priority: "Mid", assignee: userName ?? "", description: "", receivedAt: today, responsibleParty: "", projectKey: "" });
+      setForm({ title: "", customer: "", priority: "Mid", assignee: userName ?? "", description: "", receivedAt: today, responsibleParty: "", spg: "", projectKey: "" });
       setCustomParty("");
       setAttachments([]);
       router.refresh();
@@ -120,6 +130,14 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
                 </button>
               ))}
             </div>
+
+            {spgOptions.length > 0 && (
+              <select value={spgFilter} onChange={(e) => setSpgFilter(e.target.value)}
+                className="text-xs border border-slate-200 rounded-lg px-2 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 max-w-36">
+                <option value="All">SPG 전체</option>
+                {spgOptions.map(o => <option key={o} value={o}>{o}</option>)}
+              </select>
+            )}
 
             {canEdit && (
               <button onClick={() => { setFormError(""); setShowForm(true); }}
@@ -192,6 +210,14 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
                   <input type="text" placeholder="귀책처를 직접 입력하세요" value={customParty}
                     onChange={e => setCustomParty(e.target.value)} className={inputCls} />
                 )}
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">SPG <span className="text-slate-400 font-normal">(제품군·선택)</span></label>
+                <input type="text" list="claim-spg-options" placeholder="예: 지중케이블" value={form.spg}
+                  onChange={e => setForm(f => ({...f, spg: e.target.value}))} className={inputCls} />
+                <datalist id="claim-spg-options">
+                  {spgOptions.map(o => <option key={o} value={o} />)}
+                </datalist>
               </div>
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700">프로젝트 키 <span className="text-slate-400 font-normal">(Tender 연결용·선택)</span></label>

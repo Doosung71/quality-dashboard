@@ -32,6 +32,7 @@ export default async function ClaimDetailRoute({ params }: Props) {
     assignee:         raw.assignee,
     description:      raw.description,
     responsibleParty: raw.responsibleParty ?? undefined,
+    spg:              raw.spg ?? undefined,
     timeline:         (raw.timeline as unknown as ClaimTimelineItem[]) ?? [],
     attachments:      (raw.attachments as unknown as ClaimAttachment[]) ?? [],
   };

@@ -23,6 +23,7 @@ export default async function ClaimsPage() {
     closedAt:    c.closedAt?.toISOString().slice(0, 10),
     assignee:    c.assignee,
     description: c.description,
+    spg:         c.spg ?? undefined,
     timeline:    (c.timeline as unknown as ClaimTimelineItem[]) ?? [],
     attachments: (c.attachments as unknown as ClaimAttachment[]) ?? [],
   }));

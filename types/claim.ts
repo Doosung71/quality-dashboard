@@ -81,6 +81,7 @@ export interface Claim {
   assignee: string;
   description: string;
   responsibleParty?: string;
+  spg?: string;
   timeline?: ClaimTimelineItem[];
   attachments?: ClaimAttachment[];
 }

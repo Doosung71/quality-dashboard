@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json() as {
     title: string; customer: string; priority: string
     assignee: string; description: string; receivedAt?: string
-    responsibleParty?: string; projectKey?: string
+    responsibleParty?: string; spg?: string; projectKey?: string
     attachments?: { url: string; name: string; size: number; contentType: string }[]
   }
 
@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
       description:      body.description,
       receivedAt:       body.receivedAt ? new Date(body.receivedAt) : new Date(),
       responsibleParty: body.responsibleParty ?? null,
+      spg:              body.spg?.trim() ? body.spg.trim() : null,
       timeline:         [{ date: today, action: "클레임 접수" }],
       attachments:      Array.isArray(body.attachments) ? body.attachments : [],
       createdById:      session.user.id,
