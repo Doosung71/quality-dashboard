@@ -369,7 +369,7 @@ export default function WitnessDetailClient({
               {voCs.map(voc => (
                 <div key={voc.id} className="bg-white border border-slate-200 rounded-xl p-4">
                   <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
                         <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${VOC_STATUS_COLOR[voc.status]}`}>
                           {VOC_STATUS_LABEL[voc.status]}
@@ -384,11 +384,11 @@ export default function WitnessDetailClient({
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-slate-800 whitespace-pre-wrap">{voc.content}</p>
+                      <p className="text-sm text-slate-800 whitespace-pre-wrap wrap-break-word">{voc.content}</p>
                       {voc.response && (
                         <div className="mt-2 pl-3 border-l-2 border-indigo-200">
                           <p className="text-xs text-slate-500 font-semibold mb-0.5">대응 내용</p>
-                          <p className="text-sm text-slate-700 whitespace-pre-wrap">{voc.response}</p>
+                          <p className="text-sm text-slate-700 whitespace-pre-wrap wrap-break-word">{voc.response}</p>
                         </div>
                       )}
                     </div>
@@ -437,9 +437,9 @@ export default function WitnessDetailClient({
 
 function InfoRow({ label: lbl, value, span = 1 }: { label: string; value?: string | null; span?: number }) {
   return (
-    <div className={span > 1 ? `col-span-${span}` : ""}>
+    <div className={`min-w-0 ${span > 1 ? `col-span-${span}` : ""}`}>
       <dt className="text-xs font-semibold text-slate-500 mb-0.5">{lbl}</dt>
-      <dd className="text-slate-800 whitespace-pre-wrap">{value || <span className="text-slate-300">—</span>}</dd>
+      <dd className="text-slate-800 whitespace-pre-wrap wrap-break-word">{value || <span className="text-slate-300">—</span>}</dd>
     </div>
   )
 }
