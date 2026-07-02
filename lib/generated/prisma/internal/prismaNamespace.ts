@@ -3509,6 +3509,7 @@ export const MeetingScalarFieldEnum = {
   meetingDate: 'meetingDate',
   body: 'body',
   issueLinks: 'issueLinks',
+  attachments: 'attachments',
   createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

@@ -31,6 +31,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     meetingDate?: string
     body?: string
     issueLinks?: { issueType: string; issueId: string; issueLabel: string }[]
+    attachments?: unknown[]
   }
 
   const data: Record<string, unknown> = {}
@@ -39,6 +40,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   if (body.meetingDate !== undefined) data.meetingDate = new Date(body.meetingDate)
   if (body.body        !== undefined) data.body        = body.body
   if (body.issueLinks  !== undefined) data.issueLinks  = body.issueLinks
+  if (body.attachments !== undefined) data.attachments = Array.isArray(body.attachments) ? body.attachments : []
 
   const updated = await prisma.meeting.update({
     where: { id },

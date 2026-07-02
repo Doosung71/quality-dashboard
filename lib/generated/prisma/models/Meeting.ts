@@ -53,6 +53,7 @@ export type MeetingCountAggregateOutputType = {
   meetingDate: number
   body: number
   issueLinks: number
+  attachments: number
   createdById: number
   createdAt: number
   updatedAt: number
@@ -89,6 +90,7 @@ export type MeetingCountAggregateInputType = {
   meetingDate?: true
   body?: true
   issueLinks?: true
+  attachments?: true
   createdById?: true
   createdAt?: true
   updatedAt?: true
@@ -174,6 +176,7 @@ export type MeetingGroupByOutputType = {
   meetingDate: Date
   body: string
   issueLinks: runtime.JsonValue
+  attachments: runtime.JsonValue
   createdById: string
   createdAt: Date
   updatedAt: Date
@@ -207,6 +210,7 @@ export type MeetingWhereInput = {
   meetingDate?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   body?: Prisma.StringFilter<"Meeting"> | string
   issueLinks?: Prisma.JsonFilter<"Meeting">
+  attachments?: Prisma.JsonFilter<"Meeting">
   createdById?: Prisma.StringFilter<"Meeting"> | string
   createdAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
@@ -221,6 +225,7 @@ export type MeetingOrderByWithRelationInput = {
   meetingDate?: Prisma.SortOrder
   body?: Prisma.SortOrder
   issueLinks?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -238,6 +243,7 @@ export type MeetingWhereUniqueInput = Prisma.AtLeast<{
   meetingDate?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   body?: Prisma.StringFilter<"Meeting"> | string
   issueLinks?: Prisma.JsonFilter<"Meeting">
+  attachments?: Prisma.JsonFilter<"Meeting">
   createdById?: Prisma.StringFilter<"Meeting"> | string
   createdAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
@@ -252,6 +258,7 @@ export type MeetingOrderByWithAggregationInput = {
   meetingDate?: Prisma.SortOrder
   body?: Prisma.SortOrder
   issueLinks?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -270,6 +277,7 @@ export type MeetingScalarWhereWithAggregatesInput = {
   meetingDate?: Prisma.DateTimeWithAggregatesFilter<"Meeting"> | Date | string
   body?: Prisma.StringWithAggregatesFilter<"Meeting"> | string
   issueLinks?: Prisma.JsonWithAggregatesFilter<"Meeting">
+  attachments?: Prisma.JsonWithAggregatesFilter<"Meeting">
   createdById?: Prisma.StringWithAggregatesFilter<"Meeting"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Meeting"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Meeting"> | Date | string
@@ -282,6 +290,7 @@ export type MeetingCreateInput = {
   meetingDate: Date | string
   body?: string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutMeetingsInput
@@ -295,6 +304,7 @@ export type MeetingUncheckedCreateInput = {
   meetingDate: Date | string
   body?: string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -308,6 +318,7 @@ export type MeetingUpdateInput = {
   meetingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutMeetingsNestedInput
@@ -321,6 +332,7 @@ export type MeetingUncheckedUpdateInput = {
   meetingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -334,6 +346,7 @@ export type MeetingCreateManyInput = {
   meetingDate: Date | string
   body?: string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -346,6 +359,7 @@ export type MeetingUpdateManyMutationInput = {
   meetingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -357,6 +371,7 @@ export type MeetingUncheckedUpdateManyInput = {
   meetingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -379,6 +394,7 @@ export type MeetingCountOrderByAggregateInput = {
   meetingDate?: Prisma.SortOrder
   body?: Prisma.SortOrder
   issueLinks?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -478,6 +494,7 @@ export type MeetingCreateWithoutCreatedByInput = {
   meetingDate: Date | string
   body?: string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   actions?: Prisma.MeetingActionCreateNestedManyWithoutMeetingInput
@@ -490,6 +507,7 @@ export type MeetingUncheckedCreateWithoutCreatedByInput = {
   meetingDate: Date | string
   body?: string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   actions?: Prisma.MeetingActionUncheckedCreateNestedManyWithoutMeetingInput
@@ -531,6 +549,7 @@ export type MeetingScalarWhereInput = {
   meetingDate?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   body?: Prisma.StringFilter<"Meeting"> | string
   issueLinks?: Prisma.JsonFilter<"Meeting">
+  attachments?: Prisma.JsonFilter<"Meeting">
   createdById?: Prisma.StringFilter<"Meeting"> | string
   createdAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
@@ -543,6 +562,7 @@ export type MeetingCreateWithoutActionsInput = {
   meetingDate: Date | string
   body?: string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutMeetingsInput
@@ -555,6 +575,7 @@ export type MeetingUncheckedCreateWithoutActionsInput = {
   meetingDate: Date | string
   body?: string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -583,6 +604,7 @@ export type MeetingUpdateWithoutActionsInput = {
   meetingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutMeetingsNestedInput
@@ -595,6 +617,7 @@ export type MeetingUncheckedUpdateWithoutActionsInput = {
   meetingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -607,6 +630,7 @@ export type MeetingCreateManyCreatedByInput = {
   meetingDate: Date | string
   body?: string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -618,6 +642,7 @@ export type MeetingUpdateWithoutCreatedByInput = {
   meetingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actions?: Prisma.MeetingActionUpdateManyWithoutMeetingNestedInput
@@ -630,6 +655,7 @@ export type MeetingUncheckedUpdateWithoutCreatedByInput = {
   meetingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actions?: Prisma.MeetingActionUncheckedUpdateManyWithoutMeetingNestedInput
@@ -642,6 +668,7 @@ export type MeetingUncheckedUpdateManyWithoutCreatedByInput = {
   meetingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   issueLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  attachments?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -684,6 +711,7 @@ export type MeetingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   meetingDate?: boolean
   body?: boolean
   issueLinks?: boolean
+  attachments?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -699,6 +727,7 @@ export type MeetingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   meetingDate?: boolean
   body?: boolean
   issueLinks?: boolean
+  attachments?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -712,6 +741,7 @@ export type MeetingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   meetingDate?: boolean
   body?: boolean
   issueLinks?: boolean
+  attachments?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -725,12 +755,13 @@ export type MeetingSelectScalar = {
   meetingDate?: boolean
   body?: boolean
   issueLinks?: boolean
+  attachments?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type MeetingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "type" | "meetingDate" | "body" | "issueLinks" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["meeting"]>
+export type MeetingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "type" | "meetingDate" | "body" | "issueLinks" | "attachments" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["meeting"]>
 export type MeetingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   actions?: boolean | Prisma.Meeting$actionsArgs<ExtArgs>
@@ -756,6 +787,7 @@ export type $MeetingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     meetingDate: Date
     body: string
     issueLinks: runtime.JsonValue
+    attachments: runtime.JsonValue
     createdById: string
     createdAt: Date
     updatedAt: Date
@@ -1190,6 +1222,7 @@ export interface MeetingFieldRefs {
   readonly meetingDate: Prisma.FieldRef<"Meeting", 'DateTime'>
   readonly body: Prisma.FieldRef<"Meeting", 'String'>
   readonly issueLinks: Prisma.FieldRef<"Meeting", 'Json'>
+  readonly attachments: Prisma.FieldRef<"Meeting", 'Json'>
   readonly createdById: Prisma.FieldRef<"Meeting", 'String'>
   readonly createdAt: Prisma.FieldRef<"Meeting", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Meeting", 'DateTime'>

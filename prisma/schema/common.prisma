@@ -155,6 +155,7 @@ model Meeting {
   meetingDate DateTime
   body        String        @default("")   // 회의록 본문 (마크다운)
   issueLinks  Json          @default("[]") // [{issueType, issueId, issueLabel}]
+  attachments Json          @default("[]") // [{url, name, size, contentType}]
   createdBy   User          @relation("MeetingCreator", fields: [createdById], references: [id])
   createdById String
   createdAt   DateTime      @default(now())

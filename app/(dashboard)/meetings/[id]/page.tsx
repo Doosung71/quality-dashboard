@@ -5,14 +5,16 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import {
   ArrowLeft, Save, Plus, Trash2, CheckSquare, Square,
-  Calendar, Tag, Link2, X, Edit3
+  Calendar, Tag, Link2, X, Edit3, Paperclip
 } from "lucide-react"
+import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader"
 
 type IssueLink  = { issueType: string; issueId: string; issueLabel: string }
 type Action     = { id: string; content: string; assigneeName: string; dueDate: string | null; done: boolean }
 type Meeting    = {
   id: string; title: string; type: string; meetingDate: string; body: string
   issueLinks: IssueLink[]
+  attachments: AttachmentItem[]
   createdBy: { name: string; nickname: string | null }
   actions: Action[]
 }
@@ -59,6 +61,8 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
   const [editDate, setEditDate]       = useState("")
   const [editBody, setEditBody]       = useState("")
   const [bodyDirty, setBodyDirty]     = useState(false)
+  const [attachments, setAttachments] = useState<AttachmentItem[]>([])
+  const [savingAttachments, setSavingAttachments] = useState(false)
 
   // 이슈 연결 폼
   const [showIssueForm, setShowIssueForm] = useState(false)
@@ -81,6 +85,7 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
         setEditType(data.type)
         setEditDate(data.meetingDate.slice(0, 10))
         setEditBody(data.body)
+        setAttachments(data.attachments ?? [])
         setLoading(false)
       })
       .catch(() => setLoading(false))
@@ -116,6 +121,18 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
     })
     if (res.ok) { setBodyDirty(false); flashSaved() }
     setSaving(false)
+  }
+
+  async function handleAttachmentsChange(next: AttachmentItem[]) {
+    setAttachments(next)
+    setSavingAttachments(true)
+    try {
+      await fetch(`/api/meetings/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ attachments: next }),
+      })
+    } finally { setSavingAttachments(false) }
   }
 
   async function loadIssueOptions(type: string) {
@@ -400,6 +417,17 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
           value={editBody}
           onChange={e => { setEditBody(e.target.value); setBodyDirty(true) }}
         />
+      </div>
+
+      {/* 첨부파일 */}
+      <div className="bg-white border border-slate-100 rounded-2xl shadow-sm p-5 space-y-3">
+        <div className="flex items-center justify-between border-b pb-2">
+          <h2 className="text-xs font-extrabold text-slate-800 flex items-center gap-1.5">
+            <Paperclip className="w-4 h-4 text-indigo-400" /> 첨부파일
+            {savingAttachments && <span className="text-[10px] text-slate-400 font-normal">저장 중...</span>}
+          </h2>
+        </div>
+        <AttachmentUploader attachments={attachments} onChange={handleAttachmentsChange} context="meeting" />
       </div>
 
       {/* 액션 아이템 */}
