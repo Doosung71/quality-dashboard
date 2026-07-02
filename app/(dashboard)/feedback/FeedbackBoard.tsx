@@ -20,6 +20,8 @@ type ReplyNode = Reply & { children: ReplyNode[] }
 type FeedbackItem = {
   id: string; content: string; imageUrls: string | null
   author: Author; createdAt: string; replies: Reply[]
+  /** 등록순 번호(1부터, createdAt 오름차순) — 게시판 내부 논의·요청서에서 "#N"으로 지칭할 때 사용 */
+  seq: number
 }
 
 // ─── 역할 설정 ─────────────────────────────────────────────
@@ -503,7 +505,10 @@ function FeedbackCard({
       <div className="flex items-start gap-3 px-5 pt-5 pb-0">
         <Avatar author={item.author} size="lg" />
         <div className="flex-1 min-w-0 pt-0.5">
-          <AuthorLine author={item.author} createdAt={item.createdAt} />
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] font-mono font-bold text-slate-400 shrink-0">#{item.seq}</span>
+            <AuthorLine author={item.author} createdAt={item.createdAt} />
+          </div>
         </div>
         {!editing && !deleting && (
           <div className="flex gap-0.5 opacity-0 group-hover/card:opacity-100 transition-opacity shrink-0">
@@ -659,7 +664,9 @@ export default function FeedbackBoard({
     })
     if (res.ok) {
       const newItem = await res.json()
-      setItems(prev => [newItem, ...prev])
+      // 새 글은 항상 가장 마지막 등록이므로 seq = 현재 최대값 + 1 (API는 seq를 내려주지 않음)
+      const nextSeq = items.reduce((max, i) => Math.max(max, i.seq), 0) + 1
+      setItems(prev => [{ ...newItem, seq: nextSeq }, ...prev])
       setText(""); setUploadedUrls([])
     } else {
       try { const d = await res.json(); setError(d.error ?? "오류가 발생했습니다") } catch { setError("오류가 발생했습니다") }

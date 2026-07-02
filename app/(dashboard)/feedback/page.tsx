@@ -16,10 +16,18 @@ export default async function FeedbackPage() {
     },
   })
 
+  // 등록순 번호(#1~) — createdAt 오름차순 기준. 게시판은 최신순(desc)으로 보여주지만
+  // 번호 자체는 등록 순서를 그대로 반영해야 팀 협업(요청서·리뷰)에서 지칭한 #N과 일치한다.
+  const seqById = new Map(
+    [...raw].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+      .map((f, i) => [f.id, i + 1]),
+  )
+
   const feedbacks = raw.map((f) => ({
     ...f,
     createdAt: f.createdAt.toISOString(),
     imageUrls: f.imageUrls ?? null,
+    seq: seqById.get(f.id)!,
     replies: f.replies.map((r) => ({
       ...r,
       createdAt: r.createdAt.toISOString(),
