@@ -953,7 +953,9 @@ export function KnowledgeRepository({ data, repoLoading = false, readOnly = fals
                             )}
                           </div>
                           {contentText && (
-                            <div className="rounded-lg border border-slate-100 bg-white p-4 max-h-[320px] overflow-y-auto">
+                            // #52: 상세 패널 안 "스크롤 속 스크롤" 제거 — 내용이 상세 패널 스크롤에 흐르도록.
+                            // 전체화면 정독은 ⤢ 크게보기 모달 유지.
+                            <div className="rounded-lg border border-slate-100 bg-white p-4">
                               <MarkdownContent content={contentText} className="text-[11px]" />
                             </div>
                           )}
