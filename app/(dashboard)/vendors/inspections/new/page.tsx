@@ -1,5 +1,6 @@
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
+import { prisma } from "@/lib/prisma"
 import vendorsData from "@/data/vendors.json"
 import InspectionForm from "./InspectionForm"
 
@@ -7,7 +8,18 @@ export default async function NewInspectionPage() {
   const session = await auth()
   if (!session) redirect("/login")
 
-  const vendors = vendorsData.vendors.map(v => ({ id: v.id, name: v.name }))
+  const jsonVendors = vendorsData.vendors.map(v => ({
+    id:       v.id,
+    name:     v.name,
+    location: v.location ?? "",
+  }))
+
+  const dbVendors = await prisma.vendor.findMany({
+    select: { id: true, name: true, location: true },
+    orderBy: { createdAt: "asc" },
+  }).catch(() => [] as { id: string; name: string; location: string }[])
+
+  const vendors = [...jsonVendors, ...dbVendors]
 
   return (
     <div className="max-w-2xl mx-auto">

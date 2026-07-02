@@ -12,7 +12,7 @@ type MeetingAction = {
   dueDate: string | null; done: boolean
 }
 type Meeting = {
-  id: string; title: string; type: string; meetingDate: string
+  id: string; title: string; type: string; meetingDate: string; body: string
   createdBy: { name: string; nickname: string | null }
   actions: MeetingAction[]
 }
@@ -52,10 +52,12 @@ export default function MeetingsPage() {
       .catch(() => setLoading(false))
   }, [])
 
-  const filtered = meetings.filter(m =>
-    m.title.toLowerCase().includes(search.toLowerCase()) ||
-    MEETING_TYPE_LABELS[m.type]?.includes(search)
-  )
+  const filtered = meetings.filter(m => {
+    const q = search.toLowerCase()
+    return m.title.toLowerCase().includes(q) ||
+      m.body.toLowerCase().includes(q) ||
+      MEETING_TYPE_LABELS[m.type]?.includes(search)
+  })
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault()
@@ -143,7 +145,7 @@ export default function MeetingsPage() {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
         <input
           className="w-full pl-9 pr-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300"
-          placeholder="회의명 또는 유형으로 검색"
+          placeholder="회의명, 본문 내용, 유형으로 검색"
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
