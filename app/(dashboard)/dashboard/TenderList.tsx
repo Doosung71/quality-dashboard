@@ -37,12 +37,12 @@ export default function TenderList({ tenders }: { tenders: TenderRow[] }) {
   const creatorOptions = [...new Set(tenders.map((t) => t.creatorName).filter((v): v is string => !!v))].sort()
 
   const filtered = tenders.filter((t) => {
+    // 검색어를 단어 단위로 쪼개 AND 조건으로 매칭 — 각 단어가 title·spg·marketRegion
+    // 중 어느 필드에 있어도(필드가 달라도) 찾아지도록 함 (예: "전력기기 345kV")
     if (query.trim()) {
-      const q = query.trim().toLowerCase()
-      const matches = t.title.toLowerCase().includes(q) ||
-        (t.spg ?? "").toLowerCase().includes(q) ||
-        (t.marketRegion ?? "").toLowerCase().includes(q)
-      if (!matches) return false
+      const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean)
+      const haystack = `${t.title} ${t.spg ?? ""} ${t.marketRegion ?? ""}`.toLowerCase()
+      if (!tokens.every(tok => haystack.includes(tok))) return false
     }
     if (spgFilter !== ALL && t.spg !== spgFilter) return false
     if (regionFilter !== ALL && t.marketRegion !== regionFilter) return false

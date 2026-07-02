@@ -71,10 +71,11 @@ export function ClaimsView({ data, canEdit = true, userName }: ClaimsViewProps) 
   };
 
   const filteredClaims = claims.filter(c => {
-    const matchesSearch = !searchTerm ||
-      c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (c.spg ?? "").toLowerCase().includes(searchTerm.toLowerCase());
+    // 검색어를 단어 단위로 쪼개 AND 조건으로 매칭 — 각 단어가 title·customer·spg
+    // 중 어느 필드에 있어도(필드가 달라도) 찾아지도록 함 (예: "전력기기 345kV")
+    const searchTokens = searchTerm.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    const haystack = `${c.title} ${c.customer} ${c.spg ?? ""}`.toLowerCase();
+    const matchesSearch = searchTokens.every(tok => haystack.includes(tok));
     const matchesPriority = priorityFilter === "All" || c.priority === priorityFilter;
     const matchesSpg = spgFilter === "All" || c.spg === spgFilter;
     return matchesSearch && matchesPriority && matchesSpg;
