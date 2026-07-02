@@ -1,7 +1,8 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Paperclip, X, Loader2, FileText, Image, FileSpreadsheet, FileArchive } from "lucide-react"
+import { shouldDismissDragHighlight } from "./attachment-drag-utils"
 
 export type AttachmentItem = {
   url: string
@@ -42,6 +43,11 @@ export function AttachmentUploader({
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState("")
+  const [dragActive, setDragActive] = useState(false)
+
+  useEffect(() => {
+    if (disabled || uploading) setDragActive(false)
+  }, [disabled, uploading])
 
   async function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return
@@ -76,8 +82,32 @@ export function AttachmentUploader({
     onChange(attachments.filter((_, i) => i !== idx))
   }
 
+  function handleDragOver(e: React.DragEvent) {
+    e.preventDefault()
+    if (disabled || uploading) return
+    setDragActive(true)
+  }
+
+  function handleDragLeave(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault()
+    if (!shouldDismissDragHighlight(e.currentTarget, e.relatedTarget)) return
+    setDragActive(false)
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault()
+    setDragActive(false)
+    if (disabled || uploading) return
+    handleFiles(e.dataTransfer.files)
+  }
+
   return (
-    <div className="space-y-2">
+    <div
+      className={`space-y-2 rounded-lg transition-colors ${dragActive ? "ring-2 ring-teal-400 ring-offset-1 bg-teal-50/50" : ""}`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
       <div className="flex items-center gap-2">
         <button
           type="button"
@@ -91,7 +121,7 @@ export function AttachmentUploader({
           {uploading ? "업로드 중…" : "파일 첨부"}
         </button>
         <span className="text-[10px] text-slate-400">
-          PDF·이미지·Word·Excel·ZIP · 최대 20MB · {attachments.length}/{maxFiles}개
+          PDF·이미지·Word·Excel·ZIP · 최대 20MB · {attachments.length}/{maxFiles}개 · 드래그 앤 드랍 가능
         </span>
         <input
           ref={inputRef}
