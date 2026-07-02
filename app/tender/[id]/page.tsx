@@ -105,6 +105,8 @@ export default async function TenderPage({
 
   // 고리④ surface — 입찰의 project_key로 같은 프로젝트의 과거 이력 조회 (fail-open, 외부 전송 0).
   const isOwner = tender.createdById === session.user.id
+  // SPG·시장 권역은 운영 분류 메타데이터라 소유자 외 팀장 이상도 정비 가능 (코라 검수 #28·#39 C항목 반영)
+  const canEditSpgRegion = isOwner || ["TEAM_LEAD", "DIRECTOR", "ADMIN"].includes(session.user.role)
   const projectHistory = await loadProjectHistory(tender.projectKey)
 
   const analysis = tender.analyses[0]
@@ -248,7 +250,7 @@ export default async function TenderPage({
 
               {/* SPG·시장 권역 (E2E-1 피드백 #28) */}
               <div className="pt-1">
-                <SpgMarketEdit tenderId={id} spg={tender.spg} marketRegion={tender.marketRegion} canEdit={isOwner} />
+                <SpgMarketEdit tenderId={id} spg={tender.spg} marketRegion={tender.marketRegion} canEdit={canEditSpgRegion} />
               </div>
             </div>
             

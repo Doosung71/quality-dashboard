@@ -88,6 +88,7 @@ function buildClaimMarkdown(claim: {
   description: string; assignee: string
   receivedAt: Date; targetDate?: Date | null; closedAt?: Date | null
   timeline: unknown
+  spg?: string | null
 }): string {
   const priorityLabel: Record<string, string> = {
     High: "긴급 (High)", Mid: "보통 (Mid)", Low: "낮음 (Low)",
@@ -97,6 +98,7 @@ function buildClaimMarkdown(claim: {
     "",
     "## 개요",
     `- **고객**: ${claim.customer}`,
+    ...(claim.spg ? [`- **SPG**: ${claim.spg}`] : []),
     `- **우선순위**: ${priorityLabel[claim.priority] ?? claim.priority}`,
     `- **담당자**: ${claim.assignee}`,
     `- **접수일**: ${claim.receivedAt.toISOString().slice(0, 10)}`,
@@ -319,6 +321,7 @@ export async function ingestClosedClaim(claimId: string): Promise<void> {
         claim_no: claim.claimNo,
         customer: claim.customer,
         priority: claim.priority,
+        ...(claim.spg ? { spg: claim.spg } : {}),
         ...(claim.projectKey ? { project_key: claim.projectKey } : {}),
       },
     )

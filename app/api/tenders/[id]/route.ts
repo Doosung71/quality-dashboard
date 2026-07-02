@@ -6,6 +6,10 @@ import { parseProjectKeyInput } from "@/lib/project-key"
 
 type Ctx = { params: Promise<{ id: string }> }
 
+// SPG·시장 권역은 운영 분류 메타데이터라 소유자 외 팀장 이상도 정비 가능.
+// title·projectKey는 기존대로 소유자 전용 유지(코라 검수 #28·#39 C항목 반영).
+const TEAM_LEAD_PLUS_ROLES = ["TEAM_LEAD", "DIRECTOR", "ADMIN"]
+
 export async function PATCH(req: NextRequest, { params }: Ctx) {
   const session = await requireActiveSession()
   if (session instanceof NextResponse) return session
@@ -53,10 +57,18 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
     return NextResponse.json({ error: "수정할 항목이 없습니다." }, { status: 400 })
   }
 
-  const tender = await prisma.tender.findFirst({
-    where: { id, createdById: session.user.id },
-  })
+  const tender = await prisma.tender.findUnique({ where: { id } })
   if (!tender) return NextResponse.json({ error: "입찰을 찾을 수 없습니다." }, { status: 404 })
+
+  const isOwner = tender.createdById === session.user.id
+  const isTeamLeadPlus = TEAM_LEAD_PLUS_ROLES.includes(session.user.role)
+
+  if ((data.title !== undefined || data.projectKey !== undefined) && !isOwner) {
+    return NextResponse.json({ error: "본인이 등록한 입찰만 수정할 수 있습니다." }, { status: 403 })
+  }
+  if ((data.spg !== undefined || data.marketRegion !== undefined) && !isOwner && !isTeamLeadPlus) {
+    return NextResponse.json({ error: "SPG·시장 권역은 등록자 또는 팀장 이상만 수정할 수 있습니다." }, { status: 403 })
+  }
 
   await prisma.tender.update({ where: { id }, data })
   return NextResponse.json({ ok: true })

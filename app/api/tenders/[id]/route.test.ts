@@ -8,10 +8,10 @@ vi.mock('@/lib/session-guard', () => ({
 }))
 
 // ── prisma mock ────────────────────────────────────────────────
-const mockFindFirst = vi.hoisted(() => vi.fn())
-const mockUpdate    = vi.hoisted(() => vi.fn())
+const mockFindUnique = vi.hoisted(() => vi.fn())
+const mockUpdate     = vi.hoisted(() => vi.fn())
 vi.mock('@/lib/prisma', () => ({
-  prisma: { tender: { findFirst: mockFindFirst, update: mockUpdate } },
+  prisma: { tender: { findUnique: mockFindUnique, update: mockUpdate } },
 }))
 
 // ── storage mock (DELETE 경로에서 import) ──────────────────────
@@ -31,7 +31,7 @@ describe('PATCH /api/tenders/[id] — projectKey (고리④)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockRequireActiveSession.mockResolvedValue(session)
-    mockFindFirst.mockResolvedValue({ id: 'tender-1', title: '기존 입찰', createdById: 'u1' })
+    mockFindUnique.mockResolvedValue({ id: 'tender-1', title: '기존 입찰', createdById: 'u1' })
     mockUpdate.mockResolvedValue({ id: 'tender-1' })
   })
 
@@ -76,9 +76,9 @@ describe('PATCH /api/tenders/[id] — projectKey (고리④)', () => {
     })
   })
 
-  // 5. 권한 — 소유자가 아니면(findFirst null) 404
-  it('소유자가 아닌 입찰이면 404', async () => {
-    mockFindFirst.mockResolvedValue(null)
+  // 5. 존재하지 않는 입찰이면 404
+  it('존재하지 않는 입찰이면 404', async () => {
+    mockFindUnique.mockResolvedValue(null)
     const { PATCH } = await import('./route')
     const res = await PATCH(makeReq({ projectKey: 'qat-gtc-3003' }), ctx)
     expect(res.status).toBe(404)
@@ -90,5 +90,46 @@ describe('PATCH /api/tenders/[id] — projectKey (고리④)', () => {
     const { PATCH } = await import('./route')
     const res = await PATCH(makeReq({ title: '  ' }), ctx)
     expect(res.status).toBe(400)
+  })
+
+  // 7. 소유자가 아닌 PRACTITIONER의 title 수정은 403 (기존 정책 유지)
+  it('비소유 PRACTITIONER의 title 수정은 403', async () => {
+    mockFindUnique.mockResolvedValue({ id: 'tender-1', title: '기존 입찰', createdById: 'someone-else' })
+    const { PATCH } = await import('./route')
+    const res = await PATCH(makeReq({ title: '새 제목' }), ctx)
+    expect(res.status).toBe(403)
+    expect(mockUpdate).not.toHaveBeenCalled()
+  })
+
+  // 8. 소유자가 아닌 PRACTITIONER의 SPG 수정도 403 (코라 검수 #28·#39 C — 팀장 이상만 예외)
+  it('비소유 PRACTITIONER의 SPG 수정은 403', async () => {
+    mockFindUnique.mockResolvedValue({ id: 'tender-1', title: '기존 입찰', createdById: 'someone-else' })
+    const { PATCH } = await import('./route')
+    const res = await PATCH(makeReq({ spg: '지중케이블' }), ctx)
+    expect(res.status).toBe(403)
+    expect(mockUpdate).not.toHaveBeenCalled()
+  })
+
+  // 9. 비소유 TEAM_LEAD는 SPG·권역 수정 허용 (코라 검수 #28·#39 C 반영)
+  it('비소유 TEAM_LEAD의 SPG·시장 권역 수정은 200', async () => {
+    mockFindUnique.mockResolvedValue({ id: 'tender-1', title: '기존 입찰', createdById: 'someone-else' })
+    mockRequireActiveSession.mockResolvedValue({ user: { ...session.user, role: 'TEAM_LEAD' } })
+    const { PATCH } = await import('./route')
+    const res = await PATCH(makeReq({ spg: '지중케이블', marketRegion: '대만' }), ctx)
+    expect(res.status).toBe(200)
+    expect(mockUpdate).toHaveBeenCalledWith({
+      where: { id: 'tender-1' },
+      data: { spg: '지중케이블', marketRegion: '대만' },
+    })
+  })
+
+  // 10. 비소유 TEAM_LEAD라도 title 수정은 여전히 403 (title은 소유자 전용 유지)
+  it('비소유 TEAM_LEAD의 title 수정은 여전히 403', async () => {
+    mockFindUnique.mockResolvedValue({ id: 'tender-1', title: '기존 입찰', createdById: 'someone-else' })
+    mockRequireActiveSession.mockResolvedValue({ user: { ...session.user, role: 'TEAM_LEAD' } })
+    const { PATCH } = await import('./route')
+    const res = await PATCH(makeReq({ title: '팀장이 바꾼 제목' }), ctx)
+    expect(res.status).toBe(403)
+    expect(mockUpdate).not.toHaveBeenCalled()
   })
 })

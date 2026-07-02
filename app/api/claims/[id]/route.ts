@@ -41,11 +41,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     projectKeyUpdate = { projectKey: pk.value }
   }
 
-  // Closed 전환 / Closed 상태에서 timeline·projectKey 변경 시 re-ingest 필요
+  // Closed 전환 / Closed 상태에서 timeline·projectKey·spg 변경 시 re-ingest 필요
   // (#63: 종결 Claim 처리이력 추가·삭제 시 buildClaimMarkdown의 timeline이 바뀌므로
-  //  knowledge_chunks 확정 지식을 재동기화해야 함. NCR route와 동일 조건.)
+  //  knowledge_chunks 확정 지식을 재동기화해야 함. NCR route와 동일 조건.
+  //  spg는 코라 검수 #28·#39 B항목 반영 — SPG도 buildClaimMarkdown·metadata에 포함되므로 동일 취급)
   const needsIngestCheck =
-    body.status === "Closed" || body.timeline !== undefined || body.projectKey !== undefined
+    body.status === "Closed" || body.timeline !== undefined || body.projectKey !== undefined || body.spg !== undefined
   const existing = needsIngestCheck
     ? await prisma.claim.findUnique({ where: { id }, select: { status: true } })
     : null
@@ -72,7 +73,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const isClosingNow = body.status === "Closed" && existing?.status !== "Closed"
   const isClosedTimelineUpdate = body.timeline !== undefined && existing?.status === "Closed"
   const isClosedProjectKeyUpdate = body.projectKey !== undefined && existing?.status === "Closed"
-  if (isClosingNow || isClosedTimelineUpdate || isClosedProjectKeyUpdate) {
+  const isClosedSpgUpdate = body.spg !== undefined && existing?.status === "Closed"
+  if (isClosingNow || isClosedTimelineUpdate || isClosedProjectKeyUpdate || isClosedSpgUpdate) {
     after(async () => { await ingestClosedClaim(id) })
   }
 
