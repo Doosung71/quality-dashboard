@@ -33,7 +33,6 @@ export default function KnowledgeStatusPage() {
       <KnowledgeRepository
         data={repoData}
         repoLoading={repoLoading}
-        readOnly
         onCardClick={(asset) => router.push(`/knowledge/status/${encodeURIComponent(asset.id)}`)}
       />
     </div>

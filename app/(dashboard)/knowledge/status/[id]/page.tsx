@@ -225,7 +225,8 @@ export default function KnowledgeDetailPage({ params }: { params: Promise<{ id: 
                 )}
               </div>
               {contentText && (
-                <div className="rounded-xl border border-slate-100 bg-white p-5 max-h-[400px] overflow-y-auto">
+                // #52: 내용 박스 자체 스크롤 제거 — 페이지 스크롤에 흐르게. 전체화면 정독은 ⤢ 크게보기 모달.
+                <div className="rounded-xl border border-slate-100 bg-white p-5">
                   <MarkdownContent content={contentText} className="text-sm" />
                 </div>
               )}
