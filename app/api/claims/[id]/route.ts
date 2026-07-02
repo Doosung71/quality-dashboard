@@ -41,9 +41,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     projectKeyUpdate = { projectKey: pk.value }
   }
 
-  // Closed 전환 / Closed 상태에서 projectKey 변경 시 re-ingest 필요
-  // (Q1-03: 종결 후 projectKey 부여·수정·삭제도 knowledge_chunks metadata에 반영돼야 함)
-  const needsIngestCheck = body.status === "Closed" || body.projectKey !== undefined
+  // Closed 전환 / Closed 상태에서 timeline·projectKey 변경 시 re-ingest 필요
+  // (#63: 종결 Claim 처리이력 추가·삭제 시 buildClaimMarkdown의 timeline이 바뀌므로
+  //  knowledge_chunks 확정 지식을 재동기화해야 함. NCR route와 동일 조건.)
+  const needsIngestCheck =
+    body.status === "Closed" || body.timeline !== undefined || body.projectKey !== undefined
   const existing = needsIngestCheck
     ? await prisma.claim.findUnique({ where: { id }, select: { status: true } })
     : null
@@ -67,8 +69,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   })
 
   const isClosingNow = body.status === "Closed" && existing?.status !== "Closed"
+  const isClosedTimelineUpdate = body.timeline !== undefined && existing?.status === "Closed"
   const isClosedProjectKeyUpdate = body.projectKey !== undefined && existing?.status === "Closed"
-  if (isClosingNow || isClosedProjectKeyUpdate) {
+  if (isClosingNow || isClosedTimelineUpdate || isClosedProjectKeyUpdate) {
     after(async () => { await ingestClosedClaim(id) })
   }
 

@@ -1,20 +1,31 @@
 import { describe, it, expect } from "vitest";
 import type { NCRTimelineItem } from "@/types/ncr";
+import type { ClaimTimelineItem } from "@/types/claim";
 import {
   buildStageMoveTimeline,
   isSystemTimelineEntry,
   stageMoveAction,
-} from "./ncr-timeline";
+} from "./stage-timeline";
 
 const DATE = "2026-07-01";
 const USER = "홍길동";
 
+// NCR 형태 (담당자 필드 = user)
 function sys(action: string): NCRTimelineItem {
   return { date: DATE, action, user: USER, kind: "system" };
 }
 function usr(action: string): NCRTimelineItem {
   return { date: DATE, action, user: USER, kind: "user" };
 }
+const makeNcrSys = (action: string): NCRTimelineItem => sys(action);
+
+// Claim 형태 (담당자 필드 = handler)
+const makeClaimSys = (action: string): ClaimTimelineItem => ({
+  date: DATE,
+  action,
+  handler: USER,
+  kind: "system",
+});
 
 describe("isSystemTimelineEntry", () => {
   it("kind=system → true", () => {
@@ -31,9 +42,9 @@ describe("isSystemTimelineEntry", () => {
   });
 });
 
-describe("buildStageMoveTimeline", () => {
+describe("buildStageMoveTimeline (NCR — user 필드)", () => {
   it("1) Happy: 빈 타임라인에 단계 이동 → 시스템 로그 1건 추가", () => {
-    const out = buildStageMoveTimeline([], "발행", "처리방안 수립", USER, DATE);
+    const out = buildStageMoveTimeline([], "발행", "처리방안 수립", makeNcrSys);
     expect(out).toHaveLength(1);
     expect(out[0]).toEqual({
       date: DATE,
@@ -46,14 +57,14 @@ describe("buildStageMoveTimeline", () => {
   it("2) Dedup: 직전이 정확한 역방향 → 항목 제거(길이 감소)", () => {
     // 발행 → 처리방안 수립 을 이미 기록한 상태에서, 처리방안 수립 → 발행 (되돌리기)
     const prev = [sys(stageMoveAction("발행", "처리방안 수립"))];
-    const out = buildStageMoveTimeline(prev, "처리방안 수립", "발행", USER, DATE);
+    const out = buildStageMoveTimeline(prev, "처리방안 수립", "발행", makeNcrSys);
     expect(out).toHaveLength(0); // 왕복 흔적 제거
   });
 
   it("3) 비역방향 이동 → 정상 추가(오판 방지)", () => {
     const prev = [sys(stageMoveAction("발행", "처리방안 수립"))];
     // 처리방안 수립 → 시정조치 중 (전진, 역방향 아님)
-    const out = buildStageMoveTimeline(prev, "처리방안 수립", "시정조치 중", USER, DATE);
+    const out = buildStageMoveTimeline(prev, "처리방안 수립", "시정조치 중", makeNcrSys);
     expect(out).toHaveLength(2);
     expect(out[1].action).toBe(stageMoveAction("처리방안 수립", "시정조치 중"));
   });
@@ -61,7 +72,7 @@ describe("buildStageMoveTimeline", () => {
   it("4) 직전이 사용자 수동 메모(우연히 같은 텍스트) → dedup 안 함(가드)", () => {
     // 사용자가 손으로 "단계 이동: 처리방안 수립 → 발행" 을 메모했더라도 kind=user 이므로 보존
     const prev = [usr(stageMoveAction("처리방안 수립", "발행"))];
-    const out = buildStageMoveTimeline(prev, "발행", "처리방안 수립", USER, DATE);
+    const out = buildStageMoveTimeline(prev, "발행", "처리방안 수립", makeNcrSys);
     expect(out).toHaveLength(2); // 제거되지 않음
   });
 
@@ -72,7 +83,7 @@ describe("buildStageMoveTimeline", () => {
       user: USER,
       // kind 없음 (구버전 데이터)
     };
-    const out = buildStageMoveTimeline([legacy], "처리방안 수립", "발행", USER, DATE);
+    const out = buildStageMoveTimeline([legacy], "처리방안 수립", "발행", makeNcrSys);
     expect(out).toHaveLength(0);
   });
 
@@ -82,7 +93,7 @@ describe("buildStageMoveTimeline", () => {
       sys(stageMoveAction("발행", "처리방안 수립")),
       sys(stageMoveAction("처리방안 수립", "시정조치 중")),
     ];
-    const out = buildStageMoveTimeline(prev, "시정조치 중", "처리방안 수립", USER, DATE);
+    const out = buildStageMoveTimeline(prev, "시정조치 중", "처리방안 수립", makeNcrSys);
     expect(out).toHaveLength(1);
     expect(out[0].action).toBe(stageMoveAction("발행", "처리방안 수립"));
   });
@@ -90,7 +101,34 @@ describe("buildStageMoveTimeline", () => {
   it("원본 배열을 변형하지 않는다 (순수 함수)", () => {
     const prev = [sys(stageMoveAction("발행", "처리방안 수립"))];
     const snapshot = JSON.parse(JSON.stringify(prev));
-    buildStageMoveTimeline(prev, "처리방안 수립", "시정조치 중", USER, DATE);
+    buildStageMoveTimeline(prev, "처리방안 수립", "시정조치 중", makeNcrSys);
     expect(prev).toEqual(snapshot);
+  });
+});
+
+describe("buildStageMoveTimeline (Claim — handler 필드)", () => {
+  it("Happy: 빈 타임라인 → handler 필드로 시스템 로그 추가", () => {
+    const out = buildStageMoveTimeline<ClaimTimelineItem>([], "접수", "조사 중", makeClaimSys);
+    expect(out).toHaveLength(1);
+    expect(out[0]).toEqual({
+      date: DATE,
+      action: stageMoveAction("접수", "조사 중"),
+      handler: USER,
+      kind: "system",
+    });
+  });
+
+  it("Dedup: 접수→조사 중 후 조사 중→접수 되돌리기 → 제거", () => {
+    const prev: ClaimTimelineItem[] = [makeClaimSys(stageMoveAction("접수", "조사 중"))];
+    const out = buildStageMoveTimeline(prev, "조사 중", "접수", makeClaimSys);
+    expect(out).toHaveLength(0);
+  });
+
+  it("사용자 메모(handler)는 dedup 대상 아님", () => {
+    const prev: ClaimTimelineItem[] = [
+      { date: DATE, action: stageMoveAction("조사 중", "접수"), handler: USER, kind: "user" },
+    ];
+    const out = buildStageMoveTimeline(prev, "접수", "조사 중", makeClaimSys);
+    expect(out).toHaveLength(2);
   });
 });

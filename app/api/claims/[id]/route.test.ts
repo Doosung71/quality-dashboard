@@ -71,3 +71,27 @@ describe('PUT /api/claims/[id] — projectKey 재인제스트 (Q1-03)', () => {
     expect(mockIngestClosedClaim).not.toHaveBeenCalled()
   })
 })
+
+describe('PUT /api/claims/[id] — timeline 재인제스트 (#63)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockRequireActiveSession.mockResolvedValue(session)
+    mockUpdate.mockResolvedValue({ id: 'claim-1' })
+  })
+
+  const tl = [{ date: '2026-07-02', action: '클레임 접수' }]
+
+  it('Closed Claim timeline 변경 시 ingestClosedClaim 호출 (확정 지식 재동기화)', async () => {
+    mockFindUnique.mockResolvedValue({ status: 'Closed' })
+    const { PUT } = await import('./route')
+    await PUT(makeReq({ timeline: tl }), ctx)
+    expect(mockIngestClosedClaim).toHaveBeenCalledWith('claim-1')
+  })
+
+  it('Open(Received) Claim timeline 변경은 인제스트 호출 안 함', async () => {
+    mockFindUnique.mockResolvedValue({ status: 'Received' })
+    const { PUT } = await import('./route')
+    await PUT(makeReq({ timeline: tl }), ctx)
+    expect(mockIngestClosedClaim).not.toHaveBeenCalled()
+  })
+})

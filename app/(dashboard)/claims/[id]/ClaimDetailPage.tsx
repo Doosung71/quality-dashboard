@@ -6,6 +6,7 @@ import type { Claim, ClaimStatus, ClaimPriority, ClaimTimelineItem, ClaimAttachm
 import { CLAIM_STATUSES, RESPONSIBLE_PARTY_OPTIONS, BACK_CLAIM_STATUS_LABELS, BACK_CLAIM_STATUSES } from "@/types/claim";
 import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTriangle, ShieldAlert, Paperclip, ReceiptText } from "lucide-react";
 import { AttachmentUploader } from "@/components/ui/attachment-uploader";
+import { buildStageMoveTimeline, isSystemTimelineEntry } from "@/lib/stage-timeline";
 import { AiSuggestionPanel } from "@/components/ui/ai-suggestion-panel";
 import { VerifiedLessonPanel } from "@/components/ui/verified-lesson-panel";
 import { ProjectKeyInput } from "@/components/ui/project-key-input";
@@ -98,6 +99,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, canVerifyLesso
   const [savingAttachments, setSavingAttachments] = useState(false);
   const [newEntry, setNewEntry] = useState("");
   const [addingEntry, setAddingEntry] = useState(false);
+  const [deletingEntryIdx, setDeletingEntryIdx] = useState<number | null>(null);
 
   async function handleAttachmentsChange(next: ClaimAttachment[]) {
     setAttachments(next);
@@ -206,8 +208,14 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, canVerifyLesso
 
   async function handleMoveStatus(newStatus: ClaimStatus) {
     const closedAt = newStatus === "Closed" ? getToday() : null;
-    const timelineEntry: ClaimTimelineItem = { date: getToday(), action: `단계 이동: ${STATUS_LABELS[claim.status]} → ${STATUS_LABELS[newStatus]}`, handler: userName || "담당자" };
-    const newTimeline = [...(claim.timeline ?? []), timelineEntry];
+    const handler = userName || "담당자";
+    // #63: 직전 이동의 정확한 역방향이면 왕복 로그를 정리(dedup), 아니면 시스템 로그 추가
+    const newTimeline = buildStageMoveTimeline(
+      claim.timeline ?? [],
+      STATUS_LABELS[claim.status],
+      STATUS_LABELS[newStatus],
+      (action): ClaimTimelineItem => ({ date: getToday(), action, handler, kind: "system" }),
+    );
     try {
       const res = await fetch(`/api/claims/${claim.id}`, {
         method: "PUT", headers: { "Content-Type": "application/json" },
@@ -223,7 +231,7 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, canVerifyLesso
   async function handleAddTimelineEntry() {
     if (!newEntry.trim()) return;
     setAddingEntry(true);
-    const timelineEntry: ClaimTimelineItem = { date: getToday(), action: newEntry.trim(), handler: userName || "담당자" };
+    const timelineEntry: ClaimTimelineItem = { date: getToday(), action: newEntry.trim(), handler: userName || "담당자", kind: "user" };
     const newTimeline = [...(claim.timeline ?? []), timelineEntry];
     try {
       const res = await fetch(`/api/claims/${claim.id}`, {
@@ -237,6 +245,23 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, canVerifyLesso
       router.refresh();
     } finally {
       setAddingEntry(false);
+    }
+  }
+
+  async function handleDeleteTimelineEntry(originalIndex: number) {
+    setDeletingEntryIdx(originalIndex);
+    const newTimeline = (claim.timeline ?? []).filter((_, idx) => idx !== originalIndex);
+    try {
+      const res = await fetch(`/api/claims/${claim.id}`, {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ timeline: newTimeline }),
+      });
+      if (!res.ok) throw new Error("삭제 실패");
+      const updated = await res.json();
+      setClaim(prev => ({ ...prev, ...updated }));
+      router.refresh();
+    } finally {
+      setDeletingEntryIdx(null);
     }
   }
 
@@ -704,18 +729,37 @@ export function ClaimDetailPage({ claim: initial, canEdit = true, canVerifyLesso
           {(claim.timeline ?? []).length === 0 ? (
             <p className="text-xs text-slate-400 text-center py-4">처리 이력이 없습니다.</p>
           ) : (
-            [...(claim.timeline ?? [])].reverse().map((item, i) => (
-              <div key={i} className="flex gap-3 items-start">
-                <div className="w-2 h-2 rounded-full bg-blue-400 mt-1.5 shrink-0" />
-                <div>
-                  <p className="text-xs text-slate-700 font-medium">{item.action}</p>
-                  <p className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1">
-                    <Clock className="w-3 h-3" /> {item.date}
-                    {item.handler && <> · <span className="font-medium text-slate-500">{item.handler}</span></>}
-                  </p>
+            [...(claim.timeline ?? [])].reverse().map((item, i) => {
+              const originalIndex = (claim.timeline ?? []).length - 1 - i;
+              const isSystem = isSystemTimelineEntry(item);
+              return (
+                <div key={i} className="flex gap-3 items-start group">
+                  <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${isSystem ? "bg-slate-300" : "bg-blue-400"}`} />
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-xs wrap-break-word flex items-center gap-1.5 ${isSystem ? "text-slate-500 font-normal italic" : "text-slate-700 font-medium"}`}>
+                      {isSystem && (
+                        <span className="not-italic shrink-0 px-1.5 py-0.5 rounded bg-slate-100 text-slate-400 text-[9px] font-bold tracking-wide">시스템</span>
+                      )}
+                      <span className="min-w-0 wrap-break-word">{item.action}</span>
+                    </p>
+                    <p className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1">
+                      <Clock className="w-3 h-3" /> {item.date}
+                      {item.handler && <> · <span className="font-medium text-slate-500">{item.handler}</span></>}
+                    </p>
+                  </div>
+                  {canEdit && (
+                    <button
+                      onClick={() => handleDeleteTimelineEntry(originalIndex)}
+                      disabled={deletingEntryIdx === originalIndex}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-50 text-slate-300 hover:text-red-400 shrink-0"
+                      title="이력 삭제"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 

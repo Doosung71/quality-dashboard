@@ -7,7 +7,7 @@ import type { NCR, NCRStatus, NCRSeverity, NCRDispositionType, NCRTimelineItem, 
 import { NCR_STATUSES } from "@/types/ncr";
 import { ArrowLeft, Edit2, Trash2, Save, X, Plus, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
 import { AttachmentUploader, type AttachmentItem } from "@/components/ui/attachment-uploader";
-import { buildStageMoveTimeline, isSystemTimelineEntry } from "@/lib/ncr-timeline";
+import { buildStageMoveTimeline, isSystemTimelineEntry } from "@/lib/stage-timeline";
 import { AiSuggestionPanel } from "@/components/ui/ai-suggestion-panel";
 import { VerifiedLessonPanel } from "@/components/ui/verified-lesson-panel";
 import { ProjectKeyInput } from "@/components/ui/project-key-input";
@@ -109,8 +109,7 @@ export function NCRDetailPage({ ncr: initial, canEdit = true, canVerifyLesson = 
       ncr.timeline ?? [],
       STATUS_LABELS[ncr.status],
       STATUS_LABELS[newStatus],
-      user,
-      getToday(),
+      (action): NCRTimelineItem => ({ date: getToday(), action, user, kind: "system" }),
     );
     try {
       const res = await fetch(`/api/ncr/${ncr.id}`, {
